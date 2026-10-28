@@ -327,6 +327,8 @@
 #tokenforge-app .tf-chip { padding: 5px 10px; border: 1px solid var(--tf-line); border-radius: var(--tf-radius); background: var(--tf-panel-2); color: var(--tf-muted); font-size: 11.5px; font-weight: 600; cursor: pointer; }
 #tokenforge-app .tf-chip:hover { color: var(--tf-text); }
 #tokenforge-app .tf-chip.is-active { background: var(--tf-accent); border-color: var(--tf-accent); color: var(--tf-on-accent); }
+#tokenforge-app .tf-cheat-toggle { display: flex; align-items: center; width: 100%; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+#tokenforge-app .tf-cheat-toggle:focus-visible { outline: 2px solid var(--tf-accent); outline-offset: 2px; }
 .tf-cheat-list { display: grid; gap: 2px; }
 .tf-cheat-item { display: grid; grid-template-columns: minmax(150px, 34%) minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 5px 6px; border-radius: var(--tf-radius); }
 .tf-cheat-item:hover { background: var(--tf-panel-2); }

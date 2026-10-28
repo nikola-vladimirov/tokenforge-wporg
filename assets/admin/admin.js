@@ -13,7 +13,7 @@
 	var state = {
 		tokens: [], settings: {}, framework: {}, scales: {}, components: {}, scheme: {}, extras: {}, defaults: {}, content: {}, width: {}, motion: {}, overlays: { overlays: [], surfaces: [] }, enhancements: {},
 		tokensRev: '', paletteRev: '',
-		cheat: null, cheatLoading: false, cheatQ: '', cheatKind: '', cheatOpen: {}, attributeUsage: {}, attrUnused: false, attrBusy: false,
+		cheat: null, cheatLoading: false, cheatQ: '', cheatKind: '', cheatOpen: {}, cheatAll: {},attributeUsage: {}, attrUnused: false, attrBusy: false,
 		scss: {}, recipes: {}, recipeList: [], recipeQ: '',
 		defs: {}, families: [], bricksNative: {}, nativeLabels: {}, bricks: false, groups: [], utilCount: 0,
 		activeGroup: 'color', search: '', tab: 'home', q: '', dirty: false, navOpen: false, open: readOpen(), expandAll: false, btnFam: 'primary', btnVar: 'solid', importReport: null,
@@ -586,11 +586,13 @@
 			} );
 			if ( ! items.length ) { return; }
 			total += items.length;
-			var all = !! state.cheatOpen[ g.id ] || ( words.length > 0 && items.length <= 80 );
+			var all = !! state.cheatAll[ g.id ] || ( words.length > 0 && items.length <= 80 );
 			var shown = all ? items : items.slice( 0, 24 );
-			html += '<section class="tf-panel tf-cheat-group"><div class="tf-panel-head tf-cheat-head"><h3>' + esc( g.title ) + ' <span class="tf-count">' + items.length + '</span></h3></div>'
-				+ '<div class="tf-panel-body"><p class="tf-muted tf-desc">' + esc( g.desc ) + '</p><div class="tf-cheat-list">' + shown.map( cheatRow ).join( '' ) + '</div>'
-				+ ( items.length > shown.length ? '<p><button type="button" class="tf-btn tf-small" data-act="cheatmore" data-g="' + esc( g.id ) + '">Show all ' + items.length + '</button></p>' : '' ) + '</div></section>';
+			// Closed by default; a search or kind filter opens every group, and a click on the head overrides that.
+			var open = undefined !== state.cheatOpen[ g.id ] ? !! state.cheatOpen[ g.id ] : ( words.length > 0 || '' !== state.cheatKind );
+			html += '<section class="tf-panel tf-cheat-group' + ( open ? '' : ' is-collapsed' ) + '"><div class="tf-panel-head tf-cheat-head"><h3><button type="button" class="tf-cheat-toggle" data-act="cheatgroup" data-g="' + esc( g.id ) + '" aria-expanded="' + ( open ? 'true' : 'false' ) + '"><span class="tf-chev" aria-hidden="true"></span>' + esc( g.title ) + ' <span class="tf-count">' + items.length + '</span></button></h3></div>'
+				+ ( open ? '<div class="tf-panel-body"><p class="tf-muted tf-desc">' + esc( g.desc ) + '</p><div class="tf-cheat-list">' + shown.map( cheatRow ).join( '' ) + '</div>'
+				+ ( items.length > shown.length ? '<p><button type="button" class="tf-btn tf-small" data-act="cheatmore" data-g="' + esc( g.id ) + '">Show all ' + items.length + '</button></p>' : '' ) + '</div>' : '' ) + '</section>';
 		} );
 		return html + ( total ? '' : '<p class="tf-muted">Nothing matches.</p>' );
 	}
@@ -2180,7 +2182,15 @@
 			if ( act === 'goto' ) { state.tab = el.getAttribute( 'data-go' ); state.q = ''; state.findTop = false; render(); return; }
 			if ( act === 'copy' ) { copyText( el.getAttribute( 'data-copy' ), el ); return; }
 			if ( act === 'cheatkind' ) { state.cheatKind = el.getAttribute( 'data-kind' ); render(); return; }
-			if ( act === 'cheatmore' ) { state.cheatOpen[ el.getAttribute( 'data-g' ) ] = true; render(); return; }
+			if ( act === 'cheatmore' ) { state.cheatAll[ el.getAttribute( 'data-g' ) ] = true; render(); return; }
+			if ( act === 'cheatgroup' ) {
+				var cg = el.getAttribute( 'data-g' );
+				state.cheatOpen[ cg ] = 'true' !== el.getAttribute( 'aria-expanded' );
+				render();
+				var cgb = app.querySelector( '.tf-cheat-toggle[data-g="' + ( window.CSS && CSS.escape ? CSS.escape( cg ) : cg ) + '"]' );
+				if ( cgb ) { cgb.focus(); }
+				return;
+			}
 			if ( act === 'keyclear' ) { e.preventDefault(); state[ el.getAttribute( 'data-mod' ) || 'settings' ][ el.getAttribute( 'data-k' ) || 'panel_shortcut' ] = ''; markDirty(); render(); return; }
 			if ( act === 'reset' ) {
 				e.preventDefault();
