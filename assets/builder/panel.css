@@ -1,0 +1,144 @@
+/* TokenForge builder window: dock left/right or float; drag + resize. */
+#tf-dock { --tfd-bg: #161a1d; --tfd-head: #23292f; --tfd-line: #343d46; --tfd-text: #e2e6e9; --tfd-muted: #8a99a8; --tfd-accent: #ffd54d; --tfd-hover: #343d46; --tfd-radius: 4px;
+	position: fixed; inset: 0; z-index: 100000; pointer-events: none; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+#tf-dock * { box-sizing: border-box; }
+#tf-dock button { font-family: inherit; line-height: 1; margin: 0; }
+#tf-dock svg { width: 15px; height: 15px; flex: 0 0 15px; display: block; }
+
+/* Launcher */
+#tf-dock .tf-dock-toggle { pointer-events: auto; position: fixed; right: 16px; bottom: 16px; display: inline-flex; align-items: center; gap: 7px; background: var(--tfd-head); color: var(--tfd-text); border: 1px solid var(--tfd-line); border-radius: var(--tfd-radius); padding: 8px 14px; font-size: 12px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,.35); }
+#tf-dock .tf-dock-toggle:hover { border-color: var(--tfd-accent); }
+/* Flat look (set in TokenForge, Options, Dashboard look). */
+#tf-dock:has(.tf-app.tf-flat) { --tfd-bg: #141414; --tfd-head: #1c1c1c; --tfd-line: #2e2e2e; --tfd-text: #ededed; --tfd-muted: #a3a3a3; --tfd-accent: #3d7bfd; --tfd-hover: #2a2a2a; --tfd-radius: 2px; }
+/* Light look. */
+#tf-dock:has(.tf-app.tf-light) { --tfd-bg: #f3f4f6; --tfd-head: #ffffff; --tfd-line: #d1d5db; --tfd-text: #1f2937; --tfd-muted: #4b5563; --tfd-accent: #2563eb; --tfd-hover: #e5e7eb; --tfd-radius: 4px; }
+#tf-dock.is-open .tf-dock-toggle { display: none; }
+
+/* Window */
+.tf-dock-panel { pointer-events: auto; position: fixed; display: none; flex-direction: column; background: var(--tfd-bg); color: var(--tfd-text); box-shadow: 0 8px 24px rgba(0,0,0,.45); }
+#tf-dock.is-open .tf-dock-panel { display: flex; }
+#tf-dock.mode-right .tf-dock-panel { border-left: 1px solid var(--tfd-line); }
+#tf-dock.mode-left .tf-dock-panel { border-right: 1px solid var(--tfd-line); }
+#tf-dock.mode-float .tf-dock-panel { border: 1px solid var(--tfd-line); border-radius: var(--tfd-radius); overflow: hidden; }
+
+/* Title bar (drag handle) */
+.tf-dock-head { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 38px; padding: 0 6px 0 12px; background: var(--tfd-head); border-bottom: 1px solid var(--tfd-line); cursor: grab; user-select: none; touch-action: none; }
+#tf-dock.is-dragging .tf-dock-head { cursor: grabbing; }
+.tf-dock-title { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; letter-spacing: .2px; }
+.tf-dock-title .tf-dot { width: 8px; height: 8px; border-radius: 50%; background: #2caf84; }
+.tf-dock-tools { display: inline-flex; align-items: center; gap: 2px; }
+#tf-dock .tf-dock-tool { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: var(--tfd-radius); background: transparent; color: var(--tfd-muted); cursor: pointer; text-decoration: none; }
+#tf-dock .tf-dock-tool:hover { background: var(--tfd-hover); color: var(--tfd-text); }
+#tf-dock.mode-left .tf-dock-tool[data-act="left"],
+#tf-dock.mode-right .tf-dock-tool[data-act="right"],
+#tf-dock.mode-float .tf-dock-tool[data-act="float"] { color: var(--tfd-accent); }
+#tf-dock:not(.mode-float) .tf-dock-tool[data-act="min"] { display: none; }
+
+/* Body: the dashboard fills it and scrolls internally */
+.tf-dock-body { flex: 1 1 auto; min-height: 0; overflow: hidden; background: var(--tfd-bg); }
+#tf-dock.is-min .tf-dock-body, #tf-dock.is-min .tf-rz { display: none; }
+.tf-dock-body #tokenforge-app { height: 100%; }
+.tf-dock-body #tokenforge-app .tf-app { height: 100%; min-height: 0; max-width: none; border: 0; border-radius: 0; box-shadow: none; }
+.tf-dock-body #tokenforge-app .tf-brand { display: none; }
+
+/* Resize handles: edge toward the canvas when docked, all edges when floating */
+.tf-rz { position: absolute; z-index: 3; display: none; }
+.tf-rz-n { top: -3px; left: 8px; right: 8px; height: 7px; cursor: ns-resize; }
+.tf-rz-s { bottom: -3px; left: 8px; right: 8px; height: 7px; cursor: ns-resize; }
+.tf-rz-e { right: -3px; top: 8px; bottom: 8px; width: 7px; cursor: ew-resize; }
+.tf-rz-w { left: -3px; top: 8px; bottom: 8px; width: 7px; cursor: ew-resize; }
+.tf-rz-ne { top: -3px; right: -3px; width: 12px; height: 12px; cursor: nesw-resize; }
+.tf-rz-sw { bottom: -3px; left: -3px; width: 12px; height: 12px; cursor: nesw-resize; }
+.tf-rz-nw { top: -3px; left: -3px; width: 12px; height: 12px; cursor: nwse-resize; }
+.tf-rz-se { bottom: -3px; right: -3px; width: 12px; height: 12px; cursor: nwse-resize; }
+#tf-dock.mode-float .tf-rz { display: block; }
+#tf-dock.mode-right .tf-rz-w, #tf-dock.mode-left .tf-rz-e { display: block; top: 0; bottom: 0; }
+.tf-rz-w:hover, .tf-rz-e:hover { background: color-mix(in srgb, var(--tfd-accent) 35%, transparent); }
+
+/* Shield over the canvas iframe while dragging/resizing */
+.tf-shield { position: fixed; inset: 0; display: none; pointer-events: auto; }
+#tf-dock.is-dragging .tf-shield { display: block; }
+#tf-dock.is-dragging .tf-dock-panel { user-select: none; }
+
+/* Snap preview when dragging to a screen edge */
+.tf-snap-hint { position: fixed; bottom: 0; display: none; background: color-mix(in srgb, var(--tfd-accent) 18%, transparent); border: 2px solid color-mix(in srgb, var(--tfd-accent) 70%, transparent); pointer-events: none; }
+.tf-snap-hint.is-left { display: block; left: 0; }
+.tf-snap-hint.is-right { display: block; right: 0; }
+
+/* No launcher button (front end default): open with the shortcut or the admin bar */
+#tf-dock.no-launcher .tf-dock-toggle { display: none; }
+.tf-dock-title .tf-kbd { margin-left: 4px; padding: 1px 5px; border: 1px solid var(--tfd-line); border-radius: var(--tfd-radius); background: var(--tfd-bg); color: var(--tfd-muted); font: 600 10px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: 0; }
+@media (max-width: 520px) { .tf-dock-title .tf-kbd { display: none; } }
+
+/* Check tab (assets/builder/check-panel.js). Colours come from the dashboard tokens; every state is also text. */
+.tf-chk { max-width: 900px; color: var(--tf-text); font-size: 13px; line-height: 1.45; }
+.tf-chk h2 { margin: 18px 0 6px; font-size: 14px; font-weight: 700; color: var(--tf-text); }
+.tf-chk h3 { margin: 0; font-size: 13px; font-weight: 600; }
+.tf-chk p { margin: 4px 0; }
+.tf-chk code { font-size: 11.5px; padding: 0 4px; border-radius: var(--tf-radius); background: var(--tf-code-bg); color: var(--tf-code); }
+.tf-chk a { color: var(--tf-link); }
+.tf-chk-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.tf-chk-run { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.tf-chk-run .tf-chk-status { margin: 0; color: var(--tf-muted); flex: 1 1 200px; }
+.tf-chk-box { margin: 10px 0; padding: 10px 12px; border: 1px solid var(--tf-line); border-left-width: 4px; border-radius: var(--tf-radius); background: var(--tf-panel); }
+.tf-chk-box .tf-btn { margin-top: 6px; }
+.tf-chk-warn { margin: 10px 0; padding: 8px 12px; border: 1px dashed var(--tf-line-hover); border-radius: var(--tf-radius); }
+.tf-chk-err { color: var(--tf-err); font-weight: 600; }
+.tf-chk-results.is-busy { opacity: .6; }
+.tf-chk-group { margin: 0 0 8px; border: 1px solid var(--tf-line); border-radius: var(--tf-radius); background: var(--tf-panel); }
+.tf-chk-gt { display: flex; align-items: center; gap: 8px; width: 100%; padding: 9px 12px; border: 0; background: transparent; color: var(--tf-text); font: inherit; font-weight: 600; text-align: left; cursor: pointer; }
+.tf-chk-gt:hover { background: var(--tf-panel-3); }
+.tf-chk-gc { margin-left: auto; color: var(--tf-muted); font-weight: 400; font-size: 12px; }
+.tf-chk-gt:hover .tf-chk-gc { color: var(--tf-text); } /* muted on the hover background was 3.79:1; text is 8.8:1 */
+.tf-flat .tf-chk .tf-primary { background: var(--tf-accent-2); border-color: var(--tf-accent-2); } /* white on the flat accent was 3.85:1; accent-2 is 4.98:1 */
+.tf-flat .tf-chk .tf-primary:hover { background: color-mix(in srgb, var(--tf-accent-2) 85%, #000); border-color: color-mix(in srgb, var(--tf-accent-2) 85%, #000); }
+.tf-chk-caret { flex: 0 0 auto; width: 0; height: 0; border: 5px solid transparent; border-left-color: currentColor; }
+.tf-chk-gt[aria-expanded="true"] .tf-chk-caret { transform: rotate(90deg); }
+.tf-chk-items { list-style: none; margin: 0; padding: 0 8px 8px; }
+.tf-chk-item { margin: 6px 0 0; padding: 9px 11px; border: 1px solid var(--tf-line); border-left-width: 4px; border-radius: var(--tf-radius); background: var(--tf-panel-2); }
+.tf-chk-item[data-sev="error"] { border-left-color: var(--tf-err); }
+.tf-chk-item[data-sev="warning"] { border-left-color: var(--tf-warn); }
+.tf-chk-item[data-sev="notice"], .tf-chk-item[data-sev="review"] { border-left-color: var(--tf-link); }
+.tf-chk-item.is-fixed { border-left-color: var(--tf-ok); }
+.tf-chk-item.is-fixed .tf-chk-msg { text-decoration: line-through; color: var(--tf-muted); }
+.tf-chk-top { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+.tf-chk-tag { display: inline-block; padding: 1px 7px; border: 1px solid var(--tf-line-hover); border-radius: 999px; font-size: 11px; font-weight: 600; color: var(--tf-text); }
+.tf-chk-done { border-color: var(--tf-ok); }
+.tf-chk-done:focus-visible { outline: 2px solid var(--tf-accent); outline-offset: 2px; }
+.tf-chk-msg { font-weight: 600; }
+.tf-chk-el, .tf-chk-help, .tf-chk-meta, .tf-chk-fixed { font-size: 12px; }
+.tf-chk-k { color: var(--tf-muted); }
+.tf-chk-acts { margin-top: 6px; }
+.tf-chk-fix { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--tf-line); }
+.tf-chk-fnote, .tf-chk-blocked { font-size: 12px; color: var(--tf-muted); margin: 0 0 4px; }
+.tf-chk-blocked strong { color: var(--tf-text); }
+.tf-chk-lbl { display: block; margin: 0 0 3px; font-size: 12px; font-weight: 600; }
+.tf-chk-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.tf-chk-in { flex: 1 1 160px; min-width: 0; padding: 5px 8px; border: 1px solid var(--tf-line-hover); border-radius: var(--tf-radius); background: var(--tf-bg); color: var(--tf-text); font: inherit; font-size: 12px; }
+.tf-chk-in:focus-visible, .tf-chk-gt:focus-visible { outline: 2px solid var(--tf-accent); outline-offset: 1px; }
+.tf-chk-tree { list-style: none; margin: 8px 0 0; padding: 0; }
+.tf-chk-tree li { margin: 3px 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; padding: 3px 6px; border-radius: var(--tf-radius); background: var(--tf-panel-2); }
+.tf-chk-lvn { min-width: 26px; font-weight: 700; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.tf-chk-skip { color: var(--tf-warn); }
+.tf-chk-tree .tf-lv-2 { margin-left: 16px; } .tf-chk-tree .tf-lv-3 { margin-left: 32px; } .tf-chk-tree .tf-lv-4 { margin-left: 48px; } .tf-chk-tree .tf-lv-5 { margin-left: 64px; } .tf-chk-tree .tf-lv-6 { margin-left: 80px; }
+@media (max-width: 520px) { .tf-chk-tree .tf-lv-2 { margin-left: 12px; } .tf-chk-tree .tf-lv-3 { margin-left: 22px; } .tf-chk-tree .tf-lv-4 { margin-left: 30px; } .tf-chk-tree .tf-lv-5 { margin-left: 38px; } .tf-chk-tree .tf-lv-6 { margin-left: 46px; } }
+@media (forced-colors: active) { .tf-chk-item, .tf-chk-group { border-color: CanvasText; } }
+.tf-chk-colour { display: grid; gap: 4px; margin: 4px 0; }
+.tf-chk-colour select { max-width: 100%; }
+.tf-chk-colour input[type=color] { width: 34px; height: 28px; padding: 0; border: 1px solid var(--tf-line-hover); border-radius: var(--tf-radius); background: none; }
+.tf-chk-cres { font-weight: 600; margin: 2px 0; }
+.tf-chk-cres.is-pass::before { content: "\2713\00a0"; color: var(--tf-ok); }
+.tf-chk-cres.is-fail::before { content: "\2717\00a0"; color: var(--tf-err); }
+/* "This page" views: Accessibility and Design [B8]. The chosen tab has a bar under it and aria-selected, not colour alone. */
+.tf-chk-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin: 0 0 12px; border-bottom: 1px solid var(--tf-line); }
+.tf-chk-tab { margin-bottom: -1px; padding: 7px 14px; border: 1px solid transparent; border-bottom: 0; border-radius: var(--tf-radius) var(--tf-radius) 0 0; background: transparent; color: var(--tf-text); font: inherit; font-weight: 600; cursor: pointer; }
+.tf-chk-tab:hover { background: var(--tf-panel-3); }
+.tf-chk-tab[aria-selected="true"] { border-color: var(--tf-line); background: var(--tf-panel); box-shadow: inset 0 -3px 0 var(--tf-accent); }
+.tf-chk-tab:focus-visible { outline: 2px solid var(--tf-accent); outline-offset: 1px; }
+.tf-chk-ghr { display: flex; align-items: center; gap: 6px; }
+.tf-chk-ghr .tf-chk-gh { flex: 1 1 auto; min-width: 0; }
+.tf-chk-ign { flex: 0 0 auto; margin-right: 8px; }
+.tf-chk-gb { padding: 0 8px 8px; }
+.tf-chk-gb > .tf-chk-items { padding: 0; }
+.tf-chk-gb > .tf-chk-acts, .tf-chk-gb > .tf-chk-fnote { margin: 4px 0 6px; }
+@media (forced-colors: active) { .tf-chk-tab[aria-selected="true"] { border-color: Highlight; } }

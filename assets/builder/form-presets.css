@@ -1,0 +1,11 @@
+/* TokenForge: form preset pickers, in the builder's own colours. */
+.tf-fpre { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+.tf-fpre-row { display: flex; flex-wrap: wrap; gap: 4px; }
+.tf-fpre select, .tf-fpre button { height: 28px; margin: 0; padding: 0 6px; font-size: 12px; font-family: inherit; color: var(--builder-color, #e2e6e9);
+	background: var(--builder-bg-2, #23292f); border: 1px solid var(--builder-border-color, #343d46); border-radius: var(--builder-border-radius, 4px); box-shadow: none; }
+.tf-fpre select { flex: 1 1 0; min-width: 0; }
+.tf-fpre button { flex: 0 0 auto; cursor: pointer; font-weight: 600; }
+.tf-fpre button:hover:not(:disabled) { border-color: var(--builder-color-accent, #ffd54d); }
+.tf-fpre button:disabled { opacity: .5; cursor: default; }
+.tf-fpre select:focus { outline: none; border-color: var(--builder-color-accent, #ffd54d); }
+.tf-fpre [hidden] { display: none !important; }

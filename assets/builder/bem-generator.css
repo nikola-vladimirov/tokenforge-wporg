@@ -1,0 +1,29 @@
+/* TokenForge BEM tool (Bricks builder) */
+
+/* BEM item injected into each Structure row's native ul.actions bar.
+   Inherits Bricks' hover-reveal (actions are opacity:0 until row hover) and
+   the native action color, so it reads as part of the builder UI. */
+.tf-bem-action { cursor: pointer; }
+.tf-bem-action .bricks-svg { width: 14px; height: 14px; }
+
+/* Dialog */
+.tf-bem-overlay { position: fixed; inset: 0; z-index: 100001; background: rgba(4,8,15,.55); display: flex; align-items: center; justify-content: center; font-family: -apple-system, system-ui, sans-serif; }
+.tf-bem-modal { width: 460px; max-width: 92vw; max-height: 80vh; display: flex; flex-direction: column; background: #10141c; color: #e6e8ec; border: 1px solid #2a3342; border-radius: 10px; box-shadow: 0 20px 60px rgba(0,0,0,.6); overflow: hidden; }
+.tf-bem-mhead { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid #2a3342; }
+.tf-bem-mhead strong { font-size: 13px; }
+.tf-bem-x { background: none; border: 0; color: #98a2b3; font-size: 18px; cursor: pointer; }
+.tf-bem-mbody { padding: 12px 14px; overflow: auto; }
+.tf-bem-lbl { display: block; font-size: 11px; color: #9aa0a6; margin-bottom: 4px; }
+.tf-bem-block { width: 100%; background: #1b2230; border: 1px solid #2a3342; color: #fff; border-radius: 6px; padding: 8px 10px; font-size: 13px; font-family: Menlo, Consolas, monospace; }
+.tf-bem-hint { font-size: 11px; color: #6b7688; margin: 8px 0; }
+.tf-bem-hint code { background: #1b2230; padding: 1px 5px; border-radius: 3px; }
+.tf-bem-rows { display: flex; flex-direction: column; gap: 4px; }
+.tf-bem-row { display: flex; align-items: center; gap: 8px; }
+.tf-bem-row.is-root { padding-bottom: 6px; margin-bottom: 4px; border-bottom: 1px dashed #2a3342; }
+.tf-bem-elabel { flex: 0 0 40%; font-size: 12px; color: #98a2b3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tf-bem-cls { flex: 1; background: #1b2230; border: 1px solid #2a3342; color: #fff; border-radius: 5px; padding: 5px 8px; font-size: 12px; font-family: Menlo, Consolas, monospace; }
+.tf-bem-mfoot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-top: 1px solid #2a3342; }
+.tf-bem-note { font-size: 11px; color: #98a2b3; }
+.tf-bem-note.is-ok { color: #6ec06e; }
+.tf-bem-apply { background: #2271b1; color: #fff; border: 0; border-radius: 6px; padding: 8px 16px; font-size: 12px; font-weight: 600; cursor: pointer; }
+.tf-bem-apply:hover { background: #135e96; }

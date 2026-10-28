@@ -1,0 +1,26 @@
+/* TokenForge attribute suggestions + "Add attribute" menu, styled with the builder's own variables. */
+#tf-attr-ac, #tf-attr-menu { position: fixed; z-index: 100001; display: none; flex-direction: column; box-sizing: border-box;
+	background: var(--builder-bg, #161a1d); color: var(--builder-color, #e2e6e9); border: 1px solid var(--builder-border-color, #343d46);
+	border-radius: var(--builder-border-radius, 4px); box-shadow: 0 12px 32px rgba(0,0,0,.5); font-size: 12px; overflow: hidden;
+	font-family: var(--builder-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif); }
+#tf-attr-ac { max-height: 300px; }
+#tf-attr-menu { width: 380px; max-height: min(480px, 80vh); }
+#tf-attr-ac.is-open, #tf-attr-menu.is-open { display: flex; }
+#tf-attr-ac *, #tf-attr-menu * { box-sizing: border-box; }
+#tf-attr-menu .tf-attr-head { padding: 10px 10px 4px; font-size: 10px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: #b4bdc4; }
+#tf-attr-menu .tf-attr-search { width: calc(100% - 16px); height: 32px; line-height: 32px; margin: 4px 8px 6px; padding: 0 10px; font-size: 12px; font-family: inherit;
+	background: var(--builder-bg-2, #23292f); color: inherit; border: 1px solid var(--builder-border-color, #343d46); border-radius: var(--builder-border-radius, 4px); box-shadow: none; }
+#tf-attr-menu .tf-attr-search:focus { outline: none; border-color: var(--builder-color-accent, #ffd54d); }
+#tf-attr-ac ul, #tf-attr-menu ul { list-style: none; margin: 0; padding: 4px; overflow-y: auto; flex: 1 1 auto; min-height: 0;
+	scrollbar-width: thin; scrollbar-color: var(--builder-bg-3, #343d46) transparent; }
+#tf-attr-ac li, #tf-attr-menu li { display: flex; flex-direction: column; gap: 2px; margin: 0; padding: 6px 8px; border-radius: 4px; cursor: pointer; min-height: 28px; }
+#tf-attr-ac li.is-sel, #tf-attr-menu li.is-sel { background: var(--builder-bg-3, #343d46); box-shadow: inset 3px 0 0 var(--builder-color-accent, #ffd54d); }
+#tf-attr-ac .tf-attr-name, #tf-attr-menu .tf-attr-name { font-family: var(--builder-font-family-monospace, Menlo, Consolas, monospace); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#tf-attr-ac .tf-attr-desc, #tf-attr-menu .tf-attr-desc { font-size: 11px; line-height: 1.4; color: #b4bdc4; white-space: normal;
+	display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+#tf-attr-menu li.tf-attr-empty { cursor: default; color: #b4bdc4; font-style: italic; }
+#tf-attr-ac .tf-attr-foot, #tf-attr-menu .tf-attr-foot { padding: 6px 10px; font-size: 10px; color: #b4bdc4; border-top: 1px solid var(--builder-border-color, #343d46); }
+.tf-attr-live { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+@media (forced-colors: active) {
+	#tf-attr-ac li.is-sel, #tf-attr-menu li.is-sel { outline: 2px solid Highlight; box-shadow: none; }
+}

@@ -1,0 +1,397 @@
+// TokenForge SCSS library, available in Global SCSS without any @import.
+//
+// Variables injected above this file (from your settings):
+//   $vp-min, $vp-max, $root-font-size, $breakpoints (xs … xxl) and
+//   $breakpoint-xs … $breakpoint-xxl, $tf-auto-grid-flow, $tf-auto-grid-aggressiveness.
+// Mixins generated below it: btn(), heading-style(), text-style(), card(),
+// texture(), texture-overlay(), surface().
+//
+// Everything here only defines functions/mixins; nothing is output unless used.
+
+// ---------------------------------------------------------------- functions
+
+// Drop the unit of a number: strip-unit(16px) → 16.
+@function strip-unit($number) {
+	@if type-of($number) == 'number' and not unitless($number) {
+		@return $number / ($number * 0 + 1);
+	}
+	@return $number;
+}
+
+// Pixels per rem for the current root font size.
+@function tf-root-px() {
+	@return strip-unit($root-font-size) / 100 * 16;
+}
+
+// Round to a number of decimals (4 by default).
+@function tf-round($n, $decimals: 4) {
+	$f: 1;
+	@for $i from 1 through $decimals {
+		$f: $f * 10;
+	}
+	@return round($n * $f) / $f;
+}
+
+// A number as rem: to-rem(2) → 2rem; to-rem(24px) → 24px in rem at your root size.
+@function to-rem($value) {
+	@if type-of($value) == 'number' and unit($value) == 'px' {
+		@return tf-round(strip-unit($value) / tf-root-px()) * 1rem;
+	}
+	@if type-of($value) == 'number' and unitless($value) {
+		@return $value * 1rem;
+	}
+	@return $value;
+}
+
+// Convert pixels to rem ("convert to rem"): ctr(24) / ctr(24px).
+@function ctr($pixel-value) {
+	@return tf-round(strip-unit($pixel-value) / tf-root-px()) * 1rem;
+}
+
+// A fluid size between two pixel values across the viewport range:
+// fluid(16, 24) / fluid(16px, 24px) → clamp(1rem, … vw + … rem, 1.5rem).
+@function fluid($min, $max, $vp-from: $vp-min, $vp-to: $vp-max) {
+	$r: tf-root-px();
+	$a: strip-unit($min) / $r;
+	$b: strip-unit($max) / $r;
+	$w1: strip-unit($vp-from) / $r;
+	$w2: strip-unit($vp-to) / $r;
+	@if $w2 == $w1 or $a == $b {
+		@return tf-round($a) * 1rem;
+	}
+	$slope: ($b - $a) / ($w2 - $w1);
+	$base: $a - $slope * $w1;
+	$lo: if($a < $b, $a, $b);
+	$hi: if($a < $b, $b, $a);
+	@return clamp(#{tf-round($lo)}rem, calc(#{tf-round($slope * 100)}vw + #{tf-round($base)}rem), #{tf-round($hi)}rem);
+}
+
+// Same as fluid() (older name).
+@function fluidClamp($min, $max) {
+	@return fluid($min, $max);
+}
+
+// A breakpoint as a length: a name from $breakpoints, or any number (px if unitless).
+@function tf-breakpoint($bp) {
+	@if map-has-key($breakpoints, $bp) {
+		@return map-get($breakpoints, $bp);
+	}
+	@if type-of($bp) == 'number' {
+		@return if(unitless($bp), $bp * 1px, $bp);
+	}
+	@error "Unknown breakpoint `#{$bp}`: use one of #{map-keys($breakpoints)} or a length.";
+}
+
+// ---------------------------------------------------------------- breakpoints
+
+// Styles for screens at or below a breakpoint (desktop-first).
+@mixin breakpoint($bp) {
+	@media (max-width: tf-breakpoint($bp)) {
+		@content;
+	}
+}
+
+// Styles for screens at or above a breakpoint (mobile-first).
+@mixin breakpoint-up($bp) {
+	@media (min-width: tf-breakpoint($bp)) {
+		@content;
+	}
+}
+
+// Styles when a card is at least/at most a size: card-container("inline-size > 767px").
+@mixin card-container($query) {
+	@container card (#{$query}) {
+		& {
+			@content;
+		}
+	}
+}
+
+// Any container query: container("min-width: 30rem") or container("(min-width: 30rem)", name).
+@mixin container($query, $name: null) {
+	$q: if(str-index("#{$query}", "(") == 1, "#{$query}", "(#{$query})");
+	@container #{if($name, $name, "")} #{$q} {
+		& {
+			@content;
+		}
+	}
+}
+
+// ---------------------------------------------------------------- layout
+
+// Center children as a column: all | left | right | top | bottom.
+// $output: full (layout + tokens) | core (layout only) | tokens (only the variables).
+// The selector is doubled (&:is(&)) so it wins over builder element styles.
+@mixin center($alignment: all, $output: full) {
+	$places: (
+		all: (center, center),
+		left: (flex-start, center),
+		right: (flex-end, center),
+		top: (center, flex-start),
+		bottom: (center, flex-end)
+	);
+	@if not map-has-key($places, $alignment) {
+		@error "center(): alignment must be all, left, right, top or bottom (got `#{$alignment}`).";
+	}
+	$p: map-get($places, $alignment);
+	&:is(&) {
+		@if $output == full or $output == tokens {
+			--center-align: #{nth($p, 1)};
+			--center-justify: #{nth($p, 2)};
+		}
+		@if $output == full or $output == core {
+			display: flex;
+			flex-direction: column;
+			align-items: var(--center-align, #{nth($p, 1)});
+			justify-content: var(--center-justify, #{nth($p, 2)});
+		}
+	}
+}
+
+// A grid: grid(3) → var(--grid-3); or explicit tracks: grid(1fr 2fr, auto, var(--space-m)).
+@mixin grid($columns, $rows: null, $gap: var(--grid-gap)) {
+	display: grid;
+	@if type-of($columns) == 'number' and unitless($columns) {
+		grid-template-columns: var(--grid-#{$columns});
+	} @else {
+		grid-template-columns: $columns;
+	}
+	@if $rows {
+		grid-template-rows: $rows;
+	}
+	@if $gap {
+		gap: $gap;
+	}
+}
+
+// Responsive grid that starts at $column-count columns and stacks as space runs out.
+// $min: the smallest an item may get before wrapping (default: from the content width).
+@mixin auto-grid($column-count: 1, $min: null, $flow: $tf-auto-grid-flow, $force-even-column-count: false) {
+	--column-count: #{$column-count};
+	@if $min {
+		--min: #{$min};
+	} @else {
+		--min: calc((var(--content-width) - (var(--column-count) - 1) * var(--grid-gap)) / var(--column-count) * #{$tf-auto-grid-aggressiveness});
+	}
+	--min-formula: min(100%, max(var(--min), (100% - (var(--column-count) - 1) * var(--grid-gap)) / var(--column-count)));
+	display: grid !important;
+	gap: var(--grid-gap);
+	inline-size: 100%;
+	grid-template-columns: repeat(#{$flow}, minmax(var(--min-formula), 1fr));
+	@if $force-even-column-count {
+		@include breakpoint-up(xs) {
+			grid-template-columns: repeat(#{$flow}, minmax(var(--min-formula), 1fr) minmax(var(--min-formula), 1fr));
+		}
+	}
+	> * {
+		min-width: 0;
+		max-width: 100%;
+		overflow-wrap: break-word;
+	}
+}
+
+// Content grid: children sit in the content column; use grid-column: feature |
+// feature-max | full (or the .content--* classes) to break out.
+@mixin content-grid {
+	--full: minmax(var(--gutter), 1fr);
+	padding-inline: 0;
+	column-gap: 0 !important;
+	display: grid !important;
+	grid-template-columns:
+		[full-start] var(--full)
+		[feature-max-start] minmax(0, var(--feature-max-width, 100px))
+		[feature-start] minmax(0, var(--feature-width, 50px))
+		[content-start] min(var(--content-width), 100% - var(--gutter) * 2)
+		[content-end] minmax(0, var(--feature-width, 50px))
+		[feature-end] minmax(0, var(--feature-max-width, 100px))
+		[feature-max-end] var(--full)
+		[full-end];
+	> :not(.content--feature, .content--feature-max, .content--full, .content--full-safe) {
+		inline-size: 100%;
+		max-inline-size: 100%;
+	}
+	> :where(:not(.content--feature, .content--feature-max, .content--full, .content--full-safe)) {
+		grid-column: content;
+	}
+	> .is-bg {
+		grid-column: full;
+	}
+}
+
+// ---------------------------------------------------------------- interaction
+
+// Put on the link/button inside a card: its click area covers the nearest
+// positioned ancestor (give the card position: relative).
+@mixin clickable-parent {
+	position: static;
+	&::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		display: flex;
+		cursor: pointer;
+	}
+}
+
+// Show the focus ring on the whole card when something inside is keyboard-focused.
+// $style: shadow | outline.
+@mixin focus-parent($style: shadow) {
+	&:focus-within {
+		@if $style == outline {
+			outline: var(--focus-width, 2px) solid var(--focus-color);
+			outline-offset: var(--focus-offset, 2px);
+		} @else {
+			box-shadow: 0 0 0 var(--focus-width, 2px) var(--focus-color);
+		}
+	}
+	&:focus-within:not(:has(:focus-visible)) {
+		outline: none;
+		box-shadow: none;
+	}
+	& :focus {
+		outline: none !important;
+		box-shadow: none !important;
+	}
+}
+
+// ---------------------------------------------------------------- decoration
+
+// Border from the border tokens. $style: main | light | dark; $position: null (all
+// sides) | block-start | inline-end | top …; $radius: a value, or no/none to skip.
+@mixin border($style: main, $position: null, $radius: var(--radius)) {
+	$b: var(--border);
+	@if $style == light {
+		$b: var(--border-light);
+	} @else if $style == dark {
+		$b: var(--border-dark);
+	}
+	$side: if($position, "-#{$position}", "");
+	&:where(:not(figure, picture)),
+	&:where(figure, picture) > img {
+		border#{$side}: $b;
+		@if $radius and $radius != no and $radius != none {
+			border-radius: $radius;
+		}
+	}
+}
+
+// Fade an edge out with a mask: block | inline | top | right | bottom | left.
+@mixin fade($axis, $amount: 25%) {
+	$both: (block: to bottom, inline: to right);
+	$one: (top: to bottom, bottom: to top, left: to right, right: to left);
+	--fade-amount: #{$amount};
+	@if map-has-key($both, $axis) {
+		$g: linear-gradient(map-get($both, $axis), transparent 0%, #000 var(--fade-amount), #000 calc(100% - var(--fade-amount)), transparent 100%);
+		-webkit-mask-image: $g;
+		mask-image: $g;
+	} @else if map-has-key($one, $axis) {
+		$g: linear-gradient(map-get($one, $axis), transparent 0%, #000 var(--fade-amount));
+		-webkit-mask-image: $g;
+		mask-image: $g;
+	} @else {
+		@error "fade(): axis must be block, inline, top, right, bottom or left (got `#{$axis}`).";
+	}
+}
+
+// Cut text off after a number of lines.
+@mixin line-clamp($line-count) {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: $line-count;
+	line-clamp: $line-count;
+	overflow: hidden;
+}
+
+// A tint over the element's background, under its content.
+@mixin overlay($overlay-bg: $tf-overlay-color, $overlay-opacity: null, $overlay-bg-image: null) {
+	position: relative;
+	isolation: isolate;
+	&::#{$tf-overlay-pseudo} {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		@if $overlay-bg-image {
+			background: var(--overlay-bg, #{$overlay-bg}), var(--overlay-bg-image, #{$overlay-bg-image});
+		} @else {
+			background: var(--overlay-bg, #{$overlay-bg});
+		}
+		@if $overlay-opacity {
+			opacity: var(--overlay-opacity, #{$overlay-opacity});
+		}
+	}
+}
+
+// ---------------------------------------------------------------- icons
+
+// Icon styling for an svg / <i> / link. $scheme: light | dark | null (the default);
+// $box-style: box | boxed (padded box), anything else = plain.
+@mixin icon($scheme: null, $box-style: $tf-icon-style) {
+	&:is(svg, i, a, span, div) {
+		@if $scheme {
+			color-scheme: var(--icon-scheme, #{$scheme});
+		}
+		display: flex;
+		flex-shrink: 0;
+		align-items: center;
+		justify-content: center;
+		box-sizing: content-box;
+		color: var(--icon-color, currentColor);
+		font-size: var(--icon-size);
+		block-size: var(--icon-height, var(--icon-size, 24px));
+		inline-size: var(--icon-width, var(--icon-size, 24px));
+		transition: var(--icon-transition, var(--transition, none));
+		box-shadow: var(--icon-shadow, none);
+		overflow: visible;
+		@if $box-style == box or $box-style == boxed {
+			padding: var(--icon-padding, 12px);
+			border-width: var(--icon-border-width, 0);
+			border-style: var(--icon-border-style, solid);
+			border-radius: var(--icon-radius, var(--radius));
+			background: var(--icon-background, var(--neutral-ultra-light));
+			border-color: var(--icon-border-color, transparent);
+		} @else {
+			padding: 0;
+			background: none;
+			border-width: 0;
+		}
+	}
+	&:is(i)::before {
+		inline-size: 100%;
+		block-size: 100%;
+		text-align: center;
+		font-size: var(--icon-size);
+	}
+	svg {
+		inline-size: 100%;
+		block-size: 100%;
+		color: var(--icon-color, currentColor);
+		fill: currentColor;
+	}
+	&:is(a):hover,
+	a:hover & {
+		--icon-background: var(--icon-background-hover);
+		--icon-color: var(--icon-color-hover);
+		--icon-border-color: var(--icon-border-color-hover);
+	}
+}
+
+// ---------------------------------------------------------------- motion
+
+// Stagger the animation of the first $child-count children by $delay each.
+@mixin delay-children($child-count: 1, $delay: 100ms) {
+	@for $i from 1 through $child-count {
+		&:nth-child(#{$i}) {
+			animation-delay: calc(#{$delay} * #{$i});
+		}
+	}
+}
+
+// @keyframes from a mixin: @include keyframes(pop) { from {…} to {…} }
+@mixin keyframes($name) {
+	@keyframes #{$name} {
+		@content;
+	}
+}

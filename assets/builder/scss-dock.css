@@ -1,0 +1,120 @@
+/* TokenForge: Global SCSS dock under the Bricks canvas. Uses Bricks' own builder
+   variables, so it follows the builder theme (dark / light) like its CSS panel. */
+#tf-sdock {
+	--sd-bg: var(--builder-bg, #161a1d);
+	--sd-bg-2: var(--builder-bg-2, #23292f);
+	--sd-bg-3: var(--builder-bg-3, #343d46);
+	--sd-bg-4: var(--builder-bg-4, #414c57);
+	--sd-line: var(--builder-border-color, #2d353d);
+	--sd-text: var(--builder-color, #e2e6e9);
+	--sd-muted: var(--builder-color-description, #8b98a5);
+	--sd-accent: var(--builder-color-accent, #ffd54d);
+	--sd-accent-ink: var(--builder-color-accent-inverse, #1e2124);
+	--sd-radius: var(--builder-border-radius, 4px);
+	--sd-mono: var(--builder-font-family-monospace, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+	position: absolute; left: 0; right: 0; bottom: 0; z-index: 1010;
+	display: flex; flex-direction: column; min-height: 36px;
+	background: var(--sd-bg); color: var(--sd-text); border-top: 1px solid var(--sd-line);
+	font: 12px/1.4 -apple-system, "system-ui", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	box-sizing: border-box;
+}
+#tf-sdock[hidden] { display: none; }
+#tf-sdock *, #tf-sdock *::before, #tf-sdock *::after { box-sizing: border-box; }
+#tf-sdock button { font: inherit; line-height: 1; margin: 0; letter-spacing: 0; text-transform: none; }
+#tf-sdock svg { display: block; flex: 0 0 auto; }
+
+.tf-sdock-resize { position: absolute; left: 0; right: 0; top: -3px; height: 6px; cursor: ns-resize; z-index: 2; }
+.tf-sdock-resize:hover { background: var(--sd-accent); }
+#tf-sdock.is-min .tf-sdock-resize { display: none; }
+
+/* Header */
+.tf-sdock-head { display: flex; align-items: center; gap: 10px; height: 36px; flex: 0 0 36px; padding: 0 8px 0 6px; background: var(--sd-bg-2); border-bottom: 1px solid var(--sd-line); min-width: 0; }
+#tf-sdock .tf-sdock-title { all: unset; display: inline-flex; align-items: center; gap: 7px; padding: 4px 6px; border-radius: var(--sd-radius); cursor: pointer; font-family: var(--sd-mono); font-size: 12px; font-weight: 600; color: var(--sd-text); white-space: nowrap; }
+#tf-sdock .tf-sdock-title:hover { background: var(--sd-bg-3); }
+#tf-sdock .tf-sdock-title:focus-visible { outline: 2px solid var(--sd-accent); outline-offset: 1px; }
+.tf-sdock-status { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--sd-muted); font-size: 11px; }
+.tf-sdock-status.is-ok { color: var(--builder-color-success, #2caf84); }
+.tf-sdock-status.is-dirty { color: var(--sd-accent); }
+.tf-sdock-status.is-err { color: var(--builder-color-danger, #ff5c5c); font-family: var(--sd-mono); }
+.tf-sdock-status.is-warn { color: var(--builder-color-warning, #ff9500); }
+.tf-sdock-actions { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; }
+#tf-sdock .tf-sdock-btn, #tf-sdock .tf-sdock-icon { all: unset; display: inline-flex; align-items: center; justify-content: center; gap: 5px; height: 24px; min-width: 24px; padding: 0 7px; border-radius: var(--sd-radius); background: var(--sd-bg-3); color: var(--sd-text); cursor: pointer; font-size: 11px; font-weight: 600; white-space: nowrap; }
+#tf-sdock .tf-sdock-icon { padding: 0; width: 24px; }
+#tf-sdock .tf-sdock-btn:hover, #tf-sdock .tf-sdock-icon:hover { background: var(--sd-bg-4); }
+#tf-sdock .tf-sdock-btn:focus-visible, #tf-sdock .tf-sdock-icon:focus-visible { outline: 2px solid var(--sd-accent); outline-offset: 1px; }
+#tf-sdock .tf-sdock-btn.is-on { background: var(--sd-accent); color: var(--sd-accent-ink); }
+#tf-sdock .tf-sdock-save { background: var(--sd-accent); color: var(--sd-accent-ink); padding: 0 12px; }
+#tf-sdock .tf-sdock-save:hover { filter: brightness(1.08); background: var(--sd-accent); }
+#tf-sdock.is-min .tf-sdock-minbtn svg { transform: scaleY(-1); }
+#tf-sdock.is-min .tf-sdock-live, #tf-sdock.is-min .tf-sdock-cheatbtn { display: none; }
+
+/* Notice (changed elsewhere) */
+.tf-sdock-notice { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 6px 10px; background: var(--builder-bg-warning, rgba(255,149,0,.1)); border-bottom: 1px solid var(--sd-line); color: var(--sd-text); font-size: 12px; }
+.tf-sdock-notice[hidden] { display: none; }
+.tf-sdock-notice span { flex: 1 1 260px; }
+
+/* Body: editor + cheatsheet drawer */
+.tf-sdock-body { display: flex; flex: 1 1 auto; min-height: 0; }
+#tf-sdock.is-min .tf-sdock-body, #tf-sdock.is-min .tf-sdock-notice { display: none; }
+.tf-sdock-editor { position: relative; flex: 1 1 auto; min-width: 0; min-height: 0; display: flex; }
+#tf-sdock .tf-sdock-editor textarea { all: unset; box-sizing: border-box; display: block; width: 100%; height: 100%; padding: 10px 14px; margin: 0; border: 0; resize: none; overflow: auto; white-space: pre; background: var(--sd-bg); color: var(--sd-text); caret-color: var(--sd-accent); font-family: var(--sd-mono); font-size: 13px; line-height: 1.6; tab-size: 4; -moz-tab-size: 4; }
+#tf-sdock .tf-sdock-editor textarea::selection { background: rgba(255, 213, 77, .28); }
+/* Outline bar (Jump to, Add section) as a slim row on top of the editor, in every dock position; narrow docks keep only the # and ## marks on the add buttons */
+#tf-sdock .tf-sdock-editor { padding-top: 32px; }
+#tf-sdock .tf-ol-bar { --ol-bg: var(--sd-bg-2); --ol-bg-2: var(--sd-bg-3); --ol-hover: var(--sd-bg-4); --ol-line: var(--sd-line); --ol-text: var(--sd-text); --ol-muted: var(--sd-muted); --ol-accent: var(--sd-accent); --ol-accent-ink: var(--sd-accent-ink); --ol-radius: var(--sd-radius); position: absolute; top: 0; left: 0; right: 0; z-index: 5; height: 32px; padding: 0 6px; background: var(--sd-bg-2); border-bottom: 1px solid var(--sd-line); }
+#tf-sdock .tf-ol-bar button { height: 24px; }
+#tf-sdock .tf-ol-bar .tf-ol-jump { max-width: none; }
+#tf-sdock.is-left .tf-ol-t, #tf-sdock.is-right .tf-ol-t { display: none; }
+#tf-sdock .tf-sdock-editor .CodeMirror { flex: 1 1 auto; height: 100% !important; background: var(--sd-bg); color: var(--sd-text); font-family: var(--sd-mono); font-size: 13px; }
+
+/* Suggestions (plain editor) */
+#tf-sdock .tf-ac-list { position: absolute; z-index: 30; max-height: 220px; overflow: auto; margin: 0; padding: 4px; list-style: none; background: var(--sd-bg-2); border: 1px solid var(--sd-line); border-radius: 6px; box-shadow: var(--builder-box-shadow-popup, 0 12px 32px rgba(0,0,0,.65)); }
+#tf-sdock .tf-ac-list li { display: flex; align-items: baseline; gap: 10px; margin: 0; padding: 4px 8px; border-radius: var(--sd-radius); cursor: pointer; white-space: nowrap; }
+#tf-sdock .tf-ac-list li code { flex: 0 0 auto; padding: 0; background: none; color: var(--sd-text); font-family: var(--sd-mono); font-size: 12px; }
+#tf-sdock .tf-ac-list li span { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--sd-muted); font-size: 11px; }
+#tf-sdock .tf-ac-list li.is-sel, #tf-sdock .tf-ac-list li:hover { background: var(--sd-accent); }
+#tf-sdock .tf-ac-list li.is-sel code, #tf-sdock .tf-ac-list li.is-sel span, #tf-sdock .tf-ac-list li:hover code, #tf-sdock .tf-ac-list li:hover span { color: var(--sd-accent-ink); }
+
+.tf-sdock-cheat { flex: 0 0 340px; max-width: 45%; display: flex; flex-direction: column; min-height: 0; border-left: 1px solid var(--sd-line); background: var(--sd-bg-2); }
+.tf-sdock-cheat[hidden] { display: none; }
+.tf-sdock-cheat-head { padding: 8px; border-bottom: 1px solid var(--sd-line); display: flex; flex-direction: column; gap: 6px; }
+#tf-sdock .tf-sdock-cheat-q { all: unset; box-sizing: border-box; width: 100%; height: 28px; padding: 0 8px; border-radius: var(--sd-radius); background: var(--sd-bg); border: 1px solid var(--sd-line); color: var(--sd-text); font-size: 12px; }
+#tf-sdock .tf-sdock-cheat-q:focus { border-color: var(--sd-accent); }
+.tf-sdock-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+#tf-sdock .tf-sdock-chips button { all: unset; padding: 3px 8px; border-radius: 10px; background: var(--sd-bg-3); color: var(--sd-muted); font-size: 11px; cursor: pointer; }
+#tf-sdock .tf-sdock-chips button:hover { color: var(--sd-text); }
+#tf-sdock .tf-sdock-chips button.is-on { background: var(--sd-accent); color: var(--sd-accent-ink); }
+.tf-sdock-cheat-list { flex: 1 1 auto; min-height: 0; overflow: auto; margin: 0; padding: 4px; list-style: none; scrollbar-width: thin; }
+.tf-sdock-cheat-list li { margin: 0; padding: 6px 8px; border-radius: var(--sd-radius); cursor: pointer; }
+.tf-sdock-cheat-list li:hover { background: var(--sd-bg-3); }
+.tf-sdock-cheat-list li.tf-sdock-muted { cursor: default; color: var(--sd-muted); background: none; }
+.tf-sdock-cheat-row { display: flex; align-items: center; gap: 6px; }
+.tf-sdock-cheat-row code { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0; background: none; color: var(--sd-text); font-family: var(--sd-mono); font-size: 12px; }
+.tf-sdock-cheat-list li > span { display: block; margin-top: 2px; color: var(--sd-muted); font-size: 11px; line-height: 1.35; }
+#tf-sdock .tf-sdock-copy { all: unset; display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: var(--sd-radius); color: var(--sd-muted); cursor: pointer; opacity: 0; }
+.tf-sdock-cheat-list li:hover .tf-sdock-copy, #tf-sdock .tf-sdock-copy:focus-visible { opacity: 1; }
+#tf-sdock .tf-sdock-copy:hover { background: var(--sd-bg-4); color: var(--sd-text); }
+#tf-sdock .tf-sdock-copy.is-done { opacity: 1; color: var(--builder-color-success, #2caf84); }
+
+/* The tab under the canvas when the dock is closed */
+.tf-sdock-tab { position: absolute; left: 16px; bottom: 0; z-index: 1010; display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 11px; margin: 0; border: 1px solid var(--builder-border-color, #2d353d); border-bottom: 0; border-radius: 8px 8px 0 0; background: var(--builder-bg-2, #23292f); color: var(--builder-color, #e2e6e9); font: 700 11px/1 -apple-system, "system-ui", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; letter-spacing: .2px; text-transform: uppercase; cursor: pointer; opacity: .85; transition: opacity .15s, transform .15s, background-color .15s; }
+.tf-sdock-tab[hidden] { display: none; }
+.tf-sdock-tab:hover, .tf-sdock-tab:focus-visible { opacity: 1; background: var(--builder-color-accent, #ffd54d); color: var(--builder-color-accent-inverse, #1e2124); transform: translateY(-1px); }
+
+/* Over the canvas while resizing */
+.tf-sdock-shield { position: fixed; inset: 0; z-index: 100000; cursor: ns-resize; }
+
+/* Docked beside the canvas (left or right) */
+#tf-sdock.is-left, #tf-sdock.is-right { top: 0; bottom: 0; border-top: 0; }
+#tf-sdock.is-left { right: auto; border-right: 1px solid var(--sd-line); }
+#tf-sdock.is-right { left: auto; border-left: 1px solid var(--sd-line); }
+#tf-sdock.is-left.is-min, #tf-sdock.is-right.is-min { bottom: auto; }
+#tf-sdock.is-left .tf-sdock-resize, #tf-sdock.is-right .tf-sdock-resize { top: 0; bottom: 0; width: 6px; height: auto; cursor: ew-resize; }
+#tf-sdock.is-left .tf-sdock-resize { left: auto; right: -3px; }
+#tf-sdock.is-right .tf-sdock-resize { right: auto; left: -3px; }
+#tf-sdock.is-left .tf-sdock-body, #tf-sdock.is-right .tf-sdock-body { flex-direction: column; }
+#tf-sdock.is-left .tf-sdock-cheat, #tf-sdock.is-right .tf-sdock-cheat { flex: 0 0 40%; max-width: none; border-left: 0; border-top: 1px solid var(--sd-line); }
+#tf-sdock.is-left .tf-sdock-head, #tf-sdock.is-right .tf-sdock-head { flex-wrap: wrap; height: auto; min-height: 36px; flex: 0 0 auto; row-gap: 2px; padding-block: 5px; }
+#tf-sdock.is-left .tf-sdock-status, #tf-sdock.is-right .tf-sdock-status { order: 3; flex: 1 1 100%; padding-inline: 6px; }
+#tf-sdock.is-left .tf-sdock-btn span, #tf-sdock.is-right .tf-sdock-btn span { display: none; }
+#tf-sdock.is-left .tf-sdock-save span, #tf-sdock.is-right .tf-sdock-save span { display: inline; }

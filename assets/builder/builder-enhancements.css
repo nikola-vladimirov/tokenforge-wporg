@@ -1,0 +1,116 @@
+/* TokenForge: Bricks builder enhancements (shell-side, gated by body classes) */
+
+/* One element per row: a boxed list (like the Style tab's control groups) */
+body.tf-enh-stack #bricks-panel-elements-categories ul.sortable-wrapper {
+	display: flex !important;
+	flex-direction: column;
+	gap: 4px;
+	grid-template-columns: none !important;
+}
+body.tf-enh-stack #bricks-panel-elements-categories li.bricks-add-element {
+	width: 100% !important;
+	margin: 0 !important;
+}
+body.tf-enh-stack #bricks-panel-elements-categories li.bricks-add-element .element-data {
+	display: flex !important;
+	flex-direction: row !important;
+	align-items: center;
+	justify-content: flex-start !important;
+	gap: 12px;
+	height: 40px;
+	min-height: 0 !important;
+	padding: 0 12px 0 14px !important;
+	text-align: left !important;
+	background-color: var(--builder-bg-2);
+	border-radius: var(--builder-border-radius);
+}
+body.tf-enh-stack #bricks-panel-elements-categories li.bricks-add-element:hover .element-data {
+	background-color: var(--builder-bg-3);
+}
+body.tf-enh-stack #bricks-panel-elements-categories li.bricks-add-element .element-icon {
+	flex: 0 0 18px;
+	display: flex;
+	justify-content: center;
+	margin: 0 !important;
+	font-size: 15px;
+}
+body.tf-enh-stack #bricks-panel-elements-categories li.bricks-add-element .element-label {
+	flex: 1 1 auto;
+	margin: 0 !important;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: .2px;
+	line-height: 1.2;
+	text-align: left !important;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+body.tf-enh-stack #bricks-panel-elements-categories li.bricks-add-element .element-actions {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-left: auto;
+	position: static !important;
+}
+/* Bricks' corner badges (layout inserter, pin) sit inline at the row's end */
+body.tf-enh-stack #bricks-panel-elements-categories li.bricks-add-element .bricks-panel-actions-icon {
+	position: static !important;
+	inset: auto !important;
+	transform: none !important;
+	margin: 0 !important;
+}
+
+/* Pro Mode: denser */
+body.tf-enh-pro #bricks-panel-elements-categories li.bricks-add-element .element-data {
+	padding: 4px 6px;
+	gap: 6px;
+}
+body.tf-enh-pro.tf-enh-stack #bricks-panel-elements-categories li.bricks-add-element .element-data {
+	height: 32px;
+	padding: 0 10px 0 12px !important;
+}
+body.tf-enh-pro #bricks-panel-elements-categories li.bricks-add-element .element-icon {
+	font-size: 14px;
+}
+body.tf-enh-pro #bricks-panel-elements-categories li.bricks-add-element .element-label {
+	font-size: 11px;
+}
+body.tf-enh-pro #bricks-panel-elements-categories .category-title {
+	padding: 4px 8px;
+	font-size: 10px;
+	opacity: .8;
+}
+
+/* Style tab: the CSS control group first (pure CSS order, Bricks' own markup is untouched) */
+body.tf-enh-cssfirst #bricks-panel ul.control-groups {
+	display: flex;
+	flex-direction: column;
+}
+body.tf-enh-cssfirst #bricks-panel ul.control-groups > [data-control-group="_css"] {
+	order: -1;
+}
+
+/* Taller code editors */
+body.tf-enh-bigcode .CodeMirror,
+body.tf-enh-bigcode .cm-editor {
+	min-height: 320px !important;
+}
+/* Bricks' grid overlay switched off */
+body.tf-enh-nogridoverlay #bricks-css-grid-layout {
+	display: none !important;
+}
+
+/* Remote template gallery: covered thumbnails, less clutter, full width */
+body.tf-enh-tplgallery #bricks-popup.templates img {
+	object-fit: cover !important;
+}
+body.tf-enh-tplgallery #bricks-popup .bricks-layout-item-inner.has-img:hover .overlay-wrapper {
+	opacity: .5;
+}
+body.tf-enh-tplgallery #bricks-popup.templates .bricks-layout-item-inner :is(.button.type, .overlay-wrapper .user) {
+	display: none !important;
+}
+body.tf-enh-tplgallery #bricks-popup.templates #bricks-popup-inner {
+	max-width: 100% !important;
+}

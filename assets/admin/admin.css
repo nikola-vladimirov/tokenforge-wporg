@@ -1,0 +1,611 @@
+/* TokenForge dashboard: sidebar navigation, panels. Renders in wp-admin
+   (#tokenforge-app) and in the builder window. Three looks: "bricks" (default,
+   the Bricks builder's own dark panel colours) "flat" (.tf-flat) and "light" (.tf-light). */
+
+#tokenforge-app,
+#tokenforge-app .tf-app.tf-bricks,
+.tf-skin.tf-bricks {
+	--tf-bg: #161a1d;
+	--tf-panel: #23292f;
+	--tf-panel-2: #1b2024;
+	--tf-panel-3: #343d46;
+	--tf-line: #343d46;
+	--tf-line-hover: #45525e;
+	--tf-text: #e2e6e9;
+	--tf-muted: #8a99a8;
+	--tf-faint: #6c7f93;
+	--tf-accent: #ffd54d;
+	--tf-accent-ink: #1e2124;
+	--tf-accent-2: #ffc919;
+	--tf-on-accent: #1e2124;
+	--tf-link: #51a6fb;
+	--tf-ok: #2caf84;
+	--tf-err: #ff5c5c;
+	--tf-warn: #ff9500;
+	--tf-knob: #8a99a8;
+	--tf-code-bg: #0d0f12;
+	--tf-code: #d2d6da;
+	--tf-code-name: #51a6fb;
+	--tf-radius: 4px;
+	--tf-radius-l: 6px;
+	--tf-radius-sw: 16px;
+}
+/* Flat: plain graphite, one blue accent, 2px corners. */
+#tokenforge-app .tf-app.tf-flat,
+.tf-skin.tf-flat {
+	--tf-bg: #141414;
+	--tf-panel: #1c1c1c;
+	--tf-panel-2: #111111;
+	--tf-panel-3: #2a2a2a;
+	--tf-line: #2e2e2e;
+	--tf-line-hover: #474747;
+	--tf-text: #ededed;
+	--tf-muted: #a3a3a3;
+	--tf-faint: #707070;
+	--tf-accent: #3d7bfd;
+	--tf-accent-ink: #000; /* 5.4:1 on the accent; white is 3.85:1 */
+	--tf-accent-2: #2f69e0;
+	--tf-on-accent: #ffffff;
+	--tf-link: #6ea0ff;
+	--tf-ok: #3ecf8e;
+	--tf-err: #ff6166;
+	--tf-warn: #f5a524;
+	--tf-knob: #9a9a9a;
+	--tf-code-bg: #0c0c0c;
+	--tf-code: #d4d4d4;
+	--tf-code-name: #8fb4ff;
+	--tf-radius: 2px;
+	--tf-radius-l: 2px;
+	--tf-radius-sw: 2px;
+}
+/* Light: white panels, dark text, one blue accent. Text 13.3:1 on bg, muted 7.6:1 on panel. */
+#tokenforge-app .tf-app.tf-light,
+.tf-skin.tf-light {
+	--tf-bg: #f3f4f6;
+	--tf-panel: #ffffff;
+	--tf-panel-2: #f9fafb;
+	--tf-panel-3: #e5e7eb;
+	--tf-line: #d1d5db;
+	--tf-line-hover: #9ca3af;
+	--tf-text: #1f2937;
+	--tf-muted: #4b5563;
+	--tf-faint: #6b7280;
+	--tf-accent: #2563eb;
+	--tf-accent-ink: #ffffff;
+	--tf-accent-2: #1d4ed8;
+	--tf-on-accent: #ffffff;
+	--tf-link: #1d4ed8;
+	--tf-ok: #15803d;
+	--tf-err: #b91c1c;
+	--tf-warn: #b45309;
+	--tf-knob: #6b7280;
+	--tf-code-bg: #f3f4f6;
+	--tf-code: #1f2937;
+	--tf-code-name: #1d4ed8;
+	--tf-radius: 4px;
+	--tf-radius-l: 6px;
+	--tf-radius-sw: 8px;
+}
+#tokenforge-app {
+	color: var(--tf-text);
+	font-size: 13px;
+	line-height: 1.45;
+}
+#tokenforge-app * { box-sizing: border-box; }
+
+/* Host-CSS hardening: the Bricks builder (and some themes) load element-level
+   styles such as input{line-height:40px} / button{padding:0}. Pin the basics so
+   the dashboard looks the same everywhere. */
+#tokenforge-app :is(input, select, textarea, button) { font-family: inherit; line-height: 1.4; margin: 0; min-height: 0; height: auto; box-shadow: none; }
+/* WordPress admin styles turn the native look off (appearance: none + a fixed size); with the auto size below that collapses to a 2px line, so bring the native box back. */
+#tokenforge-app input[type=checkbox] { appearance: auto; accent-color: var(--tf-accent); width: auto; height: auto; padding: 0; vertical-align: -2px; margin-right: 4px; }
+#tokenforge-app button { text-transform: none; letter-spacing: normal; }
+#tokenforge-app h3, #tokenforge-app h4 { color: var(--tf-text); }
+#tokenforge-app code { background: var(--tf-panel-3); padding: 1px 5px; border-radius: var(--tf-radius); font-size: 11px; color: var(--tf-code); }
+
+.tf-app {
+	display: flex;
+	position: relative;
+	min-height: 600px;
+	max-width: 1180px;
+	background: var(--tf-bg);
+	border: 1px solid var(--tf-line);
+	border-radius: var(--tf-radius-l);
+	overflow: hidden;
+	color: var(--tf-text);
+}
+
+/* ---- Sidebar ---- */
+.tf-sidebar {
+	width: 220px;
+	flex: 0 0 220px;
+	background: var(--tf-panel);
+	border-right: 1px solid var(--tf-line);
+	display: flex;
+	flex-direction: column;
+	padding: 12px 10px;
+	gap: 10px;
+	min-height: 0;
+}
+.tf-brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; padding: 4px 6px; letter-spacing: .2px; }
+.tf-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--tf-ok); }
+#tokenforge-app .tf-find { width: 100%; background: var(--tf-panel-2); border: 1px solid var(--tf-line); color: var(--tf-text); border-radius: var(--tf-radius); padding: 8px 10px; font-size: 12px; }
+.tf-find::placeholder { color: var(--tf-muted); }
+.tf-nav { display: flex; flex-direction: column; gap: 2px; overflow: auto; min-height: 0; }
+.tf-navitem { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: none; border: 0; color: var(--tf-muted); padding: 8px 10px; border-radius: var(--tf-radius); cursor: pointer; font-size: 13px; }
+.tf-navitem:hover { background: var(--tf-panel-2); color: var(--tf-text); }
+.tf-navitem.is-active { background: var(--tf-panel-3); color: var(--tf-text); font-weight: 600; box-shadow: inset 2px 0 0 var(--tf-accent); }
+.tf-navitem.is-active svg { color: var(--tf-accent); opacity: 1; }
+.tf-navitem svg { width: 17px; height: 17px; flex: 0 0 17px; opacity: .85; }
+
+/* ---- Main ---- */
+.tf-main { flex: 1; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.tf-topbar { display: flex; align-items: center; gap: 12px; padding: 11px 18px; border-bottom: 1px solid var(--tf-line); background: var(--tf-panel); position: sticky; top: 0; z-index: 2; }
+.tf-title { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; min-width: 0; margin-right: auto; }
+.tf-title svg { width: 18px; height: 18px; flex: 0 0 18px; opacity: .8; }
+.tf-title.tf-title-find { flex: 1 1 160px; font-size: inherit; font-weight: inherit; }
+/* Hidden stays hidden, whatever the element's own display (buttons are flex). */
+.tf-app [hidden] { display: none !important; }
+.tf-actions { display: flex; align-items: center; gap: 8px; }
+.tf-status { font-size: 12px; color: var(--tf-muted); }
+.tf-status.tf-ok { color: var(--tf-ok); }
+.tf-status.tf-err, #tokenforge-app p.tf-err { color: var(--tf-err); }
+.tf-dirty { width: 8px; height: 8px; border-radius: 50%; background: var(--tf-warn); }
+.tf-dirty[hidden] { display: none; }
+.tf-body { padding: 16px 18px 28px; overflow: auto; flex: 1; min-height: 0; }
+
+/* ---- Buttons ---- */
+.tf-btn, #tokenforge-app .button { display: inline-flex; align-items: center; gap: 6px; background: var(--tf-panel-2); border: 1px solid var(--tf-line); color: var(--tf-text); border-radius: var(--tf-radius); padding: 7px 12px; font-size: 12px; cursor: pointer; }
+.tf-btn:hover, #tokenforge-app .button:hover { border-color: var(--tf-line-hover); background: var(--tf-panel-3); color: var(--tf-text); }
+.tf-btn:focus-visible { outline: 2px solid var(--tf-accent); outline-offset: 1px; }
+.tf-primary, #tokenforge-app .button-primary { background: var(--tf-accent); border-color: var(--tf-accent); color: var(--tf-on-accent); font-weight: 600; }
+.tf-primary:hover, #tokenforge-app .button-primary:hover { background: var(--tf-accent-2); border-color: var(--tf-accent-2); color: var(--tf-on-accent); }
+#tokenforge-app .tf-danger { color: var(--tf-err); border-color: color-mix(in srgb, var(--tf-err) 45%, transparent); }
+#tokenforge-app .tf-danger:hover { background: var(--tf-err); border-color: var(--tf-err); color: #fff; }
+.tf-btn.tf-small { padding: 4px 9px; font-size: 11px; }
+.tf-navtoggle { padding: 5px 10px; font-size: 15px; line-height: 1; }
+
+/* ---- Panels ---- */
+.tf-panel { background: var(--tf-panel); border: 1px solid var(--tf-line); border-radius: var(--tf-radius); margin: 0 0 8px; max-width: 900px; }
+.tf-panel-head { display: flex; align-items: center; gap: 10px; padding: 11px 14px; cursor: pointer; user-select: none; }
+.tf-panel-head h3 { margin: 0; font-size: 13.5px; font-weight: 600; flex: 1; min-width: 0; }
+.tf-panel-head:hover h3 { color: var(--tf-accent); }
+.tf-panel-head:focus-visible { outline: 2px solid var(--tf-accent); outline-offset: -2px; }
+.tf-chev { width: 8px; height: 8px; border-right: 2px solid var(--tf-muted); border-bottom: 2px solid var(--tf-muted); transform: rotate(45deg); margin: 0 4px 3px 2px; transition: transform .15s; flex: 0 0 auto; }
+.tf-panel.is-collapsed .tf-chev { transform: rotate(-45deg); margin-bottom: 0; }
+.tf-panel-body { padding: 0 14px 14px; border-top: 1px solid var(--tf-line); padding-top: 12px; }
+.tf-panel-body.is-off > :not(.tf-desc) { opacity: .45; }
+.tf-panel.is-disabled .tf-panel-head h3 { color: var(--tf-muted); }
+.tf-desc { margin: 0 0 12px; }
+.tf-search-head { cursor: default; }
+.tf-sep { color: var(--tf-muted); font-weight: 400; }
+.tf-panel-body h4 { margin: 16px 0 8px; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--tf-muted); }
+
+/* ---- Fields ---- */
+.tf-fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px 14px; }
+.tf-fields + .tf-fields { margin-top: 12px; }
+.tf-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; margin: 0; font-size: 12px; }
+.tf-field.tf-wide { grid-column: 1 / -1; }
+.tf-flabel { display: flex; align-items: center; gap: 6px; color: var(--tf-muted); font-size: 12px; min-height: 18px; }
+.tf-field input[type=text], .tf-field input[type=number], .tf-field select, .tf-field textarea { width: 100%; }
+.tf-help { display: block; color: var(--tf-muted); font-size: 11px; opacity: .85; }
+.tf-reset { margin-left: auto; background: none; border: 0; color: var(--tf-accent); cursor: pointer; font-size: 13px; padding: 0 2px; line-height: 1; }
+.tf-reset:hover { color: var(--tf-text); }
+#tokenforge-app input::placeholder, #tokenforge-app textarea::placeholder { color: var(--tf-faint); }
+
+/* Switch rows */
+.tf-switchrow { flex-direction: row; align-items: center; gap: 10px; cursor: pointer; }
+.tf-switchrow .tf-flabel { color: var(--tf-text); display: block; }
+.tf-switch { position: relative; display: inline-flex; flex: 0 0 auto; width: 34px; height: 20px; }
+#tokenforge-app .tf-switch input { position: absolute; inset: 0; opacity: 0; margin: 0; width: 100%; height: 100%; cursor: pointer; z-index: 1; }
+.tf-switch i { position: absolute; inset: 0; border-radius: var(--tf-radius-sw); background: var(--tf-bg); border: 1px solid var(--tf-line); transition: background .1s, border-color .1s; }
+.tf-switch i::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: var(--tf-radius-sw); background: var(--tf-knob); transition: transform .1s, background .1s; }
+.tf-switch input:checked + i { background: var(--tf-accent); border-color: var(--tf-accent); }
+.tf-switch input:checked + i::after { transform: translateX(14px); background: var(--tf-on-accent); }
+.tf-switch input:focus-visible + i { outline: 2px solid var(--tf-accent); outline-offset: 2px; }
+
+/* Colour fields */
+.tf-colorfield { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.tf-colorfield input[type=text] { flex: 1; min-width: 0; }
+.tf-swatch { display: inline-block; width: 22px; height: 22px; flex: 0 0 22px; border-radius: var(--tf-radius); border: 1px solid color-mix(in srgb, var(--tf-text) 22%, transparent); vertical-align: middle; }
+.tf-swatch.is-empty { background: repeating-conic-gradient(var(--tf-panel-3) 0 25%, var(--tf-panel) 0 50%) 50% / 8px 8px; }
+.tf-cx { display: inline-block; padding: 1px 6px; border: 1px solid var(--tf-line); border-radius: var(--tf-radius); font-weight: 600; line-height: 1.4; vertical-align: middle; }
+#tokenforge-app .tf-colorfield input[type=color] { width: 34px; height: 30px; padding: 0; border: 1px solid var(--tf-line); border-radius: var(--tf-radius); background: none; cursor: pointer; }
+
+/* Grid tables (relationships, per-level overrides) */
+.tf-tablewrap { overflow-x: auto; }
+.tf-grid-table { border-collapse: separate; border-spacing: 4px; min-width: 100%; }
+.tf-grid-table th { font-size: 11px; color: var(--tf-muted); font-weight: 600; text-align: left; white-space: nowrap; padding: 0 4px; }
+.tf-grid-table tbody th { color: var(--tf-text); }
+#tokenforge-app .tf-grid-table input[type=text], #tokenforge-app .tf-grid-table select { width: 100%; min-width: 92px; padding: 5px 7px; font-size: 11.5px; }
+
+/* ---- Palette ---- */
+/* Colour families: switch, name, shades, base + dark mode colour */
+.tf-fams { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.tf-fam { display: grid; grid-template-columns: auto 88px minmax(120px, 1fr) 150px 150px auto; align-items: end; gap: 10px; padding: 8px 10px; border: 1px solid var(--tf-line); border-radius: var(--tf-radius); background: var(--tf-panel-2); }
+.tf-fam > .tf-switch, .tf-fam > .tf-fam-name, .tf-fam > .tf-shades { align-self: center; }
+.tf-fam-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tf-fam .tf-shades .tf-muted { padding: 5px 8px; font-size: 12px; }
+.tf-fam-col { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.tf-fam-col .tf-flabel { font-size: 11px; }
+.tf-fam-end { display: flex; align-items: center; gap: 8px; align-self: center; justify-content: flex-end; }
+.tf-fam-badge { display: none; font-size: 11px; color: var(--tf-accent); white-space: nowrap; }
+.tf-fam.is-pending .tf-fam-badge { display: inline; }
+.tf-fam.is-off > :not(.tf-switch) { opacity: .45; }
+.tf-shade.is-base { flex: 1.6; }
+.tf-app.is-narrow .tf-fam { grid-template-columns: auto 1fr; }
+.tf-app.is-narrow .tf-fam > .tf-shades, .tf-app.is-narrow .tf-fam-col, .tf-app.is-narrow .tf-fam-end { grid-column: 1 / -1; }
+.tf-app.is-narrow .tf-fam-end { justify-content: flex-start; }
+.tf-shades { position: relative; display: flex; flex-direction: column; flex: 1; min-width: 0; border-radius: var(--tf-radius); overflow: hidden; border: 1px solid var(--tf-line); }
+.tf-strip { display: flex; width: 100%; }
+.tf-strip.is-dark .tf-shade { height: 10px; }
+.tf-shade { flex: 1; height: 26px; }
+.tf-fam-preview { position: absolute; inset-block-start: 2px; inset-inline-end: 4px; padding: 0 5px; border-radius: 3px; background: rgb(0 0 0 / .55); color: #fff; font-size: 10px; line-height: 16px; pointer-events: none; }
+.tf-fam-more { grid-column: 1 / -1; font-size: 12px; }
+.tf-fam-more > summary { cursor: pointer; color: var(--tf-muted, inherit); width: max-content; }
+.tf-fam-more .tf-fields { margin-top: 8px; }
+
+/* ---- Sub-tabs (token groups) ---- */
+.tf-subtabs { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 14px; }
+.tf-subtab { background: var(--tf-panel-2); border: 1px solid var(--tf-line); border-radius: var(--tf-radius); padding: 4px 11px; cursor: pointer; font-size: 12px; color: var(--tf-muted); }
+.tf-subtab.is-active { background: var(--tf-panel-3); border-color: var(--tf-line-hover); color: var(--tf-text); font-weight: 600; box-shadow: inset 0 -2px 0 var(--tf-accent); }
+.tf-count { opacity: .7; margin-left: 3px; }
+.tf-subtabs .tf-search { margin-left: auto; }
+.tf-search { background: var(--tf-panel-2); border: 1px solid var(--tf-line); color: var(--tf-text); border-radius: var(--tf-radius); padding: 6px 10px; font-size: 12px; }
+
+/* ---- Tables (token editor) ---- */
+.tf-table { width: 100%; border-collapse: collapse; background: var(--tf-panel); border: 1px solid var(--tf-line); border-radius: var(--tf-radius); overflow: hidden; }
+.tf-table th, .tf-table td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--tf-line); font-size: 12px; vertical-align: middle; }
+.tf-table th { background: var(--tf-panel-2); font-weight: 600; color: var(--tf-muted); }
+.tf-table input[type=text] { width: 100%; }
+#tokenforge-app input[type=text], #tokenforge-app input[type=number], #tokenforge-app input[type=search], #tokenforge-app select { background: var(--tf-panel-2); border: 1px solid var(--tf-line); color: var(--tf-text); border-radius: var(--tf-radius); padding: 6px 8px; font-size: 12px; }
+#tokenforge-app input[readonly] { color: var(--tf-muted); }
+#tokenforge-app textarea { width: 100%; background: var(--tf-panel-2); border: 1px solid var(--tf-line); color: var(--tf-text); border-radius: var(--tf-radius); padding: 6px 8px; font-size: 12px; font-family: Menlo, Consolas, monospace; resize: vertical; }
+#tokenforge-app input:focus, #tokenforge-app select:focus, #tokenforge-app textarea:focus { outline: none; border-color: var(--tf-accent); }
+.tf-name-cell { font-family: Menlo, Consolas, monospace; white-space: nowrap; display: flex; align-items: center; gap: 2px; }
+.tf-name-cell .tf-prefix { color: var(--tf-faint); }
+.tf-row-disabled td { opacity: .4; }
+#tokenforge-app .tf-del { color: var(--tf-err); cursor: pointer; background: none; border: 0; font-size: 16px; line-height: 1; }
+
+/* ---- Import report ---- */
+.tf-report { margin-top: 12px; border: 1px solid var(--tf-line); border-radius: var(--tf-radius); padding: 8px 12px; background: var(--tf-panel-2); max-height: 360px; overflow: auto; }
+.tf-report summary { cursor: pointer; font-weight: 600; }
+.tf-report h4 { margin: 10px 0 4px; }
+.tf-report ul { margin: 0; padding-left: 16px; }
+.tf-report li { font-size: 11px; margin: 2px 0; }
+.tf-report code { background: none; padding: 0; color: var(--tf-muted); }
+.tf-muted { color: var(--tf-muted); font-size: 12px; }
+
+/* ---- Repeatable presets (overlays, surfaces) ---- */
+.tf-preset { background: var(--tf-panel-2); border: 1px solid var(--tf-line); border-radius: var(--tf-radius); padding: 10px 12px; margin: 10px 0; }
+.tf-preset-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.tf-preset-head code { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---- Narrow (builder window / small screens): the sidebar becomes a
+   full-width sections list opened from the topbar ---- */
+.tf-app.is-narrow .tf-sidebar { display: none; }
+.tf-app.is-narrow.nav-open .tf-sidebar { display: flex; position: absolute; inset: 50px 0 0 0; z-index: 5; width: auto; flex: none; border-right: 0; border-top: 1px solid var(--tf-line); padding: 12px; overflow: auto; }
+.tf-app.is-narrow.nav-open .tf-sidebar .tf-brand { display: none; }
+.tf-app.is-narrow.nav-open .tf-navitem { padding: 12px 14px; font-size: 14px; background: var(--tf-panel-2); border: 1px solid var(--tf-line); border-radius: var(--tf-radius); margin-bottom: 4px; }
+.tf-app.is-narrow.nav-open .tf-navitem.is-active { background: var(--tf-panel-3); border-color: var(--tf-line-hover); }
+.tf-app.is-narrow .tf-topbar { padding: 9px 12px; flex-wrap: wrap; gap: 8px; }
+.tf-app.is-narrow .tf-body { padding: 12px; }
+.tf-app.is-narrow .tf-status { display: none; }
+.tf-app.is-xnarrow .tf-fields { grid-template-columns: 1fr; }
+.tf-app.is-xnarrow .tf-actions .tf-btn:not(.tf-primary) { display: none; }
+.tf-sidebar { min-height: 0; }
+.tf-main { min-height: 0; }
+
+/* ---- Global SCSS editor ---- */
+.tf-scss { display: flex; flex-direction: column; gap: 8px; }
+.tf-scss-bar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-height: 26px; }
+.tf-scss-bar .tf-grow { flex: 1 1 auto; }
+.tf-scss-state { font-size: 12px; }
+.tf-scss-ok { color: var(--tf-ok); }
+.tf-scss-err { color: var(--tf-err); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11.5px; }
+#tokenforge-app .tf-mono, #tokenforge-app .tf-scss-src { font: 12.5px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; tab-size: 4; }
+#tokenforge-app textarea.tf-scss-src { width: 100%; min-height: 380px; resize: vertical; white-space: pre; overflow: auto; background: var(--tf-code-bg); color: var(--tf-code); border: 1px solid var(--tf-line); border-radius: var(--tf-radius); padding: 10px 12px; }
+.tf-scss-out { max-height: 320px; overflow: auto; margin: 0; padding: 10px 12px; background: var(--tf-code-bg); border: 1px solid var(--tf-line); border-radius: var(--tf-radius); color: var(--tf-code); font: 11.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre; }
+/* CodeMirror in the dark dashboard (wp-admin's and Bricks' editors are light/other themes) */
+#tokenforge-app .tf-scss .CodeMirror { height: 440px; border: 1px solid var(--tf-line); border-radius: var(--tf-radius); background: var(--tf-code-bg); color: var(--tf-code); font: 12.5px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+#tokenforge-app .tf-scss .CodeMirror-gutters { background: var(--tf-code-bg); border-right: 1px solid var(--tf-line); }
+#tokenforge-app .tf-scss .CodeMirror-linenumber { color: var(--tf-faint); }
+#tokenforge-app .tf-scss .CodeMirror-cursor { border-left: 2px solid var(--tf-text); }
+#tokenforge-app .tf-scss .CodeMirror-selected, #tokenforge-app .tf-scss .CodeMirror-focused .CodeMirror-selected { background: color-mix(in srgb, var(--tf-link) 30%, transparent); }
+#tokenforge-app .tf-scss .CodeMirror-activeline-background { background: color-mix(in srgb, var(--tf-text) 5%, transparent); }
+#tokenforge-app .tf-scss .CodeMirror-matchingbracket { color: var(--tf-text) !important; background: color-mix(in srgb, var(--tf-link) 35%, transparent); }
+#tokenforge-app .tf-scss .tf-cm-err { background: color-mix(in srgb, var(--tf-err) 18%, transparent); }
+#tokenforge-app .tf-scss .cm-comment { color: var(--tf-faint); }
+#tokenforge-app .tf-scss .cm-keyword, #tokenforge-app .tf-scss .cm-def { color: #c792ea; }
+#tokenforge-app .tf-scss .cm-variable, #tokenforge-app .tf-scss .cm-variable-2, #tokenforge-app .tf-scss .cm-variable-3 { color: #f5b84b; }
+#tokenforge-app .tf-scss .cm-property { color: #7fb4ff; }
+#tokenforge-app .tf-scss .cm-atom, #tokenforge-app .tf-scss .cm-number { color: #f78c6c; }
+#tokenforge-app .tf-scss .cm-string, #tokenforge-app .tf-scss .cm-string-2 { color: #a5d38a; }
+#tokenforge-app .tf-scss .cm-tag, #tokenforge-app .tf-scss .cm-qualifier, #tokenforge-app .tf-scss .cm-builtin { color: #89ddff; }
+#tokenforge-app .tf-scss .cm-meta, #tokenforge-app .tf-scss .cm-operator { color: var(--tf-code); }
+#tokenforge-app .tf-scss .cm-error { color: var(--tf-err); }
+/* hint list (show-hint addon) above the window */
+.CodeMirror-hints.tf { z-index: 2147483600 !important; }
+
+/* Outline bar above the Global SCSS editor: Jump to, Add section, Add sub-section (scss-editor.js); the builder dock re-skins it in scss-dock.css */
+.tf-ol-bar { --ol-bg: var(--tf-panel, #23292f); --ol-bg-2: var(--tf-line, #343d46); --ol-hover: var(--tf-line-hover, #45525e); --ol-line: var(--tf-muted, #8a99a8); --ol-text: var(--tf-text, #e2e6e9); --ol-muted: var(--tf-muted, #8a99a8); --ol-accent: var(--tf-accent, #ffd54d); --ol-accent-ink: var(--tf-accent-ink, #1e2124); --ol-radius: var(--tf-radius, 4px); position: relative; display: flex; align-items: center; gap: 4px; min-width: 0; font: 12px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.tf-ol-bar button { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 9px; border-radius: var(--ol-radius); background: var(--ol-bg-2); color: var(--ol-text); font: 600 12px/1 system-ui, -apple-system, "Segoe UI", sans-serif; white-space: nowrap; cursor: pointer; }
+.tf-ol-bar button:hover { background: var(--ol-hover); }
+.tf-ol-bar button:focus-visible, .tf-ol-bar .tf-ol-q:focus-visible { outline: 2px solid var(--ol-accent); outline-offset: 1px; }
+.tf-ol-bar .tf-ol-jump { flex: 1 1 auto; min-width: 0; max-width: 340px; justify-content: space-between; }
+.tf-ol-cur { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.tf-ol-caret { flex: 0 0 auto; width: 0; height: 0; border: 4px solid transparent; border-top-color: currentColor; border-bottom-width: 0; }
+.tf-ol-add i { font: 700 11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--ol-accent); }
+.tf-ol-menu { position: absolute; z-index: 50; top: calc(100% + 4px); left: 0; display: flex; flex-direction: column; width: min(380px, 100%); max-height: 300px; padding: 6px; background: var(--ol-bg); border: 1px solid var(--ol-line); border-radius: var(--ol-radius); box-shadow: 0 8px 24px rgba(0, 0, 0, .5); }
+.tf-ol-menu[hidden] { display: none; }
+.tf-ol-bar .tf-ol-q { all: unset; box-sizing: border-box; flex: 0 0 auto; width: 100%; height: 28px; padding: 0 8px; border: 1px solid var(--ol-line); border-radius: var(--ol-radius); background: var(--ol-bg-2); color: var(--ol-text); font: 12px/1 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.tf-ol-list { margin: 6px 0 0; padding: 0; list-style: none; min-height: 0; overflow: auto; }
+.tf-ol-list li { display: flex; align-items: baseline; gap: 6px; margin: 0; padding: 4px 8px 4px calc(8px + var(--d, 0) * 14px); border-radius: var(--ol-radius); color: var(--ol-text); cursor: pointer; }
+.tf-ol-list li i { flex: 0 0 auto; font: normal 11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--ol-muted); }
+.tf-ol-list li span { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tf-ol-list li em { flex: 0 0 auto; font-style: normal; font-size: 11px; color: var(--ol-muted); }
+.tf-ol-list li:hover, .tf-ol-list li.is-sel { background: var(--ol-accent); color: var(--ol-accent-ink); }
+.tf-ol-list li:hover i, .tf-ol-list li:hover em, .tf-ol-list li.is-sel i, .tf-ol-list li.is-sel em { color: inherit; }
+.tf-ol-none { margin: 8px 4px 2px; color: var(--ol-muted); }
+.tf-ol-none[hidden] { display: none; }
+.tf-ol-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Mixin reference */
+.tf-ref { display: grid; gap: 4px; }
+#tokenforge-app .tf-ref-row { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 10px; align-items: start; text-align: left; padding: 6px 8px; background: var(--tf-panel-2); border: 1px solid var(--tf-line); border-radius: var(--tf-radius); color: var(--tf-text); cursor: pointer; }
+#tokenforge-app .tf-ref-row:hover { border-color: var(--tf-accent); }
+#tokenforge-app .tf-ref-row code { white-space: normal; word-break: break-word; }
+.tf-app.is-narrow .tf-ref-row { grid-template-columns: 1fr; gap: 3px; }
+
+/* Recipes */
+.tf-recipe-group { margin: 14px 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--tf-muted); }
+.tf-recipes { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px; }
+.tf-recipe-item { background: var(--tf-panel-2); border: 1px solid var(--tf-line); border-radius: var(--tf-radius); padding: 5px 8px; min-width: 0; }
+.tf-recipe-item[open] { grid-column: 1 / -1; }
+.tf-recipe-item summary { cursor: pointer; }
+.tf-recipe-item pre { margin: 8px 0 4px; padding: 8px 10px; max-height: 260px; overflow: auto; background: var(--tf-code-bg); border-radius: var(--tf-radius); color: var(--tf-code); font: 11.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre; tab-size: 4; }
+#tokenforge-app .tf-recipe textarea { font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; tab-size: 4; white-space: pre; }
+
+/* Shortcut recorder */
+.tf-keyfield { display: flex; gap: 6px; align-items: center; }
+#tokenforge-app .tf-keyrec { flex: 1 1 auto; cursor: pointer; font-weight: 600; letter-spacing: .02em; }
+#tokenforge-app .tf-keyrec:focus { border-color: var(--tf-accent); }
+#tokenforge-app kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11px; padding: 0 4px; border: 1px solid var(--tf-line); border-radius: var(--tf-radius); }
+
+/* ---- Tooltips ---- */
+#tokenforge-app .tf-tip { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; width: 15px; height: 15px; margin-left: 5px; border-radius: 50%; border: 1px solid var(--tf-line); background: var(--tf-panel-3); color: var(--tf-muted); font: 700 10px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; cursor: help; vertical-align: 1px; user-select: none; }
+#tokenforge-app .tf-tip:hover, #tokenforge-app .tf-tip:focus-visible { color: var(--tf-on-accent); border-color: var(--tf-accent); background: var(--tf-accent); outline: none; }
+#tokenforge-app .tf-panel-head .tf-tip { margin-left: 8px; }
+#tokenforge-app th .tf-tip { margin-left: 4px; }
+#tokenforge-app .tf-tooltip { position: fixed; z-index: 2147483600; display: none; max-width: 300px; padding: 8px 10px; border-radius: var(--tf-radius); border: 1px solid var(--tf-line-hover); background: var(--tf-panel); color: var(--tf-text); font: 12px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; box-shadow: 0 6px 18px rgba(0, 0, 0, .4); pointer-events: none; white-space: normal; text-align: left; letter-spacing: normal; text-transform: none; }
+
+/* ---- Cheatsheet ---- */
+.tf-cheat-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 6px; position: sticky; top: -1px; z-index: 2; padding: 6px 0; background: var(--tf-bg); }
+#tokenforge-app .tf-cheat-q { flex: 1 1 260px; min-width: 0; }
+.tf-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+#tokenforge-app .tf-chip { padding: 5px 10px; border: 1px solid var(--tf-line); border-radius: var(--tf-radius); background: var(--tf-panel-2); color: var(--tf-muted); font-size: 11.5px; font-weight: 600; cursor: pointer; }
+#tokenforge-app .tf-chip:hover { color: var(--tf-text); }
+#tokenforge-app .tf-chip.is-active { background: var(--tf-accent); border-color: var(--tf-accent); color: var(--tf-on-accent); }
+.tf-cheat-list { display: grid; gap: 2px; }
+.tf-cheat-item { display: grid; grid-template-columns: minmax(150px, 34%) minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 5px 6px; border-radius: var(--tf-radius); }
+.tf-cheat-item:hover { background: var(--tf-panel-2); }
+#tokenforge-app .tf-cheat-name { padding: 0; border: 0; background: none; text-align: left; cursor: copy; min-width: 0; }
+#tokenforge-app .tf-cheat-name code { display: inline-block; max-width: 100%; overflow-wrap: anywhere; background: var(--tf-panel-3); color: var(--tf-code-name); font-size: 11.5px; }
+#tokenforge-app .tf-cheat-name:hover code { background: var(--tf-accent); color: var(--tf-on-accent); }
+.tf-cheat-desc { min-width: 0; font-size: 12px; color: var(--tf-text); }
+#tokenforge-app .tf-cheat-css { display: block; margin-top: 3px; padding: 0; background: none; color: var(--tf-muted); font-size: 11px; overflow-wrap: anywhere; }
+#tokenforge-app .tf-cheat-copy { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; padding: 0; border: 1px solid transparent; border-radius: var(--tf-radius); background: none; color: var(--tf-muted); cursor: pointer; }
+#tokenforge-app .tf-cheat-copy svg { width: 14px; height: 14px; }
+#tokenforge-app .tf-cheat-copy:hover { color: var(--tf-text); border-color: var(--tf-line); background: var(--tf-panel-3); }
+.tf-copied { display: none; position: absolute; right: 100%; margin-right: 6px; padding: 2px 6px; border-radius: var(--tf-radius); background: var(--tf-ok); color: #06210f; font-size: 10.5px; font-weight: 700; white-space: nowrap; }
+.tf-cheat-item.is-copied { background: color-mix(in srgb, var(--tf-ok) 12%, transparent); }
+.tf-cheat-item.is-copied .tf-copied { display: inline-block; }
+.tf-app.is-narrow .tf-cheat-item { grid-template-columns: minmax(0, 1fr) auto; }
+.tf-app.is-narrow .tf-cheat-desc { grid-column: 1 / -1; grid-row: 2; }
+
+/* ---- SCSS editor: suggestion list (plain editor) ---- */
+.tf-ac-box { position: relative; }
+#tokenforge-app .tf-ac-list { position: absolute; z-index: 20; max-height: 220px; overflow: auto; margin: 0; padding: 4px; list-style: none; background: var(--tf-panel); border: 1px solid var(--tf-line-hover); border-radius: var(--tf-radius); box-shadow: 0 6px 18px rgba(0, 0, 0, .4); }
+#tokenforge-app .tf-ac-list li { display: flex; align-items: baseline; gap: 10px; padding: 4px 8px; border-radius: var(--tf-radius); cursor: pointer; white-space: nowrap; overflow: hidden; }
+#tokenforge-app .tf-ac-list li code { flex: 0 0 auto; padding: 0; background: none; color: var(--tf-code-name); font-size: 12px; }
+#tokenforge-app .tf-ac-list li span { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--tf-muted); font-size: 11px; }
+#tokenforge-app .tf-ac-list li.is-sel, #tokenforge-app .tf-ac-list li:hover { background: var(--tf-accent); }
+#tokenforge-app .tf-ac-list li.is-sel code, #tokenforge-app .tf-ac-list li.is-sel span, #tokenforge-app .tf-ac-list li:hover code, #tokenforge-app .tf-ac-list li:hover span { color: var(--tf-on-accent); }
+/* CodeMirror's own hint list, in the dashboard's colours */
+.CodeMirror-hints.tf { background: #23292f !important; border: 1px solid #45525e !important; border-radius: var(--tf-radius); box-shadow: 0 6px 18px rgba(0, 0, 0, .4) !important; font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important; max-width: 460px; }
+.CodeMirror-hints.tf .CodeMirror-hint { color: #e2e6e9 !important; padding: 3px 8px !important; border-radius: var(--tf-radius); white-space: pre !important; overflow: hidden; text-overflow: ellipsis; }
+.CodeMirror-hints.tf li.CodeMirror-hint-active { background: #ffd54d !important; color: #1e2124 !important; }
+
+/* Global SCSS: an edit that could not be saved (the SCSS changed in the builder meanwhile) */
+.tf-scss-lost { padding: 10px 12px; border: 1px solid var(--tf-err); border-radius: var(--tf-radius); background: color-mix(in srgb, var(--tf-err) 8%, transparent); }
+.tf-scss-lost p { margin: 0 0 6px; }
+#tokenforge-app .tf-scss-lost textarea { width: 100%; background: var(--tf-code-bg); color: var(--tf-code); border: 1px solid var(--tf-line); border-radius: var(--tf-radius); padding: 8px; white-space: pre; }
+
+/* ---- Sidebar group headings ---- */
+.tf-navgroup { margin: 12px 10px 3px; font-size: 10.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--tf-muted); opacity: .75; }
+.tf-navgroup:first-child { margin-top: 2px; }
+.tf-app.is-narrow.nav-open .tf-navgroup { margin: 14px 4px 6px; }
+
+/* ---- Self-hosted fonts ---- */
+.tf-font .tf-preset-head { gap: 12px; }
+.tf-font-sample { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 18px; color: var(--tf-text); }
+.tf-fontfile { display: flex; gap: 6px; align-items: center; min-width: 0; }
+.tf-fontfile input[type=text] { flex: 1 1 auto; min-width: 0; }
+.tf-upload { position: relative; overflow: hidden; flex: 0 0 auto; cursor: pointer; }
+#tokenforge-app .tf-upload input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+
+/* ---- Bricks look: group titles like the builder's control groups ---- */
+.tf-app.tf-bricks .tf-panel-head { min-height: 44px; }
+.tf-app.tf-bricks .tf-panel-head h3 { font-size: 11px; font-weight: 700; letter-spacing: .2px; text-transform: uppercase; }
+.tf-app.tf-bricks .tf-panel:not(.is-collapsed) > .tf-panel-head { background: var(--tf-panel-3); }
+.tf-app.tf-bricks .tf-panel:not(.is-collapsed) > .tf-panel-head:hover h3 { color: var(--tf-text); }
+/* Flat look: square, no hover tint on headers. */
+.tf-app.tf-flat .tf-panel-head h3 { font-size: 13px; font-weight: 600; }
+.tf-app.tf-flat .tf-navitem.is-active { box-shadow: inset 3px 0 0 var(--tf-accent); }
+
+/* ---- Home ---- */
+.tf-home-group { margin: 18px 0 6px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--tf-muted); }
+.tf-home-group:first-child { margin-top: 0; }
+.tf-home-list { display: grid; gap: 4px; max-width: 900px; }
+.tf-home-row { display: flex; align-items: center; gap: 12px; padding: 0 0 0 12px; background: var(--tf-panel); border: 1px solid var(--tf-line); border-radius: var(--tf-radius); }
+.tf-home-row:hover { border-color: var(--tf-line-hover); }
+.tf-home-row.is-off .tf-home-open { opacity: .5; }
+.tf-home-nosw { width: 34px; flex: 0 0 34px; }
+#tokenforge-app .tf-home-open { display: flex; align-items: center; gap: 12px; flex: 1 1 auto; min-width: 0; min-height: 46px; padding: 8px 14px 8px 0; background: none; border: 0; color: var(--tf-text); text-align: left; cursor: pointer; }
+.tf-home-open svg { width: 17px; height: 17px; flex: 0 0 17px; color: var(--tf-muted); }
+.tf-home-open:hover svg, .tf-home-open:focus-visible svg { color: var(--tf-accent); }
+.tf-home-open:focus-visible { outline: 2px solid var(--tf-accent); outline-offset: -2px; }
+.tf-home-title { flex: 0 0 180px; font-weight: 600; }
+.tf-home-desc { flex: 1 1 auto; min-width: 0; color: var(--tf-muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tf-home-chev { width: 7px; height: 7px; flex: 0 0 auto; border-right: 2px solid var(--tf-muted); border-bottom: 2px solid var(--tf-muted); transform: rotate(-45deg); }
+.tf-app.is-narrow .tf-home-title { flex: 1 1 auto; }
+.tf-app.is-narrow .tf-home-desc { display: none; }
+
+/* ---- Section toolbar, module switch ---- */
+.tf-secbar { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; max-width: 900px; }
+.tf-grow { flex: 1 1 auto; }
+.tf-modswitch { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; cursor: pointer; }
+.tf-notice { max-width: 900px; margin: 0 0 12px; padding: 8px 12px; border-left: 3px solid var(--tf-warn); background: var(--tf-panel); border-radius: var(--tf-radius); color: var(--tf-text); }
+.tf-mod-off .tf-panel { opacity: .6; }
+.tf-mod-off .tf-panel:hover { opacity: 1; }
+/* Getting started (Home) */
+.tf-gs .tf-panel-head { cursor: default; }
+.tf-gs-steps { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; counter-reset: tf-gs; }
+.tf-gs-steps li { margin: 0; counter-increment: tf-gs; }
+.tf-gs-step { all: unset; box-sizing: border-box; display: flex; flex-direction: column; gap: 4px; width: 100%; height: 100%; padding: 10px 12px 10px 40px; position: relative; border: 1px solid var(--tf-line); border-radius: var(--tf-radius); background: var(--tf-panel-2); cursor: pointer; }
+.tf-gs-step::before { content: counter(tf-gs); position: absolute; left: 10px; top: 10px; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--tf-accent); color: var(--tf-accent-ink, #111); font-size: 11px; font-weight: 700; }
+.tf-gs-step:hover, .tf-gs-step:focus-visible { border-color: var(--tf-accent); }
+.tf-gs-step strong { font-size: 13px; }
+.tf-gs-step span { font-size: 12px; color: var(--tf-muted); line-height: 1.4; }
+.tf-gs-show { margin: 0 0 12px; }
+
+/* Overlay / surface preview */
+.tf-ovl-preview { position: relative; flex: 0 0 auto; display: grid; place-items: center; width: 64px; height: 40px; overflow: hidden; border: 1px solid var(--tf-line); border-radius: var(--tf-radius); background: linear-gradient(135deg, #5b8fd0 0%, #9fc7a6 50%, #e3b467 100%); }
+.tf-ovl-preview.is-surface { background: #fff; color: #111; }
+.tf-ovl-layer { position: absolute; inset: 0; pointer-events: none; }
+.tf-ovl-text { position: relative; font-weight: 700; font-size: 14px; color: #fff; text-shadow: 0 1px 2px rgb(0 0 0 / .35); }
+.tf-ovl-preview.is-surface .tf-ovl-text { color: inherit; text-shadow: none; }
+
+/* Button preview (Button colours per family) */
+.tf-btn-preview { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 0 0 12px; padding: 14px; border: 1px solid var(--tf-line); border-radius: var(--tf-radius); background: #fff; }
+.tf-btn-sample { font-size: 14px; font-family: inherit; cursor: default; user-select: none; }
+
+/* Tokens: the toolbar stays on top while a long list scrolls, the column heads right under it. */
+.tf-body .tf-tokbar { position: sticky; top: -16px; z-index: 6; margin: -16px -18px 0; padding: 16px 18px 12px; background: var(--tf-bg); }
+.tf-app.is-narrow .tf-body .tf-tokbar { top: -12px; margin: -12px -12px 0; padding: 12px 12px 10px; }
+.tf-body .tf-tokwrap { overflow: visible; }
+/* The table clips its corners with overflow: clip, which (unlike hidden) lets the column heads stick. */
+@supports (overflow: clip) {
+	.tf-body .tf-tokwrap .tf-table { overflow: clip; }
+	.tf-body .tf-tokwrap thead th { position: sticky; top: calc(var(--tf-tokbar-h, 0px) - 16px); z-index: 5; }
+	.tf-app.is-narrow .tf-body .tf-tokwrap thead th { top: calc(var(--tf-tokbar-h, 0px) - 12px); }
+}
+/* wp-admin: the dashboard fits the window, so its header (Save) stays in view and long sections scroll inside it. */
+.wrap > #tokenforge-app > .tf-app { height: calc(100vh - var(--tf-fit-top, 150px)); min-height: 520px; }
+.tf-th-on { display: inline-flex; align-items: center; gap: 6px; margin: 0; cursor: pointer; font: inherit; color: inherit; }
+.tf-body .tf-tokintro { margin: 0 0 12px; color: var(--tf-muted); max-width: 72ch; }
+.tf-body .tf-tokintro + .tf-tokbar { margin-top: 0; padding-top: 12px; }
+.tf-app.is-narrow .tf-body .tf-tokintro + .tf-tokbar { margin-top: 0; padding-top: 10px; }
+
+/* Tokens: rows the settings make are read only; the column on the right says where each comes from. */
+.tf-toktable { table-layout: fixed; }
+.tf-toktable td { overflow-wrap: anywhere; }
+.tf-toktable td.tf-name-cell { display: table-cell; overflow: hidden; text-overflow: ellipsis; }
+.tf-toktable td.tf-name-cell input[type=text] { width: calc(100% - 20px); }
+#tokenforge-app .tf-toktable .tf-tokname { font: inherit; color: var(--tf-text); background: none; padding: 0; border-radius: 0; }
+.tf-toktable .tf-tokval { display: block; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: Menlo, Consolas, monospace; color: var(--tf-muted); }
+.tf-toknote { margin-top: 4px; font-size: 11px; line-height: 1.4; color: var(--tf-muted); overflow-wrap: anywhere; }
+.tf-toknote code { font-size: 11px; background: var(--tf-code-bg); color: var(--tf-code); padding: 0 4px; border-radius: 3px; }
+.tf-tokrow.is-override .tf-toknote, .tf-tokrow.is-stale .tf-toknote { color: var(--tf-warn); }
+.tf-tokrow.is-dead .tf-toknote { color: var(--tf-err); }
+#tokenforge-app .tf-tokrow.is-generated .tf-tokname, #tokenforge-app .tf-tokrow.is-fixed .tf-tokname, #tokenforge-app .tf-tokrow.is-missing .tf-tokname { color: var(--tf-muted); }
+.tf-tokrow.is-missing td { opacity: .7; }
+.tf-tokcat > * + * { margin-top: 4px; }
+#tokenforge-app .tf-tokcat .tf-tokgroup { width: 100%; max-width: 100%; padding: 3px 6px; font-size: 11px; }
+#tokenforge-app .tf-srcbadge { display: inline-block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 2px 8px; font-size: 11px; line-height: 1.5; border: 1px solid var(--tf-line); border-radius: 999px; background: var(--tf-panel-2); color: var(--tf-muted); cursor: pointer; vertical-align: middle; }
+#tokenforge-app .tf-srcbadge:hover, #tokenforge-app .tf-srcbadge:focus-visible { border-color: var(--tf-accent); color: var(--tf-text); outline: none; }
+.tf-tokact { text-align: center; }
+#tokenforge-app .tf-tokuse, #tokenforge-app .tf-tokover { cursor: pointer; background: none; border: 1px solid transparent; border-radius: var(--tf-radius); color: var(--tf-muted); font-size: 15px; line-height: 1; padding: 3px 5px; }
+#tokenforge-app .tf-tokuse { color: var(--tf-warn); }
+#tokenforge-app .tf-tokuse:hover, #tokenforge-app .tf-tokover:hover, #tokenforge-app .tf-tokuse:focus-visible, #tokenforge-app .tf-tokover:focus-visible { border-color: var(--tf-line-hover); color: var(--tf-text); outline: none; }
+
+/* Tokens: the add form. */
+.tf-tokadd { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 12px; margin: 0 0 12px; padding: 12px; border: 1px solid var(--tf-accent); border-radius: var(--tf-radius); background: var(--tf-panel); }
+.tf-tokadd-f { display: flex; flex-direction: column; gap: 4px; margin: 0; font-size: 11px; color: var(--tf-muted); flex: 1 1 160px; min-width: 0; }
+.tf-tokadd-f[hidden] { display: none; }
+.tf-tokadd-f > span:first-child { font-weight: 600; }
+.tf-tokadd-in { display: flex; align-items: center; gap: 2px; font-family: Menlo, Consolas, monospace; }
+.tf-tokadd-in .tf-prefix { color: var(--tf-faint); }
+#tokenforge-app .tf-tokadd input[type=text], #tokenforge-app .tf-tokadd select { width: 100%; min-width: 0; }
+.tf-tokadd-in input { flex: 1; }
+.tf-tokadd-btns { display: flex; gap: 8px; flex: 0 0 auto; }
+.tf-tokadd-msg { flex: 1 0 100%; margin: 0; font-size: 12px; color: var(--tf-err); }
+.tf-tokadd-msg[hidden] { display: none; }
+
+/* Tokens: how often a variable is used (after Find uses), the Unused filter. */
+.tf-tokuses { display: block; margin-top: 4px; font-size: 11px; color: var(--tf-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: help; }
+.tf-tokuses.is-unused { color: var(--tf-warn); }
+#tokenforge-app .tf-tokbar .tf-btn.is-active { border-color: var(--tf-accent); color: var(--tf-text); box-shadow: inset 0 0 0 1px var(--tf-accent); }
+.tf-tokinfobar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 12px; padding: 8px 12px; border: 1px solid var(--tf-line); border-radius: var(--tf-radius); background: var(--tf-panel); color: var(--tf-muted); font-size: 12px; }
+.tf-tokinfobar > span { flex: 1 1 260px; min-width: 0; overflow-wrap: anywhere; }
+
+/* Tokens: switched off but still used; your own categories' rename / delete. */
+#tokenforge-app .tf-toknote.tf-tokwarn { color: var(--tf-err); }
+.tf-tokwarnbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 12px; padding: 8px 12px; border: 1px solid var(--tf-err); border-radius: var(--tf-radius); background: var(--tf-panel); color: var(--tf-text); font-size: 12px; }
+.tf-tokwarnbar > span { flex: 1 1 260px; min-width: 0; overflow-wrap: anywhere; }
+.tf-catacts { display: inline-flex; gap: 2px; margin-left: -4px; }
+#tokenforge-app .tf-catact { cursor: pointer; background: none; border: 1px solid transparent; border-radius: var(--tf-radius); color: var(--tf-muted); font-size: 13px; line-height: 1; padding: 4px 6px; }
+#tokenforge-app .tf-catact:hover, #tokenforge-app .tf-catact:focus-visible { border-color: var(--tf-line-hover); color: var(--tf-text); outline: none; }
+
+/* Setup wizard */
+.tf-wz-card .tf-panel-body { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; justify-content: space-between; }
+.tf-wz-card .tf-panel-body > div { display: flex; flex-direction: column; gap: 4px; flex: 1 1 260px; }
+.tf-wz-card span { font-size: 12px; color: var(--tf-muted); line-height: 1.4; }
+.tf-wz-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.tf-wz-group { padding: 10px 12px; border: 1px solid var(--tf-line); border-radius: var(--tf-radius); background: var(--tf-panel-2); }
+.tf-wz-group.is-off { opacity: .65; }
+.tf-wz-group p { margin: 6px 0; font-size: 12px; line-height: 1.4; }
+.tf-wz-head { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.tf-wz-head strong { flex: 1 1 auto; }
+.tf-wz-badge { padding: 1px 7px; border-radius: 9px; background: var(--tf-accent); color: var(--tf-on-accent); font-size: 11px; font-weight: 600; white-space: nowrap; }
+.tf-wz-badge.is-set { background: var(--tf-panel-3); color: var(--tf-muted); }
+.tf-wz-items { margin: 0; padding: 0; list-style: none; font-size: 12px; }
+.tf-wz-items li { display: flex; gap: 6px; padding: 2px 0; line-height: 1.35; }
+.tf-wz-items li > span:first-child { flex: 0 0 12px; font-weight: 700; color: var(--tf-accent); }
+.tf-wz-items li.is-set { color: var(--tf-muted); }
+.tf-wz-items li.is-set > span:first-child { color: var(--tf-ok); }
+.tf-wz-connect { margin: 0; padding: 0; list-style: none; }
+.tf-wz-connect li { padding: 4px 0; }
+.tf-wz-connect label { display: flex; align-items: flex-start; gap: 8px; cursor: pointer; line-height: 1.4; }
+.tf-wz-connect label > input { flex: 0 0 auto; margin-top: 2px; }
+.tf-wz-connect label > span { flex: 1 1 auto; min-width: 0; }
+.tf-wz-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.tf-wz-done { border-left-color: var(--tf-ok); }
+.tf-vh { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+/* Light look: darker syntax colours for the light code block. */
+.tf-light .tf-scss .cm-keyword, .tf-light .tf-scss .cm-def { color: #7e22ce; }
+.tf-light .tf-scss .cm-variable, .tf-light .tf-scss .cm-variable-2, .tf-light .tf-scss .cm-variable-3 { color: #92400e; }
+.tf-light .tf-scss .cm-property { color: #1d4ed8; }
+.tf-light .tf-scss .cm-atom, .tf-light .tf-scss .cm-number { color: #c2410c; }
+.tf-light .tf-scss .cm-string, .tf-light .tf-scss .cm-string-2 { color: #166534; }
+.tf-light .tf-scss .cm-tag, .tf-light .tf-scss .cm-qualifier, .tf-light .tf-scss .cm-builtin { color: #0e7490; }
+
+/* Palette contrast: another colour for one pair */
+.tf-cx-editor { padding: 8px 4px; }
+.tf-cx-editor fieldset { border: 0; margin: 0; padding: 0; }
+.tf-cx-result { font-weight: 600; }
+.tf-cx-result.is-pass::before { content: "\2713\00a0"; color: var(--tf-ok); }
+.tf-cx-result.is-fail::before { content: "\2717\00a0"; color: var(--tf-err); }
+
+/* Data attributes screen: the report of where the site uses each one. */
+.tf-attrbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 12px; }
+#tokenforge-app .tf-attrbar .tf-btn.is-active { border-color: var(--tf-accent); color: var(--tf-text); box-shadow: inset 0 0 0 1px var(--tf-accent); }
+#tokenforge-app .tf-attrbar .tf-btn[disabled] { opacity: .6; cursor: progress; }
+.tf-attrhead { margin: 18px 0 8px; font-size: 13px; }
+.tf-attrtable td { overflow-wrap: anywhere; vertical-align: top; }
+.tf-attrtable td:first-child { white-space: nowrap; }
+.tf-attrtable.is-unknown { border-color: var(--tf-err); }
+#tokenforge-app .tf-attrtable.is-unknown td:first-child code { color: var(--tf-err); }
+.tf-attrnone { color: var(--tf-warn); font-weight: 600; }
+.tf-app.is-narrow .tf-attrtable td:first-child { white-space: normal; }

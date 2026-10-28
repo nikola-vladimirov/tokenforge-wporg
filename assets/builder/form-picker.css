@@ -1,0 +1,12 @@
+/* TokenForge: field picker under form conditions and calculations, in the builder's own colours. */
+.tf-fp { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.tf-fp select, .tf-fp input, .tf-fp button { height: 28px; margin: 0; padding: 0 6px; font-size: 12px; font-family: inherit; color: var(--builder-color, #e2e6e9);
+	background: var(--builder-bg-2, #23292f); border: 1px solid var(--builder-border-color, #343d46); border-radius: var(--builder-border-radius, 4px); box-shadow: none; }
+.tf-fp .tf-fp-field { flex: 1 1 100%; min-width: 0; }
+.tf-fp .tf-fp-op { flex: 0 0 auto; max-width: 40%; }
+.tf-fp .tf-fp-val { flex: 1 1 0; min-width: 0; }
+.tf-fp .tf-fp-add { flex: 0 0 auto; cursor: pointer; font-weight: 600; }
+.tf-fp .tf-fp-add:hover:not(:disabled) { border-color: var(--builder-color-accent, #ffd54d); }
+.tf-fp .tf-fp-add:disabled { opacity: .5; cursor: default; }
+.tf-fp select:focus, .tf-fp input:focus { outline: none; border-color: var(--builder-color-accent, #ffd54d); }
+.tf-fp [hidden] { display: none !important; }
