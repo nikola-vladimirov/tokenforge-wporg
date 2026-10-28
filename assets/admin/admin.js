@@ -569,6 +569,13 @@
 		var html = '<div class="tf-cheat-bar"><input type="search" class="tf-search tf-cheat-q" placeholder="' + esc( __( 'Search classes, variables, recipes…', 'tokenforge' ) ) + '" value="' + esc( state.cheatQ || '' ) + '" aria-label="Search the cheatsheet">'
 			+ '<div class="tf-chips">' + kinds.map( function ( k ) { return '<button type="button" class="tf-chip' + ( ( state.cheatKind || '' ) === k[0] ? ' is-active' : '' ) + '" data-act="cheatkind" data-kind="' + k[0] + '">' + k[1] + '</button>'; } ).join( '' ) + '</div></div>'
 			+ '<p class="tf-muted">Click a name or the copy icon: classes copy without the dot, variables as var(--name), recipes as ?name.</p>';
+		if ( ! words.length && ! state.cheatKind ) {
+			var example = "add_filter( 'tokenforge_global_scss', function ( $scss ) {\n\t$scss .= '.pricing { padding: var(--space-m); }';\n\t$scss .= '.pricing a { @include btn(primary); }';\n\treturn $scss;\n} );";
+			html += '<section class="tf-panel tf-cheat-group"><div class="tf-panel-head tf-cheat-head"><h3>' + esc( __( 'Add your own SCSS (developers)', 'tokenforge' ) ) + '</h3></div>'
+				+ '<div class="tf-panel-body"><p class="tf-muted tf-desc">' + __( 'The filter <code>tokenforge_global_scss</code> receives an empty string and returns SCSS. TokenForge compiles it with its own library (mixins and functions) and adds it last to the stylesheet. A compile error never breaks the site.', 'tokenforge' ) + '</p>'
+				+ '<p class="tf-muted tf-desc">' + __( 'This is code, not a setting. Put it in a child theme’s <code>functions.php</code> or in a mu-plugin, never in TokenForge’s own files, so an update does not remove it.', 'tokenforge' ) + '</p>'
+				+ '<pre class="tf-dev-code">' + esc( example ) + '</pre></div></section>';
+		}
 		var total = 0;
 		state.cheat.forEach( function ( g ) {
 			var items = g.items.filter( function ( it ) {
@@ -585,13 +592,6 @@
 				+ '<div class="tf-panel-body"><p class="tf-muted tf-desc">' + esc( g.desc ) + '</p><div class="tf-cheat-list">' + shown.map( cheatRow ).join( '' ) + '</div>'
 				+ ( items.length > shown.length ? '<p><button type="button" class="tf-btn tf-small" data-act="cheatmore" data-g="' + esc( g.id ) + '">Show all ' + items.length + '</button></p>' : '' ) + '</div></section>';
 		} );
-		if ( ! words.length && ! state.cheatKind ) {
-			var example = "add_filter( 'tokenforge_global_scss', function ( $scss ) {\n\t$scss .= '.pricing { padding: var(--space-m); }';\n\t$scss .= '.pricing a { @include btn(primary); }';\n\treturn $scss;\n} );";
-			html += '<section class="tf-panel tf-cheat-group"><div class="tf-panel-head tf-cheat-head"><h3>' + esc( __( 'Add your own SCSS (developers)', 'tokenforge' ) ) + '</h3></div>'
-				+ '<div class="tf-panel-body"><p class="tf-muted tf-desc">' + __( 'The filter <code>tokenforge_global_scss</code> receives an empty string and returns SCSS. TokenForge compiles it with its own library (mixins and functions) and adds it last to the stylesheet. A compile error never breaks the site.', 'tokenforge' ) + '</p>'
-				+ '<p class="tf-muted tf-desc">' + __( 'This is code, not a setting. Put it in a child theme’s <code>functions.php</code> or in a mu-plugin, never in TokenForge’s own files, so an update does not remove it.', 'tokenforge' ) + '</p>'
-				+ '<pre class="tf-dev-code">' + esc( example ) + '</pre></div></section>';
-		}
 		return html + ( total ? '' : '<p class="tf-muted">Nothing matches.</p>' );
 	}
 
