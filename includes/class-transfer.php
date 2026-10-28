@@ -22,7 +22,7 @@ class Transfer {
 	const FORMAT = 1;
 
 	/** Parts of an export. */
-	const PARTS = array( 'tokens', 'palette', 'settings', 'modules', 'scss', 'recipes', 'fonts' );
+	const PARTS = array( 'tokens', 'palette', 'settings', 'modules', 'recipes', 'fonts' );
 
 	/**
 	 * Settings modules: key in the file => class with settings() / save_settings().
@@ -43,6 +43,7 @@ class Transfer {
 			'overlays'     => Overlays::class,
 			'enhancements' => Features\Builder_Enhancements::class,
 			'woo'          => Woo::class,
+			'scss'         => Scss::class, // the breakpoints
 		);
 	}
 
@@ -69,7 +70,6 @@ class Transfer {
 						'palette'  => Palette::settings(),
 						'settings' => $settings,
 						'modules'  => Modules::settings(),
-						'scss'     => Scss::settings(),
 						'recipes'  => Recipes::settings(),
 						'fonts'    => Fonts::settings(),
 					),
@@ -130,9 +130,6 @@ class Transfer {
 					break;
 				case 'modules':
 					Modules::save_settings( $in );
-					break;
-				case 'scss':
-					Scss::save_settings( array_merge( Modules::raw( array( Scss::class, 'settings' ) ), $in ) );
 					break;
 				case 'recipes':
 					Recipes::save_settings( array_merge( Modules::raw( array( Recipes::class, 'settings' ) ), $in ) );

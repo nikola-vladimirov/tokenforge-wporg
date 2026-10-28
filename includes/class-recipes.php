@@ -1,13 +1,12 @@
 <?php
 /**
- * Recipes: type "?name" in a CSS editor (Bricks element CSS, Global SCSS) or
+ * Recipes: type "?name" in a CSS editor (Bricks element CSS) or
  * "?name;" in an input, and it expands into a ready-made snippet (auto grid,
  * clickable parent, breakpoints, a colour with editable alpha …).
  *
  * The built-in recipes are written for TokenForge (names match the
  * Automatic.css recipes so muscle memory carries over); add your own in the
- * dashboard. "%root%" is the element's own selector in Bricks; in Global SCSS it
- * becomes "&". "{{cursor}}" marks where the caret lands after expanding.
+ * dashboard. "%root%" is the element's own selector in Bricks. "{{cursor}}" marks where the caret lands after expanding.
  *
  * @package TokenForge
  */
@@ -39,7 +38,7 @@ class Recipes {
 	 */
 	public static function builtin_defaults() {
 		return array(
-			'enabled' => true,   // expand ?recipes in the builder and in Global SCSS
+			'enabled' => true,   // expand ?recipes in the builder
 			'inputs'  => true,   // also in builder text inputs (value recipes like ?primary-clr;)
 			'custom'  => array(), // [ { name, code } ]
 		);
@@ -191,7 +190,7 @@ class Recipes {
 	 *
 	 * kind: 'value' = a property value (e.g. a colour), 'block' = declarations or
 	 * rules, 'text' = not CSS (placeholder copy, script and query snippets for
-	 * Bricks elements), never offered in CSS / SCSS editors.
+	 * Bricks elements), never offered in CSS editors.
 	 *
 	 * @return array [ [ 'n' => name, 'c' => category, 'code' => …, 'scss' => …|null, 'inline' => bool, 'kind' => string, 'custom' => bool ], … ]
 	 */

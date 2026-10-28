@@ -211,7 +211,7 @@ class Woo {
 			'qty_width'        => '4.5em',
 			'grid'             => true,
 			'grid_gap'         => 'var(--grid-gap, var(--space-m))',
-			'columns_s'        => 2,           // at the "s" breakpoint (Global SCSS breakpoints)
+			'columns_s'        => 2,           // at the "s" breakpoint (the breakpoints)
 			'columns_xs'       => 1,           // at the "xs" breakpoint
 			'cards'            => false,       // products as cards (the Cards settings)
 			'tables'           => true,

@@ -1,8 +1,7 @@
 <?php
 /**
- * Settings history: a snapshot of every TokenForge setting, token, colour family,
- * font and the Global SCSS before each Save, import, reset or setup, so any of
- * them can be undone.
+ * Settings history: a snapshot of every TokenForge setting, token, colour family
+ * and font before each Save, import, reset or setup, so any of them can be undone.
  *
  * Storage: a small index option (tokenforge_history) plus one option per snapshot
  * (tokenforge_snap_<id>), all with autoload off, so nothing loads on visitor

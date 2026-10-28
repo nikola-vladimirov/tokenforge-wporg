@@ -234,10 +234,10 @@ class Css_Generator {
 		// block editor, whose rem base is the editor's own.
 		$root = $for_editor ? '' : Defaults::root_css();
 
-		// Global SCSS last and unlayered: your own code wins over everything generated.
+		// Developer SCSS (tokenforge_global_scss filter) last and unlayered, so it wins over everything generated.
 		$scss = Scss::css();
 		$scss = '' !== $scss ? "
-/* --- Global SCSS --- */
+/* --- Developer SCSS --- */
 " . $scss . "
 " : '';
 

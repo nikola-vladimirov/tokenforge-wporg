@@ -40,7 +40,7 @@ class Starter {
 	const SETTING_OPTIONS = array( 'settings', 'framework', 'scales', 'components', 'scheme', 'extras', 'defaults', 'content', 'width', 'motion', 'overlays', 'enhancements', 'woo', 'modules' );
 
 	/** What a reset can cover. */
-	const PARTS = array( 'settings', 'tokens', 'scss', 'recipes', 'fonts' );
+	const PARTS = array( 'settings', 'tokens', 'recipes', 'fonts' );
 
 	/**
 	 * Palette settings for a fresh install.
@@ -111,9 +111,8 @@ class Starter {
 	/**
 	 * Reset parts of TokenForge to its defaults.
 	 *
-	 * settings: every switch and value (Global SCSS code, your recipes, your
-	 * fonts and the tokens stay); tokens: the starter tokens and palette; scss:
-	 * empty Global SCSS; recipes: remove your own recipes; fonts: empty the font
+	 * settings: every switch and value (your recipes, your fonts and the tokens
+	 * stay); tokens: the starter tokens and palette; recipes: remove your own recipes; fonts: empty the font
 	 * list (uploaded files stay in uploads/tokenforge/fonts).
 	 *
 	 * @param array $parts Parts (see PARTS).
@@ -126,8 +125,7 @@ class Starter {
 				delete_option( 'tokenforge_' . $o );
 			}
 			// Content that lives next to settings stays.
-			$scss = Modules::raw( array( Scss::class, 'settings' ) );
-			Scss::save_settings( array_merge( Scss::defaults(), array( 'source' => $scss['source'] ) ) );
+			Scss::save_settings( Scss::defaults() ); // the breakpoints
 			$rec = Modules::raw( array( Recipes::class, 'settings' ) );
 			Recipes::save_settings( array_merge( Recipes::defaults(), array( 'custom' => $rec['custom'] ) ) );
 			$fonts = Modules::raw( array( Fonts::class, 'settings' ) );
@@ -139,10 +137,6 @@ class Starter {
 			update_option( Palette::OPTION, self::palette(), false );
 			Settings::get_instance()->save_tokens( self::tokens() );
 			delete_option( 'tokenforge_acss_names' );
-		}
-		if ( in_array( 'scss', $parts, true ) ) {
-			$scss = Modules::raw( array( Scss::class, 'settings' ) );
-			Scss::save_settings( array_merge( $scss, array( 'source' => '' ) ) );
 		}
 		if ( in_array( 'recipes', $parts, true ) ) {
 			$rec = Modules::raw( array( Recipes::class, 'settings' ) );

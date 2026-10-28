@@ -74,8 +74,6 @@ class Settings {
 			'frontend_panel'      => true,  // the window on the site's pages too (administrators only; never in the builder)
 			'frontend_launcher'   => false, // a floating TokenForge button on the front end
 			'canvas_panel'        => true,  // a TokenForge button in the builder canvas while editing (opens the window)
-			'scss_dock_shortcut'  => 'alt+shift+s', // opens/closes the Global SCSS dock in the Bricks builder
-			'scss_dock_tab'       => true,  // a small SCSS tab at the bottom of the canvas
 			'ai_abilities'        => true,  // tokenforge/* abilities (MCP tools) for AI agents
 			'ai_guidance'         => true,  // tell agents to use TokenForge (MCP instructions, Bricks orientation + design context)
 		) + Features\A11y_Auto::defaults(); // automatic accessibility attributes, all off
@@ -126,8 +124,6 @@ class Settings {
 			'frontend_panel'     => ! empty( $settings['frontend_panel'] ),
 			'frontend_launcher'  => ! empty( $settings['frontend_launcher'] ),
 			'canvas_panel'       => ! empty( $settings['canvas_panel'] ),
-			'scss_dock_shortcut' => self::shortcut( isset( $settings['scss_dock_shortcut'] ) ? $settings['scss_dock_shortcut'] : $defaults['scss_dock_shortcut'] ),
-			'scss_dock_tab'      => ! empty( $settings['scss_dock_tab'] ),
 			'ai_abilities'       => ! empty( $settings['ai_abilities'] ),
 			'ai_guidance'        => ! empty( $settings['ai_guidance'] ),
 		) + Features\A11y_Auto::clean( $settings );

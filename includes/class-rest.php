@@ -335,63 +335,11 @@ class Rest {
 
 		register_rest_route(
 			self::NS,
-			'/scss',
-			array(
-				'methods'             => 'GET',
-				'permission_callback' => $perm,
-				'callback'            => array( $this, 'scss_get' ),
-			)
-		);
-
-		register_rest_route(
-			self::NS,
-			'/scss-save',
-			array(
-				'methods'             => 'POST',
-				'permission_callback' => $perm,
-				'callback'            => array( $this, 'scss_save' ),
-			)
-		);
-
-		register_rest_route(
-			self::NS,
-			'/scss-live',
-			array(
-				'methods'             => 'POST',
-				'permission_callback' => $perm,
-				'callback'            => array( $this, 'scss_live' ),
-			)
-		);
-
-		register_rest_route(
-			self::NS,
-			'/scss-rev',
-			array(
-				'methods'             => 'GET',
-				'permission_callback' => $perm,
-				'callback'            => function () {
-					return rest_ensure_response( array( 'rev' => md5( (string) Scss::settings()['source'] ) ) );
-				},
-			)
-		);
-
-		register_rest_route(
-			self::NS,
 			'/cheatsheet',
 			array(
 				'methods'             => 'GET',
 				'permission_callback' => $perm,
 				'callback'            => array( $this, 'cheatsheet' ),
-			)
-		);
-
-		register_rest_route(
-			self::NS,
-			'/scss-compile',
-			array(
-				'methods'             => 'POST',
-				'permission_callback' => $perm,
-				'callback'            => array( $this, 'scss_compile' ),
 			)
 		);
 
@@ -413,113 +361,6 @@ class Rest {
 	 */
 	public function cheatsheet() {
 		return rest_ensure_response( array( 'groups' => Cheatsheet::data() ) );
-	}
-
-	/**
-	 * Global SCSS for the builder dock: source, revision, status and what the
-	 * editor suggests (mixins, recipes).
-	 *
-	 * @return \WP_REST_Response
-	 */
-	public function scss_get() {
-		$s = Scss::settings();
-		$r = Recipes::settings();
-		return rest_ensure_response(
-			array(
-				'source'     => (string) $s['source'],
-				'rev'        => md5( (string) $s['source'] ),
-				'enabled'    => ! empty( $s['enabled'] ),
-				'sync'       => ! empty( $s['sync'] ),
-				'status'     => Scss::status(),
-				'ref'        => Scss::reference(),
-				'recipes'    => Recipes::all(),
-				'recipes_on' => ! empty( $r['enabled'] ),
-			)
-		);
-	}
-
-	/**
-	 * Save only the Global SCSS source (builder dock): sync the Bricks classes,
-	 * rebuild the stylesheet. Refuses when the source changed since the dock
-	 * loaded it (revision), unless { force: true }.
-	 *
-	 * @param \WP_REST_Request $req Request with { source, rev, force }.
-	 * @return \WP_REST_Response
-	 */
-	public function scss_save( $req ) {
-		$body = $req->get_json_params();
-		if ( ! isset( $body['source'] ) || ! is_string( $body['source'] ) ) {
-			return rest_ensure_response( array( 'ok' => false, 'error' => 'No source.' ) );
-		}
-		$src = str_replace( "\r\n", "\n", $body['source'] );
-		// Stored values, not the ones a switched-off module reads as (those would be saved as off).
-		$cur = Modules::raw( array( Scss::class, 'settings' ) );
-		$rev = md5( (string) $cur['source'] );
-		if ( empty( $body['force'] ) && isset( $body['rev'] ) && (string) $body['rev'] !== $rev && $src !== (string) $cur['source'] ) {
-			return rest_ensure_response( array( 'ok' => false, 'conflict' => true, 'source' => (string) $cur['source'], 'rev' => $rev ) );
-		}
-		Scss::save_settings( array_merge( $cur, array( 'source' => $src ) ) );
-		$sync = Features\Scss_Sync::push();
-		Css_Generator::get_instance()->generate();
-		$now = (string) Scss::settings()['source'];
-		return rest_ensure_response(
-			array(
-				'ok'          => true,
-				'rev'         => md5( $now ),
-				'source'      => $now !== $src ? $now : null, // the sync added fields from Bricks
-				'status'      => Scss::status(),
-				'css_ver'     => Css_Generator::get_instance()->version(),
-				'css_url'     => Css_Generator::get_instance()->css_url(),
-				'synced'      => $sync['classes'],
-				'sync_errors' => $sync['errors'],
-			)
-		);
-	}
-
-	/**
-	 * Live sync in the builder, nothing stored (the dock and the builder save as usual):
-	 * - mode "push": the SCSS in the dock → the settings the builder classes should
-	 *   show now (only the classes that differ come back);
-	 * - mode "pull": classes changed in the builder (not saved yet) → the SCSS for
-	 *   the dock (null when nothing changes).
-	 *
-	 * @param \WP_REST_Request $req Request with { mode, source, classes: [ { name, settings, old? } ] }.
-	 * @return \WP_REST_Response
-	 */
-	public function scss_live( $req ) {
-		$body = $req->get_json_params();
-		if ( ! Features\Scss_Sync::enabled() || ! isset( $body['source'] ) || ! is_string( $body['source'] ) ) {
-			return rest_ensure_response( array( 'ok' => false ) );
-		}
-		$src  = str_replace( "\r\n", "\n", $body['source'] );
-		$list = array();
-		foreach ( isset( $body['classes'] ) && is_array( $body['classes'] ) ? array_slice( $body['classes'], 0, 300 ) : array() as $c ) {
-			if ( is_array( $c ) && isset( $c['name'] ) && is_string( $c['name'] ) ) {
-				$list[] = array(
-					'name'     => $c['name'],
-					'settings' => isset( $c['settings'] ) && is_array( $c['settings'] ) ? $c['settings'] : array(),
-					'old'      => isset( $c['old'] ) && is_array( $c['old'] ) ? $c['old'] : array(),
-				);
-			}
-		}
-		if ( isset( $body['mode'] ) && 'pull' === $body['mode'] ) {
-			$out = Features\Scss_Sync::live_pull( $src, $list );
-			return rest_ensure_response( array( 'ok' => true, 'source' => $out !== $src ? $out : null ) );
-		}
-		$r = Features\Scss_Sync::push( array( 'source' => $src, 'classes' => $list, 'dry' => true ) );
-		return rest_ensure_response( array( 'ok' => true, 'classes' => $r['classes'], 'errors' => $r['errors'] ) );
-	}
-
-	/**
-	 * Compile SCSS without saving (live check in the editor).
-	 *
-	 * @param \WP_REST_Request $req Request with { source }.
-	 * @return \WP_REST_Response
-	 */
-	public function scss_compile( $req ) {
-		$body = $req->get_json_params();
-		$r    = Scss::compile( isset( $body['source'] ) ? (string) $body['source'] : '' );
-		return rest_ensure_response( array( 'ok' => null === $r['error'], 'css' => $r['css'], 'error' => $r['error'] ) );
 	}
 
 	/**
@@ -549,7 +390,7 @@ class Rest {
 	 */
 	public function menu_data() {
 		$classes = Features\Builder_Enhancements::menu_classes();
-		// The site's own classes (Bricks global classes), for suggestions in the SCSS editor.
+		// The site's own classes (Bricks global classes).
 		$site = array();
 		$gc   = get_option( 'bricks_global_classes', array() );
 		if ( is_array( $gc ) ) {
@@ -870,9 +711,6 @@ class Rest {
 				'palette'     => Palette::settings(),
 				'palette_rev' => Palette::rev(), // as tokens_rev: Save sends it back so a stale window can't drop a family made meanwhile
 				'scss'        => Scss::settings(),
-				'scss_status' => Scss::status(),
-				'scss_rev'    => md5( (string) Scss::settings()['source'] ),
-				'scss_ref'    => Scss::reference(),
 				'recipes'     => Recipes::settings(),
 				'recipe_list' => Recipes::all(),
 				'enhancements' => Features\Builder_Enhancements::settings(),
@@ -1022,26 +860,9 @@ class Rest {
 		if ( isset( $body['enhancements'] ) && is_array( $body['enhancements'] ) ) {
 			Features\Builder_Enhancements::save_settings( $body['enhancements'] );
 		}
-		$scss_conflict = false;
 		if ( isset( $body['scss'] ) && is_array( $body['scss'] ) ) {
-			$cur = Modules::raw( array( Scss::class, 'settings' ) );
-			if ( isset( $body['scss_rev'], $body['scss']['source'] ) && md5( (string) $cur['source'] ) !== (string) $body['scss_rev'] && (string) $body['scss']['source'] !== (string) $cur['source'] ) {
-				// The SCSS changed since the dashboard loaded it: keep the newer source.
-				$scss_conflict            = true;
-				$body['scss']['source'] = $cur['source'];
-			}
-			// Switches this window did not touch keep their stored value, so a window
-			// opened earlier can't undo a change made in the dock (the builder sync switch).
-			if ( isset( $body['scss_base'] ) && is_array( $body['scss_base'] ) ) {
-				foreach ( $body['scss'] as $k => $v ) {
-					if ( 'source' !== $k && array_key_exists( $k, $body['scss_base'] ) && array_key_exists( $k, $cur ) && ! is_array( $v ) && (string) $v === (string) $body['scss_base'][ $k ] ) {
-						$body['scss'][ $k ] = $cur[ $k ];
-					}
-				}
-			}
-			Scss::save_settings( $body['scss'] );
+			Scss::save_settings( $body['scss'] ); // the breakpoints
 		}
-		$sync = Features\Scss_Sync::push();
 		if ( isset( $body['recipes'] ) && is_array( $body['recipes'] ) ) {
 			Recipes::save_settings( $body['recipes'] );
 		}
@@ -1098,15 +919,11 @@ class Rest {
 				'count'   => count( $stored ),
 				'css_url' => Css_Generator::get_instance()->css_url(),
 				'css_ver' => Css_Generator::get_instance()->version(),
-				'scss'    => Scss::status(),
-				'scss_conflict' => $scss_conflict,
 				'tokens_conflict' => $tokens_conflict,
 				'palette_conflict' => $palette_conflict,
 				'css_ok'  => (bool) $css_ok,
 				'palette' => $palette,
 				'theme_style' => self::theme_style(),
-				'synced'  => $sync['classes'],
-				'sync_errors' => $sync['errors'],
 			)
 		);
 	}
@@ -1204,7 +1021,6 @@ class Rest {
 		if ( ! History::restore( (int) $req['id'] ) ) {
 			return rest_ensure_response( array( 'ok' => false, 'error' => 'This snapshot is gone or damaged.' ) );
 		}
-		Features\Scss_Sync::push(); // Global SCSS wins: the builder classes follow the restored code
 		Css_Generator::get_instance()->rebuild();
 		return rest_ensure_response( array( 'ok' => true ) );
 	}

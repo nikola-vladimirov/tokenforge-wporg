@@ -296,66 +296,7 @@
 .tf-sidebar { min-height: 0; }
 .tf-main { min-height: 0; }
 
-/* ---- Global SCSS editor ---- */
-.tf-scss { display: flex; flex-direction: column; gap: 8px; }
-.tf-scss-bar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-height: 26px; }
-.tf-scss-bar .tf-grow { flex: 1 1 auto; }
-.tf-scss-state { font-size: 12px; }
-.tf-scss-ok { color: var(--tf-ok); }
-.tf-scss-err { color: var(--tf-err); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11.5px; }
-#tokenforge-app .tf-mono, #tokenforge-app .tf-scss-src { font: 12.5px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; tab-size: 4; }
-#tokenforge-app textarea.tf-scss-src { width: 100%; min-height: 380px; resize: vertical; white-space: pre; overflow: auto; background: var(--tf-code-bg); color: var(--tf-code); border: 1px solid var(--tf-line); border-radius: var(--tf-radius); padding: 10px 12px; }
-.tf-scss-out { max-height: 320px; overflow: auto; margin: 0; padding: 10px 12px; background: var(--tf-code-bg); border: 1px solid var(--tf-line); border-radius: var(--tf-radius); color: var(--tf-code); font: 11.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre; }
-/* CodeMirror in the dark dashboard (wp-admin's and Bricks' editors are light/other themes) */
-#tokenforge-app .tf-scss .CodeMirror { height: 440px; border: 1px solid var(--tf-line); border-radius: var(--tf-radius); background: var(--tf-code-bg); color: var(--tf-code); font: 12.5px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-#tokenforge-app .tf-scss .CodeMirror-gutters { background: var(--tf-code-bg); border-right: 1px solid var(--tf-line); }
-#tokenforge-app .tf-scss .CodeMirror-linenumber { color: var(--tf-faint); }
-#tokenforge-app .tf-scss .CodeMirror-cursor { border-left: 2px solid var(--tf-text); }
-#tokenforge-app .tf-scss .CodeMirror-selected, #tokenforge-app .tf-scss .CodeMirror-focused .CodeMirror-selected { background: color-mix(in srgb, var(--tf-link) 30%, transparent); }
-#tokenforge-app .tf-scss .CodeMirror-activeline-background { background: color-mix(in srgb, var(--tf-text) 5%, transparent); }
-#tokenforge-app .tf-scss .CodeMirror-matchingbracket { color: var(--tf-text) !important; background: color-mix(in srgb, var(--tf-link) 35%, transparent); }
-#tokenforge-app .tf-scss .tf-cm-err { background: color-mix(in srgb, var(--tf-err) 18%, transparent); }
-#tokenforge-app .tf-scss .cm-comment { color: var(--tf-faint); }
-#tokenforge-app .tf-scss .cm-keyword, #tokenforge-app .tf-scss .cm-def { color: #c792ea; }
-#tokenforge-app .tf-scss .cm-variable, #tokenforge-app .tf-scss .cm-variable-2, #tokenforge-app .tf-scss .cm-variable-3 { color: #f5b84b; }
-#tokenforge-app .tf-scss .cm-property { color: #7fb4ff; }
-#tokenforge-app .tf-scss .cm-atom, #tokenforge-app .tf-scss .cm-number { color: #f78c6c; }
-#tokenforge-app .tf-scss .cm-string, #tokenforge-app .tf-scss .cm-string-2 { color: #a5d38a; }
-#tokenforge-app .tf-scss .cm-tag, #tokenforge-app .tf-scss .cm-qualifier, #tokenforge-app .tf-scss .cm-builtin { color: #89ddff; }
-#tokenforge-app .tf-scss .cm-meta, #tokenforge-app .tf-scss .cm-operator { color: var(--tf-code); }
-#tokenforge-app .tf-scss .cm-error { color: var(--tf-err); }
-/* hint list (show-hint addon) above the window */
-.CodeMirror-hints.tf { z-index: 2147483600 !important; }
-
-/* Outline bar above the Global SCSS editor: Jump to, Add section, Add sub-section (scss-editor.js); the builder dock re-skins it in scss-dock.css */
-.tf-ol-bar { --ol-bg: var(--tf-panel, #23292f); --ol-bg-2: var(--tf-line, #343d46); --ol-hover: var(--tf-line-hover, #45525e); --ol-line: var(--tf-muted, #8a99a8); --ol-text: var(--tf-text, #e2e6e9); --ol-muted: var(--tf-muted, #8a99a8); --ol-accent: var(--tf-accent, #ffd54d); --ol-accent-ink: var(--tf-accent-ink, #1e2124); --ol-radius: var(--tf-radius, 4px); position: relative; display: flex; align-items: center; gap: 4px; min-width: 0; font: 12px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
-.tf-ol-bar button { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 9px; border-radius: var(--ol-radius); background: var(--ol-bg-2); color: var(--ol-text); font: 600 12px/1 system-ui, -apple-system, "Segoe UI", sans-serif; white-space: nowrap; cursor: pointer; }
-.tf-ol-bar button:hover { background: var(--ol-hover); }
-.tf-ol-bar button:focus-visible, .tf-ol-bar .tf-ol-q:focus-visible { outline: 2px solid var(--ol-accent); outline-offset: 1px; }
-.tf-ol-bar .tf-ol-jump { flex: 1 1 auto; min-width: 0; max-width: 340px; justify-content: space-between; }
-.tf-ol-cur { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
-.tf-ol-caret { flex: 0 0 auto; width: 0; height: 0; border: 4px solid transparent; border-top-color: currentColor; border-bottom-width: 0; }
-.tf-ol-add i { font: 700 11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--ol-accent); }
-.tf-ol-menu { position: absolute; z-index: 50; top: calc(100% + 4px); left: 0; display: flex; flex-direction: column; width: min(380px, 100%); max-height: 300px; padding: 6px; background: var(--ol-bg); border: 1px solid var(--ol-line); border-radius: var(--ol-radius); box-shadow: 0 8px 24px rgba(0, 0, 0, .5); }
-.tf-ol-menu[hidden] { display: none; }
-.tf-ol-bar .tf-ol-q { all: unset; box-sizing: border-box; flex: 0 0 auto; width: 100%; height: 28px; padding: 0 8px; border: 1px solid var(--ol-line); border-radius: var(--ol-radius); background: var(--ol-bg-2); color: var(--ol-text); font: 12px/1 system-ui, -apple-system, "Segoe UI", sans-serif; }
-.tf-ol-list { margin: 6px 0 0; padding: 0; list-style: none; min-height: 0; overflow: auto; }
-.tf-ol-list li { display: flex; align-items: baseline; gap: 6px; margin: 0; padding: 4px 8px 4px calc(8px + var(--d, 0) * 14px); border-radius: var(--ol-radius); color: var(--ol-text); cursor: pointer; }
-.tf-ol-list li i { flex: 0 0 auto; font: normal 11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--ol-muted); }
-.tf-ol-list li span { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tf-ol-list li em { flex: 0 0 auto; font-style: normal; font-size: 11px; color: var(--ol-muted); }
-.tf-ol-list li:hover, .tf-ol-list li.is-sel { background: var(--ol-accent); color: var(--ol-accent-ink); }
-.tf-ol-list li:hover i, .tf-ol-list li:hover em, .tf-ol-list li.is-sel i, .tf-ol-list li.is-sel em { color: inherit; }
-.tf-ol-none { margin: 8px 4px 2px; color: var(--ol-muted); }
-.tf-ol-none[hidden] { display: none; }
-.tf-ol-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-
-/* Mixin reference */
-.tf-ref { display: grid; gap: 4px; }
-#tokenforge-app .tf-ref-row { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 10px; align-items: start; text-align: left; padding: 6px 8px; background: var(--tf-panel-2); border: 1px solid var(--tf-line); border-radius: var(--tf-radius); color: var(--tf-text); cursor: pointer; }
-#tokenforge-app .tf-ref-row:hover { border-color: var(--tf-accent); }
-#tokenforge-app .tf-ref-row code { white-space: normal; word-break: break-word; }
-.tf-app.is-narrow .tf-ref-row { grid-template-columns: 1fr; gap: 3px; }
+#tokenforge-app .tf-mono { font: 12.5px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; tab-size: 4; }
 
 /* Recipes */
 .tf-recipe-group { margin: 14px 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--tf-muted); }
@@ -402,24 +343,6 @@
 .tf-cheat-item.is-copied .tf-copied { display: inline-block; }
 .tf-app.is-narrow .tf-cheat-item { grid-template-columns: minmax(0, 1fr) auto; }
 .tf-app.is-narrow .tf-cheat-desc { grid-column: 1 / -1; grid-row: 2; }
-
-/* ---- SCSS editor: suggestion list (plain editor) ---- */
-.tf-ac-box { position: relative; }
-#tokenforge-app .tf-ac-list { position: absolute; z-index: 20; max-height: 220px; overflow: auto; margin: 0; padding: 4px; list-style: none; background: var(--tf-panel); border: 1px solid var(--tf-line-hover); border-radius: var(--tf-radius); box-shadow: 0 6px 18px rgba(0, 0, 0, .4); }
-#tokenforge-app .tf-ac-list li { display: flex; align-items: baseline; gap: 10px; padding: 4px 8px; border-radius: var(--tf-radius); cursor: pointer; white-space: nowrap; overflow: hidden; }
-#tokenforge-app .tf-ac-list li code { flex: 0 0 auto; padding: 0; background: none; color: var(--tf-code-name); font-size: 12px; }
-#tokenforge-app .tf-ac-list li span { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--tf-muted); font-size: 11px; }
-#tokenforge-app .tf-ac-list li.is-sel, #tokenforge-app .tf-ac-list li:hover { background: var(--tf-accent); }
-#tokenforge-app .tf-ac-list li.is-sel code, #tokenforge-app .tf-ac-list li.is-sel span, #tokenforge-app .tf-ac-list li:hover code, #tokenforge-app .tf-ac-list li:hover span { color: var(--tf-on-accent); }
-/* CodeMirror's own hint list, in the dashboard's colours */
-.CodeMirror-hints.tf { background: #23292f !important; border: 1px solid #45525e !important; border-radius: var(--tf-radius); box-shadow: 0 6px 18px rgba(0, 0, 0, .4) !important; font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important; max-width: 460px; }
-.CodeMirror-hints.tf .CodeMirror-hint { color: #e2e6e9 !important; padding: 3px 8px !important; border-radius: var(--tf-radius); white-space: pre !important; overflow: hidden; text-overflow: ellipsis; }
-.CodeMirror-hints.tf li.CodeMirror-hint-active { background: #ffd54d !important; color: #1e2124 !important; }
-
-/* Global SCSS: an edit that could not be saved (the SCSS changed in the builder meanwhile) */
-.tf-scss-lost { padding: 10px 12px; border: 1px solid var(--tf-err); border-radius: var(--tf-radius); background: color-mix(in srgb, var(--tf-err) 8%, transparent); }
-.tf-scss-lost p { margin: 0 0 6px; }
-#tokenforge-app .tf-scss-lost textarea { width: 100%; background: var(--tf-code-bg); color: var(--tf-code); border: 1px solid var(--tf-line); border-radius: var(--tf-radius); padding: 8px; white-space: pre; }
 
 /* ---- Sidebar group headings ---- */
 .tf-navgroup { margin: 12px 10px 3px; font-size: 10.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--tf-muted); opacity: .75; }
@@ -582,14 +505,6 @@
 .tf-wz-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .tf-wz-done { border-left-color: var(--tf-ok); }
 .tf-vh { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-
-/* Light look: darker syntax colours for the light code block. */
-.tf-light .tf-scss .cm-keyword, .tf-light .tf-scss .cm-def { color: #7e22ce; }
-.tf-light .tf-scss .cm-variable, .tf-light .tf-scss .cm-variable-2, .tf-light .tf-scss .cm-variable-3 { color: #92400e; }
-.tf-light .tf-scss .cm-property { color: #1d4ed8; }
-.tf-light .tf-scss .cm-atom, .tf-light .tf-scss .cm-number { color: #c2410c; }
-.tf-light .tf-scss .cm-string, .tf-light .tf-scss .cm-string-2 { color: #166534; }
-.tf-light .tf-scss .cm-tag, .tf-light .tf-scss .cm-qualifier, .tf-light .tf-scss .cm-builtin { color: #0e7490; }
 
 /* Palette contrast: another colour for one pair */
 .tf-cx-editor { padding: 8px 4px; }

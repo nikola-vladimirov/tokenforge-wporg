@@ -12,9 +12,9 @@
 	var cfg = window.TokenForgeData || {};
 	var state = {
 		tokens: [], settings: {}, framework: {}, scales: {}, components: {}, scheme: {}, extras: {}, defaults: {}, content: {}, width: {}, motion: {}, overlays: { overlays: [], surfaces: [] }, enhancements: {},
-		scssRev: '', scssLost: null, tokensRev: '', paletteRev: '',
+		tokensRev: '', paletteRev: '',
 		cheat: null, cheatLoading: false, cheatQ: '', cheatKind: '', cheatOpen: {}, attributeUsage: {}, attrUnused: false, attrBusy: false,
-		scss: {}, recipes: { custom: [] }, scssStatus: {}, scssRef: [], recipeList: [], recipeQ: '', scssCss: null,
+		scss: {}, recipes: { custom: [] }, recipeList: [], recipeQ: '',
 		defs: {}, families: [], bricksNative: {}, nativeLabels: {}, bricks: false, groups: [], utilCount: 0,
 		activeGroup: 'color', search: '', tab: 'home', q: '', dirty: false, navOpen: false, open: readOpen(), expandAll: false, btnFam: 'primary', btnVar: 'solid', importReport: null,
 		modules: {}, theme: {}, transferFile: null, transferName: '', transferParts: {}, resetParts: { settings: true, tokens: true }
@@ -289,15 +289,8 @@
 		{ id: 'content', title: __( 'Content', 'tokenforge' ), panels: [
 			P( __( 'Prose', 'tokenforge' ), 'content', [ B( 'prose_auto', __( 'Also style post content automatically', 'tokenforge' ) ), B( 'rich_text', __( 'Also style Rich Text elements', 'tokenforge' ) ), T( 'prose_spacing', __( 'Block spacing', 'tokenforge' ) ), T( 'prose_heading_spacing', __( 'Space above headings', 'tokenforge' ) ), T( 'prose_width', __( 'Max text width (e.g. 70ch)', 'tokenforge' ) ), C( 'prose_accent', __( 'Accent (markers)', 'tokenforge' ) ) ], { on: 'prose', d: __( '<code>.prose</code>: long-form styling for lists, figures, code, tables and rules, all zero-specificity.', 'tokenforge' ) } )
 		] },
-		{ id: 'scss', title: __( 'Global SCSS', 'tokenforge' ), panels: [
-			P( __( 'Global SCSS', 'tokenforge' ), 'scss', null, { on: 'enabled', custom: 'scssEditor', d: __( 'Your own SCSS, compiled on Save and added last to the stylesheet (unlayered, so it wins). All TokenForge mixins and functions work without an import: <code>@include btn(primary);</code>, <code>@include breakpoint(m) { … }</code>, <code>fluid(16, 24)</code>. Type <code>?recipe</code> + <kbd>Tab</kbd> or <code>;</code> to expand a recipe. A compile error keeps the last working CSS live.', 'tokenforge' ) } ),
-			P( __( 'Sync with builder classes', 'tokenforge' ), 'scss', [ B( 'sync_pull', __( 'Add classes edited in the builder to Global SCSS', 'tokenforge' ) ), B( 'sync_create', __( 'Create a builder class for every class block', 'tokenforge' ) ) ], { on: 'sync', needs: 'class_sync', d: __( 'Each top-level <code>.class { … }</code> block is paired with the builder’s global class of the same name, live in both directions while you work in the builder (nothing is stored until you save). <strong>Global SCSS wins:</strong> what the block sets (spacing, border, radius, typography, colours, size, flex/grid, position …, <code>&amp;:hover</code> states and breakpoint blocks) is what the class shows in its Style fields, and the class’s CSS panel holds only what has no field (custom properties, <code>!important</code>, nested rules like <code>&amp;::before</code> or <code>&amp; .icon</code>), so it can never override the SCSS. <strong>Builder → SCSS:</strong> a value you change in the Style fields or the CSS panel (the CSS panel wins over the Style fields, as in the builder) is rewritten in place inside the block; the rest of your SCSS stays. Mixins, <code>$variables</code> and other SCSS-only code stay SCSS-only.', 'tokenforge' ) } ),
-			P( __( 'Canvas dock', 'tokenforge' ), 'settings', [ K( 'scss_dock_shortcut', __( 'Open / close shortcut', 'tokenforge' ), { h: __( 'Click the field, then press the keys (e.g. Alt+Shift+S). Works with the canvas focused too.', 'tokenforge' ) } ), B( 'scss_dock_tab', __( 'SCSS tab at the bottom of the canvas', 'tokenforge' ) ) ], { needs: 'canvas_tools', custom: 'dockOpen', d: __( 'Global SCSS docked under the builder canvas, like the builder\u2019s own CSS panel, without opening this window: live preview in the canvas while you type, Save with Ctrl/Cmd + S, the cheatsheet one click away.', 'tokenforge' ) } ),
-			P( __( 'Breakpoints', 'tokenforge' ), 'scss', [ N( 'bp_xs', __( 'xs (px)', 'tokenforge' ) ), N( 'bp_s', __( 's (px)', 'tokenforge' ) ), N( 'bp_m', __( 'm (px)', 'tokenforge' ) ), N( 'bp_l', __( 'l (px)', 'tokenforge' ) ), N( 'bp_xl', __( 'xl (px)', 'tokenforge' ) ), N( 'bp_xxl', __( 'xxl (px)', 'tokenforge' ) ) ], { d: __( 'For <code>breakpoint(m)</code> (max-width) / <code>breakpoint-up(m)</code> (min-width), <code>$breakpoints</code> and the <code>?breakpoint-*</code> recipes.', 'tokenforge' ) } ),
-			P( __( 'Mixins & functions', 'tokenforge' ), null, null, { custom: 'scssRef', d: __( 'Click one to insert it at the cursor.', 'tokenforge' ) } )
-		] },
 		{ id: 'recipes', title: __( 'Recipes', 'tokenforge' ), panels: [
-			P( __( 'Recipes', 'tokenforge' ), 'recipes', [ B( 'inputs', __( 'Also in builder fields: <code>?primary-clr;</code> in style fields, <code>?ipsum-short;</code> in text fields, rich text and text edited in the canvas', 'tokenforge' ), { needs: 'editor_tweaks' } ) ], { on: 'enabled', d: __( 'Type <code>?name</code> in the builder’s CSS editor or in Global SCSS and pick it from the list (or finish with <code>;</code>): it expands into ready-made CSS. <code>%root%</code> is the element’s selector (in SCSS: <code>&amp;</code>).', 'tokenforge' ) } ),
+			P( __( 'Recipes', 'tokenforge' ), 'recipes', [ B( 'inputs', __( 'Also in builder fields: <code>?primary-clr;</code> in style fields, <code>?ipsum-short;</code> in text fields, rich text and text edited in the canvas', 'tokenforge' ), { needs: 'editor_tweaks' } ) ], { on: 'enabled', d: __( 'Type <code>?name</code> in the builder’s CSS editor and pick it from the list (or finish with <code>;</code>): it expands into ready-made CSS. <code>%root%</code> is the element’s selector (in SCSS: <code>&amp;</code>).', 'tokenforge' ) } ),
 			P( __( 'Your recipes', 'tokenforge' ), null, null, { custom: 'customRecipes', d: __( 'Name + code. Use <code>%root%</code> for the element and <code>{{cursor}}</code> for where the caret lands. A custom recipe with a built-in name replaces it.', 'tokenforge' ) } ),
 			P( __( 'Built-in recipes', 'tokenforge' ), null, null, { custom: 'recipeList' } )
 		] },
@@ -320,6 +313,7 @@
 			P( __( 'TokenForge window', 'tokenforge' ), 'settings', [ K( 'panel_shortcut', __( 'Open / close shortcut', 'tokenforge' ), { h: __( 'Click the field, then press the keys (e.g. Alt+Shift+T). Works in the builder (also with the canvas focused) and on the site\u2019s pages.', 'tokenforge' ) } ), B( 'canvas_panel', __( 'Show in builder canvas while editing', 'tokenforge' ), { needs: 'canvas_tools' } ), B( 'frontend_panel', __( 'On the site\u2019s pages (administrators only)', 'tokenforge' ) ), B( 'frontend_launcher', __( 'Floating TokenForge button on the site\u2019s pages', 'tokenforge' ) ) ], { d: __( 'The dashboard as a dockable window. In the builder it opens with the shortcut or the TokenForge button; on the site\u2019s pages with the shortcut or the admin-bar TokenForge link (Ctrl/Cmd-click goes to wp-admin).', 'tokenforge' ) } ),
 			P( __( 'AI agents', 'tokenforge' ), 'settings', [ B( 'ai_abilities', __( 'TokenForge abilities for AI agents (MCP tools)', 'tokenforge' ) ), B( 'ai_guidance', __( 'Tell AI agents to build with TokenForge', 'tokenforge' ) ) ], { d: __( 'When an AI builds this site through the WordPress MCP Adapter or the builder’s AI abilities, it gets the tools <code>tokenforge-get-framework</code>, <code>tokenforge-search</code>, <code>tokenforge-check-css</code>, <code>tokenforge-get-recipe</code> and <code>tokenforge-compile-scss</code>, and is told to use TokenForge classes and variables instead of hard-coded CSS.', 'tokenforge' ) } ),
 			P( __( 'Performance', 'tokenforge' ), 'settings', [ B( 'inline_css', __( 'Inline the stylesheet', 'tokenforge' ) ), B( 'hot_reload', __( 'Hot-reload CSS in open tabs after Save', 'tokenforge' ) ), B( 'admin_bar_link', __( 'Admin bar link', 'tokenforge' ) ) ] ),
+			P( __( 'Breakpoints', 'tokenforge' ), 'scss', [ N( 'bp_xs', __( 'xs (px)', 'tokenforge' ) ), N( 'bp_s', __( 's (px)', 'tokenforge' ) ), N( 'bp_m', __( 'm (px)', 'tokenforge' ) ), N( 'bp_l', __( 'l (px)', 'tokenforge' ) ), N( 'bp_xl', __( 'xl (px)', 'tokenforge' ) ), N( 'bp_xxl', __( 'xxl (px)', 'tokenforge' ) ) ], { d: __( 'Widths in px for the breakpoint names (xs to xxl) used by the <code>?breakpoint-*</code> recipes and the responsive data attributes.', 'tokenforge' ) } ),
 			P( __( 'Cascade layers', 'tokenforge' ), 'settings', [ B( 'layer_defaults', __( 'Defaults & utilities', 'tokenforge' ) ), B( 'layer_base', __( 'Base typography & sections', 'tokenforge' ) ), B( 'layer_buttons', __( 'Buttons & external links', 'tokenforge' ) ), B( 'layer_cards', __( 'Cards', 'tokenforge' ) ), B( 'layer_icons', __( 'Icons', 'tokenforge' ) ), B( 'layer_content', __( 'Content / prose', 'tokenforge' ) ) ], { d: __( 'A layered part loses to <em>any</em> unlayered CSS (theme, builder, custom). Variables and utility classes are never layered.', 'tokenforge' ) } ),
 			P( __( 'Utility framework', 'tokenforge' ), 'framework', [ B( 'utilities_color', __( 'Colour utilities', 'tokenforge' ) ), B( 'utilities_spacing', __( 'Spacing utilities', 'tokenforge' ) ), B( 'utilities_typography', __( 'Typography utilities', 'tokenforge' ) ), B( 'utilities_layout', __( 'Layout utilities', 'tokenforge' ) ), B( 'register_with_bricks', __( 'Register classes with the builder', 'tokenforge' ), { needs: 'class_complete' } ), B( 'prune_unused', __( 'Leave out unused utility classes', 'tokenforge' ), { w: 1 } ), A( 'prune_keep', __( 'Always keep these classes', 'tokenforge' ), { rows: 2, h: __( 'Class names added by theme or plugin code, one per line or separated by spaces. End a name with * to keep every class that starts with it (bg-primary*).', 'tokenforge' ) } ) ], { custom: 'utilCount' } )
 		] }
@@ -328,19 +322,19 @@
 	// Grouped navigation: sections in groups, panels gathered by "section:Panel title"
 	// ("section:*" = its remaining panels) from the definitions above.
 	ALL_SECTIONS.push( { id: 'transfer', title: __( 'Import, export & reset', 'tokenforge' ), panels: [
-		P( __( 'Export', 'tokenforge' ), null, null, { custom: 'exportBox', d: __( 'Download every TokenForge setting, token, colour family, font and your Global SCSS as one file, to move them to another site or keep a backup.', 'tokenforge' ) } ),
+		P( __( 'Export', 'tokenforge' ), null, null, { custom: 'exportBox', d: __( 'Download every TokenForge setting, token, colour family and font as one file, to move them to another site or keep a backup.', 'tokenforge' ) } ),
 		P( __( 'Import', 'tokenforge' ), null, null, { custom: 'importBox', d: __( 'Load a file made with Export. Choose which parts to bring in; everything else stays as it is.', 'tokenforge' ) } ),
 		P( __( 'Design token files', 'tokenforge' ), null, null, { custom: 'tokenFiles', d: __( 'Your tokens as W3C design token files (DTCG), for Figma, Tokens Studio and Style Dictionary. Import shows what would change first; changed tokens are saved as your own tokens.', 'tokenforge' ) } ),
 		P( __( 'Reset to defaults', 'tokenforge' ), null, null, { custom: 'resetBox', d: __( 'Put TokenForge back to how a new site starts. You can undo it under History.', 'tokenforge' ) } ),
-		P( __( 'History', 'tokenforge' ), null, null, { custom: 'historyBox', d: __( 'Before every Save, import, reset and setup, TokenForge keeps a copy of all its settings, tokens, colour families, fonts and Global SCSS (the last 20). See what changed since then, or put a copy back. Your pages are never touched.', 'tokenforge' ) } ),
+		P( __( 'History', 'tokenforge' ), null, null, { custom: 'historyBox', d: __( 'Before every Save, import, reset and setup, TokenForge keeps a copy of all its settings, tokens, colour families and fonts (the last 20). See what changed since then, or put a copy back. Your pages are never touched.', 'tokenforge' ) } ),
 		P( __( 'Settings importer', 'tokenforge' ), null, null, { custom: 'importData' } )
 	] } );
 
 	var NAV_GROUPS = [
-		[ __( 'Start', 'tokenforge' ), [ { id: 'home' }, { id: 'cheatsheet' }, { id: 'check', from: [ 'colors:Palette contrast', 'additional:Automatic accessibility attributes', 'additional:Focus', 'additional:Reduced motion', 'buttons:External-link indicator', 'builder:Canvas badges' ] }, { id: 'scss' }, { id: 'recipes' } ] ],
+		[ __( 'Start', 'tokenforge' ), [ { id: 'home' }, { id: 'cheatsheet' }, { id: 'check', from: [ 'colors:Palette contrast', 'additional:Automatic accessibility attributes', 'additional:Focus', 'additional:Reduced motion', 'buttons:External-link indicator', 'builder:Canvas badges' ] }, { id: 'recipes' } ] ],
 		[ __( 'Setup', 'tokenforge' ), [
 			{ id: 'wizard' },
-			{ id: 'options', title: __( 'Options', 'tokenforge' ), from: [ 'options:Dashboard look', 'options:TokenForge window', 'options:AI agents', 'options:Builder sync', 'options:Block editor', 'options:Performance', 'options:Cascade layers', 'options:Utility framework' ] },
+			{ id: 'options', title: __( 'Options', 'tokenforge' ), from: [ 'options:Dashboard look', 'options:TokenForge window', 'options:AI agents', 'options:Builder sync', 'options:Block editor', 'options:Performance', 'options:Breakpoints', 'options:Cascade layers', 'options:Utility framework' ] },
 			{ id: 'builder' },
 			{ id: 'transfer' }
 		] ],
@@ -383,7 +377,6 @@
 		overlays: __( 'Overlays and surface textures', 'tokenforge' ),
 		effects: __( 'Scroll, visible and hover effects', 'tokenforge' ),
 		base: __( 'Reset and helper classes', 'tokenforge' ),
-		scss: __( 'Your own SCSS and the canvas dock', 'tokenforge' ),
 		recipes: __( 'Ready-made snippets typed as ?name', 'tokenforge' ),
 		builder: __( 'Builder tools', 'tokenforge' )
 	};
@@ -452,7 +445,6 @@
 		content: '<path d="M5 6h14M5 10h14M5 14h9M5 18h11"/>',
 		tokens: '<rect x="3" y="4" width="7" height="7" rx="1"/><rect x="14" y="4" width="7" height="7" rx="1"/><rect x="3" y="13" width="7" height="7" rx="1"/><rect x="14" y="13" width="7" height="7" rx="1"/>',
 		attributes: '<path d="M9 7 4 12l5 5M15 7l5 5-5 5"/><path d="M12 5v14" stroke-dasharray="2 3"/>',
-		scss: '<path d="M8 6 3 12l5 6M16 6l5 6-5 6M14 4l-4 16"/>',
 		base: '<path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/>',
 		home: '<path d="M4 11 12 4l8 7"/><path d="M6 10v10h12V10"/>',
 		transfer: '<path d="M7 4v12M3 8l4-4 4 4M17 20V8M13 16l4 4 4-4"/>',
@@ -519,44 +511,6 @@
 		return '<input type="text" data-mod="' + mod + '" data-k="' + esc( k ) + '" value="' + esc( v == null ? '' : v ) + '"' + ( p ? ' placeholder="' + esc( p ) + '"' : '' ) + ( tt ? ' title="' + esc( tt ) + '" aria-label="' + esc( tt ) + '"' : '' ) + ' spellcheck="false">';
 	}
 
-	// ---- Bricks builder: show classes synced from Global SCSS right away ----
-	// (the builder keeps its own copy of the global classes and saves it with the page).
-	function builderClasses( list ) {
-		if ( ! list || ! list.length ) { return 0; }
-		var root = document.querySelector( 'div.brx-body.main' );
-		var g = root && root.__vue_app__ && root.__vue_app__.config && root.__vue_app__.config.globalProperties;
-		if ( ! g ) { return 0; }
-		var unref = function ( v ) { return v && v.__v_isRef ? v.value : v; };
-		var st = unref( g.$_state );
-		var gc = unref( g.$_globalClasses ) || ( st && unref( st.globalClasses ) ); // both name the same list in the builder 2.x
-		if ( ! Array.isArray( gc ) ) { return 0; }
-		var redraw = false;
-		list.forEach( function ( c ) {
-			var copy = JSON.parse( JSON.stringify( c.settings || {} ) );
-			var cls = gc.find( function ( x ) { return x.id === c.id; } ) || gc.find( function ( x ) { return x.name === c.name; } );
-			if ( cls ) { cls.settings = copy; } else { cls = { id: c.id, name: c.name, settings: copy }; gc.push( cls ); }
-			// The class open in the panels is the builder's own copy: give it the new settings too.
-			if ( st && st.activeClass && st.activeClass.id === cls.id ) {
-				st.activeClass = 'function' === typeof g.$_clone ? g.$_clone( cls ) : JSON.parse( JSON.stringify( cls ) );
-				redraw = true;
-			}
-			if ( st && st.globalChanges && Array.isArray( st.globalChanges.modified ) && st.globalChanges.modified.indexOf( cls.id ) < 0 ) { st.globalChanges.modified.push( cls.id ); }
-		} );
-		if ( redraw && 'function' === typeof g.$_rerenderControls ) { g.$_rerenderControls(); }
-		return list.length;
-	}
-	// While Global SCSS is open and unedited, pick up changes the builder sync made.
-	var revTimer = null;
-	function watchScssRev() {
-		if ( revTimer ) { return; }
-		revTimer = setInterval( function () {
-			if ( ! app || ! app.isConnected || 'scss' !== state.tab || state.dirty || state.q || document.visibilityState === 'hidden' || ! app.getClientRects().length ) { return; }
-			api( '/scss-rev' ).then( function ( r ) {
-				if ( r && r.rev && state.scssRev && r.rev !== state.scssRev && ! state.dirty ) { load().then( function () { setStatus( 'Global SCSS updated from the builder.', 'tf-ok' ); } ); }
-			} ).catch( function () {} );
-		}, 4000 );
-	}
-
 	// ---- Tooltips: a "?" after every label; text from tips.js ----
 	function tipText( mod, k ) { var T = window.TokenForgeTips; return T && mod ? T.get( mod, k ) : ''; }
 	function tipRaw( k ) { var T = window.TokenForgeTips; return T ? T.raw( k ) : ''; }
@@ -611,15 +565,15 @@
 			ensureCheat();
 			return '<p class="tf-muted">Loading the cheatsheet…</p>';
 		}
-		var kinds = [ [ '', __( 'All', 'tokenforge' ) ], [ 'class', __( 'Classes', 'tokenforge' ) ], [ 'var', __( 'Variables', 'tokenforge' ) ], [ 'scss', __( 'SCSS', 'tokenforge' ) ], [ 'recipe', __( 'Recipes', 'tokenforge' ) ], [ 'attr', __( 'Attributes', 'tokenforge' ) ] ];
+		var kinds = [ [ '', __( 'All', 'tokenforge' ) ], [ 'class', __( 'Classes', 'tokenforge' ) ], [ 'var', __( 'Variables', 'tokenforge' ) ], [ 'recipe', __( 'Recipes', 'tokenforge' ) ], [ 'attr', __( 'Attributes', 'tokenforge' ) ] ];
 		var words = ( state.cheatQ || '' ).toLowerCase().trim().split( /\s+/ ).filter( Boolean ).map( function ( w ) { return w.replace( /^\./, '' ); } );
-		var html = '<div class="tf-cheat-bar"><input type="search" class="tf-search tf-cheat-q" placeholder="' + esc( __( 'Search classes, variables, mixins, recipes…', 'tokenforge' ) ) + '" value="' + esc( state.cheatQ || '' ) + '" aria-label="Search the cheatsheet">'
+		var html = '<div class="tf-cheat-bar"><input type="search" class="tf-search tf-cheat-q" placeholder="' + esc( __( 'Search classes, variables, recipes…', 'tokenforge' ) ) + '" value="' + esc( state.cheatQ || '' ) + '" aria-label="Search the cheatsheet">'
 			+ '<div class="tf-chips">' + kinds.map( function ( k ) { return '<button type="button" class="tf-chip' + ( ( state.cheatKind || '' ) === k[0] ? ' is-active' : '' ) + '" data-act="cheatkind" data-kind="' + k[0] + '">' + k[1] + '</button>'; } ).join( '' ) + '</div></div>'
-			+ '<p class="tf-muted">Click a name or the copy icon: classes copy without the dot, variables as var(--name), mixins as an @include, recipes as ?name.</p>';
+			+ '<p class="tf-muted">Click a name or the copy icon: classes copy without the dot, variables as var(--name), recipes as ?name.</p>';
 		var total = 0;
 		state.cheat.forEach( function ( g ) {
 			var items = g.items.filter( function ( it ) {
-				if ( state.cheatKind ) { var kk = ( 'mixin' === it.k || 'function' === it.k ) ? 'scss' : it.k; if ( kk !== state.cheatKind ) { return false; } }
+				if ( state.cheatKind && it.k !== state.cheatKind ) { return false; }
 				if ( ! words.length ) { return true; }
 				var hay = ( it.n + ' ' + it.d + ' ' + it.css + ' ' + g.title ).toLowerCase();
 				return words.every( function ( w ) { return hay.indexOf( w ) > -1; } );
@@ -654,7 +608,7 @@
 		return mods.concat( [ key ] ).join( '+' );
 	}
 
-	// ---- Recipes (for the SCSS editor) ----
+	// ---- Recipes ----
 	function recipesOn() { return !! ( state.recipes && state.recipes.enabled ) && false !== ( state.modules || {} ).recipes; }
 
 	// ---- Custom panels ---------------------------------------------------
@@ -775,24 +729,6 @@
 	} )();
 
 	var CUSTOM = {
-		scssEditor: function () {
-			var st = state.scssStatus || {}, err = st.error;
-			var msg = err ? '<span class="tf-scss-err">Line ' + ( err.line || '?' ) + ( err.column ? ':' + err.column : '' ) + ': ' + esc( err.message ) + '</span>'
-				: ( st.time ? '<span class="tf-scss-ok">Compiled</span>' : '<span class="tf-muted">Not compiled yet</span>' );
-			return '<div class="tf-scss">' +
-				'<div class="tf-scss-bar"><span class="tf-scss-state">' + msg + '</span><span class="tf-grow"></span>' +
-				'<button type="button" class="tf-btn tf-small" data-act="scsscheck" title="Compile without saving">Check</button>' +
-				'<button type="button" class="tf-btn tf-small" data-act="scsscss" title="Show the compiled CSS">CSS</button></div>' +
-				( null !== state.scssLost ? '<div class="tf-scss-lost"><p><strong>Your unsaved SCSS</strong> (the SCSS changed in the builder while you edited). Copy what you need, then dismiss.</p><textarea readonly rows="6" class="tf-mono">' + esc( state.scssLost ) + '</textarea><p><button type="button" class="tf-btn tf-small" data-act="scsslostok">Dismiss</button></p></div>' : '' ) +
-				'<textarea class="tf-scss-src" spellcheck="false" rows="20" aria-label="Global SCSS">' + esc( ( state.scss || {} ).source || '' ) + '</textarea>' +
-				( null !== state.scssCss ? '<pre class="tf-scss-out">' + esc( state.scssCss || '/* (no output) */' ) + '</pre>' : '' ) +
-				'</div>';
-		},
-		scssRef: function () {
-			return '<div class="tf-ref">' + ( state.scssRef || [] ).map( function ( r ) {
-				return '<button type="button" class="tf-ref-row" data-act="scssins" data-ins="' + esc( r[1] ) + '"><code>' + esc( r[1] ) + '</code><span class="tf-muted">' + esc( r[3] ) + '</span></button>';
-			} ).join( '' ) + '</div>';
-		},
 		customRecipes: function () {
 			var list = ( state.recipes && state.recipes.custom ) || [];
 			var html = list.map( function ( r, i ) {
@@ -812,7 +748,7 @@
 			Object.keys( groups ).forEach( function ( g ) {
 				html += '<h4 class="tf-recipe-group">' + esc( g ) + ' <span class="tf-count">' + groups[ g ].length + '</span></h4><div class="tf-recipes">';
 				groups[ g ].forEach( function ( r ) {
-					html += '<details class="tf-recipe-item"><summary><code>?' + esc( r.n ) + '</code>' + ( r.inline ? '<span class="tf-muted"> value</span>' : '' ) + '</summary><pre>' + esc( String( r.code ).replace( '{{cursor}}', '' ) ) + '</pre>' + ( r.scss ? '<p class="tf-muted">In Global SCSS: <code>' + esc( r.scss.replace( '{{cursor}}', '' ) ) + '</code></p>' : '' ) + '</details>';
+					html += '<details class="tf-recipe-item"><summary><code>?' + esc( r.n ) + '</code>' + ( r.inline ? '<span class="tf-muted"> value</span>' : '' ) + '</summary><pre>' + esc( String( r.code ).replace( '{{cursor}}', '' ) ) + '</pre>' + '</details>';
 				} );
 				html += '</div>';
 			} );
@@ -843,9 +779,6 @@
 			} );
 			out += '</div>';
 			return out;
-		},
-		dockOpen: function () {
-			return window.TokenForgeDock ? '<p><button type="button" class="tf-btn" data-act="dockopen">Open the Global SCSS dock</button></p>' : '';
 		},
 		fontList: function () {
 			var list = ( state.fonts || {} ).fonts || [];
@@ -1022,7 +955,7 @@
 		importBox: function () {
 			var f = state.transferFile, html = '<p><label class="tf-btn tf-upload">Choose export file<input type="file" accept=".json,application/json" class="tf-import-file"></label> ' + ( f ? '<span class="tf-muted">' + esc( state.transferName ) + ( f.site ? ', from ' + esc( f.site ) : '' ) + ( f.exported ? ', ' + esc( String( f.exported ).slice( 0, 10 ) ) : '' ) + '</span>' : '' ) + '</p>';
 			if ( f ) {
-				var labels = { tokens: 'Tokens', palette: 'Colour families', settings: 'All settings', modules: 'Module switches', scss: 'Global SCSS', recipes: 'Your recipes', fonts: 'Fonts' };
+				var labels = { tokens: 'Tokens', palette: 'Colour families', settings: 'All settings', modules: 'Module switches', recipes: 'Your recipes', fonts: 'Fonts' };
 				html += '<div class="tf-fields">' + Object.keys( labels ).filter( function ( k ) { return f.data && f.data[ k ]; } ).map( function ( k ) {
 					return '<label class="tf-field tf-switchrow"><span class="tf-switch"><input type="checkbox" data-part="import" data-p="' + k + '"' + ( false !== state.transferParts[ k ] ? ' checked' : '' ) + '><i></i></span><span class="tf-flabel">' + labels[ k ] + '</span></label>';
 				} ).join( '' ) + '</div><p><button type="button" class="tf-btn tf-primary" data-act="importrun">Import</button> <button type="button" class="tf-btn" data-act="importclear">Cancel</button></p>';
@@ -1053,7 +986,7 @@
 			return html;
 		},
 		resetBox: function () {
-			var parts = [ [ 'settings', 'All settings', 'every switch and value' ], [ 'tokens', 'Tokens and colour families', 'the starter colours' ], [ 'scss', 'Global SCSS code', 'empties it' ], [ 'recipes', 'Your recipes', 'removes them' ], [ 'fonts', 'Font list', 'files stay in uploads' ] ];
+			var parts = [ [ 'settings', 'All settings', 'every switch and value' ], [ 'tokens', 'Tokens and colour families', 'the starter colours' ], [ 'recipes', 'Your recipes', 'removes them' ], [ 'fonts', 'Font list', 'files stay in uploads' ] ];
 			return '<div class="tf-fields">' + parts.map( function ( p ) {
 				return '<label class="tf-field tf-switchrow"><span class="tf-switch"><input type="checkbox" data-part="reset" data-p="' + p[0] + '"' + ( state.resetParts[ p[0] ] ? ' checked' : '' ) + '><i></i></span><span class="tf-flabel">' + p[1] + ' <span class="tf-muted">(' + p[2] + ')</span></span></label>';
 			} ).join( '' ) + '</div><p><button type="button" class="tf-btn tf-danger" data-act="resetrun">Reset to defaults</button></p>';
@@ -1947,57 +1880,9 @@
 		if ( nb && bodyTop ) { nb.scrollTop = bodyTop; }
 		if ( nn && navTop ) { nn.scrollTop = navTop; }
 		tipEl = null;
-		initScssEditor();
 		syncTokAll();
 		stickTokbar();
 	}
-
-	// ---- Global SCSS editor: the shared editor (scss-editor.js): CodeMirror when
-	// the host page has it, otherwise the textarea with the same suggestions. ----
-	var scssEd = null, scssTimer = null;
-	function scssChanged( v ) {
-		state.scss.source = v;
-		markDirty();
-		clearTimeout( scssTimer );
-		scssTimer = setTimeout( function () { scssCheck( false ); }, 900 );
-	}
-	function scssBar() {
-		var el = app && app.querySelector( '.tf-scss-state' );
-		var err = ( state.scssStatus || {} ).error;
-		if ( el ) {
-			el.innerHTML = err ? '<span class="tf-scss-err">Line ' + ( err.line || '?' ) + ( err.column ? ':' + err.column : '' ) + ': ' + esc( err.message ) + '</span>' : '<span class="tf-scss-ok">Compiles</span>';
-		}
-		if ( scssEd ) { scssEd.setError( err ); }
-	}
-	function scssCheck( showCss ) {
-		var src = ( state.scss || {} ).source || '';
-		return api( '/scss-compile', 'POST', { source: src } ).then( function ( res ) {
-			state.scssStatus = { error: res.error || null, time: Date.now() };
-			scssBar();
-			if ( showCss ) {
-				state.scssCss = res.css || '';
-				var box = app.querySelector( '.tf-scss' ), pre = box && box.querySelector( '.tf-scss-out' );
-				if ( box && ! pre ) { pre = document.createElement( 'pre' ); pre.className = 'tf-scss-out'; box.appendChild( pre ); }
-				if ( pre ) { pre.textContent = res.error ? '/* fix the error above first */' : ( res.css || '/* (no output) */' ); }
-			}
-		} ).catch( function ( e ) { setStatus( 'SCSS check failed: ' + e.message, 'tf-err' ); } );
-	}
-	function initScssEditor() {
-		scssEd = null;
-		var ta = app && app.querySelector( '.tf-scss-src' );
-		if ( ! ta || ! window.TokenForgeScssEditor ) { return; }
-		scssEd = window.TokenForgeScssEditor.create( ta, {
-			api: api,
-			codeEditor: cfg.codeEditor,
-			height: 440,
-			data: function () { return { recipes: state.recipeList || [], recipesOn: recipesOn(), ref: state.scssRef || [] }; },
-			onChange: scssChanged
-			// Ctrl/Cmd + S bubbles to the dashboard's own Save shortcut.
-		} );
-		scssBar();
-	}
-	// Reference items like "@include breakpoint(m) { … }" open a block with the caret inside.
-	function scssInsert( text ) { if ( scssEd ) { scssEd.insert( String( text ).replace( /\{\s*…\s*\}\s*$/, '{\n\t{{cursor}}\n}' ) ); } }
 
 	// Swatch strips of a family: light shades above, dark mode below. While a family
 	// is being edited the colour engine draws them, so you see the result before Save.
@@ -2274,7 +2159,7 @@
 			if ( act === 'histrestore' ) {
 				var rid = +el.getAttribute( 'data-id' );
 				if ( state.dirty && ! window.confirm( __( 'You have unsaved changes; restoring drops them. Go on?', 'tokenforge' ) ) ) { return; }
-				if ( ! window.confirm( __( 'Put this copy back? Settings, tokens, colour families, fonts and Global SCSS go back to how they were then. You can undo this too.', 'tokenforge' ) ) ) { return; }
+				if ( ! window.confirm( __( 'Put this copy back? Settings, tokens, colour families and fonts go back to how they were then. You can undo this too.', 'tokenforge' ) ) ) { return; }
 				setStatus( __( 'Restoring…', 'tokenforge' ) );
 				api( '/history/' + rid + '/restore', 'POST', {} ).then( function ( res ) {
 					if ( ! res.ok ) { throw new Error( res.error || 'failed' ); }
@@ -2296,19 +2181,10 @@
 			if ( act === 'nav' ) { state.navOpen = ! state.navOpen; render(); return; }
 			if ( act === 'gshide' || act === 'gsshow' ) { try { if ( act === 'gshide' ) { window.localStorage.setItem( GS_KEY, '1' ); } else { window.localStorage.removeItem( GS_KEY ); } } catch ( e ) {} render(); return; }
 			if ( act === 'goto' ) { state.tab = el.getAttribute( 'data-go' ); state.q = ''; state.findTop = false; render(); return; }
-			if ( act === 'scsscheck' ) { setStatus( 'Checking SCSS…' ); scssCheck( false ).then( function () { setStatus( ( state.scssStatus || {} ).error ? 'SCSS has an error.' : 'SCSS compiles.', ( state.scssStatus || {} ).error ? 'tf-err' : 'tf-ok' ); } ); return; }
-			if ( act === 'scsscss' ) {
-				var out = app.querySelector( '.tf-scss-out' );
-				if ( out ) { out.remove(); state.scssCss = null; } else { scssCheck( true ); }
-				return;
-			}
 			if ( act === 'copy' ) { copyText( el.getAttribute( 'data-copy' ), el ); return; }
 			if ( act === 'cheatkind' ) { state.cheatKind = el.getAttribute( 'data-kind' ); render(); return; }
 			if ( act === 'cheatmore' ) { state.cheatOpen[ el.getAttribute( 'data-g' ) ] = true; render(); return; }
-			if ( act === 'scsslostok' ) { state.scssLost = null; render(); return; }
-			if ( act === 'scssins' ) { scssInsert( el.getAttribute( 'data-ins' ) ); return; }
 			if ( act === 'keyclear' ) { e.preventDefault(); state[ el.getAttribute( 'data-mod' ) || 'settings' ][ el.getAttribute( 'data-k' ) || 'panel_shortcut' ] = ''; markDirty(); render(); return; }
-			if ( act === 'dockopen' ) { if ( window.TokenForgeDock && window.TokenForgeDock.open ) { window.TokenForgeDock.open(); } return; }
 			if ( act === 'rcadd' ) { state.recipes.custom = state.recipes.custom || []; state.recipes.custom.push( { name: '', code: '' } ); markDirty(); render(); return; }
 			if ( act === 'rcdel' ) { state.recipes.custom.splice( parseInt( el.getAttribute( 'data-i' ), 10 ), 1 ); markDirty(); render(); return; }
 			if ( act === 'reset' ) {
@@ -2746,27 +2622,22 @@
 	function saveNow() {
 		setStatus( __( 'Saving…', 'tokenforge' ) );
 		var pruneNew = !! ( state.framework || {} ).prune_unused && ! state.pruneWas;
-		return api( '/save', 'POST', { tokens: state.tokens, tokens_rev: state.tokensRev, settings: state.settings, framework: state.framework, scales: state.scales, components: state.components, scheme: state.scheme, extras: state.extras, defaults: state.defaults, content: state.content, width: state.width, motion: state.motion, overlays: state.overlays, enhancements: state.enhancements, bricks_native: state.bricksNative, scss: state.scss, scss_base: state.scssBase, scss_rev: state.scssRev, recipes: state.recipes, palette: state.palette, palette_rev: state.paletteRev, fonts: state.fonts, woo: state.woo, modules: state.modules } )
+		return api( '/save', 'POST', { tokens: state.tokens, tokens_rev: state.tokensRev, settings: state.settings, framework: state.framework, scales: state.scales, components: state.components, scheme: state.scheme, extras: state.extras, defaults: state.defaults, content: state.content, width: state.width, motion: state.motion, overlays: state.overlays, enhancements: state.enhancements, bricks_native: state.bricksNative, scss: state.scss, recipes: state.recipes, palette: state.palette, palette_rev: state.paletteRev, fonts: state.fonts, woo: state.woo, modules: state.modules } )
 			.then( function ( res ) {
 				state.dirty = false; state.cheat = null; announce( res.css_ver, res.css_url );
-				if ( res.scss_conflict ) { state.scssLost = ( state.scss || {} ).source || ''; }
-				var pushed = builderClasses( res.synced );
 				builderThemeStyle( res.theme_style );
-				try { window.dispatchEvent( new CustomEvent( 'tokenforge:settings', { detail: { shortcut: state.settings.panel_shortcut || '', dockShortcut: state.settings.scss_dock_shortcut || '', dockTab: !! state.settings.scss_dock_tab, badges: { headings: !! ( state.enhancements || {} ).canvas_headings, focus: !! ( state.enhancements || {} ).canvas_focus } } } ) ); } catch ( e ) {}
+				try { window.dispatchEvent( new CustomEvent( 'tokenforge:settings', { detail: { shortcut: state.settings.panel_shortcut || '', badges: { headings: !! ( state.enhancements || {} ).canvas_headings, focus: !! ( state.enhancements || {} ).canvas_focus } } } ) ); } catch ( e ) {}
 				return load().then( function () {
-					var se = ( state.scssStatus || {} ).error;
-					if ( res.scss_conflict ) { return saveSay( __( 'Saved, but Global SCSS had changed in the builder meanwhile, so your SCSS edit was not applied (it is shown below to copy).', 'tokenforge' ), 'tf-err' ); }
 					if ( res.tokens_conflict && res.palette_conflict ) { return saveSay( __( 'Saved, but the tokens and the colour families had changed meanwhile (in the builder or another window), so the dashboard now shows the current ones. If you edited them here, make the edit again.', 'tokenforge' ), 'tf-err' ); }
 					if ( res.tokens_conflict ) { return saveSay( __( 'Saved, but the tokens had changed meanwhile (in the builder or another window), so the dashboard now shows the current ones. If you edited tokens here, make the edit again.', 'tokenforge' ), 'tf-err' ); }
 					if ( res.palette_conflict ) { return saveSay( __( 'Saved, but the colour families had changed meanwhile (in the builder or another window), so the dashboard now shows the current ones. If you edited colours here, make the edit again.', 'tokenforge' ), 'tf-err' ); }
 					if ( false === res.css_ok ) { return saveSay( __( 'Saved, but the stylesheet could not be written (the uploads folder is not writable), so the site keeps its old styles.', 'tokenforge' ), 'tf-err' ); }
 					if ( res.palette && res.palette.length ) { return saveSay( __( 'Saved · colour families updated: %s.', 'tokenforge' ).replace( '%s', res.palette.join( ', ' ) ), 'tf-ok' ); }
-					if ( res.synced && res.synced.length ) { return saveSay( ( pushed ? __( 'Saved · builder classes synced from Global SCSS: %s (builder updated).', 'tokenforge' ) : __( 'Saved · builder classes synced from Global SCSS: %s.', 'tokenforge' ) ).replace( '%s', res.synced.length ), 'tf-ok' ); }
-					return saveSay( se ? __( 'Saved, but Global SCSS has an error (line %s); the last working CSS stays live.', 'tokenforge' ).replace( '%s', se.line || '?' ) : __( 'Saved · CSS updated.', 'tokenforge' ), se ? 'tf-err' : 'tf-ok' );
+					return saveSay( __( 'Saved · CSS updated.', 'tokenforge' ), 'tf-ok' );
 				} ).then( function ( saved ) {
 					// "Leave out unused classes" is on with no scan yet, or was just switched on (the save no longer scans): do it now, unless a warning is showing.
 					// It runs inside the save (saveBusy), so two quick saves never scan at once; its result carries the Save message.
-					if ( ( state.framework || {} ).prune_unused && ( pruneNew || ! ( state.classUsage || {} ).time ) && ! res.scss_conflict && ! res.tokens_conflict && ! res.palette_conflict && false !== res.css_ok && ! ( state.scssStatus || {} ).error ) { return classScan( saved ).then( function () { return saved; } ); }
+					if ( ( state.framework || {} ).prune_unused && ( pruneNew || ! ( state.classUsage || {} ).time ) && ! res.tokens_conflict && ! res.palette_conflict && false !== res.css_ok ) { return classScan( saved ).then( function () { return saved; } ); }
 					return saved;
 				} );
 			} )
@@ -2815,14 +2686,9 @@
 			if ( ! state.palette.families || Array.isArray( state.palette.families ) ) { state.palette.families = {}; }
 			state.paletteOrig = JSON.parse( JSON.stringify( state.palette ) );
 			state.scss = s.scss || {};
-			state.scssBase = JSON.parse( JSON.stringify( state.scss ) ); // what this window loaded (see save())
 			state.recipes = s.recipes || { enabled: true, inputs: true, custom: [] };
 			if ( ! Array.isArray( state.recipes.custom ) ) { state.recipes.custom = []; }
-			state.scssStatus = s.scss_status || {};
-			state.scssRev = s.scss_rev || '';
-			state.scssRef = s.scss_ref || [];
 			state.recipeList = s.recipe_list || [];
-			state.scssCss = null;
 			if ( ! state.components.btn_overrides || Array.isArray( state.components.btn_overrides ) ) { state.components.btn_overrides = {}; }
 			state.defs = s.defaults_map || {};
 			state.families = s.families || [];
@@ -2864,7 +2730,6 @@
 	// Public mount API so the same dashboard can render in wp-admin and in the
 	// Bricks builder panel.
 	window.TokenForgeApp = {
-		builderClasses: builderClasses, // the SCSS dock uses it too
 		// Reload from the server unless there are unsaved changes (e.g. when the window reopens).
 		refresh: function () { if ( app && ! state.dirty ) { return load(); } },
 		// Tests and screenshots: show every panel open.
@@ -2877,7 +2742,6 @@
 			watchSize();
 			fitAdmin();
 			if ( window.addEventListener ) { window.addEventListener( 'resize', function () { fitAdmin(); stickTokbar(); } ); }
-			watchScssRev();
 			return load().catch( function ( err ) {
 				app.innerHTML = '<div class="notice notice-error"><p>Failed to load TokenForge: ' + esc( err.message ) + '</p></div>';
 			} );

@@ -64,7 +64,6 @@ class Plugin {
 			$this->bricks = new Platforms\Bricks();
 			new Features\Bem_Generator();
 			new Features\Builder_Enhancements();
-			new Features\Scss_Sync(); // Global SCSS <-> Bricks class fields (when switched on)
 			new Features\Form_Extras(); // steps and conditional fields in the builder's form (when switched on)
 			new Features\Form_Fields(); // input looks, date rules, messages, options from content, live values
 			new Features\Form_Rules(); // limits, submit rules, update meta and add to cart actions
@@ -172,26 +171,6 @@ class Plugin {
 		// adopts the style's typography first, so nothing on the site changes).
 		if ( $previous && version_compare( (string) $previous, '0.30.0', '<' ) ) {
 			update_option( 'tokenforge_setup_pending', 1, false );
-		}
-		// 0.41: Global SCSS and the builder classes stay in step live, always (the
-		// switch was off on sites set up earlier). One sync under the new rules
-		// clears builder CSS panels that contradicted the SCSS (Global SCSS wins).
-		if ( $previous && version_compare( (string) $previous, '0.41.0', '<' ) ) {
-			$scss = Modules::raw( array( Scss::class, 'settings' ) );
-			if ( empty( $scss['sync'] ) ) {
-				$scss['sync'] = true;
-				Scss::save_settings( $scss );
-			}
-			// After the theme has loaded (its breakpoints).
-			add_action(
-				'init',
-				function () {
-					if ( Features\Scss_Sync::push()['source_changed'] ) {
-						Css_Generator::get_instance()->generate();
-					}
-				},
-				30
-			);
 		}
 		Css_Generator::get_instance()->rebuild();
 		update_option( 'tokenforge_version', TOKENFORGE_VERSION );

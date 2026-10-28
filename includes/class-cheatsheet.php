@@ -45,8 +45,7 @@ class Cheatsheet {
 		'v-layout'   => array( 'Variables: layout & widths', 'Content width, gutters, grid templates and the width scale.' ),
 		'v-radius'   => array( 'Variables: radius, borders & shadows', 'Corner radius steps, border shorthands and shadows.' ),
 		'v-other'    => array( 'Variables: components & other', 'Button, card, icon, motion and other component variables. Set them on an element to adjust just that element.' ),
-		'scss'       => array( 'SCSS mixins & functions', 'Available in Global SCSS without an import. Copy the include into your SCSS.' ),
-		'recipes'    => array( 'Recipes', 'Type the recipe name with a leading ? in the builder CSS editor or in Global SCSS, then pick it or finish with ; to expand it.' ),
+		'recipes'    => array( 'Recipes', 'Type the recipe name with a leading ? in the builder CSS editor, then pick it or finish with ; to expand it.' ),
 		'attributes' => array( 'Data attributes', 'Attributes that switch features on for one element.' ),
 	);
 
@@ -100,11 +99,6 @@ class Cheatsheet {
 				'd'    => $desc,
 				'css'  => self::short( $t['value'] ),
 			);
-		}
-
-		// ---- SCSS ----
-		foreach ( Scss::reference() as $r ) {
-			$items['scss'][] = array( 'n' => $r[0], 'k' => $r[2], 'copy' => $r[1], 'd' => $r[3], 'css' => $r[1] );
 		}
 
 		// ---- Recipes ----

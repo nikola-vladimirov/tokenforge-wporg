@@ -1,13 +1,14 @@
 <?php
 /**
- * Global SCSS: your own SCSS, compiled with TokenForge's mixin library and added
- * to the end of the stylesheet (unlayered, so it wins over everything generated).
+ * SCSS compiler: compiles SCSS with TokenForge's mixin library. The only SCSS
+ * added to the stylesheet comes from the tokenforge_global_scss filter (code),
+ * there is no screen to type it in.
  *
- * The library (assets/scss/_library.scss plus parts generated from your
+ * The library (assets/scss/_library.scss plus parts generated from the
  * settings: breakpoints, button styles, heading/text styles, cards, surfaces) is
  * available without an @import. Compiled by a bundled, namespaced copy of
  * scssphp (MIT). A compile error never breaks the site: the last good CSS stays
- * in place and the error (with the line in YOUR code) is shown in the dashboard.
+ * in place.
  *
  * @package TokenForge
  */
@@ -17,11 +18,11 @@ namespace TokenForge;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Global SCSS module.
+ * SCSS compiler and breakpoints.
  */
 class Scss {
 
-	const OPTION = 'tokenforge_scss';       // settings + source
+	const OPTION = 'tokenforge_scss';       // breakpoints
 	const BUILD  = 'tokenforge_scss_build'; // last compile: hash, css, error, time
 
 	/** Breakpoint names, smallest first. */
@@ -46,12 +47,6 @@ class Scss {
 	 */
 	public static function builtin_defaults() {
 		return array(
-			'enabled' => true,
-			'source'  => '',
-			// Two-way sync with Bricks global classes (Bricks only).
-			'sync'        => true,  // class blocks <-> the class's Style fields and Custom CSS
-			'sync_pull'   => true,  // a class edited in the builder that isn't in the SCSS yet gets a block
-			'sync_create' => false, // a class block without a Bricks class creates one
 			// Breakpoints (px) for breakpoint()/breakpoint-up(), the media-query recipes
 			// and $breakpoints. "Below" queries use max-width: value.
 			'bp_xs'   => 478,
@@ -70,7 +65,7 @@ class Scss {
 	 */
 	public static function settings() {
 		$s = get_option( self::OPTION, array() );
-		return Modules::apply( 'scss', wp_parse_args( is_array( $s ) ? $s : array(), self::defaults() ) );
+		return wp_parse_args( is_array( $s ) ? $s : array(), self::defaults() );
 	}
 
 	/**
@@ -81,13 +76,7 @@ class Scss {
 	 */
 	public static function save_settings( $in ) {
 		$d     = self::defaults();
-		$clean = array(
-			'enabled' => ! empty( $in['enabled'] ),
-			'source'  => isset( $in['source'] ) ? str_replace( "\r\n", "\n", (string) $in['source'] ) : '',
-			'sync'        => ! empty( $in['sync'] ),
-			'sync_pull'   => ! empty( $in['sync_pull'] ),
-			'sync_create' => ! empty( $in['sync_create'] ),
-		);
+		$clean = array();
 		foreach ( self::BREAKPOINTS as $bp ) {
 			$v                    = isset( $in[ "bp_$bp" ] ) ? (int) $in[ "bp_$bp" ] : $d[ "bp_$bp" ];
 			$clean[ "bp_$bp" ]    = ( $v >= 100 && $v <= 5000 ) ? $v : $d[ "bp_$bp" ];
@@ -296,23 +285,13 @@ class Scss {
 	}
 
 	/**
-	 * Remove lines that only made sense in Automatic.css ("@import automatic-imports").
-	 *
-	 * @param string $source SCSS.
-	 * @return string
-	 */
-	private static function clean_source( $source ) {
-		return preg_replace( '/^[ \t]*@import\s+[\'"]automatic-imports[\'"]\s*;[ \t]*$/m', '', (string) $source );
-	}
-
-	/**
 	 * Compile SCSS (with the library in front).
 	 *
 	 * @param string $source Your SCSS.
 	 * @return array [ 'css' => string, 'error' => null|array{message,line,column} ]
 	 */
 	public static function compile( $source ) {
-		$source = self::clean_source( $source );
+		$source = (string) $source;
 		if ( '' === trim( $source ) ) {
 			return array( 'css' => '', 'error' => null );
 		}
@@ -378,17 +357,24 @@ class Scss {
 	 * @return string
 	 */
 	public static function css() {
-		$s = self::settings();
-		if ( empty( $s['enabled'] ) || '' === trim( self::clean_source( $s['source'] ) ) ) {
+		/**
+		 * SCSS to add to the end of the stylesheet. Return a string of SCSS: it is
+		 * compiled with the TokenForge library (mixins, functions, breakpoints). Runs
+		 * on each stylesheet build; an empty string adds nothing.
+		 *
+		 * @param string $scss SCSS source, empty by default.
+		 */
+		$source = apply_filters( 'tokenforge_global_scss', '' );
+		if ( ! is_string( $source ) || '' === trim( $source ) ) {
 			return '';
 		}
-		$hash  = md5( TOKENFORGE_VERSION . self::library() . "\n" . $s['source'] );
+		$hash  = md5( TOKENFORGE_VERSION . self::library() . "\n" . $source );
 		$build = get_option( self::BUILD, array() );
 		$build = is_array( $build ) ? $build : array();
 		if ( isset( $build['hash'] ) && $build['hash'] === $hash ) {
 			return isset( $build['css'] ) ? (string) $build['css'] : '';
 		}
-		$r     = self::compile( $s['source'] );
+		$r     = self::compile( $source );
 		$build = array(
 			'hash'  => $hash,
 			'css'   => null === $r['error'] ? $r['css'] : ( isset( $build['css'] ) ? (string) $build['css'] : '' ),
@@ -397,88 +383,5 @@ class Scss {
 		);
 		update_option( self::BUILD, $build, false );
 		return $build['css'];
-	}
-
-	/**
-	 * Last compile status (for the dashboard).
-	 *
-	 * @return array [ 'error' => null|array, 'time' => int ]
-	 */
-	public static function status() {
-		$b = get_option( self::BUILD, array() );
-		return array(
-			'error' => is_array( $b ) && ! empty( $b['error'] ) ? $b['error'] : null,
-			'time'  => is_array( $b ) && isset( $b['time'] ) ? (int) $b['time'] : 0,
-		);
-	}
-
-	/**
-	 * Mixins and functions for the editor's autocomplete and the reference list.
-	 *
-	 * @return array [ [ name, signature, kind, description ], … ]
-	 */
-	public static function reference() {
-		return array(
-			array( 'breakpoint', '@include breakpoint(m) { … }', 'mixin', 'Screens at or below a breakpoint (xs, s, m, l, xl, xxl or a length).' ),
-			array( 'breakpoint-up', '@include breakpoint-up(m) { … }', 'mixin', 'Screens at or above a breakpoint.' ),
-			array( 'btn', '@include btn(primary);', 'mixin', 'A button: primary, primary-dark, primary-light, "primary.btn--outline" … ($props: no = only the colours).' ),
-			array( 'btn-default', '@include btn-default;', 'mixin', 'The shared button declarations without colours.' ),
-			array( 'card', '@include card(light);', 'mixin', 'The card styles ($style: light | dark | inherit; $output: all | no).' ),
-			array( 'card-container', '@include card-container("inline-size > 767px") { … }', 'mixin', 'Container query on the nearest card container.' ),
-			array( 'container', '@include container("min-width: 30rem") { … }', 'mixin', 'Any container query ($name optional).' ),
-			array( 'center', '@include center(left);', 'mixin', 'Centre as a column: all | left | right | top | bottom; $output: full | core | tokens.' ),
-			array( 'content-grid', '@include content-grid;', 'mixin', 'Content grid with named lines (content, feature, feature-max, full).' ),
-			array( 'auto-grid', '@include auto-grid(4);', 'mixin', 'Responsive grid: $column-count, $min, $flow, $force-even-column-count.' ),
-			array( 'grid', '@include grid(3);', 'mixin', 'A grid from --grid-N (or explicit tracks), $rows, $gap.' ),
-			array( 'clickable-parent', '@include clickable-parent;', 'mixin', 'On the link/button: its click area covers the positioned card.' ),
-			array( 'focus-parent', '@include focus-parent(shadow);', 'mixin', 'Focus ring on the card when a child has keyboard focus (shadow | outline).' ),
-			array( 'border', '@include border(light, block-start, var(--radius-l));', 'mixin', 'Border from the tokens: main | light | dark; side; radius (no = none).' ),
-			array( 'fade', '@include fade(block, 25%);', 'mixin', 'Mask fade: block | inline | top | right | bottom | left.' ),
-			array( 'line-clamp', '@include line-clamp(3);', 'mixin', 'Cut text after N lines.' ),
-			array( 'heading-style', '@include heading-style(h2);', 'mixin', 'The global heading styles of a level.' ),
-			array( 'text-style', '@include text-style(l);', 'mixin', 'The body text styles at a size.' ),
-			array( 'icon', '@include icon(dark, box);', 'mixin', 'Icon styling ($scheme: light | dark; $box-style: box | plain).' ),
-			array( 'overlay', '@include overlay(rgb(0 0 0 / .5));', 'mixin', 'A tint under the content ($overlay-opacity, $overlay-bg-image).' ),
-			array( 'texture', '@include texture(1);', 'mixin', 'Surface N as the background.' ),
-			array( 'texture-overlay', '@include texture-overlay(1);', 'mixin', 'Surface N on a pseudo-element under the content.' ),
-			array( 'delay-children', '@include delay-children(6, 100ms);', 'mixin', 'Stagger the animation delay of the first N children.' ),
-			array( 'keyframes', '@include keyframes(name) { from {…} to {…} }', 'mixin', '@keyframes from a mixin.' ),
-			array( 'fluid', 'fluid(16, 24)', 'function', 'Fluid clamp() between two px values across the viewport range.' ),
-			array( 'to-rem', 'to-rem(24px)', 'function', 'px → rem at your root font size (unitless: adds rem).' ),
-			array( 'ctr', 'ctr(24)', 'function', 'Pixels to rem.' ),
-			array( 'strip-unit', 'strip-unit(16px)', 'function', 'The number without its unit.' ),
-		);
-	}
-
-	/**
-	 * Adopt Automatic.css's custom SCSS (its Custom SCSS file, or the older
-	 * custom-global-css setting). Non-destructive: added below your own code.
-	 *
-	 * @param array $acss ACSS settings.
-	 * @return bool Whether anything was imported.
-	 */
-	public static function import_acss( $acss ) {
-		$up   = wp_get_upload_dir();
-		$file = trailingslashit( $up['basedir'] ) . 'automatic-css/automatic-custom-css.scss';
-		$code = '';
-		if ( file_exists( $file ) ) {
-			$code = (string) file_get_contents( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions
-			$code = self::clean_source( $code );
-			$code = preg_replace( '#^[ \t]*//[ \t]*(Load SCSS Powers|Add Your Code Below)[ \t]*$#mi', '', $code );
-		}
-		if ( '' === trim( $code ) && ! empty( $acss['custom-global-css'] ) && is_string( $acss['custom-global-css'] ) ) {
-			$code = $acss['custom-global-css'];
-		}
-		$code = trim( str_replace( "\r\n", "\n", (string) $code ) );
-		if ( '' === $code ) {
-			return false;
-		}
-		$s = self::settings();
-		if ( false !== strpos( $s['source'], $code ) ) {
-			return false; // already there
-		}
-		$s['source'] = '' === trim( $s['source'] ) ? $code . "\n" : rtrim( $s['source'] ) . "\n\n/* Imported custom CSS */\n" . $code . "\n";
-		self::save_settings( $s );
-		return true;
 	}
 }

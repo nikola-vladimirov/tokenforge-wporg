@@ -2,6 +2,10 @@
 
 All the changes to TokenForge, newest first.
 
+## 0.54.0
+
+The Global SCSS editor is removed from the WordPress.org version. Developers can still add SCSS with the tokenforge_global_scss filter.
+
 ## 0.53.7
 
 Fixes from the WordPress.org review.

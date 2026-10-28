@@ -4,7 +4,7 @@ Tags: design tokens, css variables, accessibility, woocommerce, bricks
 Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.53.7
+Stable tag: 0.54.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,11 +24,6 @@ A new site starts ready: a complete starter design system (every token, colour f
 * Utility classes for spacing, grids, corners and more. Unused classes can be left out of the stylesheet after a site scan, to keep it small.
 * A Tokens screen that lists every variable, the setting that makes it and where it is used. Add your own tokens in a built-in or your own category.
 * Dark mode: assign it by section and add a light or dark switch anywhere, with a shortcode or a block.
-
-**Global SCSS**
-
-* Write your own SCSS with mixins, functions, breakpoints and recipes, and autocomplete for properties, values, tokens, classes and mixins.
-* Sections, a Jump to list with search (Ctrl+Shift+O), and a dock beside the Bricks canvas with a live preview.
 
 **Accessibility**
 
@@ -79,9 +74,19 @@ These attributes work on any element in Bricks, the block editor or your own mar
 * data-tf-tooltip: a tooltip that stays on screen, also on a phone.
 * data-tf-filter-group, data-tf-filter and data-tf-term: a list filter with no code.
 * data-tf-decorative: marks an image as decorative (Mark as decorative in the builder).
-* data-tf-state: marks an element as open, active or disabled, so your CSS and SCSS can style that state. Disabled also dims the element and blocks mouse clicks.
+* data-tf-state: marks an element as open, active or disabled, so your CSS can style that state. Disabled also dims the element and blocks mouse clicks.
 
 TokenForge is original software released under the GPLv2 or later.
+
+**Developers**
+
+A developer can add SCSS to the stylesheet from code. TokenForge compiles it with its own mixins and functions and adds it at the end. There is no screen for it, and a compile error never breaks the site.
+
+```
+add_filter( 'tokenforge_global_scss', function ( $scss ) {
+	return $scss . '.card { @include btn(primary); }';
+} );
+```
 
 == Installation ==
 
@@ -136,9 +141,8 @@ Yes. The dashboard and the builder settings use the `tokenforge` text domain, so
 1. Home: every section at a glance, with a switch for each module.
 2. Colour families: light and dark shades generated from one colour, with a live preview.
 3. Typography: fluid text and heading sizes from one scale.
-4. Global SCSS: your own code, with every token, mixin and function ready to use.
-5. WooCommerce: shop pages, product lists, filters and blocks, each part with its own switch.
-6. Forms: field styles, form classes, steps and conditional fields for the builder's form.
+4. WooCommerce: shop pages, product lists, filters and blocks, each part with its own switch.
+5. Forms: field styles, form classes, steps and conditional fields for the builder's form.
 
 == External services ==
 
@@ -155,6 +159,9 @@ Bundled code, no outside contact:
 == Changelog ==
 
 The full history is in CHANGELOG.md, also shown from the Changelog link next to TokenForge on the Plugins screen.
+
+= 0.54.0 =
+* The Global SCSS editor is removed from the WordPress.org version. Developers can still add SCSS with the tokenforge_global_scss filter.
 
 = 0.53.7 =
 * WordPress.org review: the WP-CLI export no longer writes to a chosen file; use the shell redirect instead.

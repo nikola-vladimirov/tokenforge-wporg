@@ -73,9 +73,6 @@ class Modules {
 		'base'       => array(
 			'defaults' => array( 'reset' => false, 'focus_styles' => false, 'object_fit' => false, 'is_bg' => false, 'sr_only' => false, 'columns' => false, 'media_block' => false, 'reduce_motion' => false ),
 		),
-		'scss'       => array(
-			'scss' => array( 'enabled' => false, 'sync' => false ),
-		),
 		'recipes'    => array(
 			'recipes' => array( 'enabled' => false ),
 		),

@@ -22,8 +22,6 @@
         "panel_shortcut": "alt+shift+t",
         "frontend_panel": true,
         "frontend_launcher": true,
-        "scss_dock_shortcut": "alt+shift+s",
-        "scss_dock_tab": true,
         "ai_abilities": true,
         "ai_guidance": true,
         "a11y_icons": false,
@@ -786,7 +784,6 @@
         "overlays": true,
         "effects": false,
         "base": true,
-        "scss": true,
         "recipes": true,
         "woo": true,
         "builder": true
@@ -900,10 +897,6 @@
         }
     },
     "scss": {
-        "enabled": true,
-        "sync": true,
-        "sync_pull": true,
-        "sync_create": true,
         "bp_xs": 478,
         "bp_s": 767,
         "bp_m": 991,

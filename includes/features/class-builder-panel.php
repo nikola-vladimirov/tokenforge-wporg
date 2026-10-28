@@ -56,22 +56,6 @@ class Builder_Panel {
 	}
 
 	/**
-	 * Global SCSS dock config.
-	 *
-	 * @return array
-	 */
-	private function dock_config() {
-		$s = Settings::get_instance()->get_settings();
-		return array(
-			'restUrl'  => esc_url_raw( rest_url( \TokenForge\Rest::NS ) ),
-			'nonce'    => wp_create_nonce( 'wp_rest' ),
-			'shortcut' => (string) $s['scss_dock_shortcut'],
-			'tab'      => ! empty( $s['scss_dock_tab'] ),
-			'marker'   => '/* --- Global SCSS --- */',
-		);
-	}
-
-	/**
 	 * Is the front-end window wanted on this request?
 	 *
 	 * @return bool
@@ -110,20 +94,11 @@ class Builder_Panel {
 			wp_enqueue_style( 'tokenforge-admin', TOKENFORGE_URL . 'assets/admin/admin.css', array(), TOKENFORGE_VERSION );
 			wp_enqueue_style( 'tokenforge-panel', TOKENFORGE_URL . 'assets/builder/panel.css', array( 'tokenforge-admin' ), TOKENFORGE_VERSION );
 			wp_enqueue_script( 'tokenforge-tips', TOKENFORGE_URL . 'assets/admin/tips.js', array( 'wp-i18n' ), TOKENFORGE_VERSION, true );
-			wp_enqueue_script( 'tokenforge-scss-outline', TOKENFORGE_URL . 'assets/admin/scss-outline.js', array(), TOKENFORGE_VERSION, true );
-			wp_enqueue_script( 'tokenforge-scss-editor', TOKENFORGE_URL . 'assets/admin/scss-editor.js', array( 'wp-i18n', 'tokenforge-scss-outline' ), TOKENFORGE_VERSION, true );
-			wp_set_script_translations( 'tokenforge-scss-editor', 'tokenforge' );
-			wp_enqueue_script( 'tokenforge-dashboard', TOKENFORGE_URL . 'assets/admin/admin.js', array( 'wp-i18n', 'tokenforge-tips', 'tokenforge-scss-editor' ), TOKENFORGE_VERSION, true );
+			wp_enqueue_script( 'tokenforge-dashboard', TOKENFORGE_URL . 'assets/admin/admin.js', array( 'wp-i18n', 'tokenforge-tips' ), TOKENFORGE_VERSION, true );
 			wp_set_script_translations( 'tokenforge-tips', 'tokenforge' );
 			wp_set_script_translations( 'tokenforge-dashboard', 'tokenforge' );
 			wp_enqueue_script( 'tokenforge-panel', TOKENFORGE_URL . 'assets/builder/panel.js', array( 'tokenforge-dashboard' ), TOKENFORGE_VERSION, true );
 			wp_localize_script( 'tokenforge-panel', 'TokenForgePanel', $this->config( 'builder' ) );
-			// Global SCSS dock at the bottom of the canvas (works without the window), unless the SCSS module is off.
-			if ( \TokenForge\Modules::on( 'scss' ) ) {
-				wp_enqueue_style( 'tokenforge-scss-dock', TOKENFORGE_URL . 'assets/builder/scss-dock.css', array(), TOKENFORGE_VERSION );
-				wp_enqueue_script( 'tokenforge-scss-dock', TOKENFORGE_URL . 'assets/builder/scss-dock.js', array( 'tokenforge-scss-editor' ), TOKENFORGE_VERSION, true );
-				wp_localize_script( 'tokenforge-scss-dock', 'TokenForgeDockCfg', $this->dock_config() );
-			}
 			// The Check tab (UI for the page-check engine, which class-check.php enqueues in this same context).
 			wp_enqueue_script( 'tokenforge-check-panel', TOKENFORGE_URL . 'assets/builder/check-panel.js', array( 'wp-i18n', 'tokenforge-dashboard', 'tokenforge-check-engine' ), TOKENFORGE_VERSION, true );
 			wp_set_script_translations( 'tokenforge-check-panel', 'tokenforge' );
@@ -151,10 +126,7 @@ class Builder_Panel {
 		// Front end: styles load inside the window's shadow root (see panel.js), so
 		// they are passed as URLs instead of being enqueued into the page.
 		wp_enqueue_script( 'tokenforge-tips', TOKENFORGE_URL . 'assets/admin/tips.js', array( 'wp-i18n' ), TOKENFORGE_VERSION, true );
-		wp_enqueue_script( 'tokenforge-scss-outline', TOKENFORGE_URL . 'assets/admin/scss-outline.js', array(), TOKENFORGE_VERSION, true );
-		wp_enqueue_script( 'tokenforge-scss-editor', TOKENFORGE_URL . 'assets/admin/scss-editor.js', array( 'wp-i18n', 'tokenforge-scss-outline' ), TOKENFORGE_VERSION, true );
-		wp_set_script_translations( 'tokenforge-scss-editor', 'tokenforge' );
-		wp_enqueue_script( 'tokenforge-dashboard', TOKENFORGE_URL . 'assets/admin/admin.js', array( 'wp-i18n', 'tokenforge-tips', 'tokenforge-scss-editor' ), TOKENFORGE_VERSION, true );
+		wp_enqueue_script( 'tokenforge-dashboard', TOKENFORGE_URL . 'assets/admin/admin.js', array( 'wp-i18n', 'tokenforge-tips' ), TOKENFORGE_VERSION, true );
 		wp_set_script_translations( 'tokenforge-tips', 'tokenforge' );
 		wp_set_script_translations( 'tokenforge-dashboard', 'tokenforge' );
 		wp_enqueue_script( 'tokenforge-panel', TOKENFORGE_URL . 'assets/builder/panel.js', array( 'tokenforge-dashboard' ), TOKENFORGE_VERSION, true );

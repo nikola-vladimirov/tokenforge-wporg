@@ -57,19 +57,8 @@ class Admin {
 			array(),
 			TOKENFORGE_VERSION
 		);
-		// CodeMirror (SCSS mode) for the Global SCSS editor; the dashboard falls back
-		// to a plain editor when the user turned syntax highlighting off.
-		$deps = array( 'wp-api-fetch', 'wp-i18n' );
-		$code = function_exists( 'wp_enqueue_code_editor' ) ? wp_enqueue_code_editor( array( 'type' => 'text/x-scss', 'codemirror' => array( 'indentUnit' => 4, 'tabSize' => 4, 'indentWithTabs' => true ) ) ) : false;
-		if ( false !== $code ) {
-			$deps[] = 'code-editor';
-		}
+		$deps = array( 'wp-api-fetch', 'wp-i18n', 'tokenforge-tips' );
 		wp_enqueue_script( 'tokenforge-tips', TOKENFORGE_URL . 'assets/admin/tips.js', array( 'wp-i18n' ), TOKENFORGE_VERSION, true );
-		wp_enqueue_script( 'tokenforge-scss-outline', TOKENFORGE_URL . 'assets/admin/scss-outline.js', array(), TOKENFORGE_VERSION, true );
-		wp_enqueue_script( 'tokenforge-scss-editor', TOKENFORGE_URL . 'assets/admin/scss-editor.js', array( 'wp-i18n', 'tokenforge-scss-outline' ), TOKENFORGE_VERSION, true );
-		wp_set_script_translations( 'tokenforge-scss-editor', 'tokenforge' );
-		$deps[] = 'tokenforge-tips';
-		$deps[] = 'tokenforge-scss-editor';
 		wp_enqueue_script(
 			'tokenforge-admin',
 			TOKENFORGE_URL . 'assets/admin/admin.js',
@@ -87,7 +76,6 @@ class Admin {
 				'restUrl' => esc_url_raw( rest_url( Rest::NS ) ),
 				'nonce'   => wp_create_nonce( 'wp_rest' ),
 				'groups'  => Tokens::GROUPS,
-				'codeEditor' => $code ? $code : null,
 			)
 		);
 	}

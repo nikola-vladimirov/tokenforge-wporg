@@ -58,7 +58,6 @@ class Acss_Import {
 		$self->motion();
 		$self->overlays();
 		$self->plugin_settings();
-		$self->scss();
 		$self->palette();
 		$self->fonts();
 		if ( Platforms\Bricks::is_active() ) {
@@ -617,13 +616,6 @@ class Acss_Import {
 	private function palette() {
 		foreach ( Palette::import_acss( $this->a ) as $row ) {
 			$this->report['Palette'][] = $row;
-		}
-	}
-
-	/** Custom SCSS (added below your own Global SCSS, never replacing it). */
-	private function scss() {
-		if ( Scss::import_acss( $this->a ) ) {
-			$this->report['Global SCSS'][] = 'source ← automatic-custom-css.scss / custom-global-css';
 		}
 	}
 

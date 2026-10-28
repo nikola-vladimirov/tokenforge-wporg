@@ -351,7 +351,7 @@ class Token_Catalog {
 	 */
 	private static function section_source( $section, $name ) {
 		$section = strtolower( $section );
-		foreach ( array( 'global scss' => 'scss', 'woocommerce' => 'woo', 'color scheme' => 'scheme', 'content' => 'content', 'blockquote' => 'content' ) as $needle => $id ) {
+		foreach ( array( 'woocommerce' => 'woo', 'color scheme' => 'scheme', 'content' => 'content', 'blockquote' => 'content' ) as $needle => $id ) {
 			if ( false !== strpos( $section, $needle ) ) {
 				return $id;
 			}

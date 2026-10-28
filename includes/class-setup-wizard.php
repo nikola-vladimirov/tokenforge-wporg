@@ -9,7 +9,7 @@
  * those features are switched on). The settings before the wizard are kept, so
  * Undo puts them back.
  * Step 2, TokenForge and the builder: link the theme style, sync variables,
- * colours and classes, and keep Global SCSS in step with the builder classes.
+ * colours and classes.
  *
  * Site-specific settings (licence, API keys, user and role assignments, the AI
  * and abilities settings, remote template sources) are never touched.
@@ -73,7 +73,7 @@ class Setup_Wizard {
 			),
 			'classes'  => array(
 				__( 'Classes and CSS', 'tokenforge' ),
-				__( 'The CSS panel and the style controls stay in step (TokenForge\'s Global SCSS sync works with this), classes stay in step between open builder tabs, and class CSS keeps the order of the class manager.', 'tokenforge' ),
+				__( 'The CSS panel and the style controls stay in step, classes stay in step between open builder tabs, and class CSS keeps the order of the class manager.', 'tokenforge' ),
 				array(
 					'builderCssSync'             => array( true, __( 'Keep the Custom CSS panel and the style controls in step (both ways)', 'tokenforge' ) ),
 					'builderGlobalClassesSync'   => array( true, __( 'Sync global classes between open builder tabs on every save', 'tokenforge' ) ),
@@ -228,12 +228,10 @@ class Setup_Wizard {
 	 */
 	private static function connect_state() {
 		$s    = Settings::get_instance()->get_settings();
-		$scss = Scss::settings();
 		return array(
 			array( 'id' => 'sync', 'label' => __( 'Send TokenForge\'s variables, colours and classes to the builder', 'tokenforge' ), 'on' => ! empty( $s['sync_bricks_vars'] ) && ! empty( $s['sync_bricks_colors'] ) && ! empty( Framework::settings()['register_with_bricks'] ) ),
 			array( 'id' => 'canvas', 'label' => __( 'Load TokenForge\'s stylesheet in the builder canvas', 'tokenforge' ), 'on' => ! empty( $s['enqueue_in_builder'] ) ),
 			array( 'id' => 'theme', 'label' => __( 'Link the site\'s theme style to TokenForge (buttons, forms, typography follow your settings)', 'tokenforge' ), 'on' => Platforms\Bricks_Theme::enabled() && '' !== Platforms\Bricks_Theme::style_id( get_option( Platforms\Bricks_Theme::OPTION, array() ) ) ),
-			array( 'id' => 'scss', 'label' => __( 'Keep Global SCSS and the builder classes in step, live', 'tokenforge' ), 'on' => ! empty( $scss['sync'] ) ),
 		);
 	}
 
@@ -241,11 +239,11 @@ class Setup_Wizard {
 	 * Run the wizard.
 	 *
 	 * @param string[] $groups  Group ids to apply.
-	 * @param string[] $connect Step 2 parts to do (sync, canvas, theme, scss).
+	 * @param string[] $connect Step 2 parts to do (sync, canvas, theme).
 	 * @return array [ 'changed' => int settings changed, 'groups' => applied ids ]
 	 */
 	public static function apply( $groups, $connect ) {
-		$connect = array_values( array_intersect( array( 'sync', 'canvas', 'theme', 'scss' ), (array) $connect ) );
+		$connect = array_values( array_intersect( array( 'sync', 'canvas', 'theme' ), (array) $connect ) );
 		$all     = self::groups();
 		$groups  = array_values( array_intersect( array_keys( $all ), (array) $groups ) );
 		$now     = get_option( 'bricks_global_settings', array() );
@@ -313,7 +311,7 @@ class Setup_Wizard {
 	/**
 	 * Step 2: TokenForge and the builder work together.
 	 *
-	 * @param string[] $parts sync, canvas, theme, scss.
+	 * @param string[] $parts sync, canvas, theme.
 	 * @return void
 	 */
 	private static function connect( $parts ) {
@@ -337,20 +335,10 @@ class Setup_Wizard {
 				Framework::save_settings( $fw );
 			}
 		}
-		if ( in_array( 'scss', $parts, true ) ) {
-			$scss = Modules::raw( array( Scss::class, 'settings' ) );
-			if ( empty( $scss['sync'] ) ) {
-				$scss['sync'] = true;
-				Scss::save_settings( $scss );
-			}
-		}
 		if ( in_array( 'theme', $parts, true ) && Platforms\Bricks_Theme::enabled() ) {
 			Platforms\Bricks_Theme::setup(); // links the site-wide style, or makes one
 		}
 		Css_Generator::get_instance()->rebuild(); // variables, colours and classes to the builder
-		if ( in_array( 'scss', $parts, true ) ) {
-			Features\Scss_Sync::push();
-		}
 	}
 
 	/**

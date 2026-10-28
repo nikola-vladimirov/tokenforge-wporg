@@ -414,9 +414,6 @@
 		'motion.underline_duration': __( 'Length of the underline animation.', 'tokenforge' ),
 		'motion.disable_in_builder': __( 'Keeps scroll and visible effects still while you edit in the builder canvas or the block editor, so content is not hidden.', 'tokenforge' ),
 
-		// ---- Global SCSS ----
-		'scss.enabled': __( 'Compiles your Global SCSS and adds it to the end of the stylesheet. Off = your code is kept but not output.', 'tokenforge' ),
-		'scss.source': __( 'Your SCSS. All TokenForge mixins and functions work without an import. Type ?recipe then Tab to expand a recipe.', 'tokenforge' ),
 		'fonts.enabled': __( 'Adds an @font-face rule for every font below to the stylesheet, so the fonts load from this site. Off: the rules are left out (the settings stay).', 'tokenforge' ),
 		'fonts.bricks': __( 'Adds the family names to the font list of the builder’s typography controls, under Standard fonts. Off: type the name yourself.', 'tokenforge' ),
 		'fonts.fonts': __( 'Your self-hosted font files.', 'tokenforge' ),
@@ -443,10 +440,7 @@
 		'palette.fam_alt': __( 'Optional colour for the family\'s base and hover in dark mode. Empty: the same as in light mode. The shades always swap (ultra-light becomes ultra-dark).', 'tokenforge' ),
 		'palette.fam_tune': __( 'Fine tuning for dark mode, in OKLCH: the lightness (0 to 1) and chroma (colourfulness, 0 to 0.4) of the main colour and of its hover. The hue stays. Leave a box empty to keep what the family (or its dark mode colour) gives. The strips show the result as you type: light shades above, dark mode below.', 'tokenforge' ),
 		'palette.alt_tokens': __( 'Also outputs the dark mode value of every colour as its own variable: --primary-alt, --primary-light-alt, --primary-hover-alt … Use them where something should show the dark mode colour on a light page (or the other way round) without switching the colour scheme.', 'tokenforge' ),
-		'scss.sync': __( 'Live two-way sync between the class blocks in Global SCSS and the builder’s global classes with the same names (Style fields and CSS panel). Global SCSS wins where both set a value. Off: Global SCSS and the builder classes are independent.', 'tokenforge' ),
-		'scss.sync_pull': __( 'When you change the fields or the CSS panel of a class in the builder that has no block in Global SCSS yet, a block is added for it. Off: only classes that already have a block are synced.', 'tokenforge' ),
-		'scss.sync_create': __( 'A class block in Global SCSS whose class does not exist in the builder creates that class, so you can start a class in SCSS. Off: such blocks stay SCSS-only.', 'tokenforge' ),
-		'scss.bp_xs': __( 'Extra small breakpoint in px: phones in portrait. breakpoint(xs) targets screens up to this width.', 'tokenforge' ),
+		'scss.bp_xs': __( 'Extra small breakpoint in px: phones in portrait. Screens up to this width count as xs.', 'tokenforge' ),
 		'scss.bp_s': __( 'Small breakpoint in px: phones in landscape.', 'tokenforge' ),
 		'scss.bp_m': __( 'Medium breakpoint in px: tablets.', 'tokenforge' ),
 		'scss.bp_l': __( 'Large breakpoint in px: small laptops.', 'tokenforge' ),
@@ -454,7 +448,7 @@
 		'scss.bp_xxl': __( 'Largest breakpoint in px: wide screens.', 'tokenforge' ),
 
 		// ---- Recipes ----
-		'recipes.enabled': __( 'Turns recipes on in the builder’s CSS editor and in Global SCSS: type ?name to get a ready-made snippet.', 'tokenforge' ),
+		'recipes.enabled': __( 'Turns recipes on in the builder’s CSS editor: type ?name to get a ready-made snippet.', 'tokenforge' ),
 		'recipes.inputs': __( 'Also expands recipes typed with a semicolon in builder fields: value recipes in style fields (?primary-clr; becomes a colour with an editable alpha), text recipes in text fields, the rich text editor and text edited in place in the canvas (?ipsum-short; becomes placeholder copy).', 'tokenforge' ),
 		'recipes.custom': __( 'Your own recipes: a name and the code it expands to.', 'tokenforge' ),
 
@@ -491,8 +485,6 @@
 		'settings.panel_shortcut': __( 'Keys that open and close the TokenForge window in the builder (also with the canvas focused) and on the front end. Click the field, then press the keys.', 'tokenforge' ),
 		'settings.frontend_panel': __( 'Lets administrators open this window on the site\x27s pages too, with the shortcut or the admin bar link. Visitors never see it. For the builder, see Show in builder canvas while editing.', 'tokenforge' ),
 		'settings.canvas_panel': __( 'Puts a TokenForge button in the corner of the builder\x27s canvas while you edit. It opens the TokenForge window (the same one as the shortcut) and takes the place of the button in the corner of the builder, which its panels can cover. Only you see it, never visitors.', 'tokenforge' ),
-		'settings.scss_dock_shortcut': __( 'Keys that open and close the Global SCSS dock under the builder canvas (also with the canvas focused). Click the field, then press the keys; the ✕ removes the shortcut.', 'tokenforge' ),
-		'settings.scss_dock_tab': __( 'A small "SCSS" tab at the bottom edge of the canvas that opens the dock. Off: use the shortcut or the button in Global SCSS.', 'tokenforge' ),
 		'settings.bricks_theme_sync': __( 'Keeps one theme style in the builder (for the entire website) in step with TokenForge. Its fonts, sizes, colours, container width and section padding point at TokenForge variables, and a change you make in the theme style comes back into TokenForge. Off: TokenForge leaves theme styles alone.', 'tokenforge' ),
 		'settings.ui_theme': __( 'How this dashboard looks. Builder panels uses the same dark colours, corners and titles as the builder, so it feels at home there. Flat is a plain graphite look with square corners and a blue accent. Light uses white panels, dark text and a blue accent.', 'tokenforge' ),
 
@@ -510,7 +502,6 @@
 		'modules.overlays': __( 'Off: no overlay and surface texture classes.', 'tokenforge' ),
 		'modules.effects': __( 'Off: no scroll, visible or hover effects.', 'tokenforge' ),
 		'modules.base': __( 'Off: no reset, focus rings or helper classes (screen reader text, object fit and so on).', 'tokenforge' ),
-		'modules.scss': __( 'Off: your Global SCSS is kept but not added to the site, and the canvas dock is hidden.', 'tokenforge' ),
 		'modules.recipes': __( 'Off: typing ?name no longer expands recipes in the editors.', 'tokenforge' ),
 		'modules.builder': __( 'Off: none of the extra builder tools load (context menu, class tools, grid overlay and the rest).', 'tokenforge' ),
 		'modules.woo': __( 'Off: TokenForge adds no WooCommerce styles, and WooCommerce (or your builder) styles the shop on its own.', 'tokenforge' ),
@@ -627,7 +618,7 @@
 		'framework.utilities_typography': __( 'Generates typography utility classes (sizes, weights, alignment).', 'tokenforge' ),
 		'framework.utilities_layout': __( 'Generates layout utility classes (grids, flex, alignment, display).', 'tokenforge' ),
 		'framework.register_with_bricks': __( 'Adds the utility classes to the builder’s class list so they autocomplete in the class field.', 'tokenforge' ),
-		'framework.prune_unused': __( 'A smaller stylesheet for visitors: it keeps only the utility classes and data attributes your pages, templates, menus and widgets use. A class or attribute you add later joins when you save. The builder canvas and the block editor always have every class and attribute. Variables, components and your Global SCSS are never left out.', 'tokenforge' ),
+		'framework.prune_unused': __( 'A smaller stylesheet for visitors: it keeps only the utility classes and data attributes your pages, templates, menus and widgets use. A class or attribute you add later joins when you save. The builder canvas and the block editor always have every class and attribute. Variables and components are never left out.', 'tokenforge' ),
 		'framework.prune_keep': __( 'Classes and data attributes the scan cannot see, because theme files, shortcodes, scripts or another plugin add them (for example data-tf-tooltip, or data-tf-* for all of them). They stay in the stylesheet.', 'tokenforge' ),
 
 		// ---- Overlay / surface presets ----

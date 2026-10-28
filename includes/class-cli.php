@@ -77,7 +77,7 @@ class Cli {
 	}
 
 	/**
-	 * Export every setting, token, colour family, font and the Global SCSS as JSON.
+	 * Export every setting, token, colour family and font as JSON.
 	 *
 	 * Prints the JSON. To keep it in a file, redirect the output.
 	 *
@@ -102,7 +102,7 @@ class Cli {
 	 * : An export file (JSON, 2 MB at most).
 	 *
 	 * [--parts=<list>]
-	 * : Comma list of: tokens, palette, settings, modules, scss, recipes, fonts. Default all.
+	 * : Comma list of: tokens, palette, settings, modules, recipes, fonts. Default all.
 	 *
 	 * [--dry-run]
 	 * : Show which parts would change and write nothing.
@@ -301,7 +301,6 @@ class Cli {
 			}
 		}
 		$rows[] = array( 'item' => 'active builders', 'value' => $builders ? implode( ', ', $builders ) : 'none' );
-		$rows[] = array( 'item' => 'github token', 'value' => defined( 'TOKENFORGE_GITHUB_TOKEN' ) && TOKENFORGE_GITHUB_TOKEN ? 'set' : 'not set' );
 		$rows[] = array( 'item' => 'snapshots', 'value' => (string) count( History::index() ) );
 		\WP_CLI\Utils\format_items( isset( $assoc['format'] ) ? $assoc['format'] : 'table', $rows, array( 'item', 'value' ) );
 	}
