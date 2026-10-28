@@ -1,6 +1,6 @@
 === TokenForge ===
 Contributors: pristadigital
-Tags: design tokens, css variables, accessibility, woocommerce, bricks
+Tags: design tokens, css variables, accessibility, woocommerce
 Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
@@ -80,11 +80,15 @@ TokenForge is original software released under the GPLv2 or later.
 
 **Developers**
 
-A developer can add SCSS to the stylesheet from code. TokenForge compiles it with its own mixins and functions and adds it at the end. There is no screen for it, and a compile error never breaks the site.
+A developer can add SCSS from code. The filter `tokenforge_global_scss` receives an empty string and returns SCSS. TokenForge compiles it with its own library (mixins and functions) and adds it last to the stylesheet. A compile error never breaks the site.
+
+This is code, not a setting. Put it in a child theme's functions.php or in a mu-plugin, never in TokenForge's own files, so an update does not remove it.
 
 ```
 add_filter( 'tokenforge_global_scss', function ( $scss ) {
-	return $scss . '.card { @include btn(primary); }';
+	$scss .= '.pricing { padding: var(--space-m); }';
+	$scss .= '.pricing a { @include btn(primary); }';
+	return $scss;
 } );
 ```
 
@@ -162,6 +166,7 @@ The full history is in CHANGELOG.md, also shown from the Changelog link next to 
 
 = 0.54.0 =
 * The Global SCSS editor is removed from the WordPress.org version. Developers can still add SCSS with the tokenforge_global_scss filter.
+* Custom recipes (your own CSS snippets) are removed from the WordPress.org version; built-in recipes stay. Export them first if you need them.
 
 = 0.53.7 =
 * WordPress.org review: the WP-CLI export no longer writes to a chosen file; use the shell redirect instead.

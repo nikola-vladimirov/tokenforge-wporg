@@ -6,6 +6,8 @@ All the changes to TokenForge, newest first.
 
 The Global SCSS editor is removed from the WordPress.org version. Developers can still add SCSS with the tokenforge_global_scss filter.
 
+Custom recipes (your own CSS snippets) are removed from the WordPress.org version; built-in recipes stay. Export them first if you need them.
+
 ## 0.53.7
 
 Fixes from the WordPress.org review.
@@ -330,7 +332,7 @@ Everything below works inside the builder's own form element: no new elements, a
 ### Updates from the dashboard
 
 - New TokenForge versions now show up in Dashboard > Updates and on the Plugins screen like any other plugin update, and automatic updates work too. "View version details" shows what changed.
-- The versions come from the TokenForge repository on GitHub. While that repository is private, each site needs a read-only access token in wp-config.php: define( 'TOKENFORGE_GITHUB_TOKEN', 'github_pat_...' ); Without it no update is offered and nothing else changes.
+- The versions come from the TokenForge repository on GitHub.
 
 ## 0.44.1
 

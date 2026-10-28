@@ -305,7 +305,7 @@
 .tf-recipe-item[open] { grid-column: 1 / -1; }
 .tf-recipe-item summary { cursor: pointer; }
 .tf-recipe-item pre { margin: 8px 0 4px; padding: 8px 10px; max-height: 260px; overflow: auto; background: var(--tf-code-bg); border-radius: var(--tf-radius); color: var(--tf-code); font: 11.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre; tab-size: 4; }
-#tokenforge-app .tf-recipe textarea { font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; tab-size: 4; white-space: pre; }
+.tf-dev-code { margin: 8px 0 4px; padding: 8px 10px; overflow: auto; background: var(--tf-code-bg); border-radius: var(--tf-radius); color: var(--tf-code); font: 11.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre; tab-size: 4; }
 
 /* Shortcut recorder */
 .tf-keyfield { display: flex; gap: 6px; align-items: center; }

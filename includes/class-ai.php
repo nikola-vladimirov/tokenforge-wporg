@@ -5,7 +5,7 @@
  * TokenForge framework instead of hard-coded CSS.
  *
  * - Registers read-only abilities (exposed as MCP tools): get-framework,
- *   search, check-css, get-recipe, compile-scss.
+ *   search, check-css, get-recipe.
  * - Adds a short note to the MCP server instructions every client reads on
  *   connect.
  * - Appends TokenForge guidance to Bricks' orientation ("start here") and adds a
@@ -207,26 +207,6 @@ class Ai {
 				'meta'                => $this->meta(),
 			)
 		);
-		wp_register_ability(
-			'tokenforge/compile-scss',
-			array(
-				'label'               => 'TokenForge: compile SCSS',
-				'description'         => 'Compiles SCSS with the TokenForge mixins and functions available (btn, card, center, auto-grid, breakpoint, fluid() …) and returns plain CSS you can put in an element’s or class’s custom CSS. Nothing is saved.',
-				'category'            => 'tokenforge',
-				'input_schema'        => array(
-					'type'                 => 'object',
-					'properties'           => array(
-						'scss' => array( 'type' => 'string', 'description' => 'SCSS source.' ),
-					),
-					'required'             => array( 'scss' ),
-					'additionalProperties' => false,
-				),
-				'output_schema'       => array( 'type' => 'object' ),
-				'execute_callback'    => array( $this, 'compile_scss' ),
-				'permission_callback' => $perm,
-				'meta'                => $this->meta(),
-			)
-		);
 	}
 
 	/**
@@ -265,7 +245,6 @@ class Ai {
 				'tokenforge-search'       => 'Find a class, variable, mixin or recipe by words.',
 				'tokenforge-check-css'    => 'Check CSS/HTML for hard-coded values and misspelt classes before saving.',
 				'tokenforge-get-recipe'   => 'Get a ready-made CSS snippet.',
-				'tokenforge-compile-scss' => 'Compile SCSS that uses TokenForge mixins into CSS.',
 			),
 		);
 	}
@@ -346,17 +325,6 @@ class Ai {
 			}
 		}
 		return new \WP_Error( 'tokenforge_unknown_recipe', 'Unknown recipe. Use tokenforge-search with kind=recipe to list them.' );
-	}
-
-	/**
-	 * Execute: compile SCSS.
-	 *
-	 * @param array $input Input.
-	 * @return array
-	 */
-	public function compile_scss( $input = array() ) {
-		$r = Scss::compile( isset( $input['scss'] ) ? (string) $input['scss'] : '' );
-		return array( 'ok' => null === $r['error'], 'css' => $r['css'], 'error' => $r['error'] );
 	}
 
 	// ------------------------------------------------------------------
@@ -538,7 +506,7 @@ class Ai {
 			'- **Backgrounds with images:** put the image first inside the section with class `is-bg`; add `overlay` to the section for a tint.',
 			'',
 			'## Custom CSS',
-			'Write it on your own class with tokens only, e.g. `.pricing__badge { padding: var(--space-xs) var(--space-s); background: var(--accent-light); border-radius: var(--radius-s); font-size: var(--text-s); }`. Ready-made snippets: `tokenforge-get-recipe` (auto-grid, clickable-parent, divider-all, fade-bottom, line-clamp …). SCSS with mixins (`@include btn(primary);`, `@include breakpoint(m) {…}`) can be compiled with `tokenforge-compile-scss`.',
+			'Write it on your own class with tokens only, e.g. `.pricing__badge { padding: var(--space-xs) var(--space-s); background: var(--accent-light); border-radius: var(--radius-s); font-size: var(--text-s); }`. Ready-made snippets: `tokenforge-get-recipe` (auto-grid, clickable-parent, divider-all, fade-bottom, line-clamp …).',
 		);
 		return implode( "\n", $lines );
 	}

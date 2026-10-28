@@ -450,7 +450,6 @@
 		// ---- Recipes ----
 		'recipes.enabled': __( 'Turns recipes on in the builder’s CSS editor: type ?name to get a ready-made snippet.', 'tokenforge' ),
 		'recipes.inputs': __( 'Also expands recipes typed with a semicolon in builder fields: value recipes in style fields (?primary-clr; becomes a colour with an editable alpha), text recipes in text fields, the rich text editor and text edited in place in the canvas (?ipsum-short; becomes placeholder copy).', 'tokenforge' ),
-		'recipes.custom': __( 'Your own recipes: a name and the code it expands to.', 'tokenforge' ),
 
 		// ---- Builder ----
 		'enhancements.stack_add_elements': __( 'Shows one element per row in the Add Elements panel, easier to scan.', 'tokenforge' ),
@@ -593,7 +592,7 @@
 		'woo.new_badge_background': __( 'Background of the New badge on product cards. A short plain text placed straight in a builder product card (like On sale) shows as the sale badge.', 'tokenforge' ),
 		'woo.blocks': __( 'Also styles the WooCommerce blocks (Cart, Checkout, Mini-Cart, product blocks). Only colours and corners change inside them, so their layout stays as WooCommerce made it.', 'tokenforge' ),
 		'settings.frontend_launcher': __( 'Shows a small TokenForge button in the corner of the site\x27s pages (administrators only). Without it, use the shortcut or the admin bar.', 'tokenforge' ),
-		'settings.ai_abilities': __( 'Registers read-only TokenForge tools for AI agents (WordPress Abilities API, shown as MCP tools): the framework guide, search, a CSS checker, recipes and an SCSS compiler. Only logged-in users who can edit content can call them.', 'tokenforge' ),
+		'settings.ai_abilities': __( 'Registers read-only TokenForge tools for AI agents (WordPress Abilities API, shown as MCP tools): the framework guide, search, a CSS checker, and recipes. Only logged-in users who can edit content can call them.', 'tokenforge' ),
 		'settings.ai_guidance': __( 'Tells AI agents that connect through the WordPress MCP Adapter or the builder’s AI abilities to build with TokenForge classes and var(--tokens) instead of hard-coded CSS (added to the MCP instructions and to the builder’s orientation and design context).', 'tokenforge' ),
 		'settings.inline_css': __( 'Prints the stylesheet inside the page instead of linking a file: one request less, but it is not cached separately.', 'tokenforge' ),
 		'settings.hot_reload': __( 'After Save, open tabs (front end, canvas, block editor) swap in the new CSS without reloading.', 'tokenforge' ),

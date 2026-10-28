@@ -16,7 +16,7 @@ namespace TokenForge;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Recipe library + custom recipes.
+ * Recipe library.
  */
 class Recipes {
 
@@ -40,7 +40,6 @@ class Recipes {
 		return array(
 			'enabled' => true,   // expand ?recipes in the builder
 			'inputs'  => true,   // also in builder text inputs (value recipes like ?primary-clr;)
-			'custom'  => array(), // [ { name, code } ]
 		);
 	}
 
@@ -52,9 +51,8 @@ class Recipes {
 	public static function settings() {
 		$s = get_option( self::OPTION, array() );
 		$s = wp_parse_args( is_array( $s ) ? $s : array(), self::defaults() );
-		if ( ! is_array( $s['custom'] ) ) {
-			$s['custom'] = array();
-		}
+		// This build has no custom recipes: drop any code an older version stored.
+		unset( $s['custom'] );
 		return Modules::apply( 'recipes', $s );
 	}
 
@@ -65,29 +63,11 @@ class Recipes {
 	 * @return void
 	 */
 	public static function save_settings( $in ) {
-		$custom = array();
-		$seen   = array();
-		foreach ( isset( $in['custom'] ) && is_array( $in['custom'] ) ? $in['custom'] : array() as $r ) {
-			if ( ! is_array( $r ) ) {
-				continue;
-			}
-			$name = self::name( isset( $r['name'] ) ? $r['name'] : '' );
-			$code = isset( $r['code'] ) ? str_replace( "\r\n", "\n", (string) $r['code'] ) : '';
-			if ( '' === $name || '' === trim( $code ) || isset( $seen[ $name ] ) ) {
-				continue;
-			}
-			$seen[ $name ] = true;
-			$custom[]      = array( 'name' => $name, 'code' => $code );
-			if ( count( $custom ) >= 200 ) {
-				break;
-			}
-		}
 		update_option(
 			self::OPTION,
 			array(
 				'enabled' => ! empty( $in['enabled'] ),
 				'inputs'  => ! empty( $in['inputs'] ),
-				'custom'  => $custom,
 			),
 			false
 		);
@@ -186,34 +166,20 @@ class Recipes {
 	}
 
 	/**
-	 * Every recipe for the editors: built-in + custom (custom wins on a name clash).
+	 * Every built-in recipe for the editors.
 	 *
 	 * kind: 'value' = a property value (e.g. a colour), 'block' = declarations or
 	 * rules, 'text' = not CSS (placeholder copy, script and query snippets for
 	 * Bricks elements), never offered in CSS editors.
 	 *
-	 * @return array [ [ 'n' => name, 'c' => category, 'code' => …, 'scss' => …|null, 'inline' => bool, 'kind' => string, 'custom' => bool ], … ]
+	 * @return array [ [ 'n' => name, 'c' => category, 'code' => …, 'scss' => …|null, 'inline' => bool, 'kind' => string ], … ]
 	 */
 	public static function all() {
 		$out  = array();
 		$text = array( 'ipsum-short', 'script', 'query-children' );
 		foreach ( self::builtin() as $name => $r ) {
 			$kind          = in_array( $name, $text, true ) ? 'text' : ( $r[3] ? 'value' : 'block' );
-			$out[ $name ] = array( 'n' => $name, 'c' => $r[0], 'code' => $r[1], 'scss' => $r[2], 'inline' => (bool) $r[3], 'kind' => $kind, 'custom' => false );
-		}
-		foreach ( self::settings()['custom'] as $r ) {
-			$code = (string) $r['code'];
-			// One line without braces that is not a declaration ("prop: …") = a value.
-			$inline = false === strpos( $code, "\n" ) && false === strpos( $code, '{' ) && ! preg_match( '/^\s*-*[a-z][a-z-]*\s*:/i', $code );
-			$out[ $r['name'] ] = array(
-				'n'      => $r['name'],
-				'c'      => 'Custom',
-				'code'   => $code,
-				'scss'   => null,
-				'inline' => $inline,
-				'kind'   => $inline ? 'value' : 'block',
-				'custom' => true,
-			);
+			$out[ $name ] = array( 'n' => $name, 'c' => $r[0], 'code' => $r[1], 'scss' => $r[2], 'inline' => (bool) $r[3], 'kind' => $kind );
 		}
 		return array_values( $out );
 	}

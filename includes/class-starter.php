@@ -40,7 +40,7 @@ class Starter {
 	const SETTING_OPTIONS = array( 'settings', 'framework', 'scales', 'components', 'scheme', 'extras', 'defaults', 'content', 'width', 'motion', 'overlays', 'enhancements', 'woo', 'modules' );
 
 	/** What a reset can cover. */
-	const PARTS = array( 'settings', 'tokens', 'recipes', 'fonts' );
+	const PARTS = array( 'settings', 'tokens', 'fonts' );
 
 	/**
 	 * Palette settings for a fresh install.
@@ -111,8 +111,8 @@ class Starter {
 	/**
 	 * Reset parts of TokenForge to its defaults.
 	 *
-	 * settings: every switch and value (your recipes, your fonts and the tokens
-	 * stay); tokens: the starter tokens and palette; recipes: remove your own recipes; fonts: empty the font
+	 * settings: every switch and value (your fonts and the tokens
+	 * stay); tokens: the starter tokens and palette; fonts: empty the font
 	 * list (uploaded files stay in uploads/tokenforge/fonts).
 	 *
 	 * @param array $parts Parts (see PARTS).
@@ -126,8 +126,7 @@ class Starter {
 			}
 			// Content that lives next to settings stays.
 			Scss::save_settings( Scss::defaults() ); // the breakpoints
-			$rec = Modules::raw( array( Recipes::class, 'settings' ) );
-			Recipes::save_settings( array_merge( Recipes::defaults(), array( 'custom' => $rec['custom'] ) ) );
+			Recipes::save_settings( Recipes::defaults() );
 			$fonts = Modules::raw( array( Fonts::class, 'settings' ) );
 			Fonts::save_settings( array_merge( Fonts::defaults(), array( 'fonts' => $fonts['fonts'] ) ) );
 			$pal = Palette::settings();
@@ -137,10 +136,6 @@ class Starter {
 			update_option( Palette::OPTION, self::palette(), false );
 			Settings::get_instance()->save_tokens( self::tokens() );
 			delete_option( 'tokenforge_acss_names' );
-		}
-		if ( in_array( 'recipes', $parts, true ) ) {
-			$rec = Modules::raw( array( Recipes::class, 'settings' ) );
-			Recipes::save_settings( array_merge( $rec, array( 'custom' => array() ) ) );
 		}
 		if ( in_array( 'fonts', $parts, true ) ) {
 			$fonts = Modules::raw( array( Fonts::class, 'settings' ) );

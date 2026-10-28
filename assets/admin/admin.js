@@ -14,7 +14,7 @@
 		tokens: [], settings: {}, framework: {}, scales: {}, components: {}, scheme: {}, extras: {}, defaults: {}, content: {}, width: {}, motion: {}, overlays: { overlays: [], surfaces: [] }, enhancements: {},
 		tokensRev: '', paletteRev: '',
 		cheat: null, cheatLoading: false, cheatQ: '', cheatKind: '', cheatOpen: {}, attributeUsage: {}, attrUnused: false, attrBusy: false,
-		scss: {}, recipes: { custom: [] }, recipeList: [], recipeQ: '',
+		scss: {}, recipes: {}, recipeList: [], recipeQ: '',
 		defs: {}, families: [], bricksNative: {}, nativeLabels: {}, bricks: false, groups: [], utilCount: 0,
 		activeGroup: 'color', search: '', tab: 'home', q: '', dirty: false, navOpen: false, open: readOpen(), expandAll: false, btnFam: 'primary', btnVar: 'solid', importReport: null,
 		modules: {}, theme: {}, transferFile: null, transferName: '', transferParts: {}, resetParts: { settings: true, tokens: true }
@@ -291,7 +291,6 @@
 		] },
 		{ id: 'recipes', title: __( 'Recipes', 'tokenforge' ), panels: [
 			P( __( 'Recipes', 'tokenforge' ), 'recipes', [ B( 'inputs', __( 'Also in builder fields: <code>?primary-clr;</code> in style fields, <code>?ipsum-short;</code> in text fields, rich text and text edited in the canvas', 'tokenforge' ), { needs: 'editor_tweaks' } ) ], { on: 'enabled', d: __( 'Type <code>?name</code> in the builder’s CSS editor and pick it from the list (or finish with <code>;</code>): it expands into ready-made CSS. <code>%root%</code> is the element’s selector (in SCSS: <code>&amp;</code>).', 'tokenforge' ) } ),
-			P( __( 'Your recipes', 'tokenforge' ), null, null, { custom: 'customRecipes', d: __( 'Name + code. Use <code>%root%</code> for the element and <code>{{cursor}}</code> for where the caret lands. A custom recipe with a built-in name replaces it.', 'tokenforge' ) } ),
 			P( __( 'Built-in recipes', 'tokenforge' ), null, null, { custom: 'recipeList' } )
 		] },
 		{ id: 'tokens', title: __( 'Tokens', 'tokenforge' ), render: 'tokens' },
@@ -311,7 +310,7 @@
 			P( __( 'Builder sync', 'tokenforge' ), 'settings', [ B( 'sync_bricks_vars', __( 'Tokens → builder global variables', 'tokenforge' ) ), B( 'vars_trans', __( 'Variables: transparent steps (-trans-10 … -90)', 'tokenforge' ) ), B( 'vars_channels', __( 'Variables: colour channel values (-hex, -rgb, -h …)', 'tokenforge' ) ), B( 'vars_alt', __( 'Variables: dark mode values (-alt)', 'tokenforge' ) ), B( 'vars_parts', __( 'Variables: buttons, cards, blockquotes and shop', 'tokenforge' ) ), B( 'sync_bricks_colors', __( 'Colours → the builder colour palette (families with their shades)', 'tokenforge' ) ), B( 'enqueue_in_builder', __( 'Load the stylesheet in the builder canvas', 'tokenforge' ) ), T( 'category_name', __( 'Category / palette name', 'tokenforge' ) ), B( 'prune_classes', __( 'Remove switched-off classes from the builder', 'tokenforge' ) ), B( 'prune_variables', __( 'Remove stale variables / colours from the builder', 'tokenforge' ) ) ], { needs: 'tokens_native' } ),
 			P( __( 'Block editor', 'tokenforge' ), 'settings', [ S( 'gutenberg_palette', __( 'Colour palette', 'tokenforge' ), [ [ 'off', __( 'Theme palette', 'tokenforge' ) ], [ 'add', __( 'Add TokenForge colours', 'tokenforge' ) ], [ 'replace', __( 'Replace with TokenForge colours', 'tokenforge' ) ] ] ) ] ),
 			P( __( 'TokenForge window', 'tokenforge' ), 'settings', [ K( 'panel_shortcut', __( 'Open / close shortcut', 'tokenforge' ), { h: __( 'Click the field, then press the keys (e.g. Alt+Shift+T). Works in the builder (also with the canvas focused) and on the site\u2019s pages.', 'tokenforge' ) } ), B( 'canvas_panel', __( 'Show in builder canvas while editing', 'tokenforge' ), { needs: 'canvas_tools' } ), B( 'frontend_panel', __( 'On the site\u2019s pages (administrators only)', 'tokenforge' ) ), B( 'frontend_launcher', __( 'Floating TokenForge button on the site\u2019s pages', 'tokenforge' ) ) ], { d: __( 'The dashboard as a dockable window. In the builder it opens with the shortcut or the TokenForge button; on the site\u2019s pages with the shortcut or the admin-bar TokenForge link (Ctrl/Cmd-click goes to wp-admin).', 'tokenforge' ) } ),
-			P( __( 'AI agents', 'tokenforge' ), 'settings', [ B( 'ai_abilities', __( 'TokenForge abilities for AI agents (MCP tools)', 'tokenforge' ) ), B( 'ai_guidance', __( 'Tell AI agents to build with TokenForge', 'tokenforge' ) ) ], { d: __( 'When an AI builds this site through the WordPress MCP Adapter or the builder’s AI abilities, it gets the tools <code>tokenforge-get-framework</code>, <code>tokenforge-search</code>, <code>tokenforge-check-css</code>, <code>tokenforge-get-recipe</code> and <code>tokenforge-compile-scss</code>, and is told to use TokenForge classes and variables instead of hard-coded CSS.', 'tokenforge' ) } ),
+			P( __( 'AI agents', 'tokenforge' ), 'settings', [ B( 'ai_abilities', __( 'TokenForge abilities for AI agents (MCP tools)', 'tokenforge' ) ), B( 'ai_guidance', __( 'Tell AI agents to build with TokenForge', 'tokenforge' ) ) ], { d: __( 'When an AI builds this site through the WordPress MCP Adapter or the builder’s AI abilities, it gets the tools <code>tokenforge-get-framework</code>, <code>tokenforge-search</code>, <code>tokenforge-check-css</code>, and <code>tokenforge-get-recipe</code>, and is told to use TokenForge classes and variables instead of hard-coded CSS.', 'tokenforge' ) } ),
 			P( __( 'Performance', 'tokenforge' ), 'settings', [ B( 'inline_css', __( 'Inline the stylesheet', 'tokenforge' ) ), B( 'hot_reload', __( 'Hot-reload CSS in open tabs after Save', 'tokenforge' ) ), B( 'admin_bar_link', __( 'Admin bar link', 'tokenforge' ) ) ] ),
 			P( __( 'Breakpoints', 'tokenforge' ), 'scss', [ N( 'bp_xs', __( 'xs (px)', 'tokenforge' ) ), N( 'bp_s', __( 's (px)', 'tokenforge' ) ), N( 'bp_m', __( 'm (px)', 'tokenforge' ) ), N( 'bp_l', __( 'l (px)', 'tokenforge' ) ), N( 'bp_xl', __( 'xl (px)', 'tokenforge' ) ), N( 'bp_xxl', __( 'xxl (px)', 'tokenforge' ) ) ], { d: __( 'Widths in px for the breakpoint names (xs to xxl) used by the <code>?breakpoint-*</code> recipes and the responsive data attributes.', 'tokenforge' ) } ),
 			P( __( 'Cascade layers', 'tokenforge' ), 'settings', [ B( 'layer_defaults', __( 'Defaults & utilities', 'tokenforge' ) ), B( 'layer_base', __( 'Base typography & sections', 'tokenforge' ) ), B( 'layer_buttons', __( 'Buttons & external links', 'tokenforge' ) ), B( 'layer_cards', __( 'Cards', 'tokenforge' ) ), B( 'layer_icons', __( 'Icons', 'tokenforge' ) ), B( 'layer_content', __( 'Content / prose', 'tokenforge' ) ) ], { d: __( 'A layered part loses to <em>any</em> unlayered CSS (theme, builder, custom). Variables and utility classes are never layered.', 'tokenforge' ) } ),
@@ -586,6 +585,13 @@
 				+ '<div class="tf-panel-body"><p class="tf-muted tf-desc">' + esc( g.desc ) + '</p><div class="tf-cheat-list">' + shown.map( cheatRow ).join( '' ) + '</div>'
 				+ ( items.length > shown.length ? '<p><button type="button" class="tf-btn tf-small" data-act="cheatmore" data-g="' + esc( g.id ) + '">Show all ' + items.length + '</button></p>' : '' ) + '</div></section>';
 		} );
+		if ( ! words.length && ! state.cheatKind ) {
+			var example = "add_filter( 'tokenforge_global_scss', function ( $scss ) {\n\t$scss .= '.pricing { padding: var(--space-m); }';\n\t$scss .= '.pricing a { @include btn(primary); }';\n\treturn $scss;\n} );";
+			html += '<section class="tf-panel tf-cheat-group"><div class="tf-panel-head tf-cheat-head"><h3>' + esc( __( 'Add your own SCSS (developers)', 'tokenforge' ) ) + '</h3></div>'
+				+ '<div class="tf-panel-body"><p class="tf-muted tf-desc">' + __( 'The filter <code>tokenforge_global_scss</code> receives an empty string and returns SCSS. TokenForge compiles it with its own library (mixins and functions) and adds it last to the stylesheet. A compile error never breaks the site.', 'tokenforge' ) + '</p>'
+				+ '<p class="tf-muted tf-desc">' + __( 'This is code, not a setting. Put it in a child theme’s <code>functions.php</code> or in a mu-plugin, never in TokenForge’s own files, so an update does not remove it.', 'tokenforge' ) + '</p>'
+				+ '<pre class="tf-dev-code">' + esc( example ) + '</pre></div></section>';
+		}
 		return html + ( total ? '' : '<p class="tf-muted">Nothing matches.</p>' );
 	}
 
@@ -729,19 +735,10 @@
 	} )();
 
 	var CUSTOM = {
-		customRecipes: function () {
-			var list = ( state.recipes && state.recipes.custom ) || [];
-			var html = list.map( function ( r, i ) {
-				return '<div class="tf-preset tf-recipe" data-i="' + i + '"><div class="tf-preset-head"><strong>?' + esc( r.name || '…' ) + '</strong><button type="button" class="tf-del" data-act="rcdel" data-i="' + i + '" title="Remove">×</button></div>' +
-					'<div class="tf-fields"><label class="tf-field"><span class="tf-flabel">Name</span><input type="text" data-rc="name" data-i="' + i + '" value="' + esc( r.name ) + '" placeholder="my-recipe" spellcheck="false"></label>' +
-					'<label class="tf-field tf-wide"><span class="tf-flabel">Code</span><textarea rows="5" class="tf-mono" data-rc="code" data-i="' + i + '" spellcheck="false" placeholder="%root% {\n\t{{cursor}}\n}">' + esc( r.code ) + '</textarea></label></div></div>';
-			} ).join( '' );
-			return html + '<p><button type="button" class="tf-btn" data-act="rcadd">+ Add recipe</button></p>';
-		},
 		recipeList: function () {
 			var q = ( state.recipeQ || '' ).toLowerCase().replace( /^\?/, '' ), groups = {};
 			( state.recipeList || [] ).forEach( function ( r ) {
-				if ( r.custom || ( q && r.n.indexOf( q ) === -1 && r.c.toLowerCase().indexOf( q ) === -1 ) ) { return; }
+				if ( q && r.n.indexOf( q ) === -1 && r.c.toLowerCase().indexOf( q ) === -1 ) { return; }
 				( groups[ r.c ] = groups[ r.c ] || [] ).push( r );
 			} );
 			var html = '<input type="search" class="tf-search tf-recipe-q" placeholder="Filter recipes…" value="' + esc( state.recipeQ || '' ) + '">';
@@ -787,7 +784,7 @@
 			var sel = function ( f, k, label, opts ) { return '<label class="tf-field"><span class="tf-flabel">' + label + tipF( k ) + '</span><select data-font="' + k + '">' + opts.map( function ( o ) { return '<option value="' + o + '"' + ( f[ k ] === o ? ' selected' : '' ) + '>' + o + '</option>'; } ).join( '' ) + '</select></label>'; };
 			var sw = function ( f, k, label ) { return '<label class="tf-field tf-switchrow"><span class="tf-switch"><input type="checkbox" data-font="' + k + '"' + ( f[ k ] ? ' checked' : '' ) + '><i></i></span><span class="tf-flabel">' + label + tipF( k ) + '</span></label>'; };
 			var file = function ( f, k, label ) {
-				return '<label class="tf-field tf-wide"><span class="tf-flabel">' + label + tipF( k ) + '</span><span class="tf-fontfile"><input type="text" data-font="' + k + '" value="' + esc( f[ k ] ) + '" placeholder="https://…/font.woff2" spellcheck="false">'
+				return '<label class="tf-field tf-wide"><span class="tf-flabel">' + label + tipF( k ) + '</span><span class="tf-fontfile"><input type="text" data-font="' + k + '" value="' + esc( f[ k ] ) + '" placeholder="Font file address ending in .woff2" spellcheck="false">'
 					+ '<span class="tf-btn tf-small tf-upload">Upload<input type="file" accept=".woff2,.woff,.ttf,.otf" class="tf-font-file" data-slot="' + k + '"></span></span></label>';
 			};
 			var g = state.gfont || ( state.gfont = { family: '', weights: '400, 700', italic: false } );
@@ -955,7 +952,7 @@
 		importBox: function () {
 			var f = state.transferFile, html = '<p><label class="tf-btn tf-upload">Choose export file<input type="file" accept=".json,application/json" class="tf-import-file"></label> ' + ( f ? '<span class="tf-muted">' + esc( state.transferName ) + ( f.site ? ', from ' + esc( f.site ) : '' ) + ( f.exported ? ', ' + esc( String( f.exported ).slice( 0, 10 ) ) : '' ) + '</span>' : '' ) + '</p>';
 			if ( f ) {
-				var labels = { tokens: 'Tokens', palette: 'Colour families', settings: 'All settings', modules: 'Module switches', recipes: 'Your recipes', fonts: 'Fonts' };
+				var labels = { tokens: 'Tokens', palette: 'Colour families', settings: 'All settings', modules: 'Module switches', recipes: 'Recipe settings', fonts: 'Fonts' };
 				html += '<div class="tf-fields">' + Object.keys( labels ).filter( function ( k ) { return f.data && f.data[ k ]; } ).map( function ( k ) {
 					return '<label class="tf-field tf-switchrow"><span class="tf-switch"><input type="checkbox" data-part="import" data-p="' + k + '"' + ( false !== state.transferParts[ k ] ? ' checked' : '' ) + '><i></i></span><span class="tf-flabel">' + labels[ k ] + '</span></label>';
 				} ).join( '' ) + '</div><p><button type="button" class="tf-btn tf-primary" data-act="importrun">Import</button> <button type="button" class="tf-btn" data-act="importclear">Cancel</button></p>';
@@ -986,7 +983,7 @@
 			return html;
 		},
 		resetBox: function () {
-			var parts = [ [ 'settings', 'All settings', 'every switch and value' ], [ 'tokens', 'Tokens and colour families', 'the starter colours' ], [ 'recipes', 'Your recipes', 'removes them' ], [ 'fonts', 'Font list', 'files stay in uploads' ] ];
+			var parts = [ [ 'settings', 'All settings', 'every switch and value' ], [ 'tokens', 'Tokens and colour families', 'the starter colours' ], [ 'fonts', 'Font list', 'files stay in uploads' ] ];
 			return '<div class="tf-fields">' + parts.map( function ( p ) {
 				return '<label class="tf-field tf-switchrow"><span class="tf-switch"><input type="checkbox" data-part="reset" data-p="' + p[0] + '"' + ( state.resetParts[ p[0] ] ? ' checked' : '' ) + '><i></i></span><span class="tf-flabel">' + p[1] + ' <span class="tf-muted">(' + p[2] + ')</span></span></label>';
 			} ).join( '' ) + '</div><p><button type="button" class="tf-btn tf-danger" data-act="resetrun">Reset to defaults</button></p>';
@@ -2185,8 +2182,6 @@
 			if ( act === 'cheatkind' ) { state.cheatKind = el.getAttribute( 'data-kind' ); render(); return; }
 			if ( act === 'cheatmore' ) { state.cheatOpen[ el.getAttribute( 'data-g' ) ] = true; render(); return; }
 			if ( act === 'keyclear' ) { e.preventDefault(); state[ el.getAttribute( 'data-mod' ) || 'settings' ][ el.getAttribute( 'data-k' ) || 'panel_shortcut' ] = ''; markDirty(); render(); return; }
-			if ( act === 'rcadd' ) { state.recipes.custom = state.recipes.custom || []; state.recipes.custom.push( { name: '', code: '' } ); markDirty(); render(); return; }
-			if ( act === 'rcdel' ) { state.recipes.custom.splice( parseInt( el.getAttribute( 'data-i' ), 10 ), 1 ); markDirty(); render(); return; }
 			if ( act === 'reset' ) {
 				e.preventDefault();
 				var mod = el.getAttribute( 'data-mod' ), k = el.getAttribute( 'data-k' );
@@ -2480,16 +2475,6 @@
 			if ( t.classList.contains( 'tf-cheat-q' ) ) { state.cheatQ = t.value; rerenderKeepFocus( '.tf-cheat-q' ); return; }
 			if ( t.classList.contains( 'tf-recipe-q' ) ) { state.recipeQ = t.value; rerenderKeepFocus( '.tf-recipe-q' ); return; }
 			if ( t.classList.contains( 'tf-search' ) ) { state.search = t.value; rerenderKeepFocus( '.tf-search' ); return; }
-			var rc = t.getAttribute( 'data-rc' );
-			if ( rc ) {
-				var ri = ( state.recipes.custom || [] )[ parseInt( t.getAttribute( 'data-i' ), 10 ) ];
-				if ( ri ) {
-					ri[ rc ] = 'name' === rc ? t.value.toLowerCase().replace( /^\?/, '' ).replace( /[^a-z0-9-]+/g, '-' ) : t.value;
-					if ( 'name' === rc ) { var hd = t.closest( '.tf-recipe' ).querySelector( '.tf-preset-head strong' ); if ( hd ) { hd.textContent = '?' + ( ri.name || '…' ); } }
-					markDirty();
-				}
-				return;
-			}
 			var pt = t.getAttribute( 'data-pt' );
 			if ( pt ) {
 				var trow = t.closest( '[data-fam]' ), tk = trow && trow.getAttribute( 'data-fam' ), tm = tk && ( state.palette.families || {} )[ tk ];
@@ -2686,8 +2671,7 @@
 			if ( ! state.palette.families || Array.isArray( state.palette.families ) ) { state.palette.families = {}; }
 			state.paletteOrig = JSON.parse( JSON.stringify( state.palette ) );
 			state.scss = s.scss || {};
-			state.recipes = s.recipes || { enabled: true, inputs: true, custom: [] };
-			if ( ! Array.isArray( state.recipes.custom ) ) { state.recipes.custom = []; }
+			state.recipes = s.recipes || { enabled: true, inputs: true };
 			state.recipeList = s.recipe_list || [];
 			if ( ! state.components.btn_overrides || Array.isArray( state.components.btn_overrides ) ) { state.components.btn_overrides = {}; }
 			state.defs = s.defaults_map || {};
