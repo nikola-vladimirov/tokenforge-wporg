@@ -95,13 +95,7 @@ A developer can add SCSS from code. The filter `tokenforge_global_scss` receives
 
 This is code, not a setting. Put it in a child theme's functions.php or in a mu-plugin, never in TokenForge's own files, so an update does not remove it.
 
-`
-add_filter( 'tokenforge_global_scss', function ( $scss ) {
-	$scss .= '.pricing { padding: var(--space-m); }';
-	$scss .= '.pricing a { @include btn(primary); }';
-	return $scss;
-} );
-`
+Example: add `add_filter( 'tokenforge_global_scss', 'my_pricing_scss' );` to your functions.php, then define `my_pricing_scss( $scss )` so it appends `.pricing { padding: var(--space-m); }` to `$scss` and returns it.
 
 == Installation ==
 
