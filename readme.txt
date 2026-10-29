@@ -133,7 +133,11 @@ Most come from your settings: Colors makes the colour families, and Typography, 
 
 = Can I bring in settings from another framework? =
 
-Yes. Import keeps each brand colour's lightness and keeps the text and spacing sizes fluid. Every import shows a preview first, and the settings history can undo it.
+Yes, from Automatic.css: open Import, export & reset and press Import from Automatic.css. Colours, scales, layout, typography, buttons, cards, components and overlays come across. Every import shows a preview first, and the settings history can undo it.
+
+= Can I add my own CSS? =
+
+Yes, in two places. Add CSS to the builder's own custom CSS box (in Bricks, the theme style's Custom CSS), or to your theme's Additional CSS in the Customizer. Developers can also add SCSS from code with the `tokenforge_global_scss` filter, shown under Developers in the description.
 
 = What happens when I deactivate or delete TokenForge? =
 
@@ -145,7 +149,12 @@ Only what your forms ask for. On your server, a form with a send limit keeps a c
 
 = Does TokenForge contact other servers? =
 
-Only when an administrator asks it to. See External services below.
+Only when an administrator asks it to, and there is one such service: Google Fonts, when you press Download from Google Fonts (Typography, Self-hosted fonts). Your server asks fonts.googleapis.com for the family's CSS, then downloads the font files from fonts.gstatic.com, once. It sends the family name, the weights and styles you picked, and your server's IP address, like any web request. The files are stored in `uploads/tokenforge/fonts/`, so your visitors never contact Google.
+
+Terms: https://developers.google.com/terms
+Privacy: https://policies.google.com/privacy
+
+The accessibility checker (axe-core, MPL 2.0) is bundled with the plugin and runs only in the builder when an administrator presses Run check. Nothing else is contacted.
 
 = Can I translate TokenForge? =
 
@@ -158,18 +167,6 @@ Yes. The dashboard and the builder settings use the `tokenforge` text domain, so
 3. Typography: fluid text and heading sizes from one scale.
 4. WooCommerce: shop pages, product lists, filters and blocks, each part with its own switch.
 5. Forms: field styles, form classes, steps and conditional fields for the builder's form.
-
-== External services ==
-
-TokenForge contacts an outside service only when an administrator asks for it:
-
-* **Google Fonts**, when you use Download from Google Fonts (Typography, Self-hosted fonts). Your server asks fonts.googleapis.com for the family's CSS and then downloads the font files from fonts.gstatic.com, once. It sends the family name, the weights and styles you picked, and (like any web request) your server's IP address. The files are stored in `uploads/tokenforge/fonts/`; your visitors never contact Google.
-  Terms: https://developers.google.com/terms
-  Privacy: https://policies.google.com/privacy
-
-Bundled code, no outside contact:
-
-* **axe-core 4.14.0** by Deque Systems, licence MPL 2.0 (which allows distribution with GPL code), in `assets/vendor/axe-core/` with its licence file, unmodified. Source: https://github.com/dequelabs/axe-core (tag v4.14.0). It runs in the builder only when an administrator presses Run check in the TokenForge window. No visitor page loads it.
 
 == Changelog ==
 
