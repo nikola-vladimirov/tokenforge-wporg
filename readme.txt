@@ -16,14 +16,15 @@ TokenForge is a design system you set up once and use everywhere. Colours, type 
 
 **Why TokenForge**
 
-* One design system for the whole site: tokens, type and spacing scales, colours, layout and components, all set from one dashboard.
-* Works with the block editor, Bricks, Etch, Oxygen, Breakdance, Divi and Elementor. Bricks gets the deepest integration (see below).
-* Import from Automatic.css: open Import, export & reset and press Import from Automatic.css. Colours, scales, layout, typography, buttons, cards, components and overlays come across. Custom CSS is not imported in this version, so move it into your builder's own CSS box.
-* Deep Bricks integration: tokens sync both ways into Bricks variables, colours, global classes and the theme style. The dashboard, right-click menus, a design check and form tools live inside the builder.
-* Accessibility built in: WCAG 2 contrast checks with one-click fixes, a page check, and automatic attributes that stay off until you switch them on.
-* Standard design tokens: export your tokens as W3C design token files for Figma, Tokens Studio and Style Dictionary, and import Tokens Studio files.
-* Safe to try: a settings history keeps your last 20 saves, a restore can be undone, and every import shows a preview first.
-* GPLv2 or later, no account, and no outside service except Google Fonts when you ask for it.
+* One place to set your whole design: colours, type, spacing, layout and components.
+* Works with the block editor, Bricks, Etch, Oxygen, Breakdance, Divi and Elementor. Bricks has the deepest support today.
+* Bricks: your tokens stay in step with Bricks variables, colours, global classes and the theme style. The dashboard and a design check also open inside the builder.
+* Moving from another utility framework? Press Import from Automatic.css under Import, export & reset. You see a preview before anything changes, and the settings history can undo it. Custom CSS does not come across, so move it into your builder's own CSS box.
+* One stylesheet, built when you save, not on every page load. Unused classes can be left out after a site scan.
+* Accessibility checks: contrast in light and dark mode, with a suggested fix you can apply in one click.
+* Export your tokens as W3C design token files, for Figma, Tokens Studio and Style Dictionary.
+* Settings history: the last 20 saves are kept, and a restore can be undone.
+* Free under GPLv2 or later. No account needed. The only outside service is Google Fonts, and only when you ask for it.
 
 A new site starts ready: a complete starter design system (every token, colour family and setting), so there is nothing to import. Reset to defaults any time, for everything or one section.
 
@@ -94,6 +95,14 @@ TokenForge is original software released under the GPLv2 or later.
 A developer can add SCSS from code. The filter `tokenforge_global_scss` receives an empty string and returns SCSS. TokenForge compiles it with its own library (mixins and functions) and adds it last to the stylesheet. A compile error never breaks the site.
 
 This is code, not a setting. Put it in a child theme's functions.php or in a mu-plugin, never in TokenForge's own files, so an update does not remove it.
+
+**Roadmap**
+
+Planned, with no dates yet:
+
+* Etch, Oxygen, Breakdance, Divi and Elementor: the same kind of builder support Bricks has, with variables, classes and the dashboard inside the builder.
+* Block editor: panels for block styles and the global styles.
+* More accessibility checks, with clearer fixes.
 
 Example: add `add_filter( 'tokenforge_global_scss', 'my_pricing_scss' );` to your functions.php, then define `my_pricing_scss( $scss )` so it appends `.pricing { padding: var(--space-m); }` to `$scss` and returns it.
 
