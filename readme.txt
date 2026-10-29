@@ -19,7 +19,7 @@ TokenForge is a design system you set up once and use everywhere. Colours, type 
 * One place to set your whole design: colours, type, spacing, layout and components.
 * Works with the block editor, Bricks, Etch, Oxygen, Breakdance, Divi and Elementor. Bricks has the deepest support today.
 * Bricks: your tokens stay in step with Bricks variables, colours, global classes and the theme style. The dashboard and a design check also open inside the builder.
-* Moving from another utility framework? Press Import from Automatic.css under Import, export & reset. You see a preview before anything changes, and the settings history can undo it. Custom CSS does not come across, so move it into your builder's own CSS box.
+* Moving from another utility framework? Press Import from Automatic.css under Import, export & reset. You confirm before it runs, and the settings history can undo it. Custom CSS does not come across, so move it into your builder's own CSS box.
 * One stylesheet, built when you save, not on every page load. Unused classes can be left out after a site scan.
 * Accessibility checks: contrast in light and dark mode, with a suggested fix you can apply in one click.
 * Export your tokens as W3C design token files, for Figma, Tokens Studio and Style Dictionary.
@@ -136,7 +136,17 @@ Most come from your settings: Colors makes the colour families, and Typography, 
 
 = Can I bring in settings from another framework? =
 
-Yes, from Automatic.css: open Import, export & reset and press Import from Automatic.css. Colours, scales, layout, typography, buttons, cards, components and overlays come across. Every import shows a preview first, and the settings history can undo it.
+Yes. See the switching guide below.
+
+= How do I switch from another utility framework? =
+
+1. Open TokenForge, then Import, export & reset.
+2. Press Import from Automatic.css and confirm. The import merges into your settings: colours, scales, layout, typography, buttons, cards, components, overlays and fonts come across. If a token has the same name as one you already have, the imported value replaces it.
+3. Read the message that follows. It gives the number of variables and settings imported.
+4. Check Colors, Typography and Accessibility, then look at a few pages on the front end and in the builder.
+5. Move any custom CSS into your builder's own CSS box. Custom CSS is not imported.
+
+If something is wrong, open Import, export & reset and use the settings history to put back the copy from before the import.
 
 = Can I add my own CSS? =
 
