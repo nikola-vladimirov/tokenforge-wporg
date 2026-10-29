@@ -14,6 +14,17 @@ Design tokens, fluid scales, utility classes, contrast and accessibility checks 
 
 TokenForge is a design system you set up once and use everywhere. Colours, type and spacing scales, layout, buttons, cards, icons, effects and more are all CSS variables and classes, built into one static stylesheet that loads on your front end, in the block editor and, with Bricks, in the builder.
 
+**Why TokenForge**
+
+* One design system for the whole site: tokens, type and spacing scales, colours, layout and components, all set from one dashboard.
+* Works with the block editor, Bricks, Etch, Oxygen, Breakdance, Divi and Elementor. Bricks gets the deepest integration (see below).
+* Import from Automatic.css: open Import, export & reset and press Import from Automatic.css. Colours, scales, layout, typography, buttons, cards, components and overlays come across. Custom CSS is not imported in this version, so move it into your builder's own CSS box.
+* Deep Bricks integration: tokens sync both ways into Bricks variables, colours, global classes and the theme style. The dashboard, right-click menus, a design check and form tools live inside the builder.
+* Accessibility built in: WCAG 2 contrast checks with one-click fixes, a page check, and automatic attributes that stay off until you switch them on.
+* Standard design tokens: export your tokens as W3C design token files for Figma, Tokens Studio and Style Dictionary, and import Tokens Studio files.
+* Safe to try: a settings history keeps your last 20 saves, a restore can be undone, and every import shows a preview first.
+* GPLv2 or later, no account, and no outside service except Google Fonts when you ask for it.
+
 A new site starts ready: a complete starter design system (every token, colour family and setting), so there is nothing to import. Reset to defaults any time, for everything or one section.
 
 **Design system**
@@ -84,13 +95,13 @@ A developer can add SCSS from code. The filter `tokenforge_global_scss` receives
 
 This is code, not a setting. Put it in a child theme's functions.php or in a mu-plugin, never in TokenForge's own files, so an update does not remove it.
 
-```
+`
 add_filter( 'tokenforge_global_scss', function ( $scss ) {
 	$scss .= '.pricing { padding: var(--space-m); }';
 	$scss .= '.pricing a { @include btn(primary); }';
 	return $scss;
 } );
-```
+`
 
 == Installation ==
 
