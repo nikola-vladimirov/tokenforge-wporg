@@ -181,7 +181,8 @@ class Recipes {
 			$kind          = in_array( $name, $text, true ) ? 'text' : ( $r[3] ? 'value' : 'block' );
 			$out[ $name ] = array( 'n' => $name, 'c' => $r[0], 'code' => $r[1], 'scss' => $r[2], 'inline' => (bool) $r[3], 'kind' => $kind );
 		}
-		return array_values( $out );
+		// The tokenforge_recipes filter lets add-ons add or change recipes; keep the list shape documented above.
+		return array_values( apply_filters( 'tokenforge_recipes', array_values( $out ) ) );
 	}
 
 	/**
