@@ -10,6 +10,8 @@ Developers can add recipes with the tokenforge_recipes filter.
 
 Nothing changes for sites that do not use these filters.
 
+Developer and website details updated: Prista Digital, https://pristadigital.com.
+
 ## 0.54.0
 
 The Global SCSS editor is removed from the WordPress.org version. Developers can still add SCSS with the tokenforge_global_scss filter.

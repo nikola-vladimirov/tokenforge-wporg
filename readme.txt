@@ -106,6 +106,8 @@ Planned, with no dates yet:
 
 Example: add `add_filter( 'tokenforge_global_scss', 'my_pricing_scss' );` to your functions.php, then define `my_pricing_scss( $scss )` so it appends `.pricing { padding: var(--space-m); }` to `$scss` and returns it.
 
+TokenForge is developed by Prista Digital. Website: https://pristadigital.com
+
 == Installation ==
 
 1. Upload the `tokenforge` folder to `/wp-content/plugins/`, or install the zip from Plugins, Add New, Upload.
@@ -189,6 +191,7 @@ The full history is in CHANGELOG.md, also shown from the Changelog link next to 
 * Developers can add to the dashboard from a plugin or theme: sections, navigation entries, icons and panels through the wp.hooks filters tokenforge.sections, tokenforge.nav, tokenforge.icons, tokenforge.render and tokenforge.section_html.
 * Developers can add recipes with the tokenforge_recipes filter.
 * Nothing changes for sites that do not use these filters.
+* Developer and website details updated: Prista Digital, https://pristadigital.com.
 
 = 0.54.0 =
 * The Global SCSS editor is removed from the WordPress.org version. Developers can still add SCSS with the tokenforge_global_scss filter.
