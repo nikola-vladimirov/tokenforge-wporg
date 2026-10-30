@@ -2,6 +2,14 @@
 
 All the changes to TokenForge, newest first.
 
+## 0.54.1
+
+Developers can add to the dashboard from a plugin or theme. The dashboard runs five WordPress filters (wp.hooks in the browser): tokenforge.sections (add a section), tokenforge.nav (add a navigation entry), tokenforge.icons (add an icon), tokenforge.render (draw a section's panel) and tokenforge.section_html (add a panel to an existing section).
+
+Developers can add recipes with the tokenforge_recipes filter.
+
+Nothing changes for sites that do not use these filters.
+
 ## 0.54.0
 
 The Global SCSS editor is removed from the WordPress.org version. Developers can still add SCSS with the tokenforge_global_scss filter.

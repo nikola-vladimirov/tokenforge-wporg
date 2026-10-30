@@ -4,7 +4,7 @@ Tags: design tokens, css variables, accessibility, woocommerce
 Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.54.0
+Stable tag: 0.54.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -184,6 +184,11 @@ Yes. The dashboard and the builder settings use the `tokenforge` text domain, so
 == Changelog ==
 
 The full history is in CHANGELOG.md, also shown from the Changelog link next to TokenForge on the Plugins screen.
+
+= 0.54.1 =
+* Developers can add to the dashboard from a plugin or theme: sections, navigation entries, icons and panels through the wp.hooks filters tokenforge.sections, tokenforge.nav, tokenforge.icons, tokenforge.render and tokenforge.section_html.
+* Developers can add recipes with the tokenforge_recipes filter.
+* Nothing changes for sites that do not use these filters.
 
 = 0.54.0 =
 * The Global SCSS editor is removed from the WordPress.org version. Developers can still add SCSS with the tokenforge_global_scss filter.

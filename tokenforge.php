@@ -3,7 +3,7 @@
  * Plugin Name:       TokenForge
  * Plugin URI:        https://pristadigital.com
  * Description:       Design tokens, fluid scales and utility classes for any WordPress site, block editor included. With Bricks active it also syncs variables, colours, classes and a theme style both ways, and adds the dashboard inside the builder.
- * Version:           0.54.0
+ * Version:           0.54.1
  * Requires at least: 5.9
  * Requires PHP:      7.4
  * Author:            Prista Digital
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'TOKENFORGE_VERSION', '0.54.0' );
+define( 'TOKENFORGE_VERSION', '0.54.1' );
 define( 'TOKENFORGE_FILE', __FILE__ );
 define( 'TOKENFORGE_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TOKENFORGE_URL', plugin_dir_url( __FILE__ ) );
