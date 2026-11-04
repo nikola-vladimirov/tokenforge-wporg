@@ -43,12 +43,12 @@ class Palette {
 	 */
 	public static function builtin_defaults() {
 		return array(
-			'unify_brand'  => true,  // primary … base share one base lightness
-			'unify_status' => true,  // success, danger, warning, info too
-			'lightness'    => 0.65,  // that lightness (OKLCH 0-1)
+			'unify_brand'  => true,  // primary … base share one base lightness.
+			'unify_status' => true,  // success, danger, warning, info too.
+			'lightness'    => 0.65,  // that lightness (OKLCH 0-1).
 			'trans'        => true,  // -trans-10 … -trans-90 steps
 			'alt_tokens'   => false, // --primary-alt … : the dark mode value of every colour
-			'families'     => array(), // name => { hex, alt, on, alt_l, alt_c, hover_l, hover_c }
+			'families'     => array(), // name => { hex, alt, on, alt_l, alt_c, hover_l, hover_c }.
 		);
 	}
 
@@ -62,7 +62,7 @@ class Palette {
 		if ( ! is_array( $s ) ) {
 			$s = array( 'families' => self::detect() );
 		}
-		$s = wp_parse_args( $s, self::defaults() );
+		$s             = wp_parse_args( $s, self::defaults() );
 		$s['families'] = self::clean_families( $s['families'] );
 		return $s;
 	}
@@ -185,13 +185,13 @@ class Palette {
 	public static function options_for( $name, $s ) {
 		$unify = ( $s['unify_brand'] && in_array( $name, self::BRAND, true ) ) || ( $s['unify_status'] && in_array( $name, Color_Engine::STATUS, true ) );
 		return array(
-			'lightness' => $unify ? (float) $s['lightness'] : null,
-			'alt'       => isset( $s['families'][ $name ]['alt'] ) ? $s['families'][ $name ]['alt'] : '',
-			'trans'     => (bool) $s['trans'],
-			'alt_l'     => isset( $s['families'][ $name ]['alt_l'] ) ? $s['families'][ $name ]['alt_l'] : '',
-			'alt_c'     => isset( $s['families'][ $name ]['alt_c'] ) ? $s['families'][ $name ]['alt_c'] : '',
-			'hover_l'   => isset( $s['families'][ $name ]['hover_l'] ) ? $s['families'][ $name ]['hover_l'] : '',
-			'hover_c'   => isset( $s['families'][ $name ]['hover_c'] ) ? $s['families'][ $name ]['hover_c'] : '',
+			'lightness'  => $unify ? (float) $s['lightness'] : null,
+			'alt'        => isset( $s['families'][ $name ]['alt'] ) ? $s['families'][ $name ]['alt'] : '',
+			'trans'      => (bool) $s['trans'],
+			'alt_l'      => isset( $s['families'][ $name ]['alt_l'] ) ? $s['families'][ $name ]['alt_l'] : '',
+			'alt_c'      => isset( $s['families'][ $name ]['alt_c'] ) ? $s['families'][ $name ]['alt_c'] : '',
+			'hover_l'    => isset( $s['families'][ $name ]['hover_l'] ) ? $s['families'][ $name ]['hover_l'] : '',
+			'hover_c'    => isset( $s['families'][ $name ]['hover_c'] ) ? $s['families'][ $name ]['hover_c'] : '',
 			'alt_tokens' => ! empty( $s['alt_tokens'] ),
 		);
 	}
@@ -265,7 +265,11 @@ class Palette {
 		$regen  = array();
 		$toggle = array();
 		foreach ( $new['families'] as $name => $f ) {
-			$was = isset( $old['families'][ $name ] ) ? $old['families'][ $name ] : array( 'hex' => '', 'alt' => '', 'on' => true );
+			$was = isset( $old['families'][ $name ] ) ? $old['families'][ $name ] : array(
+				'hex' => '',
+				'alt' => '',
+				'on'  => true,
+			);
 			if ( '' !== $f['hex'] && ( $f['hex'] !== $was['hex'] || self::options_for( $name, $new ) !== self::options_for( $name, $old ) ) ) {
 				$regen[] = $name;
 			}
@@ -289,8 +293,8 @@ class Palette {
 	 * @return array Tokens.
 	 */
 	public static function tokens( $s = null ) {
-		$s   = $s ? $s : self::settings();
-		$key = md5( (string) wp_json_encode( $s ) );
+		$s           = $s ? $s : self::settings();
+		$key         = md5( (string) wp_json_encode( $s ) );
 		static $memo = array();
 		if ( isset( $memo[ $key ] ) ) {
 			return $memo[ $key ];
@@ -337,13 +341,13 @@ class Palette {
 		$n   = 0;
 		foreach ( $tokens as $t ) {
 			if ( isset( $made[ $t['name'] ] ) && ! empty( $t['enabled'] ) && Tokens::same_value( $t['value'], $made[ $t['name'] ] ) ) {
-				$n++;
+				++$n;
 				continue;
 			}
 			if ( empty( $t['enabled'] ) && ! isset( $made[ $t['name'] ] ) ) {
 				foreach ( $off as $re ) {
 					if ( preg_match( $re, $t['name'] ) ) {
-						$n++;
+						++$n;
 						continue 2;
 					}
 				}
@@ -409,8 +413,12 @@ class Palette {
 		if ( '' === $name || '' === $hex ) {
 			return 0;
 		}
-		$s                     = self::settings();
-		$s['families'][ $name ] = array( 'hex' => $hex, 'alt' => self::hex( $alt ), 'on' => true );
+		$s                      = self::settings();
+		$s['families'][ $name ] = array(
+			'hex' => $hex,
+			'alt' => self::hex( $alt ),
+			'on'  => true,
+		);
 		update_option( self::OPTION, $s, false );
 		self::apply( array( $name ), array(), $s );
 		return count( Color_Engine::family( $name, $hex, self::options_for( $name, $s ) ) );
@@ -465,7 +473,10 @@ class Palette {
 		// When the source has none of them it never had unified lightness, so unify
 		// goes off: TokenForge's own default (on, 0.65) would otherwise lift every
 		// brand colour, base included, to one lightness and change the design.
-		$unify = array( 'unify_brand' => 'option-palette-unify-brand-lightness', 'unify_status' => 'option-palette-unify-status-lightness' );
+		$unify = array(
+			'unify_brand'  => 'option-palette-unify-brand-lightness',
+			'unify_status' => 'option-palette-unify-status-lightness',
+		);
 		$known = array_key_exists( 'unified-lightness-value', $a );
 		foreach ( $unify as $ak ) {
 			$known = $known || array_key_exists( $ak, $a );
@@ -491,12 +502,27 @@ class Palette {
 			if ( '' === $hex ) {
 				continue;
 			}
-			$cur                  = isset( $s['families'][ $f ] ) ? $s['families'][ $f ] : array( 'alt' => '', 'on' => true );
-			$enabled              = $on( 'option-' . $f . '-clr' );
-			$s['families'][ $f ] = array_merge( $cur, array( 'hex' => $hex, 'alt' => $cur['alt'], 'on' => null === $enabled ? $cur['on'] : $enabled ) );
-			$rows[]               = "families.$f ← color-$f = $hex" . ( false === $enabled ? ' (off)' : '' );
+			$cur                 = isset( $s['families'][ $f ] ) ? $s['families'][ $f ] : array(
+				'alt' => '',
+				'on'  => true,
+			);
+			$enabled             = $on( 'option-' . $f . '-clr' );
+			$s['families'][ $f ] = array_merge(
+				$cur,
+				array(
+					'hex' => $hex,
+					'alt' => $cur['alt'],
+					'on'  => null === $enabled ? $cur['on'] : $enabled,
+				)
+			);
+			$rows[]              = "families.$f ← color-$f = $hex" . ( false === $enabled ? ' (off)' : '' );
 			// Dark mode overrides of the main colour and its hover (lightness, chroma).
-			foreach ( array( 'alt_l' => 'l-alt-oklch', 'alt_c' => 'c-alt-oklch', 'hover_l' => 'hover-l-alt-oklch', 'hover_c' => 'hover-c-alt-oklch' ) as $k => $suffix ) {
+			foreach ( array(
+				'alt_l'   => 'l-alt-oklch',
+				'alt_c'   => 'c-alt-oklch',
+				'hover_l' => 'hover-l-alt-oklch',
+				'hover_c' => 'hover-c-alt-oklch',
+			) as $k => $suffix ) {
 				$v = isset( $a[ $f . '-' . $suffix ] ) && is_scalar( $a[ $f . '-' . $suffix ] ) ? self::part( $a[ $f . '-' . $suffix ], in_array( $k, array( 'alt_l', 'hover_l' ), true ) ? 1 : 0.4 ) : '';
 				if ( '' !== $v ) {
 					$s['families'][ $f ][ $k ] = $v;

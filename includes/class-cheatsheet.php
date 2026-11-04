@@ -19,7 +19,11 @@ defined( 'ABSPATH' ) || exit;
  */
 class Cheatsheet {
 
-	/** @var array|null Per-request cache. */
+	/**
+	 * Per-request cache.
+	 *
+	 * @var array|null
+	 */
 	private static $cache = null;
 
 	/**
@@ -67,7 +71,7 @@ class Cheatsheet {
 		$css = self::class_css();
 		foreach ( Features\Builder_Enhancements::menu_classes() as $name ) {
 			list( $group, $desc ) = self::describe_class( $name );
-			$applied = isset( $css[ $name ] ) ? self::short( $css[ $name ] ) : '';
+			$applied              = isset( $css[ $name ] ) ? self::short( $css[ $name ] ) : '';
 			if ( '' === $desc ) {
 				$desc = '' !== $applied ? 'Applies ' . rtrim( self::short( $applied, 110 ), ';' ) . '.' : 'Utility class ' . $name . '.';
 			}
@@ -86,7 +90,7 @@ class Cheatsheet {
 				continue;
 			}
 			if ( preg_match( '/-(h|s|l|r|g|b|rgb|hsl|hex)$/', $t['name'] ) && 'color' === $t['group'] ) {
-				continue; // colour channels are building blocks, not values to use
+				continue; // colour channels are building blocks, not values to use.
 			}
 			list( $group, $desc ) = self::describe_var( $t['name'], $t['group'] );
 			if ( '' === $desc ) {
@@ -118,29 +122,101 @@ class Cheatsheet {
 		// ---- Data attributes ----
 		$ex = Extras::settings();
 		if ( ! empty( $ex['enable_icon'] ) ) {
-			$items['attributes'][] = array( 'n' => 'data-icon', 'k' => 'attr', 'copy' => 'data-icon', 'd' => 'Makes an svg or i element (or a link wrapping one) an icon: size, colour, box and hover colours from the icon settings.', 'css' => '' );
-			$items['attributes'][] = array( 'n' => 'data-icon-size', 'k' => 'attr', 'copy' => 'data-icon-size="m"', 'd' => 'Icon size: xs, s, m, l, xl or 2xl.', 'css' => '' );
-			$items['attributes'][] = array( 'n' => 'data-icon-style', 'k' => 'attr', 'copy' => 'data-icon-style="boxed"', 'd' => 'boxed puts the icon in a padded box, plain removes the box.', 'css' => '' );
-			$items['attributes'][] = array( 'n' => 'data-icon-list', 'k' => 'attr', 'copy' => 'data-icon-list', 'd' => 'On a list: every item gets a small icon (same as .icon-list).', 'css' => '' );
-			$items['attributes'][] = array( 'n' => 'data-icon-hover', 'k' => 'attr', 'copy' => 'data-icon-hover', 'd' => 'On a parent: hovering it switches the icon inside to its hover colours.', 'css' => '' );
+			$items['attributes'][] = array(
+				'n'    => 'data-icon',
+				'k'    => 'attr',
+				'copy' => 'data-icon',
+				'd'    => 'Makes an svg or i element (or a link wrapping one) an icon: size, colour, box and hover colours from the icon settings.',
+				'css'  => '',
+			);
+			$items['attributes'][] = array(
+				'n'    => 'data-icon-size',
+				'k'    => 'attr',
+				'copy' => 'data-icon-size="m"',
+				'd'    => 'Icon size: xs, s, m, l, xl or 2xl.',
+				'css'  => '',
+			);
+			$items['attributes'][] = array(
+				'n'    => 'data-icon-style',
+				'k'    => 'attr',
+				'copy' => 'data-icon-style="boxed"',
+				'd'    => 'boxed puts the icon in a padded box, plain removes the box.',
+				'css'  => '',
+			);
+			$items['attributes'][] = array(
+				'n'    => 'data-icon-list',
+				'k'    => 'attr',
+				'copy' => 'data-icon-list',
+				'd'    => 'On a list: every item gets a small icon (same as .icon-list).',
+				'css'  => '',
+			);
+			$items['attributes'][] = array(
+				'n'    => 'data-icon-hover',
+				'k'    => 'attr',
+				'copy' => 'data-icon-hover',
+				'd'    => 'On a parent: hovering it switches the icon inside to its hover colours.',
+				'css'  => '',
+			);
 		}
 		if ( ! empty( $ex['ribbons'] ) ) {
-			$items['attributes'][] = array( 'n' => 'data-ribbon-position', 'k' => 'attr', 'copy' => 'data-ribbon-position="top-right"', 'd' => 'On a .ribbon: which corner it sits in (top-right or top-left).', 'css' => '' );
+			$items['attributes'][] = array(
+				'n'    => 'data-ribbon-position',
+				'k'    => 'attr',
+				'copy' => 'data-ribbon-position="top-right"',
+				'd'    => 'On a .ribbon: which corner it sits in (top-right or top-left).',
+				'css'  => '',
+			);
 		}
 		if ( ! empty( $ex['inverted_radius'] ) ) {
-			$items['attributes'][] = array( 'n' => 'data-inverted-radius-1-position', 'k' => 'attr', 'copy' => 'data-inverted-radius-1-position="bottom-left"', 'd' => 'Where the first concave corner is drawn: top-left, top-right, bottom-left or bottom-right.', 'css' => '' );
-			$items['attributes'][] = array( 'n' => 'data-inverted-radius-1-slice', 'k' => 'attr', 'copy' => 'data-inverted-radius-1-slice="top-left"', 'd' => 'Which quarter of the curve is shown. Use -2- attributes for a second corner.', 'css' => '' );
+			$items['attributes'][] = array(
+				'n'    => 'data-inverted-radius-1-position',
+				'k'    => 'attr',
+				'copy' => 'data-inverted-radius-1-position="bottom-left"',
+				'd'    => 'Where the first concave corner is drawn: top-left, top-right, bottom-left or bottom-right.',
+				'css'  => '',
+			);
+			$items['attributes'][] = array(
+				'n'    => 'data-inverted-radius-1-slice',
+				'k'    => 'attr',
+				'copy' => 'data-inverted-radius-1-slice="top-left"',
+				'd'    => 'Which quarter of the curve is shown. Use -2- attributes for a second corner.',
+				'css'  => '',
+			);
 		}
 
 		foreach ( Attributes::others() as $n => $a ) {
-			$items['attributes'][] = array( 'n' => $n, 'k' => 'attr', 'copy' => $a[0], 'd' => $a[1], 'css' => '' );
+			$items['attributes'][] = array(
+				'n'    => $n,
+				'k'    => 'attr',
+				'copy' => $a[0],
+				'd'    => $a[1],
+				'css'  => '',
+			);
 		}
 		foreach ( Attributes::all() as $n => $a ) {
-			$items['attributes'][] = array( 'n' => $n, 'k' => 'attr', 'copy' => $a[1], 'd' => $a[2] . ( $a[0] ? ' Values: ' . implode( ', ', $a[0] ) . '.' : '' ), 'css' => '' );
+			$items['attributes'][] = array(
+				'n'    => $n,
+				'k'    => 'attr',
+				'copy' => $a[1],
+				'd'    => $a[2] . ( $a[0] ? ' Values: ' . implode( ', ', $a[0] ) . '.' : '' ),
+				'css'  => '',
+			);
 		}
 		if ( Modules::on( 'builder' ) ) {
-			$items['utilities'][] = array( 'n' => 'Heading levels (builder canvas)', 'k' => 'tip', 'copy' => 'Heading levels', 'd' => 'Options, Canvas, Heading levels: an h1 to h6 badge on every heading in the canvas; a skipped level or a second h1 is red and ends in !. Only you see it.', 'css' => '' );
-			$items['utilities'][] = array( 'n' => 'Focus order (builder canvas)', 'k' => 'tip', 'copy' => 'Focus order', 'd' => 'Options, Canvas, Focus order: numbers every link, button and field in the order Tab visits them. Only you see it.', 'css' => '' );
+			$items['utilities'][] = array(
+				'n'    => 'Heading levels (builder canvas)',
+				'k'    => 'tip',
+				'copy' => 'Heading levels',
+				'd'    => 'Options, Canvas, Heading levels: an h1 to h6 badge on every heading in the canvas; a skipped level or a second h1 is red and ends in !. Only you see it.',
+				'css'  => '',
+			);
+			$items['utilities'][] = array(
+				'n'    => 'Focus order (builder canvas)',
+				'k'    => 'tip',
+				'copy' => 'Focus order',
+				'd'    => 'Options, Canvas, Focus order: numbers every link, button and field in the order Tab visits them. Only you see it.',
+				'css'  => '',
+			);
 		}
 		foreach ( Features\A11y_Auto::cheatsheet() as $g => $list ) {
 			$items[ $g ] = array_merge( $items[ $g ], $list );
@@ -151,7 +227,12 @@ class Cheatsheet {
 			if ( empty( $items[ $id ] ) ) {
 				continue;
 			}
-			$out[] = array( 'id' => $id, 'title' => $g[0], 'desc' => $g[1], 'items' => $items[ $id ] );
+			$out[] = array(
+				'id'    => $id,
+				'title' => $g[0],
+				'desc'  => $g[1],
+				'items' => $items[ $id ],
+			);
 		}
 		self::$cache = $out;
 		return $out;
@@ -204,11 +285,11 @@ class Cheatsheet {
 			$j     = $open + 1;
 			while ( $j < $len && $depth > 0 ) {
 				if ( '{' === $css[ $j ] ) {
-					$depth++;
+					++$depth;
 				} elseif ( '}' === $css[ $j ] ) {
-					$depth--;
+					--$depth;
 				}
-				$j++;
+				++$j;
 			}
 			$body = substr( $css, $open + 1, $j - $open - 2 );
 			$i    = $j;
@@ -217,7 +298,8 @@ class Cheatsheet {
 			}
 			if ( '@' === $sel[0] ) {
 				if ( 0 === strpos( $sel, '@media' ) || 0 === strpos( $sel, '@layer' ) || 0 === strpos( $sel, '@supports' ) ) {
-					self::walk( $body, 0 === strpos( $sel, '@layer' ) ? $ctx : trim( $sel ), $map );
+					$inner = 0 === strpos( $sel, '@layer' ) ? $ctx : trim( $sel );
+					self::walk( $body, $inner, $map );
 				}
 				continue;
 			}
@@ -227,7 +309,7 @@ class Cheatsheet {
 					if ( '' === $decl ) {
 						continue;
 					}
-					$decl = '' !== $ctx ? $ctx . ' { ' . $decl . ' }' : $decl;
+					$decl         = '' !== $ctx ? $ctx . ' { ' . $decl . ' }' : $decl;
 					$map[ $m[1] ] = isset( $map[ $m[1] ] ) ? $map[ $m[1] ] . '; ' . $decl : $decl;
 				}
 			}
@@ -248,9 +330,9 @@ class Cheatsheet {
 		for ( $i = 0; $i < $len; $i++ ) {
 			$ch = $sel[ $i ];
 			if ( '(' === $ch || '[' === $ch ) {
-				$depth++;
+				++$depth;
 			} elseif ( ')' === $ch || ']' === $ch ) {
-				$depth--;
+				--$depth;
 			}
 			if ( ',' === $ch && 0 === $depth ) {
 				$out[] = $cur;
@@ -270,17 +352,32 @@ class Cheatsheet {
 	 * @return array [ group, description ]
 	 */
 	public static function describe_class( $n ) {
-		$sz   = '(xxl|xl|l|m|s|xs)';
-		$fam  = '([a-z]+)';
+		$sz    = '(xxl|xl|l|m|s|xs)';
+		$fam   = '([a-z]+)';
 		$fluid = function ( $a, $b ) {
 			return "fluid: $a on wide screens, shrinking to $b on small screens";
 		};
 		$rules = array(
 			// Layout.
-			array( "/^section--$sz\$/", 'layout', function ( $m ) { return 'Section padding ' . $m[1] . ': top and bottom var(--section-space-' . $m[1] . '), plus the side gutters.'; } ),
-			array( "/^section--$sz-to-$sz\$/", 'layout', function ( $m ) use ( $fluid ) { return 'Section padding, ' . $fluid( $m[1], $m[2] ) . '.'; } ),
+			array(
+				"/^section--$sz\$/",
+				'layout',
+				function ( $m ) {
+										return 'Section padding ' . $m[1] . ': top and bottom var(--section-space-' . $m[1] . '), plus the side gutters.'; },
+			),
+			array(
+				"/^section--$sz-to-$sz\$/",
+				'layout',
+				function ( $m ) use ( $fluid ) {
+										return 'Section padding, ' . $fluid( $m[1], $m[2] ) . '.'; },
+			),
 			array( '/^section--none$/', 'layout', 'A section with no top or bottom padding (the side gutters stay).' ),
-			array( "/^header--$sz\$/", 'layout', function ( $m ) { return 'Header spacing ' . $m[1] . ': top and bottom var(--space-' . $m[1] . ') with side gutters.'; } ),
+			array(
+				"/^header--$sz\$/",
+				'layout',
+				function ( $m ) {
+										return 'Header spacing ' . $m[1] . ': top and bottom var(--space-' . $m[1] . ') with side gutters.'; },
+			),
 			array( '/^container$/', 'layout', 'Centres its content at the content width (var(--content-width)).' ),
 			array( '/^content-width$/', 'layout', 'Full width up to the content width, centred.' ),
 			array( '/^content-width--safe$/', 'layout', 'Like content-width, but keeps the side gutter on small screens.' ),
@@ -291,104 +388,362 @@ class Cheatsheet {
 			array( '/^content--full$/', 'layout', 'In a content grid: spans the full width, edge to edge.' ),
 			array( '/^content--full-safe$/', 'layout', 'In a content grid: full width, but keeps the side gutter as padding.' ),
 			array( '/^content-offset--off$/', 'layout', 'Stops the automatic offset below a fixed header on this element.' ),
-			array( '/^(container|content|grid)-gap$/', 'spacing', function ( $m ) { return 'Gap of var(--' . $m[1] . '-gap) between the children.'; } ),
+			array(
+				'/^(container|content|grid)-gap$/',
+				'spacing',
+				function ( $m ) {
+										return 'Gap of var(--' . $m[1] . '-gap) between the children.'; },
+			),
 			array( '/^gap--none$/', 'spacing', 'Removes the gap between children.' ),
-			array( '/^width--(\d+)$/', 'layout', function ( $m ) { return 'Width ' . $m[1] . '% of the content width.'; } ),
-			array( "/^width--$sz\$/", 'layout', function ( $m ) { return 'Width step ' . $m[1] . ' of the width scale.'; } ),
-			array( '/^width(--|-)(.+)$/', 'layout', function ( $m ) { return 'Width: ' . $m[2] . '.'; } ),
+			array(
+				'/^width--(\d+)$/',
+				'layout',
+				function ( $m ) {
+										return 'Width ' . $m[1] . '% of the content width.'; },
+			),
+			array(
+				"/^width--$sz\$/",
+				'layout',
+				function ( $m ) {
+										return 'Width step ' . $m[1] . ' of the width scale.'; },
+			),
+			array(
+				'/^width(--|-)(.+)$/',
+				'layout',
+				function ( $m ) {
+										return 'Width: ' . $m[2] . '.'; },
+			),
 			// Grids.
-			array( '/^grid-(\d+)$/', 'grid', function ( $m ) { return $m[1] . ' equal columns (var(--grid-' . $m[1] . ')).'; } ),
-			array( '/^grid-(\d)-(\d)$/', 'grid', function ( $m ) { return 'Two columns in a ' . $m[1] . ':' . $m[2] . ' ratio.'; } ),
-			array( '/^grid-auto-(\d+)$/', 'grid', function ( $m ) { return 'Up to ' . $m[1] . ' columns that wrap to fewer on their own as space runs out.'; } ),
-			array( '/^grid--auto-(\d+)$/', 'grid', function ( $m ) { return 'Up to ' . $m[1] . ' columns that wrap to fewer on their own as space runs out (var(--grid-auto-' . $m[1] . ') as a class).'; } ),
-			array( '/^grid--auto-(fill|fit)$/', 'grid', function ( $m ) { return 'With a grid--auto-* class: lay the columns out with auto-' . $m[1] . ' on this grid.'; } ),
+			array(
+				'/^grid-(\d+)$/',
+				'grid',
+				function ( $m ) {
+										return $m[1] . ' equal columns (var(--grid-' . $m[1] . ')).'; },
+			),
+			array(
+				'/^grid-(\d)-(\d)$/',
+				'grid',
+				function ( $m ) {
+										return 'Two columns in a ' . $m[1] . ':' . $m[2] . ' ratio.'; },
+			),
+			array(
+				'/^grid-auto-(\d+)$/',
+				'grid',
+				function ( $m ) {
+										return 'Up to ' . $m[1] . ' columns that wrap to fewer on their own as space runs out.'; },
+			),
+			array(
+				'/^grid--auto-(\d+)$/',
+				'grid',
+				function ( $m ) {
+										return 'Up to ' . $m[1] . ' columns that wrap to fewer on their own as space runs out (var(--grid-auto-' . $m[1] . ') as a class).'; },
+			),
+			array(
+				'/^grid--auto-(fill|fit)$/',
+				'grid',
+				function ( $m ) {
+										return 'With a grid--auto-* class: lay the columns out with auto-' . $m[1] . ' on this grid.'; },
+			),
 			array( '/^grid--auto-rows$/', 'grid', 'Rows share the height evenly, each at least as tall as its content.' ),
 			array( '/^(auto-grid|grid-auto)$/', 'grid', 'A grid whose columns wrap automatically (set --column-count on the element).' ),
 			array( '/^variable-grid$/', 'grid', 'A grid whose column count comes from a variable you can change per breakpoint.' ),
 			array( '/^grid$/', 'grid', 'display: grid.' ),
 			array( '/^(flex|flex-row|flex-col|flex-wrap|flex-nowrap|items-.+|justify-.+|block|inline-block|inline-flex)$/', 'grid', null ),
-			array( '/^columns-(\d+)$/', 'grid', function ( $m ) { return 'Text flows in ' . $m[1] . ' newspaper-style columns.'; } ),
+			array(
+				'/^columns-(\d+)$/',
+				'grid',
+				function ( $m ) {
+										return 'Text flows in ' . $m[1] . ' newspaper-style columns.'; },
+			),
 			// Spacing.
-			array( '/^(padding|pad)--(.+)$/', 'spacing', function ( $m ) { return 'Padding of var(--space-' . $m[2] . ').'; } ),
-			array( '/^margin-(top|right|bottom|left|block|inline)--(.+)$/', 'spacing', function ( $m ) { return 'Margin ' . $m[1] . ' of var(--space-' . $m[2] . ').'; } ),
-			array( '/^(gap|row-gap|col-gap)--(.+)$/', 'spacing', function ( $m ) { return array( 'gap' => 'Gap', 'row-gap' => 'Row gap', 'col-gap' => 'Column gap' )[ $m[1] ] . ' of var(--space-' . $m[2] . ').'; } ),
+			array(
+				'/^(padding|pad)--(.+)$/',
+				'spacing',
+				function ( $m ) {
+										return 'Padding of var(--space-' . $m[2] . ').'; },
+			),
+			array(
+				'/^margin-(top|right|bottom|left|block|inline)--(.+)$/',
+				'spacing',
+				function ( $m ) {
+										return 'Margin ' . $m[1] . ' of var(--space-' . $m[2] . ').'; },
+			),
+			array(
+				'/^(gap|row-gap|col-gap)--(.+)$/',
+				'spacing',
+				function ( $m ) {
+					return array(
+						'gap'     => 'Gap',
+						'row-gap' => 'Row gap',
+						'col-gap' => 'Column gap',
+					)[ $m[1] ] . ' of var(--space-' . $m[2] . ').'; },
+			),
 			// "-space-" classes are made from the section spacing tokens (--section-space-*).
-			array( "/^(pad|mar|gap)(-block|-inline)?-space-$sz\$/", 'spacing', function ( $m ) { return self::space_word( $m[1] ) . self::axis_word( $m[2] ) . ' of var(--section-space-' . $m[3] . ') (section spacing).'; } ),
-			array( "/^(pad|mar|gap)(-block|-inline)?-space-$sz-to-$sz\$/", 'spacing', function ( $m ) { return self::space_word( $m[1] ) . self::axis_word( $m[2] ) . ' of section spacing, fluid from ' . $m[3] . ' on wide screens to ' . $m[4] . ' on small screens.'; } ),
-			array( "/^(pad|mar|gap)(-block|-inline)?-$sz\$/", 'spacing', function ( $m ) { return self::space_word( $m[1] ) . self::axis_word( $m[2] ) . ' of var(--space-' . $m[3] . ').'; } ),
-			array( "/^(pad|mar|gap)(-block|-inline)?-$sz-to-$sz\$/", 'spacing', function ( $m ) { return self::space_word( $m[1] ) . self::axis_word( $m[2] ) . ', fluid from ' . $m[3] . ' on wide screens to ' . $m[4] . ' on small screens.'; } ),
-			array( '/^(pad|mar|gap)(-block|-inline)?-(.+)$/', 'spacing', function ( $m ) { return self::space_word( $m[1] ) . self::axis_word( $m[2] ) . ' of var(--' . $m[3] . ').'; } ),
+			array(
+				"/^(pad|mar|gap)(-block|-inline)?-space-$sz\$/",
+				'spacing',
+				function ( $m ) {
+										return self::space_word( $m[1] ) . self::axis_word( $m[2] ) . ' of var(--section-space-' . $m[3] . ') (section spacing).'; },
+			),
+			array(
+				"/^(pad|mar|gap)(-block|-inline)?-space-$sz-to-$sz\$/",
+				'spacing',
+				function ( $m ) {
+										return self::space_word( $m[1] ) . self::axis_word( $m[2] ) . ' of section spacing, fluid from ' . $m[3] . ' on wide screens to ' . $m[4] . ' on small screens.'; },
+			),
+			array(
+				"/^(pad|mar|gap)(-block|-inline)?-$sz\$/",
+				'spacing',
+				function ( $m ) {
+										return self::space_word( $m[1] ) . self::axis_word( $m[2] ) . ' of var(--space-' . $m[3] . ').'; },
+			),
+			array(
+				"/^(pad|mar|gap)(-block|-inline)?-$sz-to-$sz\$/",
+				'spacing',
+				function ( $m ) {
+										return self::space_word( $m[1] ) . self::axis_word( $m[2] ) . ', fluid from ' . $m[3] . ' on wide screens to ' . $m[4] . ' on small screens.'; },
+			),
+			array(
+				'/^(pad|mar|gap)(-block|-inline)?-(.+)$/',
+				'spacing',
+				function ( $m ) {
+										return self::space_word( $m[1] ) . self::axis_word( $m[2] ) . ' of var(--' . $m[3] . ').'; },
+			),
 			// Typography.
-			array( '/^h([1-6])$/', 'typography', function ( $m ) { return 'Looks like an h' . $m[1] . ' (size and heading styles) on any element; the tag stays the same.'; } ),
-			array( '/^h([1-6])-to-h([1-6])$/', 'typography', function ( $m ) use ( $fluid ) { return 'Heading size, ' . $fluid( 'h' . $m[1], 'h' . $m[2] ) . '.'; } ),
-			array( "/^text--$sz\$/", 'typography', function ( $m ) { return 'Body text at size ' . $m[1] . ' (var(--text-' . $m[1] . ')) with the body text styles.'; } ),
-			array( "/^text-$sz\$/", 'typography', function ( $m ) { return 'Font size var(--text-' . $m[1] . ').'; } ),
-			array( "/^text-$sz-to-$sz\$/", 'typography', function ( $m ) use ( $fluid ) { return 'Font size, ' . $fluid( $m[1], $m[2] ) . '.'; } ),
-			array( '/^text--(dark|light|dark-muted|light-muted)$/', 'colors', function ( $m ) { return 'Text colour var(--text-' . $m[1] . ').'; } ),
-			array( '/^text-(center|left|right)$/', 'typography', function ( $m ) { return 'Aligns text ' . $m[1] . '.'; } ),
-			array( '/^text-shadow-?-?(\d)$/', 'borders', function ( $m ) { return 'Text shadow level ' . $m[1] . ' (var(--text-shadow-' . $m[1] . ')).'; } ),
+			array(
+				'/^h([1-6])$/',
+				'typography',
+				function ( $m ) {
+										return 'Looks like an h' . $m[1] . ' (size and heading styles) on any element; the tag stays the same.'; },
+			),
+			array(
+				'/^h([1-6])-to-h([1-6])$/',
+				'typography',
+				function ( $m ) use ( $fluid ) {
+										return 'Heading size, ' . $fluid( 'h' . $m[1], 'h' . $m[2] ) . '.'; },
+			),
+			array(
+				"/^text--$sz\$/",
+				'typography',
+				function ( $m ) {
+										return 'Body text at size ' . $m[1] . ' (var(--text-' . $m[1] . ')) with the body text styles.'; },
+			),
+			array(
+				"/^text-$sz\$/",
+				'typography',
+				function ( $m ) {
+										return 'Font size var(--text-' . $m[1] . ').'; },
+			),
+			array(
+				"/^text-$sz-to-$sz\$/",
+				'typography',
+				function ( $m ) use ( $fluid ) {
+										return 'Font size, ' . $fluid( $m[1], $m[2] ) . '.'; },
+			),
+			array(
+				'/^text--(dark|light|dark-muted|light-muted)$/',
+				'colors',
+				function ( $m ) {
+										return 'Text colour var(--text-' . $m[1] . ').'; },
+			),
+			array(
+				'/^text-(center|left|right)$/',
+				'typography',
+				function ( $m ) {
+										return 'Aligns text ' . $m[1] . '.'; },
+			),
+			array(
+				'/^text-shadow-?-?(\d)$/',
+				'borders',
+				function ( $m ) {
+										return 'Text shadow level ' . $m[1] . ' (var(--text-shadow-' . $m[1] . ')).'; },
+			),
 			array( '/^(h[1-6]|text-.+)-(max-width|line-height)$/', 'typography', null ),
-			array( '/^smart-spacing(.*)$/', 'content', function ( $m ) { return '' === $m[1] ? 'Vertical rhythm: consistent space between paragraphs, headings, lists and figures inside.' : ( '--off' === $m[1] ? 'Turns the vertical rhythm off inside this element.' : 'Resets default margins so only the rhythm spaces the children.' ); } ),
+			array(
+				'/^smart-spacing(.*)$/',
+				'content',
+				function ( $m ) {
+										return '' === $m[1] ? 'Vertical rhythm: consistent space between paragraphs, headings, lists and figures inside.' : ( '--off' === $m[1] ? 'Turns the vertical rhythm off inside this element.' : 'Resets default margins so only the rhythm spaces the children.' ); },
+			),
 			array( '/^(prose)$/', 'content', 'Long-form styling for lists, figures, code, tables and rules inside.' ),
 			array( '/^blockquote$/', 'content', 'Quote styling from the blockquote settings.' ),
 			// Colours.
-			array( '/^bg--(ultra-light|light|dark|ultra-dark)$/', 'colors', function ( $m ) { return 'Background var(--bg-' . $m[1] . ') with readable text, heading, link and button colours inside.'; } ),
-			array( '/^(bg|text|border)-(.+)-trans-(\d+)$/', 'colors', function ( $m ) { return array( 'bg' => 'Background', 'text' => 'Text', 'border' => 'Border' )[ $m[1] ] . ' colour ' . $m[2] . ' at ' . $m[3] . '% opacity.'; } ),
+			array(
+				'/^bg--(ultra-light|light|dark|ultra-dark)$/',
+				'colors',
+				function ( $m ) {
+										return 'Background var(--bg-' . $m[1] . ') with readable text, heading, link and button colours inside.'; },
+			),
+			array(
+				'/^(bg|text|border)-(.+)-trans-(\d+)$/',
+				'colors',
+				function ( $m ) {
+					return array(
+						'bg'     => 'Background',
+						'text'   => 'Text',
+						'border' => 'Border',
+					)[ $m[1] ] . ' colour ' . $m[2] . ' at ' . $m[3] . '% opacity.'; },
+			),
 			array( '/^(bg|text|border)--?(.+)$/', 'colors', null ),
-			array( '/^scheme--(light|dark)$/', 'utilities', function ( $m ) { return 'Forces the ' . $m[1] . ' colour scheme on this element and everything inside.'; } ),
+			array(
+				'/^scheme--(light|dark)$/',
+				'utilities',
+				function ( $m ) {
+										return 'Forces the ' . $m[1] . ' colour scheme on this element and everything inside.'; },
+			),
 			array( '/^scheme-toggle$/', 'utilities', 'Turns any button into the visitor light/dark switch.' ),
 			// Buttons.
 			array( '/^btn$/', 'buttons', 'A button in the default family.' ),
-			array( "/^btn--$sz\$/", 'buttons', function ( $m ) { return 'Button size ' . $m[1] . ' (font size var(--text-' . $m[1] . '); padding scales with it).'; } ),
+			array(
+				"/^btn--$sz\$/",
+				'buttons',
+				function ( $m ) {
+										return 'Button size ' . $m[1] . ' (font size var(--text-' . $m[1] . '); padding scales with it).'; },
+			),
 			array( '/^btn--outline$/', 'buttons', 'Outline variant: add it next to a colour class, for example btn--primary btn--outline.' ),
 			array( '/^btn--none$/', 'buttons', 'Removes the button background and border.' ),
-			array( "/^btn--$fam--outline\$/", 'buttons', function ( $m ) { return 'Outline button in the ' . $m[1] . ' colour.'; } ),
-			array( "/^btn--$fam-(dark|light)\$/", 'buttons', function ( $m ) { return 'Button in the ' . $m[1] . ' colour, ' . $m[2] . ' variant.'; } ),
-			array( "/^btn--$fam\$/", 'buttons', function ( $m ) { return 'Button in the ' . $m[1] . ' colour.'; } ),
+			array(
+				"/^btn--$fam--outline\$/",
+				'buttons',
+				function ( $m ) {
+										return 'Outline button in the ' . $m[1] . ' colour.'; },
+			),
+			array(
+				"/^btn--$fam-(dark|light)\$/",
+				'buttons',
+				function ( $m ) {
+										return 'Button in the ' . $m[1] . ' colour, ' . $m[2] . ' variant.'; },
+			),
+			array(
+				"/^btn--$fam\$/",
+				'buttons',
+				function ( $m ) {
+										return 'Button in the ' . $m[1] . ' colour.'; },
+			),
 			array( '/^unrelate$/', 'buttons', 'Keeps this button’s own colours inside a .bg--* section.' ),
 			array( '/^skip-link$/', 'utilities', 'A "skip to content" link that appears on keyboard focus.' ),
 			// Cards & forms.
 			array( '/^card$/', 'cards', 'A card: padded flex column with background, radius, border and shadow from the card settings.' ),
-			array( '/^form--(light|dark)$/', 'cards', function ( $m ) { return 'Form fields in ' . $m[1] . ' colours.'; } ),
+			array(
+				'/^form--(light|dark)$/',
+				'cards',
+				function ( $m ) {
+										return 'Form fields in ' . $m[1] . ' colours.'; },
+			),
 			array( '/^form--columns$/', 'cards', 'On the builder’s form: fields in two columns (text areas, choices and the button across both), one column on small screens.' ),
 			array( '/^form--inline$/', 'cards', 'On the builder’s form: fields and the button in one row that wraps, for a newsletter or a search.' ),
 			array( '/^form--compact$/', 'cards', 'On the builder’s form: smaller fields and less space between them.' ),
 			array( '/^form--card$/', 'cards', 'On the builder’s form: the form in a padded panel with a border.' ),
 			// Icons.
 			array( '/^icon$/', 'icons', 'A wrapper that styles the icon inside it (size, colour, box).' ),
-			array( '/^icon--(2xl|xxl|xl|l|m|s|xs)$/', 'icons', function ( $m ) { return 'Icon size ' . $m[1] . ' (var(--icon-size-' . $m[1] . ')).'; } ),
+			array(
+				'/^icon--(2xl|xxl|xl|l|m|s|xs)$/',
+				'icons',
+				function ( $m ) {
+										return 'Icon size ' . $m[1] . ' (var(--icon-size-' . $m[1] . ')).'; },
+			),
 			array( '/^icon--boxed$/', 'icons', 'Puts the icon in a padded box.' ),
 			array( '/^icon--plain$/', 'icons', 'Icon without a box.' ),
 			array( '/^icon-list$/', 'icons', 'A list where every item gets a small icon.' ),
 			// Borders, radius, shadows.
 			array( '/^border$/', 'borders', 'Border from the border tokens (var(--border)).' ),
-			array( '/^border--(light|dark)$/', 'borders', function ( $m ) { return 'Border for ' . ( 'light' === $m[1] ? 'dark' : 'light' ) . ' backgrounds (var(--border-' . $m[1] . ')).'; } ),
-			array( '/^border-(top|bottom)$/', 'borders', function ( $m ) { return 'Border on the ' . $m[1] . ' only.'; } ),
-			array( '/^divider(--(light|dark))?$/', 'borders', function ( $m ) { return empty( $m[2] ) ? 'A horizontal divider line with space above and below.' : 'Divider for ' . ( 'light' === $m[2] ? 'dark' : 'light' ) . ' backgrounds.'; } ),
-			array( "/^radius-$sz\$/", 'borders', function ( $m ) { return 'Corner radius ' . $m[1] . ' (var(--radius-' . $m[1] . ')).'; } ),
-			array( '/^(radius|rounded)--(.+)$/', 'borders', function ( $m ) { return 'Corner radius ' . $m[2] . ' (var(--radius-' . $m[2] . ')).'; } ),
+			array(
+				'/^border--(light|dark)$/',
+				'borders',
+				function ( $m ) {
+										return 'Border for ' . ( 'light' === $m[1] ? 'dark' : 'light' ) . ' backgrounds (var(--border-' . $m[1] . ')).'; },
+			),
+			array(
+				'/^border-(top|bottom)$/',
+				'borders',
+				function ( $m ) {
+										return 'Border on the ' . $m[1] . ' only.'; },
+			),
+			array(
+				'/^divider(--(light|dark))?$/',
+				'borders',
+				function ( $m ) {
+										return empty( $m[2] ) ? 'A horizontal divider line with space above and below.' : 'Divider for ' . ( 'light' === $m[2] ? 'dark' : 'light' ) . ' backgrounds.'; },
+			),
+			array(
+				"/^radius-$sz\$/",
+				'borders',
+				function ( $m ) {
+										return 'Corner radius ' . $m[1] . ' (var(--radius-' . $m[1] . ')).'; },
+			),
+			array(
+				'/^(radius|rounded)--(.+)$/',
+				'borders',
+				function ( $m ) {
+										return 'Corner radius ' . $m[2] . ' (var(--radius-' . $m[2] . ')).'; },
+			),
 			array( '/^(radius-(full|circle)|rounded(-full)?)$/', 'borders', null ),
-			array( '/^shadow-(\d)$/', 'borders', function ( $m ) { return 'Box shadow level ' . $m[1] . ' (var(--shadow-' . $m[1] . ')). Higher = more elevation.'; } ),
+			array(
+				'/^shadow-(\d)$/',
+				'borders',
+				function ( $m ) {
+										return 'Box shadow level ' . $m[1] . ' (var(--shadow-' . $m[1] . ')). Higher = more elevation.'; },
+			),
 			array( '/^shadow-none$/', 'borders', 'Removes the box shadow.' ),
-			array( '/^drop-shadow--(\d)$/', 'borders', function ( $m ) { return 'Drop shadow level ' . $m[1] . ': follows the shape of transparent images and icons.'; } ),
+			array(
+				'/^drop-shadow--(\d)$/',
+				'borders',
+				function ( $m ) {
+										return 'Drop shadow level ' . $m[1] . ': follows the shape of transparent images and icons.'; },
+			),
 			// Overlays, surfaces, ribbons.
 			array( '/^overlay$/', 'overlays', 'A colour tint between the background and the content (change it with --overlay-color).' ),
-			array( '/^overlay-(.+)$/', 'overlays', function ( $m ) { return 'Custom overlay "' . $m[1] . '" from Surfaces & Overlays.'; } ),
-			array( '/^surface-(.+)$/', 'overlays', function ( $m ) { return 'Background texture "' . $m[1] . '" from Surfaces & Overlays.'; } ),
+			array(
+				'/^overlay-(.+)$/',
+				'overlays',
+				function ( $m ) {
+										return 'Custom overlay "' . $m[1] . '" from Surfaces & Overlays.'; },
+			),
+			array(
+				'/^surface-(.+)$/',
+				'overlays',
+				function ( $m ) {
+										return 'Background texture "' . $m[1] . '" from Surfaces & Overlays.'; },
+			),
 			array( '/^ribbon$/', 'overlays', 'A corner ribbon band. Put it on a direct child of the card; the card clips it.' ),
-			array( '/^ribbon--(top-left|top-right)$/', 'overlays', function ( $m ) { return 'Places the ribbon in the ' . str_replace( '-', ' ', $m[1] ) . ' corner.'; } ),
+			array(
+				'/^ribbon--(top-left|top-right)$/',
+				'overlays',
+				function ( $m ) {
+										return 'Places the ribbon in the ' . str_replace( '-', ' ', $m[1] ) . ' corner.'; },
+			),
 			// Motion.
 			array( '/^on-enter--stagger$/', 'motion', 'Staggers the entrance of the children (each starts a little later).' ),
-			array( '/^on-(enter|exit|visible)-all--(.+)$/', 'motion', function ( $m ) { return 'Every child gets the ' . $m[2] . ' ' . self::fx_word( $m[1] ) . ', one after another.'; } ),
-			array( '/^on-(enter|exit|visible)--(.+)$/', 'motion', function ( $m ) { return ucfirst( $m[2] ) . ' ' . self::fx_word( $m[1] ) . '.'; } ),
-			array( '/^on-hover--(.+)$/', 'motion', function ( $m ) { return 'Hover effect: ' . str_replace( '-', ' ', $m[1] ) . '.'; } ),
+			array(
+				'/^on-(enter|exit|visible)-all--(.+)$/',
+				'motion',
+				function ( $m ) {
+										return 'Every child gets the ' . $m[2] . ' ' . self::fx_word( $m[1] ) . ', one after another.'; },
+			),
+			array(
+				'/^on-(enter|exit|visible)--(.+)$/',
+				'motion',
+				function ( $m ) {
+										return ucfirst( $m[2] ) . ' ' . self::fx_word( $m[1] ) . '.'; },
+			),
+			array(
+				'/^on-hover--(.+)$/',
+				'motion',
+				function ( $m ) {
+										return 'Hover effect: ' . str_replace( '-', ' ', $m[1] ) . '.'; },
+			),
 			array( '/^transition$/', 'motion', 'Applies var(--transition) so property changes animate.' ),
 			// Utilities.
 			array( '/^(hidden-accessible|sr-only|visually-hidden)$/', 'utilities', 'Hides the element visually but keeps it for screen readers.' ),
 			array( '/^is-clickable$/', 'utilities', 'On a card: the link in its heading covers the whole card, so the whole card is clickable and a screen reader still hears one link. Keep one link in the heading; the keyboard focus ring shows just inside the card edge. Text in the card cannot be selected with the mouse, and a second link or button needs .is-above.' ),
 			array( '/^is-above$/', 'utilities', 'On a second link or a button inside an .is-clickable card: lifts it above the card link so it stays separately clickable.' ),
 			array( '/^is-bg$/', 'utilities', 'Makes this image or video the background of its parent (fills it, sits behind the content).' ),
-			array( '/^object-(cover|contain)$/', 'utilities', function ( $m ) { return 'Image fit: ' . $m[1] . '.'; } ),
+			array(
+				'/^object-(cover|contain)$/',
+				'utilities',
+				function ( $m ) {
+										return 'Image fit: ' . $m[1] . '.'; },
+			),
 			array( '/^sticky$/', 'utilities', 'Sticks to the top while scrolling (below the header when that option is on).' ),
 			array( '/^(hidden|relative|absolute)$/', 'utilities', null ),
 		);
@@ -408,7 +763,11 @@ class Cheatsheet {
 	 * @return string
 	 */
 	private static function space_word( $k ) {
-		return array( 'pad' => 'Padding', 'mar' => 'Margin', 'gap' => 'Gap' )[ $k ];
+		return array(
+			'pad' => 'Padding',
+			'mar' => 'Margin',
+			'gap' => 'Gap',
+		)[ $k ];
 	}
 
 	/**
@@ -428,7 +787,11 @@ class Cheatsheet {
 	 * @return string
 	 */
 	private static function fx_word( $k ) {
-		return array( 'enter' => 'entrance while scrolling into view', 'exit' => 'exit while scrolling out of view', 'visible' => 'effect, played once when it becomes visible' )[ $k ];
+		return array(
+			'enter'   => 'entrance while scrolling into view',
+			'exit'    => 'exit while scrolling out of view',
+			'visible' => 'effect, played once when it becomes visible',
+		)[ $k ];
 	}
 
 	/**
@@ -483,7 +846,15 @@ class Cheatsheet {
 			return array( 'v-radius', 'Border / divider token.' );
 		}
 		if ( preg_match( '/^(content-width|content-width-safe|gutter|width-.+|grid-.+|content-gap|container-gap|grid-gap|header-height|feature-.+|body-max-width|boxed-width|col-.+|section-padding-block)$/', $n ) ) {
-			$known = array( 'content-width' => 'Maximum content width.', 'content-width-safe' => 'Content width minus the gutters (never touches the edges).', 'gutter' => 'Side gutter between content and the screen edge.', 'content-gap' => 'Gap inside containers and blocks.', 'container-gap' => 'Gap between a section’s children.', 'grid-gap' => 'Gap between grid items.', 'header-height' => 'Height of the sticky header.' );
+			$known = array(
+				'content-width'      => 'Maximum content width.',
+				'content-width-safe' => 'Content width minus the gutters (never touches the edges).',
+				'gutter'             => 'Side gutter between content and the screen edge.',
+				'content-gap'        => 'Gap inside containers and blocks.',
+				'container-gap'      => 'Gap between a section’s children.',
+				'grid-gap'           => 'Gap between grid items.',
+				'header-height'      => 'Height of the sticky header.',
+			);
 			if ( isset( $known[ $n ] ) ) {
 				return array( 'v-layout', $known[ $n ] );
 			}
@@ -507,7 +878,14 @@ class Cheatsheet {
 		if ( preg_match( '/^(btn|card|icon|focus|transition|link|overlay|surface|ribbon|blockquote|stagger|external-link)/', $n, $m ) ) {
 			return array( 'v-other', ucfirst( str_replace( '-', ' ', $m[1] ) ) . ' setting: ' . str_replace( '-', ' ', $n ) . '.' );
 		}
-		$g = array( 'color' => 'v-color', 'space' => 'v-space', 'typography' => 'v-type', 'radius' => 'v-radius', 'shadow' => 'v-radius', 'breakpoint' => 'v-layout' );
+		$g = array(
+			'color'      => 'v-color',
+			'space'      => 'v-space',
+			'typography' => 'v-type',
+			'radius'     => 'v-radius',
+			'shadow'     => 'v-radius',
+			'breakpoint' => 'v-layout',
+		);
 		return array( isset( $g[ $group ] ) ? $g[ $group ] : 'v-other', '' );
 	}
 
@@ -556,11 +934,19 @@ class Cheatsheet {
 					foreach ( $words as $w ) {
 						$score += false !== strpos( strtolower( $it['n'] ), ltrim( $w, '.' ) ) ? 2 : 0;
 					}
-					$out[] = array( 'score' => $score, 'item' => $it + array( 'group' => $g['title'] ) );
+					$out[] = array(
+						'score' => $score,
+						'item'  => $it + array( 'group' => $g['title'] ),
+					);
 				}
 			}
 		}
-		usort( $out, function ( $a, $b ) { return $b['score'] - $a['score']; } );
+		usort(
+			$out,
+			function ( $a, $b ) {
+				return $b['score'] - $a['score'];
+			}
+		);
 		return array_column( array_slice( $out, 0, max( 1, (int) $limit ) ), 'item' );
 	}
 }

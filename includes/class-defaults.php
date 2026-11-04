@@ -36,42 +36,42 @@ class Defaults {
 	 */
 	public static function builtin_defaults() {
 		return array(
-			'root_font_size'        => 100,   // % of the browser default (100% → 1rem = 16px, 62.5% → 10px)
-			'output_root_font_size' => true,  // override html{font-size} (Bricks ships 62.5%), like ACSS
-			'reset'         => true,
-			'smooth_scroll' => true,
-			'reduce_motion' => true,
-			'focus_styles'  => true,
-			'focus_color'   => 'var(--primary, var(--action, #2563eb))',
-			'focus_width'   => '2px',
-			'focus_offset'  => '2px',
-			'selection_bg'  => '',   // ::selection background (empty = browser default)
-			'selection_text' => '',
-			'object_fit'    => false, // global img{object-fit:cover} is aggressive; off by default
-			'sticky'        => true,
-			'is_bg'         => true,
-			'sr_only'       => true,
-			'columns'       => true,
+			'root_font_size'            => 100,   // % of the browser default (100% → 1rem = 16px, 62.5% → 10px)
+			'output_root_font_size'     => true,  // override html{font-size} (Bricks ships 62.5%), like ACSS.
+			'reset'                     => true,
+			'smooth_scroll'             => true,
+			'reduce_motion'             => true,
+			'focus_styles'              => true,
+			'focus_color'               => 'var(--primary, var(--action, #2563eb))',
+			'focus_width'               => '2px',
+			'focus_offset'              => '2px',
+			'selection_bg'              => '',   // ::selection background (empty = browser default)
+			'selection_text'            => '',
+			'object_fit'                => false, // global img{object-fit:cover} is aggressive; off by default.
+			'sticky'                    => true,
+			'is_bg'                     => true,
+			'sr_only'                   => true,
+			'columns'                   => true,
 			// Reset detail: images/svg/video as blocks (a modern reset; ACSS keeps them inline).
-			'media_block'   => true,
+			'media_block'               => true,
 			// Scroll offset for in-page anchors: fluid margin + (optionally) the header height.
-			'scroll_margin_min'    => '0',
-			'scroll_margin_max'    => '0',
-			'scroll_offset_header' => true,
+			'scroll_margin_min'         => '0',
+			'scroll_margin_max'         => '0',
+			'scroll_offset_header'      => true,
 			// Sticky elements stick below the header (or a custom offset).
-			'sticky_offset_header' => true,
-			'sticky_offset_custom' => '60px',
+			'sticky_offset_header'      => true,
+			'sticky_offset_custom'      => '60px',
 			// Push the first section below a fixed/overlay header.
 			'content_offset'            => false,
 			'content_offset_exclusions' => '.content-offset--off',
 			'content_offset_header_not' => '[data-sticky-header="0"]',
 			// Column (multi-column text) widths + rule widths.
-			'col_width_s'      => '13rem',
-			'col_width_m'      => '25rem',
-			'col_width_l'      => '38rem',
-			'col_rule_width_s' => '.5px',
-			'col_rule_width_m' => '1px',
-			'col_rule_width_l' => '3px',
+			'col_width_s'               => '13rem',
+			'col_width_m'               => '25rem',
+			'col_width_l'               => '38rem',
+			'col_rule_width_s'          => '.5px',
+			'col_rule_width_m'          => '1px',
+			'col_rule_width_l'          => '3px',
 		);
 	}
 
@@ -165,7 +165,7 @@ class Defaults {
 	public static function build() {
 		$s       = self::settings();
 		$css     = array();
-		$reset   = array(); // never layered (as ACSS): box-sizing etc. must beat layered components
+		$reset   = array(); // never layered (as ACSS): box-sizing etc. must beat layered components.
 		$classes = array();
 		$vars    = array();
 
@@ -184,9 +184,9 @@ class Defaults {
 		}
 
 		// Anchor offsets: fluid scroll margin (+ header height) on every [id].
-		$vw   = Scale_Engine::settings();
-		$smin = Width::to_px( (string) $s['scroll_margin_min'] );
-		$smax = Width::to_px( (string) $s['scroll_margin_max'] );
+		$vw                    = Scale_Engine::settings();
+		$smin                  = Width::to_px( (string) $s['scroll_margin_min'] );
+		$smax                  = Width::to_px( (string) $s['scroll_margin_max'] );
 		$vars['scroll-margin'] = ( null !== $smin && null !== $smax ) ? Scale_Engine::fluid( $smin, $smax, (float) $vw['min_vw'], (float) $vw['max_vw'] ) : '0px';
 		$vars['offset']        = $s['scroll_offset_header'] ? 'calc(var(--scroll-margin) + var(--header-height, 0px))' : 'var(--scroll-margin)';
 		$css[]                 = '[id]{scroll-margin-top:var(--offset, 0)}';
@@ -228,15 +228,15 @@ class Defaults {
 		$classes[] = 'object-contain';
 
 		// Clickable card: the heading link stretched over the card; zero specificity except the focus ring swap.
-		$hl        = 'is-clickable :is(h1,h2,h3,h4,h5,h6) a';
-		$css[]     = ':where(.is-clickable){position:relative}';
-		$css[]     = ':where(.' . $hl . '){position:static}';
-		$css[]     = ':where(.' . $hl . ')::after{content:"";position:absolute;inset:0;border-radius:var(--card-radius, var(--radius, 0))}';
-		$css[]     = ':where(.is-clickable .is-above){position:relative;z-index:1}';
-		$css[]     = '.' . $hl . ':focus-visible{outline:none}';
-		$css[]     = '.' . $hl . ':focus-visible::after{outline:var(--focus-width, 2px) solid var(--focus-color, currentColor);outline-offset:calc(-1 * var(--focus-width, 2px))}';
+		$hl    = 'is-clickable :is(h1,h2,h3,h4,h5,h6) a';
+		$css[] = ':where(.is-clickable){position:relative}';
+		$css[] = ':where(.' . $hl . '){position:static}';
+		$css[] = ':where(.' . $hl . ')::after{content:"";position:absolute;inset:0;border-radius:var(--card-radius, var(--radius, 0))}';
+		$css[] = ':where(.is-clickable .is-above){position:relative;z-index:1}';
+		$css[] = '.' . $hl . ':focus-visible{outline:none}';
+		$css[] = '.' . $hl . ':focus-visible::after{outline:var(--focus-width, 2px) solid var(--focus-color, currentColor);outline-offset:calc(-1 * var(--focus-width, 2px))}';
 		// In the builder canvas the stretched link would block selecting the card's elements.
-		$css[]     = '.bricks-area .' . $hl . '::after{content:none}';
+		$css[] = '.bricks-area .' . $hl . '::after{content:none}';
 		array_push( $classes, 'is-clickable', 'is-above' );
 
 		if ( $s['is_bg'] ) {
@@ -254,10 +254,10 @@ class Defaults {
 		}
 		if ( $s['content_offset'] ) {
 			// The page's first element starts below a fixed/overlay header.
-			$not   = trim( str_replace( '"', "'", (string) $s['content_offset_exclusions'] ) );
-			$hnot  = trim( str_replace( '"', "'", (string) $s['content_offset_header_not'] ) );
-			$body  = 'body' . ( '' !== $not ? ':not(' . $not . ')' : '' ) . ( '' !== $hnot ? ':not(:has(header:is(' . $hnot . ')))' : '' );
-			$css[] = $body . ' main:not(.panel-content)>*:first-child>*:first-child:not(:is(.bricks-shape-divider,.bricks-background-video-wrapper)),main>*:first-child>.bricks-shape-divider~.brxe-container{margin-block-start:var(--header-height)}';
+			$not       = trim( str_replace( '"', "'", (string) $s['content_offset_exclusions'] ) );
+			$hnot      = trim( str_replace( '"', "'", (string) $s['content_offset_header_not'] ) );
+			$body      = 'body' . ( '' !== $not ? ':not(' . $not . ')' : '' ) . ( '' !== $hnot ? ':not(:has(header:is(' . $hnot . ')))' : '' );
+			$css[]     = $body . ' main:not(.panel-content)>*:first-child>*:first-child:not(:is(.bricks-shape-divider,.bricks-background-video-wrapper)),main>*:first-child>.bricks-shape-divider~.brxe-container{margin-block-start:var(--header-height)}';
 			$classes[] = 'content-offset--off';
 		}
 		if ( $s['sr_only'] ) {

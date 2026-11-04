@@ -108,9 +108,21 @@ class Woo {
 		}
 		if ( ! empty( $s['badges'] ) ) {
 			$blocks['woocommerce/product-sale-badge'] = array(
-				'color'      => array( 'background' => $s['badge_background'], 'text' => $s['badge_color'] ),
-				'border'     => array( 'radius' => $s['badge_radius'], 'width' => '0px' ),
-				'typography' => array( 'fontSize' => 'max(var(--text-xs, .75rem), .75rem)', 'fontWeight' => '600', 'lineHeight' => '1.2', 'letterSpacing' => '.04em', 'textTransform' => 'uppercase' ),
+				'color'      => array(
+					'background' => $s['badge_background'],
+					'text'       => $s['badge_color'],
+				),
+				'border'     => array(
+					'radius' => $s['badge_radius'],
+					'width'  => '0px',
+				),
+				'typography' => array(
+					'fontSize'      => 'max(var(--text-xs, .75rem), .75rem)',
+					'fontWeight'    => '600',
+					'lineHeight'    => '1.2',
+					'letterSpacing' => '.04em',
+					'textTransform' => 'uppercase',
+				),
 			);
 		}
 		if ( ! empty( $s['ratings'] ) ) {
@@ -119,13 +131,22 @@ class Woo {
 			}
 		}
 		// Empty settings leave the theme's own value.
-		return array_map( function ( $styles ) {
-			return array_map( function ( $group ) {
-				return array_filter( $group, function ( $v ) {
-					return '' !== trim( (string) $v );
-				} );
-			}, $styles );
-		}, $blocks );
+		return array_map(
+			function ( $styles ) {
+				return array_map(
+					function ( $group ) {
+						return array_filter(
+							$group,
+							function ( $v ) {
+								return '' !== trim( (string) $v );
+							}
+						);
+					},
+					$styles
+				);
+			},
+			$blocks
+		);
 	}
 
 	/**
@@ -187,82 +208,82 @@ class Woo {
 	 */
 	public static function builtin_defaults() {
 		return array(
-			'enabled'          => true,
-			'remove_css'       => false,
-			'buttons'          => true,
-			'btn_main_family'  => 'primary',  // Add to cart on a product, Proceed to checkout, Place order
-			'btn_main_variant' => 'solid',
-			'btn_family'       => 'primary',  // every other shop button
-			'btn_variant'      => 'outline',
-			'prices'           => true,
-			'price_color'      => '',          // empty = the text colour
-			'price_weight'     => '600',
-			'sale_color'       => 'var(--danger)',
-			'old_price_color'  => 'var(--text-dark-muted)',
-			'badges'           => true,
-			'badge_background' => 'var(--danger)',
-			'badge_color'      => 'var(--white, #fff)',
-			'badge_radius'     => 'var(--radius)',
-			'ratings'          => true,
-			'star_color'       => 'var(--warning)',
-			'notices'          => true,
-			'notice_radius'    => 'var(--radius)',
-			'forms'            => true,
-			'qty_width'        => '4.5em',
-			'grid'             => true,
-			'grid_gap'         => 'var(--grid-gap, var(--space-m))',
-			'columns_s'        => 2,           // at the "s" breakpoint (the breakpoints)
-			'columns_xs'       => 1,           // at the "xs" breakpoint
-			'cards'            => false,       // products as cards (the Cards settings)
-			'tables'           => true,
-			'tabs'             => true,
-			'pagination'       => true,
-			'blocks'           => true,        // also the Cart, Checkout and product blocks
-			'pages'            => true,        // shop page layouts: cart, checkout, account, product, product lists
-			'override'         => true,        // shop styles win over element settings made in the builder
-			'surface'          => 'var(--neutral-ultra-light)', // panel background
-			'line_color'       => 'var(--neutral-trans-10)',    // hairline borders
-			'panel_radius'     => 'var(--radius-l, var(--radius))',
-			'control_height'   => '2.5rem',    // quantity boxes, coupon fields and the buttons beside them
-			'field_gap'        => 'var(--space-s, 1rem)', // space between form fields
-			'section_space'    => 'var(--section-space-s)', // space between the sections of shop pages; empty = the theme's
-			'image_fit'        => 'contain',   // product images in lists: contain | cover
-			'image_ratio'      => '1',         // shape of product images in lists
-			'image_background' => '',          // behind product images; empty = the panel background
-			'save_color'       => 'var(--success-dark, var(--success))', // "Save 24,00" on a cart line
-			'save_background'  => 'var(--success-ultra-light)',
-			'new_badge_background' => 'var(--text-dark)',
-			'load'             => 'auto',      // shop page styles: auto (only where the shop appears) | all (every page)
-			'image_source'     => 'crop',      // product pictures in lists: crop (WooCommerce's thumbnails) | whole (uncropped)
-			'filters'          => true,        // product filters (builder filters, WooCommerce widgets and blocks)
-			'global_styles'    => true,        // block themes: WooCommerce blocks through global styles too
+			'enabled'                   => true,
+			'remove_css'                => false,
+			'buttons'                   => true,
+			'btn_main_family'           => 'primary',  // Add to cart on a product, Proceed to checkout, Place order.
+			'btn_main_variant'          => 'solid',
+			'btn_family'                => 'primary',  // every other shop button.
+			'btn_variant'               => 'outline',
+			'prices'                    => true,
+			'price_color'               => '',          // empty = the text colour.
+			'price_weight'              => '600',
+			'sale_color'                => 'var(--danger)',
+			'old_price_color'           => 'var(--text-dark-muted)',
+			'badges'                    => true,
+			'badge_background'          => 'var(--danger)',
+			'badge_color'               => 'var(--white, #fff)',
+			'badge_radius'              => 'var(--radius)',
+			'ratings'                   => true,
+			'star_color'                => 'var(--warning)',
+			'notices'                   => true,
+			'notice_radius'             => 'var(--radius)',
+			'forms'                     => true,
+			'qty_width'                 => '4.5em',
+			'grid'                      => true,
+			'grid_gap'                  => 'var(--grid-gap, var(--space-m))',
+			'columns_s'                 => 2,           // at the "s" breakpoint (the breakpoints).
+			'columns_xs'                => 1,           // at the "xs" breakpoint.
+			'cards'                     => false,       // products as cards (the Cards settings).
+			'tables'                    => true,
+			'tabs'                      => true,
+			'pagination'                => true,
+			'blocks'                    => true,        // also the Cart, Checkout and product blocks.
+			'pages'                     => true,        // shop page layouts: cart, checkout, account, product, product lists.
+			'override'                  => true,        // shop styles win over element settings made in the builder.
+			'surface'                   => 'var(--neutral-ultra-light)', // panel background.
+			'line_color'                => 'var(--neutral-trans-10)',    // hairline borders.
+			'panel_radius'              => 'var(--radius-l, var(--radius))',
+			'control_height'            => '2.5rem',    // quantity boxes, coupon fields and the buttons beside them.
+			'field_gap'                 => 'var(--space-s, 1rem)', // space between form fields.
+			'section_space'             => 'var(--section-space-s)', // space between the sections of shop pages; empty = the theme's.
+			'image_fit'                 => 'contain',   // product images in lists: contain | cover.
+			'image_ratio'               => '1',         // shape of product images in lists.
+			'image_background'          => '',          // behind product images; empty = the panel background.
+			'save_color'                => 'var(--success-dark, var(--success))', // "Save 24,00" on a cart line
+			'save_background'           => 'var(--success-ultra-light)',
+			'new_badge_background'      => 'var(--text-dark)',
+			'load'                      => 'auto',      // shop page styles: auto (only where the shop appears) | all (every page).
+			'image_source'              => 'crop',      // product pictures in lists: crop (WooCommerce's thumbnails) | whole (uncropped).
+			'filters'                   => true,        // product filters (builder filters, WooCommerce widgets and blocks).
+			'global_styles'             => true,        // block themes: WooCommerce blocks through global styles too
 			// Look and spacing of every shop part (empty = this default).
-			'text_color'       => 'var(--text-dark, #111827)',
-			'muted_color'      => 'var(--text-dark-muted, #6b7280)',
-			'accent'           => 'var(--primary)',            // active steps, focus, chosen options
-			'accent_soft'      => 'var(--primary-ultra-light, #eef2ff)',
-			'border_strong'    => 'var(--neutral-trans-20, rgba(0,0,0,.2))', // field and box borders
-			'radius'           => 'var(--radius, 6px)',        // fields, images and small boxes
-			'panel_padding'    => 'var(--space-m, 1.5rem)',
-			'gap'              => 'var(--space-s, 1rem)',
-			'gap_small'        => 'var(--space-xs, .75rem)',
+			'text_color'                => 'var(--text-dark, #111827)',
+			'muted_color'               => 'var(--text-dark-muted, #6b7280)',
+			'accent'                    => 'var(--primary)',            // active steps, focus, chosen options.
+			'accent_soft'               => 'var(--primary-ultra-light, #eef2ff)',
+			'border_strong'             => 'var(--neutral-trans-20, rgba(0,0,0,.2))', // field and box borders.
+			'radius'                    => 'var(--radius, 6px)',        // fields, images and small boxes.
+			'panel_padding'             => 'var(--space-m, 1.5rem)',
+			'gap'                       => 'var(--space-s, 1rem)',
+			'gap_small'                 => 'var(--space-xs, .75rem)',
 			// Fields on shop pages (empty = as in Forms).
-			'field_height'       => '',
-			'field_padding'      => '',
-			'field_font_size'    => '',
-			'field_background'   => '',
-			'field_text_color'   => '',
-			'field_border_color' => '',
-			'field_border_width' => '',
-			'field_radius'       => '',
-			'field_focus_color'  => '',
-			'label_color'        => '',
-			'label_size'         => '',
+			'field_height'              => '',
+			'field_padding'             => '',
+			'field_font_size'           => '',
+			'field_background'          => '',
+			'field_text_color'          => '',
+			'field_border_color'        => '',
+			'field_border_width'        => '',
+			'field_radius'              => '',
+			'field_focus_color'         => '',
+			'label_color'               => '',
+			'label_size'                => '',
 			// Notices (empty = the colour family of each kind).
-			'notice_padding'      => '',
-			'notice_border_width' => '',
-			'notice_font_size'    => '',
-			'notice_icon'         => true,
+			'notice_padding'            => '',
+			'notice_border_width'       => '',
+			'notice_font_size'          => '',
+			'notice_icon'               => true,
 			'notice_success_background' => '',
 			'notice_success_text'       => '',
 			'notice_success_border'     => '',
@@ -287,7 +308,11 @@ class Woo {
 	/** Shapes a product image can take in lists. */
 	const RATIOS = array( '1', '4/5', '3/4', '2/3', '4/3', '3/2', '16/9', 'auto' );
 
-	/** Selector prefix: "html:not(#_)" when shop styles win over element settings, else "html". */
+	/**
+	 * Selector prefix: "html:not(#_)" when shop styles win over element settings, else "html".
+	 *
+	 * @var string
+	 */
 	private static $pre = 'html';
 
 	/**
@@ -344,9 +369,12 @@ class Woo {
 	 * @return string[]
 	 */
 	private static function in_shop( $inner ) {
-		return array_map( function ( $x ) {
-			return self::$pre . ' ' . self::WRAP . ' ' . $x;
-		}, $inner );
+		return array_map(
+			function ( $x ) {
+				return self::$pre . ' ' . self::WRAP . ' ' . $x;
+			},
+			$inner
+		);
 	}
 
 	/**
@@ -356,9 +384,12 @@ class Woo {
 	 * @return string[]
 	 */
 	private static function pre( $list ) {
-		return array_map( function ( $x ) {
-			return 0 === strpos( $x, 'html ' ) ? self::$pre . substr( $x, 4 ) : $x;
-		}, $list );
+		return array_map(
+			function ( $x ) {
+				return 0 === strpos( $x, 'html ' ) ? self::$pre . substr( $x, 4 ) : $x;
+			},
+			$list
+		);
 	}
 
 	/**
@@ -369,9 +400,15 @@ class Woo {
 	 * @return string
 	 */
 	private static function each( $list, $suffix ) {
-		return implode( ',', array_map( function ( $x ) use ( $suffix ) {
-			return $x . $suffix;
-		}, $list ) );
+		return implode(
+			',',
+			array_map(
+				function ( $x ) use ( $suffix ) {
+					return $x . $suffix;
+				},
+				$list
+			)
+		);
 	}
 
 	/**
@@ -466,16 +503,19 @@ class Woo {
 	private static function both() {
 		$s = self::settings();
 		if ( empty( $s['enabled'] ) || ! self::active() ) {
-			return array( 'main' => '', 'shop' => '' );
+			return array(
+				'main' => '',
+				'shop' => '',
+			);
 		}
 		self::$pre = ! empty( $s['override'] ) ? 'html:not(#_)' : 'html';
 		$c         = Components::settings();
 		$blocks    = ! empty( $s['blocks'] );
-		$gs        = self::uses_global_styles(); // block themes: some block styles live in global styles
+		$gs        = self::uses_global_styles(); // block themes: some block styles live in global styles.
 		$css       = array();
 		// Product-only parts, soft and strong: the shop sheet's when split, else these sheets'.
-		$shop      = array();
-		$shop_s    = array();
+		$shop   = array();
+		$shop_s = array();
 
 		// ---- Variables: ours, and WooCommerce's own (--wc-*) from your tokens ----
 		$root = array(
@@ -515,9 +555,12 @@ class Woo {
 		if ( '' !== $s['price_color'] ) {
 			$root[] = '--woo-price-color:' . $s['price_color'];
 		}
-		$root = array_filter( $root, function ( $d ) {
-			return ':' !== substr( $d, -1 );
-		} );
+		$root  = array_filter(
+			$root,
+			function ( $d ) {
+				return ':' !== substr( $d, -1 );
+			}
+		);
 		$css[] = ':root{' . implode( ';', $root ) . '}';
 		$css[] = 'html:root{--wc-primary:var(--primary);--wc-primary-text:var(--white, #fff);--wc-secondary:var(--neutral-ultra-light, #f3f4f6);--wc-secondary-text:var(--text-dark, #1f2937);'
 			. '--wc-highlight:var(--woo-sale-color);--wc-highligh-text:var(--white, #fff);--wc-content-bg:var(--body-bg-color, var(--white, #fff));--wc-subtext:var(--text-dark-muted, #6b7280);'
@@ -531,10 +574,10 @@ class Woo {
 		// ---- Buttons: those a header cart shows (mini cart, fragments, the block
 		// mini cart's buttons) on every page, the rest with the product-only parts ----
 		if ( ! empty( $s['buttons'] ) ) {
-			$look     = Components::btn_look( $c ) . ';cursor:pointer;text-decoration:none';
-			$reg      = self::pre( array( 'html .woocommerce-mini-cart__buttons .button', 'html .brxe-woocommerce-dynamic-fragment .bricks-button' ) );
-			$main     = self::pre( array( 'html .woocommerce-mini-cart__buttons .button.checkout', 'html .brxe-woocommerce-dynamic-fragment :is(.brxe-block,.brxe-div) > .bricks-button:last-child' ) );
-			$reg_shop = array_merge(
+			$look      = Components::btn_look( $c ) . ';cursor:pointer;text-decoration:none';
+			$reg       = self::pre( array( 'html .woocommerce-mini-cart__buttons .button', 'html .brxe-woocommerce-dynamic-fragment .bricks-button' ) );
+			$main      = self::pre( array( 'html .woocommerce-mini-cart__buttons .button.checkout', 'html .brxe-woocommerce-dynamic-fragment :is(.brxe-block,.brxe-div) > .bricks-button:last-child' ) );
+			$reg_shop  = array_merge(
 				self::in_shop( array( 'a.button', 'button.button', 'input.button', '#respond input#submit' ) ),
 				self::pre( array( 'html a.button.add_to_cart_button', 'html :is([class*="brxe-woocommerce"],[class*="brxe-product"]) .button', 'html a.added_to_cart', 'html :is(.brxe-woocommerce-cart-v2,.brxe-woocommerce-checkout-v2,.brxe-woocommerce-account-page-v2) .bricks-button' ) )
 			);
@@ -545,8 +588,8 @@ class Woo {
 			// The builder's checkout: Back is an ordinary button, Next / Place order the main one.
 			$reg_shop[] = self::$pre . ' .brx-checkout-step > .brxe-div:last-child > .bricks-button:not(:last-child)';
 			if ( $blocks ) {
-				$reg       = array_merge( $reg, self::pre( array( 'html .wc-block-components-button:not(.is-link)', 'html .wc-block-components-button:not(.is-link):is(.outlined,.is-style-outline)' ) ) );
-				$reg_shop  = array_merge( $reg_shop, self::pre( array( 'html .wc-block-components-product-button .wp-block-button__link', 'html .wc-block-grid__product-add-to-cart .wp-block-button__link' ) ) );
+				$reg      = array_merge( $reg, self::pre( array( 'html .wc-block-components-button:not(.is-link)', 'html .wc-block-components-button:not(.is-link):is(.outlined,.is-style-outline)' ) ) );
+				$reg_shop = array_merge( $reg_shop, self::pre( array( 'html .wc-block-components-product-button .wp-block-button__link', 'html .wc-block-grid__product-add-to-cart .wp-block-button__link' ) ) );
 				// Main: proceed, place order, and the Browse store / Start shopping button of an empty cart or checkout.
 				$main      = array_merge( $main, self::pre( array( 'html .wp-block-woocommerce-empty-mini-cart-contents-block .wp-block-button__link' ) ) );
 				$main_shop = array_merge( $main_shop, self::pre( array( 'html .wc-block-components-button:not(.is-link):is(.wc-block-cart__submit-button,.wc-block-components-checkout-place-order-button)', 'html :is(.wc-block-checkout-empty,.wp-block-woocommerce-empty-cart-block) .wp-block-button__link' ) ) );
@@ -562,8 +605,8 @@ class Woo {
 					self::each( $all, ':is(:disabled,.disabled,[aria-disabled="true"])' ) . '{background:var(--btn-background);color:var(--btn-text-color);border-color:var(--btn-border-color);opacity:.5;cursor:not-allowed}',
 				);
 			};
-			$css  = array_merge( $css, $buttons( $reg, $main ) );
-			$shop = array_merge( $shop, $buttons( $reg_shop, $main_shop ) );
+			$css     = array_merge( $css, $buttons( $reg, $main ) );
+			$shop    = array_merge( $shop, $buttons( $reg_shop, $main_shop ) );
 			// The builder's checkout wizard colours Place order with var(--bricks-bg-dark): point it at the main button colour.
 			$shop[] = 'html button#place_order{--bricks-bg-dark:var(--btn-background)}';
 			// Room for WooCommerce's loading spinner.
@@ -574,7 +617,7 @@ class Woo {
 
 		// ---- Prices + stock ----
 		if ( ! empty( $s['prices'] ) ) {
-			$price = array_merge(
+			$price  = array_merge(
 				self::in_shop( array( 'div.product :is(p.price,span.price)', 'ul.products li.product .price' ) ),
 				self::pre( array( 'html .brxe-product-price .price', 'html .product .price' ) )
 			);
@@ -636,13 +679,17 @@ class Woo {
 				};
 				return array( $v( 'background', "var(--$fam-ultra-light)" ), $v( 'text', "var(--$fam-ultra-dark, var(--text-dark))" ), $v( 'border', "var(--$fam)" ) );
 			};
-			foreach ( array( 'message' => array( 'success', 'success' ), 'info' => array( 'info', 'info' ), 'error' => array( 'error', 'danger' ) ) as $type => $kf ) {
+			foreach ( array(
+				'message' => array( 'success', 'success' ),
+				'info'    => array( 'info', 'info' ),
+				'error'   => array( 'error', 'danger' ),
+			) as $type => $kf ) {
 				list( $bg, $text, $line ) = $look( $kf[0], $kf[1] );
-				$fam      = $kf[1];
-				$sel      = "html .woocommerce-$type,html :is(.woocommerce-notices-wrapper,.woocommerce-NoticeGroup) .woocommerce-$type";
-				$strong[] = $sel . "{--bricks-woo-notice-$fam:$text;--bricks-bg-$fam:$bg;"
+				$fam                      = $kf[1];
+				$sel                      = "html .woocommerce-$type,html :is(.woocommerce-notices-wrapper,.woocommerce-NoticeGroup) .woocommerce-$type";
+				$strong[]                 = $sel . "{--bricks-woo-notice-$fam:$text;--bricks-bg-$fam:$bg;"
 					. "background-color:$bg;color:$text;border:0;border-inline-start:$width solid $line;border-radius:var(--woo-notice-radius);list-style:none;$space}";
-				$strong[] = "html .woocommerce-$type::before" . ( empty( $s['notice_icon'] ) ? '{display:none}' : "{color:$line}" );
+				$strong[]                 = "html .woocommerce-$type::before" . ( empty( $s['notice_icon'] ) ? '{display:none}' : "{color:$line}" );
 			}
 			$strong[] = 'html .woocommerce-store-notice,html p.demo_store{background-color:var(--primary);color:var(--white, #fff)}';
 			if ( $blocks ) {
@@ -650,10 +697,15 @@ class Woo {
 					. ( '' !== $s['notice_padding'] ? ';padding:' . $s['notice_padding'] : '' )
 					. ( '' !== $s['notice_border_width'] ? ';border-width:' . $s['notice_border_width'] : '' )
 					. ( '' !== $s['notice_font_size'] ? ';font-size:' . $s['notice_font_size'] : '' ) . '}';
-				foreach ( array( 'success' => 'success', 'info' => 'info', 'error' => 'danger', 'warning' => 'warning' ) as $type => $fam ) {
+				foreach ( array(
+					'success' => 'success',
+					'info'    => 'info',
+					'error'   => 'danger',
+					'warning' => 'warning',
+				) as $type => $fam ) {
 					list( $bg, $text, $line ) = $look( $type, $fam );
-					$strong[] = "html .wc-block-components-notice-banner.is-$type{background-color:$bg;border-color:$line;color:$text}";
-					$strong[] = "html .wc-block-components-notice-banner.is-$type>svg" . ( empty( $s['notice_icon'] ) ? '{display:none}' : "{background-color:$line}" );
+					$strong[]                 = "html .wc-block-components-notice-banner.is-$type{background-color:$bg;border-color:$line;color:$text}";
+					$strong[]                 = "html .wc-block-components-notice-banner.is-$type>svg" . ( empty( $s['notice_icon'] ) ? '{display:none}' : "{background-color:$line}" );
 				}
 			}
 		}
@@ -676,7 +728,7 @@ class Woo {
 
 		// ---- Product grid (stays soft: the builder's own column settings keep working) ----
 		if ( ! empty( $s['grid'] ) ) {
-			$ul    = 'html ' . self::WRAP . ' ul.products';
+			$ul     = 'html ' . self::WRAP . ' ul.products';
 			$shop[] = $ul . '{display:grid;grid-template-columns:repeat(var(--woo-columns, 4),minmax(0,1fr));gap:var(--woo-grid-gap);margin-inline:0;padding:0}';
 			$shop[] = $ul . '::before,' . $ul . '::after{content:none;display:none}';
 			$shop[] = $ul . ' li.product.product{float:none;width:auto;inline-size:auto;margin:0}';
@@ -686,7 +738,10 @@ class Woo {
 				$shop[] = "$ul.columns-$n,html " . self::WRAP . ".columns-$n ul.products{--woo-columns:$n}";
 			}
 			$bp = Scss::settings();
-			foreach ( array( 's' => (int) $s['columns_s'], 'xs' => (int) $s['columns_xs'] ) as $size => $cols ) {
+			foreach ( array(
+				's'  => (int) $s['columns_s'],
+				'xs' => (int) $s['columns_xs'],
+			) as $size => $cols ) {
 				$sel = array();
 				for ( $n = $cols + 1; $n <= 6; $n++ ) {
 					$sel[] = "$ul.columns-$n";
@@ -750,7 +805,7 @@ class Woo {
 		// ---- Cart and Checkout blocks: the sticky submit bar, the quantity badge ----
 		$tail = array();
 		if ( $blocks ) {
-			$bg     = 'var(--body-bg-color, var(--white, #fff))';
+			$bg = 'var(--body-bg-color, var(--white, #fff))';
 			// Only the bar that sticks to the bottom on phones has a background of its own.
 			$tail[] = 'html .wc-block-cart__submit-container--sticky{background-color:' . $bg . '}';
 			// Proceed to checkout fills the totals panel, as WooCommerce lays it out.
@@ -771,10 +826,14 @@ class Woo {
 
 		// ---- Shop pages: the parts a header cart can show on any page (line items,
 		// quantity, totals, mini cart, dynamic fragments). The rest is build_shop(). ----
-		$all = ! empty( $s['pages'] ) ? self::sheet( $s, true ) : '';
+		$all   = ! empty( $s['pages'] ) ? self::sheet( $s, true ) : '';
 		$css[] = $all;
 		if ( ! $split ) {
-			return array( 'main' => "\n/* --- WooCommerce --- */\n" . implode( "\n", array_merge( $css, $tail ) ) . "\n", 'shop' => '', 'all' => $all );
+			return array(
+				'main' => "\n/* --- WooCommerce --- */\n" . implode( "\n", array_merge( $css, $tail ) ) . "\n",
+				'shop' => '',
+				'all'  => $all,
+			);
 		}
 		if ( $shop_s ) {
 			$shop[] = self::strong( implode( "\n", $shop_s ) );
@@ -803,7 +862,7 @@ class Woo {
 		if ( empty( $s['enabled'] ) || empty( $s['pages'] ) || ! self::active() ) {
 			return '';
 		}
-		$css       = array( self::both()['shop'] ); // the product-only parts (when split())
+		$css       = array( self::both()['shop'] ); // the product-only parts (when split()).
 		self::$pre = ! empty( $s['override'] ) ? 'html:not(#_)' : 'html';
 		// Sections of shop pages: even space between them, none around sections with
 		// nothing to show (an empty notice area, hooks without output). Margins the
@@ -849,14 +908,21 @@ class Woo {
 	private static function field_css( $s ) {
 		$p     = self::$pre;
 		$shop  = self::placeholders()['{SHOP}'];
-		$input = ":is(input.input-text,select,textarea)";
+		$input = ':is(input.input-text,select,textarea)';
 		$all   = array( "$p $shop :is(.form-row,.brxe-woocommerce-form-field) $input", "$p .select2-container .select2-selection" );
 		if ( ! empty( $s['blocks'] ) ) {
 			$all[] = "$p :is(.wc-block-components-text-input input,.wc-block-components-textarea,.wc-blocks-components-select__select)";
 		}
 		$out  = array();
 		$decl = '';
-		foreach ( array( 'field_background' => 'background-color', 'field_text_color' => 'color', 'field_border_color' => 'border-color', 'field_border_width' => 'border-width', 'field_radius' => 'border-radius', 'field_font_size' => 'font-size' ) as $k => $prop ) {
+		foreach ( array(
+			'field_background'   => 'background-color',
+			'field_text_color'   => 'color',
+			'field_border_color' => 'border-color',
+			'field_border_width' => 'border-width',
+			'field_radius'       => 'border-radius',
+			'field_font_size'    => 'font-size',
+		) as $k => $prop ) {
 			$decl .= '' !== $s[ $k ] ? "$prop:{$s[$k]};" : '';
 		}
 		if ( '' !== $decl ) {
@@ -872,9 +938,12 @@ class Woo {
 			$out[] = "$p .bricks-floating-label .brxe-woocommerce-form-field{--brx-field-height:{$s['field_height']}}";
 		}
 		if ( '' !== $s['field_focus_color'] ) {
-			$focus = array_map( function ( $x ) {
-				return $x . ':focus';
-			}, $all );
+			$focus   = array_map(
+				function ( $x ) {
+					return $x . ':focus';
+				},
+				$all
+			);
 			$focus[] = "$p .select2-container--focus .select2-selection";
 			$out[]   = implode( ',', $focus ) . "{border-color:{$s['field_focus_color']};box-shadow:0 0 0 3px color-mix(in srgb, {$s['field_focus_color']} 25%, transparent);outline:0}";
 		}
@@ -888,7 +957,7 @@ class Woo {
 	}
 
 	/**
-	 * assets/css/woo-shop.css with its placeholders filled in and the blocks of
+	 * Read assets/css/woo-shop.css with its placeholders filled in and the blocks of
 	 * parts that are off taken out.
 	 *
 	 * @param array $s   Settings.
@@ -953,7 +1022,7 @@ class Woo {
 	 */
 	private static function page_has_shop() {
 		if ( is_admin() || ( Platforms\Bricks::is_active() && Platforms\Bricks::is_preview_context() ) ) {
-			return true; // editing: anything can be added
+			return true; // editing: anything can be added.
 		}
 		foreach ( array( 'is_woocommerce', 'is_cart', 'is_checkout', 'is_account_page' ) as $fn ) {
 			if ( function_exists( $fn ) && $fn() ) {

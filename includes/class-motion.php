@@ -140,7 +140,7 @@ class Motion {
 			'underline_width'     => '3px',
 			'underline_duration'  => '.3s',
 			// ---- Builders ----
-			'disable_in_builder'  => true, // no scroll/visible effects in the Bricks canvas or block editor
+			'disable_in_builder'  => true, // no scroll/visible effects in the Bricks canvas or block editor.
 		);
 	}
 
@@ -231,7 +231,12 @@ class Motion {
 		$s   = null === $s ? self::settings() : wp_parse_args( $s, self::defaults() );
 		$out = array();
 		$add = function ( $n, $v ) use ( &$out ) {
-			$out[] = array( 'name' => $n, 'value' => $v, 'group' => 'other', 'enabled' => true );
+			$out[] = array(
+				'name'    => $n,
+				'value'   => $v,
+				'group'   => 'other',
+				'enabled' => true,
+			);
 		};
 		if ( $s['transitions'] ) {
 			$add( 'transition-duration', $s['transition_duration'] );
@@ -292,7 +297,11 @@ class Motion {
 	 * @return void
 	 */
 	public static function adopt_stored_tokens() {
-		$map = array( 'transition-duration' => 'transition_duration', 'transition-timing' => 'transition_timing', 'transition-delay' => 'transition_delay' );
+		$map = array(
+			'transition-duration' => 'transition_duration',
+			'transition-timing'   => 'transition_timing',
+			'transition-delay'    => 'transition_delay',
+		);
 		$s   = self::settings();
 		$hit = false;
 		foreach ( Settings::get_instance()->get_tokens() as $t ) {
@@ -345,7 +354,7 @@ class Motion {
 	 */
 	private static function fx_props( $family, $p ) {
 		$v = "--$family";
-		$o = 'exit' === $family ? "var(--exit-opacity-target, 0)" : "var($v-opacity-start, 0)";
+		$o = 'exit' === $family ? 'var(--exit-opacity-target, 0)' : "var($v-opacity-start, 0)";
 		return array(
 			'fade'        => "{$p}o:$o",
 			'float'       => "{$p}y:var($v-float-distance, 40px)",
@@ -378,17 +387,17 @@ class Motion {
 		// ---- Parameters (ACSS-compatible variable names) ----
 		if ( $s['enter'] ) {
 			$vars += array(
-				'animate-range-start'     => $s['enter_range_start'],
-				'animate-range-end'       => $s['enter_range_end'],
-				'enter-stagger-interval'  => $s['enter_stagger'],
-				'enter-opacity-start'     => $s['enter_opacity'],
-				'enter-float-distance'    => $s['enter_float'],
-				'enter-sink-distance'     => $s['enter_sink'],
-				'enter-slide-distance'    => $s['enter_slide'],
-				'enter-scale-start'       => $s['enter_grow'],
-				'enter-scale-shrink'      => $s['enter_shrink'],
-				'enter-blur-amount'       => $s['enter_blur'],
-				'enter-parallax-distance' => $s['enter_parallax'],
+				'animate-range-start'       => $s['enter_range_start'],
+				'animate-range-end'         => $s['enter_range_end'],
+				'enter-stagger-interval'    => $s['enter_stagger'],
+				'enter-opacity-start'       => $s['enter_opacity'],
+				'enter-float-distance'      => $s['enter_float'],
+				'enter-sink-distance'       => $s['enter_sink'],
+				'enter-slide-distance'      => $s['enter_slide'],
+				'enter-scale-start'         => $s['enter_grow'],
+				'enter-scale-shrink'        => $s['enter_shrink'],
+				'enter-blur-amount'         => $s['enter_blur'],
+				'enter-parallax-distance'   => $s['enter_parallax'],
 				'scroll-animation-duration' => $s['fallback_duration'],
 				'scroll-animation-timing'   => $s['fallback_timing'],
 				'scroll-animation-delay'    => $s['fallback_delay'],
@@ -471,17 +480,17 @@ class Motion {
 		// the other end is the element's own value (its own transform/opacity).
 		$still = array();
 		if ( $s['enter'] || $s['exit'] ) {
-			$scroll   = array();
-			$enter    = self::sel( 'enter', self::SCROLL_FX );
-			$exit     = self::sel( 'exit', self::SCROLL_FX );
-			$ident    = function ( $p ) {
+			$scroll  = array();
+			$enter   = self::sel( 'enter', self::SCROLL_FX );
+			$exit    = self::sel( 'exit', self::SCROLL_FX );
+			$ident   = function ( $p ) {
 				return "{$p}o:1;{$p}x:0px;{$p}y:0px;{$p}s:1;{$p}b:0px";
 			};
-			$frame    = function ( $p ) {
+			$frame   = function ( $p ) {
 				return "opacity:var({$p}o);transform:translate(var({$p}x),var({$p}y)) scale(var({$p}s));filter:blur(var({$p}b))";
 			};
-			$e_range  = 'var(--animate-range-start, entry 20%) var(--animate-range-end, entry 100%)';
-			$x_range  = 'var(--exit-range-start, cover 50%) var(--exit-range-end, cover 100%)';
+			$e_range = 'var(--animate-range-start, entry 20%) var(--animate-range-end, entry 100%)';
+			$x_range = 'var(--exit-range-start, cover 50%) var(--exit-range-end, cover 100%)';
 			if ( $s['enter'] ) {
 				$scroll[] = '@keyframes tf-enter{from{' . $frame( '--tf-e' ) . '}}';
 				$scroll[] = $enter . '{' . $ident( '--tf-e' ) . ';animation-name:tf-enter;animation-duration:auto;animation-timing-function:linear;animation-fill-mode:both;animation-timeline:view();animation-range:' . $e_range . '}';
@@ -530,7 +539,15 @@ class Motion {
 				$css[] = '@supports not (animation-timeline:view()){'
 					. '@keyframes tf-enter{from{' . $frame( '--tf-e' ) . '}}'
 					. $enter . '{' . $ident( '--tf-e' ) . '}'
-					. implode( '', array_map( function ( $f, $d ) { return ".on-enter--$f,.on-enter-all--$f>*{" . $d . '}'; }, array_keys( self::fx_props( 'enter', '--tf-e' ) ), self::fx_props( 'enter', '--tf-e' ) ) )
+					. implode(
+						'',
+						array_map(
+							function ( $f, $d ) {
+								return ".on-enter--$f,.on-enter-all--$f>*{" . $d . '}'; },
+							array_keys( self::fx_props( 'enter', '--tf-e' ) ),
+							self::fx_props( 'enter', '--tf-e' )
+						)
+					)
 					. ':is(' . str_replace( ',', ',.tf-motion-fallback ', '.tf-motion-fallback ' . $enter ) . '){animation:tf-enter var(--scroll-animation-duration, .6s) var(--scroll-animation-timing, ease-out) calc(var(--scroll-animation-delay, 0s) + var(--tf-i, 0) * var(--visible-stagger-interval, .1s)) both paused}'
 					. '.tf-motion-fallback :is(.tf-in,.tf-in>*){animation-play-state:running}'
 					. '}';
@@ -546,7 +563,10 @@ class Motion {
 		// script = content simply shows.
 		if ( $s['visible'] ) {
 			// data-tf-reveal="fade" = .on-visible--fade; "up" = .on-visible--float plus the fade; appended after the classes.
-			$rev   = array( 'fade' => '[data-tf-reveal="fade"]', 'float' => '[data-tf-reveal="up"]' );
+			$rev   = array(
+				'fade'  => '[data-tf-reveal="fade"]',
+				'float' => '[data-tf-reveal="up"]',
+			);
 			$vis   = self::sel( 'visible', self::SCROLL_FX );
 			$hid   = function ( $fx ) use ( $rev ) {
 				$out = array();
@@ -572,7 +592,7 @@ class Motion {
 			}
 			// Transitions apply until the script marks the element done, then give
 			// way to the element's own (e.g. hover) transitions.
-			$pend  = array();
+			$pend = array();
 			foreach ( self::SCROLL_FX as $f ) {
 				$pend[] = ".tf-motion .on-visible--$f:not(.tf-done)";
 				$pend[] = ".tf-motion .on-visible-all--$f:not(.tf-done)>*";
@@ -594,7 +614,7 @@ class Motion {
 
 		// ---- Hover ----
 		if ( $s['hover'] ) {
-			$all   = array();
+			$all = array();
 			foreach ( self::HOVER_FX as $f ) {
 				$all[]     = ".on-hover--$f";
 				$classes[] = "on-hover--$f";
@@ -720,9 +740,9 @@ JS;
 	 * @return string
 	 */
 	public static function script() {
-		$s = self::settings();
-		$t = (float) $s['visible_threshold'];
-		$t = ( $t > 0 && $t <= 1 ) ? $t : 0.2;
+		$s  = self::settings();
+		$t  = (float) $s['visible_threshold'];
+		$t  = ( $t > 0 && $t <= 1 ) ? $t : 0.2;
 		$js = <<<'JS'
 (function(){var d=document,R=d.documentElement,W=window;W.tfMotionReady=1;
 d.querySelectorAll(".on-enter--stagger,.on-exit--stagger,.on-visible--stagger").forEach(function(p){for(var i=0;i<p.children.length;i++){p.children[i].style.setProperty("--tf-i",i)}});

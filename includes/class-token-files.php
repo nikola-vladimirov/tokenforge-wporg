@@ -31,7 +31,7 @@ defined( 'ABSPATH' ) || exit;
 class Token_Files {
 
 	const MAX_BYTES  = 2097152; // 2 MB per file
-	const MAX_DEPTH  = 12;      // group nesting
+	const MAX_DEPTH  = 12;      // group nesting.
 	const MAX_TOKENS = 5000;
 	const EXT        = 'com.tokenforge';
 	const LIGHT      = 'tokenforge.tokens.json';
@@ -98,9 +98,7 @@ class Token_Files {
 
 	const GENERIC_FONTS = array( 'serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui', 'ui-serif', 'ui-sans-serif', 'ui-monospace', 'ui-rounded', 'emoji', 'math', 'fangsong' );
 
-	/* ------------------------------------------------------------------ */
-	/* Export                                                              */
-	/* ------------------------------------------------------------------ */
+	// Export.
 
 	/**
 	 * Both files, built now (nothing is stored).
@@ -157,7 +155,7 @@ class Token_Files {
 		$dark  = array();
 		foreach ( $list as $name => $row ) {
 			list( $group, $tok ) = $row;
-			$g = self::ref_group( $group );
+			$g                   = self::ref_group( $group );
 			if ( isset( $tok['dark'] ) ) {
 				$dark[ $g ][ $name ] = $tok['dark'];
 				unset( $tok['dark'] );
@@ -233,13 +231,19 @@ class Token_Files {
 			$w = strtolower( $v );
 			$w = isset( self::WEIGHTS[ $w ] ) ? self::WEIGHTS[ $w ] : ( ctype_digit( $w ) ? (int) $w : 0 );
 			if ( $w >= 1 && $w <= 1000 ) {
-				return array( '$type' => 'fontWeight', '$value' => $w );
+				return array(
+					'$type'  => 'fontWeight',
+					'$value' => $w,
+				);
 			}
 		}
 		if ( preg_match( '/font|family/', $name ) && ! preg_match( '/size|weight|style/', $name ) ) {
 			$fam = self::font_list( $v );
 			if ( $fam ) {
-				return array( '$type' => 'fontFamily', '$value' => 1 === count( $fam ) ? $fam[0] : $fam );
+				return array(
+					'$type'  => 'fontFamily',
+					'$value' => 1 === count( $fam ) ? $fam[0] : $fam,
+				);
 			}
 		}
 		$layers = self::shadow_layers( $v );
@@ -252,7 +256,10 @@ class Token_Files {
 					return null;
 				}
 				$out[] = array(
-					'color'   => preg_match( '/^var\(--([a-z0-9-]+)\)$/', $l['color'], $cm ) ? array( 'ref' => $cm[1], 'obj' => self::color_obj( $c ) ) : self::color_obj( $c ),
+					'color'   => preg_match( '/^var\(--([a-z0-9-]+)\)$/', $l['color'], $cm ) ? array(
+						'ref' => $cm[1],
+						'obj' => self::color_obj( $c ),
+					) : self::color_obj( $c ),
 					'offsetX' => self::dim_obj( $l['d'][0], 'px' ),
 					'offsetY' => self::dim_obj( $l['d'][1], 'px' ),
 					'blur'    => self::dim_obj( $l['d'][2], 'px' ),
@@ -260,17 +267,26 @@ class Token_Files {
 					'inset'   => $l['inset'],
 				);
 			}
-			return array( '$type' => 'shadow', '$value' => 1 === count( $out ) ? $out[0] : $out );
+			return array(
+				'$type'  => 'shadow',
+				'$value' => 1 === count( $out ) ? $out[0] : $out,
+			);
 		}
 		$c = Contrast::parse( $v, $vars );
 		if ( null !== $c ) {
-			$tok = array( '$type' => 'color', '$value' => self::color_obj( $c ) );
+			$tok = array(
+				'$type'  => 'color',
+				'$value' => self::color_obj( $c ),
+			);
 			if ( strtolower( $v ) !== $tok['$value']['hex'] ) {
 				$tok['$extensions'][ self::EXT ]['css'] = $v;
 			}
 			$d = Contrast::parse( $v, $vars, true );
 			if ( null !== $d && ! self::same_rgba( $c, $d ) ) {
-				$tok['dark'] = array( '$type' => 'color', '$value' => self::color_obj( $d ) );
+				$tok['dark'] = array(
+					'$type'  => 'color',
+					'$value' => self::color_obj( $d ),
+				);
 				$ld          = Ai::light_dark( $v );
 				if ( $ld ) {
 					$tok['dark']['$extensions'][ self::EXT ]['css'] = $ld[1];
@@ -295,14 +311,14 @@ class Token_Files {
 		foreach ( $layers as $i => $l ) {
 			if ( isset( $l['color']['ref'] ) ) {
 				$r                     = $l['color']['ref'];
-				$layers[ $i ]['color'] =isset( $list[ $r ] ) && 'color' === $list[ $r ][1]['$type'] ? '{' . self::ref_group( $list[ $r ][0] ) . '.' . $r . '}' : $l['color']['obj'];
+				$layers[ $i ]['color'] = isset( $list[ $r ] ) && 'color' === $list[ $r ][1]['$type'] ? '{' . self::ref_group( $list[ $r ][0] ) . '.' . $r . '}' : $l['color']['obj'];
 			}
 		}
 		return $one ? $layers[0] : $layers;
 	}
 
 	/**
-	 * clamp(lo, B + Cvw, hi) as sizes at two viewports (px), or null.
+	 * Read clamp(lo, B + Cvw, hi) as sizes at two viewports (px), or null.
 	 *
 	 * @param string $v CSS value.
 	 * @return array|null { min, max, min_vw, max_vw } (min = size at the small viewport).
@@ -328,8 +344,18 @@ class Token_Files {
 			return round( ( $size - $b ) * 100 / $c, 2 );
 		};
 		$out = $c > 0
-			? array( 'min' => $lo, 'max' => $hi, 'min_vw' => $at( $lo ), 'max_vw' => $at( $hi ) )
-			: array( 'min' => $hi, 'max' => $lo, 'min_vw' => $at( $hi ), 'max_vw' => $at( $lo ) );
+			? array(
+				'min'    => $lo,
+				'max'    => $hi,
+				'min_vw' => $at( $lo ),
+				'max_vw' => $at( $hi ),
+			)
+			: array(
+				'min'    => $hi,
+				'max'    => $lo,
+				'min_vw' => $at( $hi ),
+				'max_vw' => $at( $lo ),
+			);
 		return $out['min_vw'] >= 0 && $out['min_vw'] < $out['max_vw'] ? $out : null;
 	}
 
@@ -341,7 +367,10 @@ class Token_Files {
 	 * @return array
 	 */
 	private static function dim_obj( $v, $unit ) {
-		return array( 'value' => round( (float) $v, 4 ) + 0, 'unit' => $unit );
+		return array(
+			'value' => round( (float) $v, 4 ) + 0,
+			'unit'  => $unit,
+		);
 	}
 
 	/**
@@ -362,9 +391,7 @@ class Token_Files {
 		return $out;
 	}
 
-	/* ------------------------------------------------------------------ */
-	/* Import                                                              */
-	/* ------------------------------------------------------------------ */
+	// Import.
 
 	/**
 	 * What importing these files would do. Nothing is written.
@@ -374,11 +401,19 @@ class Token_Files {
 	 * @return array { error, rows: [ { name, status, old, new, note } ], counts, save: name => [ value, group ] }
 	 */
 	public static function plan( $light, $dark ) {
-		$fail = function ( $msg ) {
-			return array( 'error' => $msg, 'rows' => array(), 'counts' => array(), 'save' => array() );
+		$fail  = function ( $msg ) {
+			return array(
+				'error'  => $msg,
+				'rows'   => array(),
+				'counts' => array(),
+				'save'   => array(),
+			);
 		};
 		$files = array();
-		foreach ( array( 'light' => $light, 'dark' => $dark ) as $which => $text ) {
+		foreach ( array(
+			'light' => $light,
+			'dark'  => $dark,
+		) as $which => $text ) {
 			if ( null === $text || '' === $text ) {
 				continue;
 			}
@@ -403,18 +438,27 @@ class Token_Files {
 		}
 		// Palette colours not overridden yet: a stored copy would lose its shades and be dropped on the next palette edit.
 		$palette = array_diff_key( array_column( Palette::tokens(), 'name', 'name' ), array_column( Settings::get_instance()->get_tokens(), 'name', 'name' ) );
-		$vars  = Contrast::variables();
-		$rows  = array();
-		$save  = array();
-		$skip  = function ( $name, $why, $file ) use ( &$rows ) {
-			$rows[] = array( 'name' => $name, 'status' => 'skipped', 'old' => '', 'new' => '', 'note' => ( 'dark' === $file ? 'Dark file: ' : '' ) . $why );
+		$vars    = Contrast::variables();
+		$rows    = array();
+		$save    = array();
+		$skip    = function ( $name, $why, $file ) use ( &$rows ) {
+			$rows[] = array(
+				'name'   => $name,
+				'status' => 'skipped',
+				'old'    => '',
+				'new'    => '',
+				'note'   => ( 'dark' === $file ? 'Dark file: ' : '' ) . $why,
+			);
 		};
 
 		// Values from each file: name => [ css, type, group, note, dark (from the css extension) ].
 		$got = array();
 		foreach ( $files as $which => $found ) {
 			// The dark file may refer to tokens of the tokens file.
-			$light_file = 'dark' === $which && isset( $files['light'] ) ? $files['light'] : array( 'names' => array(), 'tokens' => array() );
+			$light_file = 'dark' === $which && isset( $files['light'] ) ? $files['light'] : array(
+				'names'  => array(),
+				'tokens' => array(),
+			);
 			$names      = $found['names'] + $light_file['names'];
 			$all        = $found['tokens'] + $light_file['tokens'];
 			foreach ( $found['skipped'] as $s ) {
@@ -427,7 +471,7 @@ class Token_Files {
 					$skip( $tok['path'], $why, $which );
 					continue;
 				}
-				if ( 'alias' === $val['type'] ) { // an untyped reference takes its target's type
+				if ( 'alias' === $val['type'] ) { // an untyped reference takes its target's type.
 					$to = substr( $val['css'], 6, -1 );
 					$tt = isset( $all[ $to ] ) ? $all[ $to ]['type'] : '';
 					if ( ( isset( self::TYPES[ $tt ] ) && 'color' === self::TYPES[ $tt ] ) || ( '' === $tt && isset( $cur[ $to ] ) && 'color' === $cur[ $to ]['group'] ) ) {
@@ -465,7 +509,7 @@ class Token_Files {
 			$in   = isset( $light_got[ $name ] ) ? $light_got[ $name ] : null;
 			$note = $in ? $in['note'] : '';
 			if ( $in && ( 'color' !== $in['type'] || ( 0 === strpos( $in['css'], 'var(' ) && ! isset( $dark_got[ $name ] ) ) ) ) {
-				$new = $in['css']; // a reference follows its target in both modes
+				$new = $in['css']; // a reference follows its target in both modes.
 			} else {
 				if ( $in ) {
 					$l = $in['css'];
@@ -501,17 +545,33 @@ class Token_Files {
 				$skip( $name, 'a palette colour: change it under Colors, so its shades follow', 'light' );
 				continue;
 			}
-			$rows[] = array( 'name' => $name, 'status' => $status, 'old' => (string) $old, 'new' => $new, 'note' => $note );
+			$rows[] = array(
+				'name'   => $name,
+				'status' => $status,
+				'old'    => (string) $old,
+				'new'    => $new,
+				'note'   => $note,
+			);
 			if ( 'unchanged' !== $status ) {
 				$save[ $name ] = array( $new, '' !== $group ? $group : ( $in ? self::group_for( $in['type'], $name ) : 'color' ) );
 			}
 		}
 
-		$counts = array( 'new' => 0, 'changed' => 0, 'unchanged' => 0, 'skipped' => 0 );
+		$counts = array(
+			'new'       => 0,
+			'changed'   => 0,
+			'unchanged' => 0,
+			'skipped'   => 0,
+		);
 		foreach ( $rows as $r ) {
-			$counts[ $r['status'] ]++;
+			++$counts[ $r['status'] ];
 		}
-		return array( 'error' => '', 'rows' => $rows, 'counts' => $counts, 'save' => $save );
+		return array(
+			'error'  => '',
+			'rows'   => $rows,
+			'counts' => $counts,
+			'save'   => $save,
+		);
 	}
 
 	/**
@@ -541,7 +601,12 @@ class Token_Files {
 				$stored[ $at[ $name ] ]['value']   = $s[0];
 				$stored[ $at[ $name ] ]['enabled'] = true;
 			} else {
-				$stored[] = array( 'name' => $name, 'value' => $s[0], 'group' => $s[1], 'enabled' => true );
+				$stored[] = array(
+					'name'    => $name,
+					'value'   => $s[0],
+					'group'   => $s[1],
+					'enabled' => true,
+				);
 			}
 		}
 		Settings::get_instance()->save_tokens( $stored );
@@ -640,7 +705,11 @@ class Token_Files {
 				'group' => $group,
 			);
 		}
-		return array( 'tokens' => $tokens, 'names' => $names, 'skipped' => $skip );
+		return array(
+			'tokens'  => $tokens,
+			'names'   => $names,
+			'skipped' => $skip,
+		);
 	}
 
 	/**
@@ -692,7 +761,11 @@ class Token_Files {
 				}
 			}
 			$own     = $legacy ? ( isset( $child['type'] ) && is_string( $child['type'] ) ? $child['type'] : '' ) : ( isset( $child['$type'] ) && is_string( $child['$type'] ) ? $child['$type'] : $type );
-			$found[] = array( 'path' => $here, 'type' => $own, 'raw' => $child );
+			$found[] = array(
+				'path' => $here,
+				'type' => $own,
+				'raw'  => $child,
+			);
 		}
 	}
 
@@ -765,7 +838,12 @@ class Token_Files {
 				return null;
 			}
 			$type = isset( self::TYPES[ $tok['type'] ] ) ? self::TYPES[ $tok['type'] ] : '';
-			return array( 'css' => 'var(--' . $to . ')', 'type' => '' !== $type ? $type : 'alias', 'note' => '', 'dark' => '' );
+			return array(
+				'css'  => 'var(--' . $to . ')',
+				'type' => '' !== $type ? $type : 'alias',
+				'note' => '',
+				'dark' => '',
+			);
 		}
 		if ( '' === $tok['type'] ) {
 			$why = 'no $type (on the token or a group above it)';
@@ -854,7 +932,12 @@ class Token_Files {
 					return null;
 				}
 		}
-		return array( 'css' => $css, 'type' => $type, 'note' => $note, 'dark' => $dark );
+		return array(
+			'css'  => $css,
+			'type' => $type,
+			'note' => $note,
+			'dark' => $dark,
+		);
 	}
 
 	/**
@@ -1012,8 +1095,8 @@ class Token_Files {
 	 * @return string|null
 	 */
 	private static function fluid_css( $f, $val, &$why ) {
-		$r  = Defaults::root_px();
-		$px = function ( $d ) use ( $r ) {
+		$r   = Defaults::root_px();
+		$px  = function ( $d ) use ( $r ) {
 			$p = self::dim_px( is_array( $d ) ? $d : null );
 			return null === $p ? null : ( 'rem' === $p[1] ? $p[0] * $r : $p[0] );
 		};
@@ -1081,9 +1164,7 @@ class Token_Files {
 		return implode( ', ', $out );
 	}
 
-	/* ------------------------------------------------------------------ */
-	/* Shared helpers                                                      */
-	/* ------------------------------------------------------------------ */
+	// Shared helpers.
 
 	/**
 	 * Shadow CSS as layers { inset, d: [ x, y, blur, spread ] px, color }, or null.
@@ -1093,13 +1174,17 @@ class Token_Files {
 	 */
 	private static function shadow_layers( $css ) {
 		$css = trim( (string) $css );
-		if ( '' === $css || preg_match( '/^[a-z-]+\(/i', $css ) && ! preg_match( '/^(?:rgba?|hsla?|oklch|var)\(/i', $css ) ) {
-			return null; // drop-shadow(), color-mix() …
+		if ( '' === $css || ( preg_match( '/^[a-z-]+\(/i', $css ) && ! preg_match( '/^(?:rgba?|hsla?|oklch|var)\(/i', $css ) ) ) {
+			return null; // drop-shadow(), color-mix() etc.
 		}
 		$r      = Defaults::root_px();
 		$layers = array();
 		foreach ( self::split_top( $css, ',' ) as $layer ) {
-			$l = array( 'inset' => false, 'd' => array(), 'color' => '' );
+			$l = array(
+				'inset' => false,
+				'd'     => array(),
+				'color' => '',
+			);
 			foreach ( self::split_top( $layer, ' ' ) as $w ) {
 				if ( 'inset' === strtolower( $w ) ) {
 					$l['inset'] = true;
@@ -1134,9 +1219,9 @@ class Token_Files {
 		for ( $i = 0, $n = strlen( $s ); $i < $n; $i++ ) {
 			$ch = $s[ $i ];
 			if ( '(' === $ch ) {
-				$depth++;
+				++$depth;
 			} elseif ( ')' === $ch ) {
-				$depth--;
+				--$depth;
 			}
 			if ( 0 === $depth && ( $ch === $sep || ( ' ' === $sep && ctype_space( $ch ) ) ) ) {
 				$out[] = trim( $buf );
@@ -1242,7 +1327,12 @@ class Token_Files {
 	 * @return string
 	 */
 	private static function group_for( $type, $name ) {
-		$by = array( 'color' => 'color', 'shadow' => 'shadow', 'fontFamily' => 'typography', 'fontWeight' => 'typography' );
+		$by = array(
+			'color'      => 'color',
+			'shadow'     => 'shadow',
+			'fontFamily' => 'typography',
+			'fontWeight' => 'typography',
+		);
 		return isset( $by[ $type ] ) ? $by[ $type ] : Tokens::derive_group( $name );
 	}
 
@@ -1267,9 +1357,7 @@ class Token_Files {
 		return '-0' === $s ? '0' : $s;
 	}
 
-	/* ------------------------------------------------------------------ */
-	/* REST                                                                */
-	/* ------------------------------------------------------------------ */
+	// REST.
 
 	/**
 	 * GET /token-files: both files and what was left out.
@@ -1289,7 +1377,12 @@ class Token_Files {
 	 */
 	public static function rest_import( $req ) {
 		if ( strlen( (string) $req->get_body() ) > 2 * self::MAX_BYTES + 4096 ) {
-			return rest_ensure_response( array( 'ok' => false, 'error' => 'The files are larger than 2 MB each, so they were not read.' ) );
+			return rest_ensure_response(
+				array(
+					'ok'    => false,
+					'error' => 'The files are larger than 2 MB each, so they were not read.',
+				)
+			);
 		}
 		$body  = $req->get_json_params();
 		$text  = function ( $k ) use ( $body ) {
@@ -1298,7 +1391,12 @@ class Token_Files {
 		$apply = '/import' === substr( $req->get_route(), -7 );
 		$plan  = $apply ? self::import( $text( 'light' ), $text( 'dark' ) ) : self::plan( $text( 'light' ), $text( 'dark' ) );
 		if ( '' !== $plan['error'] ) {
-			return rest_ensure_response( array( 'ok' => false, 'error' => $plan['error'] ) );
+			return rest_ensure_response(
+				array(
+					'ok'    => false,
+					'error' => $plan['error'],
+				)
+			);
 		}
 		if ( $apply && $plan['saved'] ) {
 			Css_Generator::get_instance()->rebuild();

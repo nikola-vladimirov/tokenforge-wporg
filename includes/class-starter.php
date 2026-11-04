@@ -60,10 +60,14 @@ class Starter {
 		$p       = Palette::defaults();
 		$factory = Factory::get( 'palette' );
 		if ( $factory && ! empty( $factory['families'] ) && is_array( $factory['families'] ) ) {
-			return $p; // the factory colour families (data/defaults.json), already in the defaults
+			return $p; // the factory colour families (data/defaults.json), already in the defaults.
 		}
 		foreach ( self::FAMILIES as $name => $hex ) {
-			$p['families'][ $name ] = array( 'hex' => $hex, 'alt' => '', 'on' => true );
+			$p['families'][ $name ] = array(
+				'hex' => $hex,
+				'alt' => '',
+				'on'  => true,
+			);
 		}
 		return $p;
 	}
@@ -89,10 +93,23 @@ class Starter {
 			);
 		}
 		$tokens = array();
-		foreach ( array( 'white' => array( 255, 255, 255 ), 'black' => array( 0, 0, 0 ) ) as $name => $rgb ) {
-			$tokens[] = array( 'name' => $name, 'value' => 'white' === $name ? '#ffffff' : '#000000', 'group' => 'color', 'enabled' => true );
+		foreach ( array(
+			'white' => array( 255, 255, 255 ),
+			'black' => array( 0, 0, 0 ),
+		) as $name => $rgb ) {
+			$tokens[] = array(
+				'name'    => $name,
+				'value'   => 'white' === $name ? '#ffffff' : '#000000',
+				'group'   => 'color',
+				'enabled' => true,
+			);
 			for ( $i = 1; $i <= 9; $i++ ) {
-				$tokens[] = array( 'name' => "$name-trans-" . ( $i * 10 ), 'value' => sprintf( 'rgba(%d, %d, %d, 0.%d)', $rgb[0], $rgb[1], $rgb[2], $i ), 'group' => 'color', 'enabled' => true );
+				$tokens[] = array(
+					'name'    => "$name-trans-" . ( $i * 10 ),
+					'value'   => sprintf( 'rgba(%d, %d, %d, 0.%d)', $rgb[0], $rgb[1], $rgb[2], $i ),
+					'group'   => 'color',
+					'enabled' => true,
+				);
 			}
 		}
 		return $tokens;
@@ -120,7 +137,7 @@ class Starter {
 	/**
 	 * Reset parts of TokenForge to its defaults.
 	 *
-	 * settings: every switch and value (your fonts and the tokens
+	 * Settings: every switch and value (your fonts and the tokens
 	 * stay); tokens: the starter tokens and palette; fonts: empty the font
 	 * list (uploaded files stay in uploads/tokenforge/fonts).
 	 *
@@ -134,7 +151,7 @@ class Starter {
 				delete_option( 'tokenforge_' . $o );
 			}
 			// Content that lives next to settings stays.
-			Scss::save_settings( Scss::defaults() ); // the breakpoints
+			Scss::save_settings( Scss::defaults() ); // the breakpoints.
 			Recipes::save_settings( Recipes::defaults() );
 			$fonts = Modules::raw( array( Fonts::class, 'settings' ) );
 			Fonts::save_settings( array_merge( Fonts::defaults(), array( 'fonts' => $fonts['fonts'] ) ) );

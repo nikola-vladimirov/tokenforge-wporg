@@ -50,7 +50,7 @@ class Platforms {
 			array( 'divi', 'Divi', '' !== $et_ver && version_compare( $et_ver, '5.0', '>=' ), $et_ver, wp_get_theme( 'Divi' )->exists() || $plugin( 'divi-builder/divi-builder.php' ) ),
 			array( 'elementor', 'Elementor', defined( 'ELEMENTOR_VERSION' ), defined( 'ELEMENTOR_VERSION' ) ? (string) constant( 'ELEMENTOR_VERSION' ) : '', $plugin( 'elementor/elementor.php' ) ),
 		);
-		$out     = array();
+		$out = array();
 		foreach ( $rows as $r ) {
 			$out[] = array(
 				'id'        => $r[0],

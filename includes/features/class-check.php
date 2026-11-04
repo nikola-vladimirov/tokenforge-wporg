@@ -78,12 +78,15 @@ class Check {
 		$con  = array();
 		$ctx  = null; // the variable table, built once for all pairs.
 		foreach ( array_slice( (array) ( $in['contrast'] ?? array() ), 0, self::MAX ) as $c ) {
-			$c   = (array) $c;
-			$fg  = self::color( $c['fg'] ?? '' );
-			$bg  = self::color( $c['bg'] ?? '' );
-			$min = min( 7.0, max( 3.0, (float) ( $c['min'] ?? Contrast::TEXT ) ) );
-			$fix = ( '' !== $fg && '' !== $bg ) ? Contrast::nearest( $fg, $bg, $min, $dark, $ctx ) : null;
-			$con[] = $fix ? array( 'value' => $fix['value'], 'ratio' => $fix['modes'][0]['ratio'] ) : null;
+			$c     = (array) $c;
+			$fg    = self::color( $c['fg'] ?? '' );
+			$bg    = self::color( $c['bg'] ?? '' );
+			$min   = min( 7.0, max( 3.0, (float) ( $c['min'] ?? Contrast::TEXT ) ) );
+			$fix   = ( '' !== $fg && '' !== $bg ) ? Contrast::nearest( $fg, $bg, $min, $dark, $ctx ) : null;
+			$con[] = $fix ? array(
+				'value' => $fix['value'],
+				'ratio' => $fix['modes'][0]['ratio'],
+			) : null;
 		}
 
 		// A colour the person chose, measured on its background: [ { fg, bg, min, dark } ] in, [ pair | null ] out.

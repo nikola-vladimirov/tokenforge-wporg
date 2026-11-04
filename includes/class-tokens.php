@@ -78,7 +78,7 @@ class Tokens {
 			$g = self::derive_group( $t['name'] );
 			if ( 'color' !== $g ) {
 				$tokens[ $i ]['group'] = $g;
-				$changed++;
+				++$changed;
 			}
 		}
 		return array( $tokens, $changed );

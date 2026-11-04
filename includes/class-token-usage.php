@@ -21,7 +21,7 @@ namespace TokenForge;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * var(--name) uses across the site's content.
+ * Counts var(--name) uses across the site's content.
  */
 class Token_Usage {
 
@@ -61,7 +61,7 @@ class Token_Usage {
 			if ( false === strpos( $text, 'var(' ) || ! preg_match_all( '/var\(\s*--([a-z0-9-]+)/i', $text, $m ) ) {
 				return;
 			}
-			$places++;
+			++$places;
 			foreach ( array_count_values( array_map( 'strtolower', $m[1] ) ) as $name => $n ) {
 				if ( ! isset( $uses[ $name ] ) ) {
 					$uses[ $name ] = array(
@@ -149,7 +149,7 @@ class Token_Usage {
 			}
 			update_meta_cache( 'post', wp_list_pluck( $q->posts, 'ID' ) );
 			foreach ( $q->posts as $post ) {
-				$posts++;
+				++$posts;
 				$each( $post );
 			}
 			// Keep one batch in memory, not every post and its meta (5000 posts of builder data is hundreds of MB).
@@ -157,9 +157,9 @@ class Token_Usage {
 				wp_cache_delete( $id, 'posts' );
 				wp_cache_delete( $id, 'post_meta' );
 			}
-			$page++;
+			++$page;
 			$capped = $posts >= self::MAX_POSTS;
-		} while ( ! $capped && 100 === count( $q->posts ) );
+		} while ( ! $capped && 100 === $q->post_count );
 		return array( $posts, $capped );
 	}
 

@@ -46,82 +46,87 @@ class Extras {
 	 */
 	public static function builtin_defaults() {
 		return array(
-			'enable_radius' => true,
-			'enable_border' => true,
-			'enable_shadow' => true,
-			'enable_icon'   => true,
-			'radius_xs'     => '',        // empty = derived (s ÷ ratio)
-			'radius_s'      => '0.25rem',
-			'radius_m'      => '0.5rem',
-			'radius_l'      => '1rem',
-			'radius_xl'     => '1.5rem',
-			'radius_xxl'    => '',        // empty = derived (xl × ratio)
-			'border_size'   => '1px',
-			'border_style'  => 'solid',
-			'border_color'  => 'var(--base-ultra-light, #e5e7eb)', // dark-scheme border (on light backgrounds)
-			'border_color_light' => 'rgb(255 255 255 / .2)',      // for dark backgrounds
+			'enable_radius'           => true,
+			'enable_border'           => true,
+			'enable_shadow'           => true,
+			'enable_icon'             => true,
+			'radius_xs'               => '',        // empty = derived (s ÷ ratio).
+			'radius_s'                => '0.25rem',
+			'radius_m'                => '0.5rem',
+			'radius_l'                => '1rem',
+			'radius_xl'               => '1.5rem',
+			'radius_xxl'              => '',        // empty = derived (xl × ratio).
+			'border_size'             => '1px',
+			'border_style'            => 'solid',
+			'border_color'            => 'var(--base-ultra-light, #e5e7eb)', // dark-scheme border (on light backgrounds).
+			'border_color_light'      => 'rgb(255 255 255 / .2)',      // for dark backgrounds
 			// Dividers.
-			'divider_size'        => '1px',
-			'divider_style'       => 'solid',
-			'divider_color_dark'  => 'var(--border-color-dark)',
-			'divider_color_light' => 'var(--border-color-light)',
-			'divider_gap'         => 'var(--content-gap)',
-			'shadow_color'  => '15 23 42', // rgb channels used in rgba()
+			'divider_size'            => '1px',
+			'divider_style'           => 'solid',
+			'divider_color_dark'      => 'var(--border-color-dark)',
+			'divider_color_light'     => 'var(--border-color-light)',
+			'divider_gap'             => 'var(--content-gap)',
+			'shadow_color'            => '15 23 42', // rgb channels used in rgba()
 			// Icons.
-			'icon_xs'       => '0.75rem',
-			'icon_s'        => '1rem',
-			'icon_m'        => '1.5rem',
-			'icon_l'        => '2rem',
-			'icon_xl'       => '4rem',
-			'icon_2xl'      => '8rem',
-			'icon_padding'  => '.35em',
-			'icon_padding_xs' => '', 'icon_padding_s' => '', 'icon_padding_m' => '', 'icon_padding_l' => '', 'icon_padding_xl' => '', 'icon_padding_2xl' => '',
-			'icon_color'           => '',
-			'icon_color_hover'     => 'var(--primary)',
-			'icon_background'      => 'var(--neutral-ultra-light, #eef1f5)',
-			'icon_background_hover' => 'var(--neutral-light)',
-			'icon_border_width'    => '0',
-			'icon_border_style'    => 'solid',
-			'icon_border_color'    => 'transparent',
+			'icon_xs'                 => '0.75rem',
+			'icon_s'                  => '1rem',
+			'icon_m'                  => '1.5rem',
+			'icon_l'                  => '2rem',
+			'icon_xl'                 => '4rem',
+			'icon_2xl'                => '8rem',
+			'icon_padding'            => '.35em',
+			'icon_padding_xs'         => '',
+			'icon_padding_s'          => '',
+			'icon_padding_m'          => '',
+			'icon_padding_l'          => '',
+			'icon_padding_xl'         => '',
+			'icon_padding_2xl'        => '',
+			'icon_color'              => '',
+			'icon_color_hover'        => 'var(--primary)',
+			'icon_background'         => 'var(--neutral-ultra-light, #eef1f5)',
+			'icon_background_hover'   => 'var(--neutral-light)',
+			'icon_border_width'       => '0',
+			'icon_border_style'       => 'solid',
+			'icon_border_color'       => 'transparent',
 			'icon_border_color_hover' => 'inherit',
-			'icon_radius'          => 'var(--radius-m)',
-			'icon_scheme'          => '',   // light | dark: colour scheme of icons
-			'icon_default_style'   => 'plain', // plain | boxed
-			'icon_list_gap'        => '1em',
-			'icon_list_icon_size'  => '1em',
-			'boxed_list_icons'     => false,
-			'header_height' => '0px',   // desktop (or the only value)
-			'header_height_min' => '',  // mobile, when both are px, the height is fluid
+			'icon_radius'             => 'var(--radius-m)',
+			'icon_scheme'             => '',   // light | dark: colour scheme of icons.
+			'icon_default_style'      => 'plain', // plain | boxed.
+			'icon_list_gap'           => '1em',
+			'icon_list_icon_size'     => '1em',
+			'boxed_list_icons'        => false,
+			'header_height'           => '0px',   // desktop (or the only value).
+			'header_height_min'       => '',  // mobile, when both are px, the height is fluid
 			// Custom box shadows (empty = generated from the shadow colour).
-			'shadow_1'      => '',
-			'shadow_2'      => '',
-			'shadow_3'      => '',
-			'shadow_4'      => '',
-			'shadow_5'      => '',
+			'shadow_1'                => '',
+			'shadow_2'                => '',
+			'shadow_3'                => '',
+			'shadow_4'                => '',
+			'shadow_5'                => '',
 			// Text + drop shadows (filter).
-			'enable_text_shadow' => true,
-			'text_shadow_1' => '0 1px 2px rgb(0 0 0 / .2)',
-			'text_shadow_2' => '0 2px 4px rgb(0 0 0 / .2)',
-			'text_shadow_3' => '0 4px 8px rgb(0 0 0 / .25)',
-			'enable_drop_shadow' => true,
-			'drop_shadow_1' => '0 1px 2px rgb(0 0 0 / .15)',
-			'drop_shadow_2' => '0 4px 6px rgb(0 0 0 / .15)',
-			'drop_shadow_3' => '0 10px 15px rgb(0 0 0 / .2)',
+			'enable_text_shadow'      => true,
+			'text_shadow_1'           => '0 1px 2px rgb(0 0 0 / .2)',
+			'text_shadow_2'           => '0 2px 4px rgb(0 0 0 / .2)',
+			'text_shadow_3'           => '0 4px 8px rgb(0 0 0 / .25)',
+			'enable_drop_shadow'      => true,
+			'drop_shadow_1'           => '0 1px 2px rgb(0 0 0 / .15)',
+			'drop_shadow_2'           => '0 4px 6px rgb(0 0 0 / .15)',
+			'drop_shadow_3'           => '0 10px 15px rgb(0 0 0 / .2)',
 			// Round images (and other selectors) automatically with --radius.
-			'auto_radius'   => false,
-			'auto_radius_selectors' => ':where(img):not(header img)',
+			'auto_radius'             => false,
+			'auto_radius_selectors'   => ':where(img):not(header img)',
 			// Inverted (concave) corners via data-inverted-radius-* attributes.
-			'inverted_radius' => false,
+			'inverted_radius'         => false,
 			// Corner ribbons (.ribbon + .ribbon--top-left/-top-right or data-ribbon-position).
 			// Each value is the fallback of a --ribbon-* variable you can set per element.
-			'ribbons'           => false,
-			'ribbon_background' => 'var(--primary)',
-			'ribbon_text_color' => 'var(--white)',
-			'ribbon_text_size'  => 'var(--text-s)',
-			'ribbon_padding'    => '0.5em 1em',
-			'ribbon_width'      => '300px',
-			'ribbon_offset'     => '-20px',
-			'ribbon_shadow'     => '0 5px 10px color-mix(in oklch, var(--neutral) 10%, transparent)',
+			'ribbons'                 => false,
+			'ribbon_background'       => 'var(--primary)',
+			'ribbon_text_color'       => 'var(--white)',
+			'ribbon_text_size'        => 'var(--text-s)',
+			'ribbon_padding'          => '0.5em 1em',
+			'ribbon_width'            => '300px',
+			'ribbon_offset'           => '-20px',
+			'ribbon_shadow'           => '0 5px 10px color-mix(in oklch, var(--neutral) 10%, transparent)',
 		);
 	}
 
@@ -157,7 +162,7 @@ class Extras {
 	}
 
 	/**
-	 * rgba() from "r g b" channels + alpha.
+	 * Build rgba() from "r g b" channels + alpha.
 	 *
 	 * @param string $rgb   "r g b".
 	 * @param string $alpha Alpha 0-1.
@@ -179,7 +184,12 @@ class Extras {
 		$out = array();
 		$add = function ( $n, $v, $g ) use ( &$out ) {
 			if ( '' !== (string) $v ) {
-				$out[] = array( 'name' => $n, 'value' => $v, 'group' => $g, 'enabled' => true );
+				$out[] = array(
+					'name'    => $n,
+					'value'   => $v,
+					'group'   => $g,
+					'enabled' => true,
+				);
 			}
 		};
 
@@ -345,9 +355,9 @@ class Extras {
 
 		if ( $s['enable_icon'] ) {
 			// An icon is the svg/<i> itself (or a link) with [data-icon], or a .icon wrapper.
-			$icon  = '[data-icon]:is(svg,i,a),.icon';
-			$boxed = 'padding:var(--icon-padding, 12px);border-width:var(--icon-border-width, 0);border-style:var(--icon-border-style, solid);border-radius:var(--icon-radius, var(--radius));background:var(--icon-background, var(--neutral-ultra-light));border-color:var(--icon-border-color, transparent)';
-			$base  = 'color-scheme:var(--icon-scheme, normal);display:flex;flex-shrink:0;align-items:center;justify-content:center;box-sizing:content-box;color:var(--icon-color, currentColor);font-size:var(--icon-size);'
+			$icon    = '[data-icon]:is(svg,i,a),.icon';
+			$boxed   = 'padding:var(--icon-padding, 12px);border-width:var(--icon-border-width, 0);border-style:var(--icon-border-style, solid);border-radius:var(--icon-radius, var(--radius));background:var(--icon-background, var(--neutral-ultra-light));border-color:var(--icon-border-color, transparent)';
+			$base    = 'color-scheme:var(--icon-scheme, normal);display:flex;flex-shrink:0;align-items:center;justify-content:center;box-sizing:content-box;color:var(--icon-color, currentColor);font-size:var(--icon-size);'
 				. 'block-size:var(--icon-height, var(--icon-size, 24px));inline-size:var(--icon-width, var(--icon-size, 24px));transition:var(--icon-transition, var(--transition, none));box-shadow:var(--icon-shadow, none);overflow:visible';
 			$icons[] = $icon . '{' . $base . ( 'boxed' === $s['icon_default_style'] ? ';' . $boxed : '' ) . '}';
 			$icons[] = '[data-icon]:is(i)::before{inline-size:100%;block-size:100%;text-align:center;font-size:var(--icon-size)}';
@@ -374,17 +384,39 @@ class Extras {
 		if ( $s['inverted_radius'] ) {
 			// Concave corners: an absolutely positioned tab whose pseudo-elements draw
 			// the inverted curve with a box-shadow in the parent's background colour.
-			$r   = 'var(--radius)';
-			$neg = 'calc(var(--radius) * -1)';
-			$pos = array(
-				'top-left' => "0 auto auto 0", 'top-right' => "0 0 auto auto", 'bottom-left' => "auto auto 0 0", 'bottom-right' => "auto 0 0 auto",
-				'top-left-outside' => "0 auto auto $neg", 'top-right-outside' => "0 $neg auto auto", 'bottom-left-outside' => "auto 0 0 $neg", 'bottom-right-outside' => "auto $neg 0 auto",
-				'top-outside-left' => "$neg auto auto 0", 'top-outside-right' => "$neg 0 auto auto", 'bottom-outside-left' => "auto 0 $neg 0", 'bottom-outside-right' => "auto 0 $neg auto",
-				'top-outside-left-outside' => "$neg auto auto $neg", 'top-outside-right-outside' => "$neg $neg auto auto", 'bottom-outside-left-outside' => "auto auto $neg $neg", 'bottom-outside-right-outside' => "auto $neg $neg auto",
+			$r      = 'var(--radius)';
+			$neg    = 'calc(var(--radius) * -1)';
+			$pos    = array(
+				'top-left'                     => '0 auto auto 0',
+				'top-right'                    => '0 0 auto auto',
+				'bottom-left'                  => 'auto auto 0 0',
+				'bottom-right'                 => 'auto 0 0 auto',
+				'top-left-outside'             => "0 auto auto $neg",
+				'top-right-outside'            => "0 $neg auto auto",
+				'bottom-left-outside'          => "auto 0 0 $neg",
+				'bottom-right-outside'         => "auto $neg 0 auto",
+				'top-outside-left'             => "$neg auto auto 0",
+				'top-outside-right'            => "$neg 0 auto auto",
+				'bottom-outside-left'          => "auto 0 $neg 0",
+				'bottom-outside-right'         => "auto 0 $neg auto",
+				'top-outside-left-outside'     => "$neg auto auto $neg",
+				'top-outside-right-outside'    => "$neg $neg auto auto",
+				'bottom-outside-left-outside'  => "auto auto $neg $neg",
+				'bottom-outside-right-outside' => "auto $neg $neg auto",
 			);
-			$slice  = array( 'top-left' => "$r 0 0 0", 'top-right' => "0 $r 0 0", 'bottom-right' => "0 0 $r 0", 'bottom-left' => "0 0 0 $r" );
+			$slice  = array(
+				'top-left'     => "$r 0 0 0",
+				'top-right'    => "0 $r 0 0",
+				'bottom-right' => "0 0 $r 0",
+				'bottom-left'  => "0 0 0 $r",
+			);
 			$bg     = 'var(--bg, var(--white))';
-			$shadow = array( 'bottom-right' => "$r $r 0 $r $bg", 'bottom-left' => "$neg $r 0 $r $bg", 'top-right' => "$r $neg 0 $r $bg", 'top-left' => "$neg $neg 0 $r $bg" );
+			$shadow = array(
+				'bottom-right' => "$r $r 0 $r $bg",
+				'bottom-left'  => "$neg $r 0 $r $bg",
+				'top-right'    => "$r $neg 0 $r $bg",
+				'top-left'     => "$neg $neg 0 $r $bg",
+			);
 			$vars   = array();
 			foreach ( $slice as $k => $v ) {
 				$vars[] = "--slice-$k:$v";
@@ -396,7 +428,10 @@ class Extras {
 				$vars[] = "--shadow-$k:$v";
 			}
 			$css[] = '[data-inverted-radius-1-position],[data-inverted-radius-2-position]{position:var(--inverted-radius-parent-position, absolute);background:' . $bg . ';z-index:1;isolation:isolate;' . implode( ';', $vars ) . ';--inverted-radius-1-shadow:var(--shadow-top-left);--inverted-radius-2-shadow:var(--shadow-top-left)}';
-			foreach ( array( 1 => 'before', 2 => 'after' ) as $n => $pseudo ) {
+			foreach ( array(
+				1 => 'before',
+				2 => 'after',
+			) as $n => $pseudo ) {
 				foreach ( array_keys( $pos ) as $k ) {
 					$css[] = "[data-inverted-radius-$n-position=\"$k\"]{--inverted-radius-$n-position:var(--position-$k)}";
 				}
@@ -421,7 +456,7 @@ class Extras {
 			$css[] = '.ribbon--top-left,.ribbon[data-ribbon-position="top-left"]{inset-block-start:' . $off . ';inset-inline-start:' . $off . ';transform-origin:var(--ribbon-transform-origin, bottom left);'
 				. 'transform:var(--ribbon-transform, translateY(calc(' . $w . ' * 0.70710678 - 100%)) rotate(-45deg))}';
 			if ( Platforms\Bricks::is_active() ) {
-				$css[] = 'span.ribbon{inline-size:' . $w . '!important}'; // Bricks gives text spans width:auto
+				$css[] = 'span.ribbon{inline-size:' . $w . '!important}'; // Bricks gives text spans width:auto.
 			}
 			array_push( $classes, 'ribbon', 'ribbon--top-left', 'ribbon--top-right' );
 		}

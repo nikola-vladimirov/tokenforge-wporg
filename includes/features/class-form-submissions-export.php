@@ -124,7 +124,7 @@ class Form_Submissions_Export {
 
 		$fh  = fopen( 'php://temp', 'w+' ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 		$put = static function ( $line ) use ( $fh ) {
-			fputcsv( $fh, array_map( array( __CLASS__, 'cell' ), $line ), ',', '"', '' ); // RFC 4180: quotes doubled, no backslash escape
+			fputcsv( $fh, array_map( array( __CLASS__, 'cell' ), $line ), ',', '"', '' ); // RFC 4180: quotes doubled, no backslash escape.
 		};
 		$put( $head );
 		foreach ( $rows as $r ) {

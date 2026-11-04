@@ -57,7 +57,10 @@ class Ai {
 			$result['data'] = $this->enrich_result( $result['data'], (string) $args['ability_name'] );
 			return $result;
 		}
-		$map = array( 'bricks-get-design-context' => 'bricks/get-design-context', 'bricks-start-here' => 'bricks/start-here' );
+		$map = array(
+			'bricks-get-design-context' => 'bricks/get-design-context',
+			'bricks-start-here'         => 'bricks/start-here',
+		);
 		return isset( $map[ $tool_name ] ) ? $this->enrich_result( $result, $map[ $tool_name ] ) : $result;
 	}
 
@@ -99,10 +102,17 @@ class Ai {
 	 */
 	private function meta() {
 		return array(
-			'annotations'  => array( 'readonly' => true, 'destructive' => false, 'idempotent' => true ),
+			'annotations'  => array(
+				'readonly'    => true,
+				'destructive' => false,
+				'idempotent'  => true,
+			),
 			'public'       => true,
 			'show_in_rest' => true,
-			'mcp'          => array( 'public' => true, 'type' => 'tool' ),
+			'mcp'          => array(
+				'public' => true,
+				'type'   => 'tool',
+			),
 		);
 	}
 
@@ -134,8 +144,17 @@ class Ai {
 				'input_schema'        => array(
 					'type'                 => 'object',
 					'properties'           => array(
-						'detail' => array( 'type' => 'string', 'enum' => array( 'summary', 'full' ), 'default' => 'summary', 'description' => 'summary: guide + tokens + examples per group. full: also every item of the requested groups.' ),
-						'groups' => array( 'type' => 'array', 'items' => array( 'type' => 'string' ), 'description' => 'Group ids for detail=full, e.g. ["buttons","spacing","v-color"]. Empty = all.' ),
+						'detail' => array(
+							'type'        => 'string',
+							'enum'        => array( 'summary', 'full' ),
+							'default'     => 'summary',
+							'description' => 'summary: guide + tokens + examples per group. full: also every item of the requested groups.',
+						),
+						'groups' => array(
+							'type'        => 'array',
+							'items'       => array( 'type' => 'string' ),
+							'description' => 'Group ids for detail=full, e.g. ["buttons","spacing","v-color"]. Empty = all.',
+						),
 					),
 					'additionalProperties' => false,
 				),
@@ -154,9 +173,21 @@ class Ai {
 				'input_schema'        => array(
 					'type'                 => 'object',
 					'properties'           => array(
-						'query' => array( 'type' => 'string', 'description' => 'Words to look for (all must match).' ),
-						'kind'  => array( 'type' => 'string', 'enum' => array( '', 'class', 'var', 'mixin', 'function', 'recipe', 'attr' ), 'description' => 'Only this kind of item.' ),
-						'limit' => array( 'type' => 'integer', 'minimum' => 1, 'maximum' => 200, 'default' => 40 ),
+						'query' => array(
+							'type'        => 'string',
+							'description' => 'Words to look for (all must match).',
+						),
+						'kind'  => array(
+							'type'        => 'string',
+							'enum'        => array( '', 'class', 'var', 'mixin', 'function', 'recipe', 'attr' ),
+							'description' => 'Only this kind of item.',
+						),
+						'limit' => array(
+							'type'    => 'integer',
+							'minimum' => 1,
+							'maximum' => 200,
+							'default' => 40,
+						),
 					),
 					'required'             => array( 'query' ),
 					'additionalProperties' => false,
@@ -176,8 +207,14 @@ class Ai {
 				'input_schema'        => array(
 					'type'                 => 'object',
 					'properties'           => array(
-						'css'  => array( 'type' => 'string', 'description' => 'CSS to check.' ),
-						'html' => array( 'type' => 'string', 'description' => 'Optional HTML whose class names should be checked.' ),
+						'css'  => array(
+							'type'        => 'string',
+							'description' => 'CSS to check.',
+						),
+						'html' => array(
+							'type'        => 'string',
+							'description' => 'Optional HTML whose class names should be checked.',
+						),
 					),
 					'additionalProperties' => false,
 				),
@@ -196,7 +233,10 @@ class Ai {
 				'input_schema'        => array(
 					'type'                 => 'object',
 					'properties'           => array(
-						'name' => array( 'type' => 'string', 'description' => 'Recipe name, with or without the leading ?.' ),
+						'name' => array(
+							'type'        => 'string',
+							'description' => 'Recipe name, with or without the leading ?.',
+						),
 					),
 					'required'             => array( 'name' ),
 					'additionalProperties' => false,
@@ -242,9 +282,9 @@ class Ai {
 			'tokens'    => self::tokens(),
 			'groups'    => $groups,
 			'tools'     => array(
-				'tokenforge-search'       => 'Find a class, variable, mixin or recipe by words.',
-				'tokenforge-check-css'    => 'Check CSS/HTML for hard-coded values and misspelt classes before saving.',
-				'tokenforge-get-recipe'   => 'Get a ready-made CSS snippet.',
+				'tokenforge-search'     => 'Find a class, variable, mixin or recipe by words.',
+				'tokenforge-check-css'  => 'Check CSS/HTML for hard-coded values and misspelt classes before saving.',
+				'tokenforge-get-recipe' => 'Get a ready-made CSS snippet.',
 			),
 		);
 	}
@@ -274,11 +314,16 @@ class Ai {
 	/**
 	 * A cheatsheet item for agents.
 	 *
-	 * @param array $it Item.
+	 * @param array $it       Item.
+	 * @param bool  $with_css Include the CSS.
 	 * @return array
 	 */
 	public static function item( $it, $with_css = true ) {
-		$out = array( 'name' => $it['n'], 'use' => $it['copy'], 'kind' => $it['k'] );
+		$out = array(
+			'name' => $it['n'],
+			'use'  => $it['copy'],
+			'kind' => $it['k'],
+		);
 		if ( '' !== $it['d'] ) {
 			$out['does'] = $it['d'];
 		}
@@ -302,7 +347,11 @@ class Ai {
 		foreach ( Cheatsheet::search( $q, $kind, $limit ) as $it ) {
 			$res[] = self::item( $it ) + array( 'group' => $it['group'] );
 		}
-		return array( 'query' => $q, 'count' => count( $res ), 'results' => $res );
+		return array(
+			'query'   => $q,
+			'count'   => count( $res ),
+			'results' => $res,
+		);
 	}
 
 	/**
@@ -345,7 +394,7 @@ class Ai {
 			}
 			return null;
 		};
-		$v = trim( (string) $v );
+		$v   = trim( (string) $v );
 		if ( preg_match( '/^clamp\(\s*([^,]+),.*,\s*([^,()]+)\)$/', $v, $m ) ) {
 			$a = $len( $m[1] );
 			$b = $len( $m[2] );
@@ -373,14 +422,23 @@ class Ai {
 			}
 			return $v;
 		};
-		$range = function ( $name ) use ( $vars, $resolve ) {
+		$range   = function ( $name ) use ( $vars, $resolve ) {
 			if ( ! isset( $vars[ $name ] ) ) {
 				return null;
 			}
 			$r = self::px_range( $resolve( $vars[ $name ] ) );
 			return $r ? ( $r[0] === $r[1] ? $r[0] . 'px' : $r[0] . '-' . $r[1] . 'px' ) : $vars[ $name ];
 		};
-		$out = array( 'colors' => array(), 'text' => array(), 'headings' => array(), 'space' => array(), 'sectionSpace' => array(), 'radius' => array(), 'shadows' => array(), 'layout' => array() );
+		$out     = array(
+			'colors'       => array(),
+			'text'         => array(),
+			'headings'     => array(),
+			'space'        => array(),
+			'sectionSpace' => array(),
+			'radius'       => array(),
+			'shadows'      => array(),
+			'layout'       => array(),
+		);
 		foreach ( Components::FAMILIES as $f ) {
 			if ( ! isset( $vars[ $f ] ) ) {
 				continue;
@@ -392,7 +450,10 @@ class Ai {
 					$shades[] = "--$f-$sh";
 				}
 			}
-			$out['colors'][ "--$f" ] = array( 'value' => self::short_color( $base ), 'shades' => $shades );
+			$out['colors'][ "--$f" ] = array(
+				'value'  => self::short_color( $base ),
+				'shades' => $shades,
+			);
 		}
 		foreach ( array( 'bg-ultra-light', 'bg-light', 'bg-dark', 'bg-ultra-dark', 'text-dark', 'text-dark-muted', 'text-light', 'text-light-muted', 'white', 'black' ) as $n ) {
 			if ( isset( $vars[ $n ] ) ) {
@@ -400,10 +461,10 @@ class Ai {
 			}
 		}
 		foreach ( Scale_Engine::STEPS as $st ) {
-			$out['text'][ "--text-$st" ]            = $range( "text-$st" );
-			$out['space'][ "--space-$st" ]          = $range( "space-$st" );
+			$out['text'][ "--text-$st" ]                  = $range( "text-$st" );
+			$out['space'][ "--space-$st" ]                = $range( "space-$st" );
 			$out['sectionSpace'][ "--section-space-$st" ] = $range( "section-space-$st" );
-			$out['radius'][ "--radius-$st" ]        = $range( "radius-$st" );
+			$out['radius'][ "--radius-$st" ]              = $range( "radius-$st" );
 		}
 		for ( $i = 1; $i <= 6; $i++ ) {
 			$out['headings'][ "--h$i" ] = $range( "h$i" );
@@ -420,7 +481,12 @@ class Ai {
 			}
 		}
 		foreach ( $out as $k => $list ) {
-			$out[ $k ] = array_filter( $list, function ( $x ) { return null !== $x; } );
+			$out[ $k ] = array_filter(
+				$list,
+				function ( $x ) {
+					return null !== $x;
+				}
+			);
 		}
 		$out['breakpoints'] = Scss::breakpoints();
 		return $out;
@@ -455,9 +521,9 @@ class Ai {
 		$depth = 0;
 		for ( $i = 0, $n = strlen( $inner ); $i < $n; $i++ ) {
 			if ( '(' === $inner[ $i ] ) {
-				$depth++;
+				++$depth;
 			} elseif ( ')' === $inner[ $i ] ) {
-				$depth--;
+				--$depth;
 			} elseif ( ',' === $inner[ $i ] && 0 === $depth ) {
 				return array( trim( substr( $inner, 0, $i ) ), trim( substr( $inner, $i + 1 ) ) );
 			}
@@ -488,7 +554,15 @@ class Ai {
 			'4. **Let the automatic layout work.** Top-level `<section>` elements already get side gutters (`var(--gutter)`) and vertical padding (`var(--section-space-m)`)' . ( ! empty( $c['auto_container_gap'] ) ? '; their children are spaced by `var(--container-gap)`' : '' ) . ( ! empty( $c['auto_content_gap'] ) ? ', and children of containers/blocks/divs by `var(--content-gap)`' : '' ) . '. Do not add margins between stacked elements or padding to sections unless the design needs a different size: then use `section--{size}` or `section--{a}-to-{b}`.',
 			'5. **Typography is global.** Body text and h1 to h6 already have fonts, fluid sizes, line heights and colours. Do not set font-family, font-size or line-height on headings or paragraphs; to make any element look like a heading use the class `h2`, for bigger body text `text--l`.',
 			'6. **Colour contexts.** On a dark section use `bg--dark` or `bg--ultra-dark`: text, headings, links and buttons inside switch to readable colours automatically. Light: `bg--light`, `bg--ultra-light`.' . ( 'auto' === $sch['dark_mode'] ? ' Dark mode is on: colour tokens have light and dark values (light-dark()), so always use tokens.' : '' ),
-			'7. **Fluid by default.** Sizes scale smoothly between ' . (int) $sc['min_vw'] . 'px and ' . (int) $sc['max_vw'] . 'px screens, so most elements need no breakpoints. For sizes that must shrink more on mobile use the "-to-" versions: `var(--space-xl-to-m)`, `var(--h1-to-h3)`, `section--xl-to-m`. Breakpoints (max-width): ' . implode( ', ', array_map( function ( $k, $v ) { return "$k $v" . 'px'; }, array_keys( $bp ), $bp ) ) . '.',
+			'7. **Fluid by default.** Sizes scale smoothly between ' . (int) $sc['min_vw'] . 'px and ' . (int) $sc['max_vw'] . 'px screens, so most elements need no breakpoints. For sizes that must shrink more on mobile use the "-to-" versions: `var(--space-xl-to-m)`, `var(--h1-to-h3)`, `section--xl-to-m`. Breakpoints (max-width): ' . implode(
+				', ',
+				array_map(
+					function ( $k, $v ) {
+						return "$k $v" . 'px'; },
+					array_keys( $bp ),
+					$bp
+				)
+			) . '.',
 			'8. **Accessible defaults.** Keep the focus styles; use `hidden-accessible` for screen-reader-only text; one h1 per page and headings in order.',
 			'',
 			'## Page structure',
@@ -498,7 +572,14 @@ class Ai {
 			'Content grid: `content-grid` on a section makes children sit in a centred column; `content--feature`, `content--feature-max`, `content--full` break out wider.',
 			'',
 			'## Components',
-			'- **Buttons:** any `btn--*` class makes a button. Colours: ' . ( $fams ? implode( ', ', array_map( function ( $f ) { return '`btn--' . $f . '`'; }, $fams ) ) : '`btn--primary`' ) . '. Variants: add `-dark` / `-light` to the colour (`btn--primary-dark`), add `btn--outline` for an outline. Sizes: `btn--s` … `btn--xl`. Example: `<a class="btn--primary btn--l" href="…">Get started</a>`.',
+			'- **Buttons:** any `btn--*` class makes a button. Colours: ' . ( $fams ? implode(
+				', ',
+				array_map(
+					function ( $f ) {
+						return '`btn--' . $f . '`'; },
+					$fams
+				)
+			) : '`btn--primary`' ) . '. Variants: add `-dark` / `-light` to the colour (`btn--primary-dark`), add `btn--outline` for an outline. Sizes: `btn--s` … `btn--xl`. Example: `<a class="btn--primary btn--l" href="…">Get started</a>`.',
 			'- **Cards:** `card` = padded flex column with background, radius, border and shadow. Inside it, elements whose class contains `__media` (images) and `__avatar` are styled; headings use `var(--card-heading-size)`. Example: `<article class="card"><img class="card__media" …><h3>…</h3><p>…</p></article>`.',
 			'- **Icons:** add `data-icon` to an svg or i element; size with `data-icon-size="l"` or `icon--l`; `icon--boxed` for a box.',
 			'- **Grids:** `grid-2` … `grid-12` (equal columns), `grid-1-2`, `grid-2-1` (ratios), or `grid--auto-3` (same as `grid-template-columns: var(--grid-auto-3)`) for columns that wrap on their own.',
@@ -542,14 +623,21 @@ class Ai {
 			list( $ctx, $sel, $body ) = $rule;
 			foreach ( explode( ',', $sel ) as $one ) {
 				if ( preg_match( '/^\s*\.([a-z0-9_\-]+)\s*$/i', $one, $m ) && isset( $classes[ $m[1] ] ) ) {
-					$warn[] = array( 'selector' => trim( $one ), 'problem' => 'Redefines the TokenForge class .' . $m[1] . '. Use the class as it is, or style your own BEM class instead.' );
+					$warn[] = array(
+						'selector' => trim( $one ),
+						'problem'  => 'Redefines the TokenForge class .' . $m[1] . '. Use the class as it is, or style your own BEM class instead.',
+					);
 				}
 			}
 			foreach ( self::decls( $body ) as $d ) {
 				list( $prop, $value ) = $d;
-				$prop = strtolower( $prop );
+				$prop                 = strtolower( $prop );
 				foreach ( self::suggest( $prop, $value, $palette, $scales, $vars ) as $sug ) {
-					$out[] = array( 'selector' => trim( $sel ), 'property' => $prop, 'value' => $value ) + $sug + ( '' !== $ctx ? array( 'context' => $ctx ) : array() );
+					$out[] = array(
+						'selector' => trim( $sel ),
+						'property' => $prop,
+						'value'    => $value,
+					) + $sug + ( '' !== $ctx ? array( 'context' => $ctx ) : array() );
 					if ( count( $out ) >= 150 ) {
 						break 3;
 					}
@@ -578,7 +666,10 @@ class Ai {
 						}
 					}
 					if ( $bd <= 3 ) {
-						$unknown[ $cls ] = array( 'class' => $cls, 'didYouMean' => $best );
+						$unknown[ $cls ] = array(
+							'class'      => $cls,
+							'didYouMean' => $best,
+						);
 					}
 				}
 			}
@@ -591,9 +682,13 @@ class Ai {
 			foreach ( $am as $a ) {
 				$name = strtolower( $a[1] );
 				$val  = isset( $a[4] ) && '' !== $a[4] ? $a[4] : ( isset( $a[3] ) && '' !== $a[3] ? $a[3] : ( isset( $a[2] ) ? $a[2] : '' ) );
-				if ( ! empty( $known[ $name ][0] ) ) { // an attribute with no value list takes any value
+				if ( ! empty( $known[ $name ][0] ) ) { // an attribute with no value list takes any value.
 					if ( ! in_array( $val, $known[ $name ][0], true ) ) {
-						$bad_attr[ $name . '=' . $val ] = array( 'attribute' => $name, 'value' => $val, 'allowed' => $known[ $name ][0] );
+						$bad_attr[ $name . '=' . $val ] = array(
+							'attribute' => $name,
+							'value'     => $val,
+							'allowed'   => $known[ $name ][0],
+						);
 					}
 				}
 			}
@@ -603,11 +698,11 @@ class Ai {
 		}
 
 		return array(
-			'summary'             => count( $out ) . ' value(s) could use tokens, ' . count( $warn ) . ' TokenForge class redefinition(s), ' . count( $unknown ) . ' class name(s) that look like misspelt TokenForge classes, ' . count( $bad_attr ) . ' data-tf attribute problem(s).',
-			'suggestions'         => $out,
-			'classRedefinitions'  => $warn,
-			'misspeltClasses'     => array_values( $unknown ),
-			'attributeProblems'   => array_values( $bad_attr ),
+			'summary'            => count( $out ) . ' value(s) could use tokens, ' . count( $warn ) . ' TokenForge class redefinition(s), ' . count( $unknown ) . ' class name(s) that look like misspelt TokenForge classes, ' . count( $bad_attr ) . ' data-tf attribute problem(s).',
+			'suggestions'        => $out,
+			'classRedefinitions' => $warn,
+			'misspeltClasses'    => array_values( $unknown ),
+			'attributeProblems'  => array_values( $bad_attr ),
 		);
 	}
 
@@ -642,11 +737,11 @@ class Ai {
 			$j     = $open + 1;
 			while ( $j < $len && $depth > 0 ) {
 				if ( '{' === $css[ $j ] ) {
-					$depth++;
+					++$depth;
 				} elseif ( '}' === $css[ $j ] ) {
-					$depth--;
+					--$depth;
 				}
-				$j++;
+				++$j;
 			}
 			$body = substr( $css, $open + 1, $j - $open - 2 );
 			$i    = $j;
@@ -673,9 +768,9 @@ class Ai {
 		for ( $i = 0; $i <= $len; $i++ ) {
 			$ch = $i < $len ? $body[ $i ] : ';';
 			if ( '(' === $ch ) {
-				$depth++;
+				++$depth;
 			} elseif ( ')' === $ch ) {
-				$depth--;
+				--$depth;
 			}
 			if ( ';' === $ch && 0 === $depth ) {
 				$p = strpos( $cur, ':' );
@@ -751,7 +846,10 @@ class Ai {
 			};
 			return array( round( $f( $h + 1 / 3 ) * 255 ), round( $f( $h ) * 255 ), round( $f( $h - 1 / 3 ) * 255 ) );
 		}
-		$named = array( 'white' => array( 255, 255, 255 ), 'black' => array( 0, 0, 0 ) );
+		$named = array(
+			'white' => array( 255, 255, 255 ),
+			'black' => array( 0, 0, 0 ),
+		);
 		return isset( $named[ $v ] ) ? $named[ $v ] : null;
 	}
 
@@ -779,7 +877,12 @@ class Ai {
 	 * @return array scale => [ var => px ]
 	 */
 	private static function scales( $vars ) {
-		$out = array( 'space' => array(), 'section' => array(), 'text' => array(), 'radius' => array() );
+		$out = array(
+			'space'   => array(),
+			'section' => array(),
+			'text'    => array(),
+			'radius'  => array(),
+		);
 		foreach ( $vars as $n => $v ) {
 			if ( preg_match( '/^(space|section-space|text|radius)-(xxl|xl|l|m|s|xs)$/', $n, $m ) || preg_match( '/^(h)[1-6]$/', $n, $m ) ) {
 				$v = preg_match( '/^var\(--([a-z0-9\-]+)\)$/', trim( $v ), $mm ) && isset( $vars[ $mm[1] ] ) ? $vars[ $mm[1] ] : $v;
@@ -787,7 +890,13 @@ class Ai {
 				if ( ! $r ) {
 					continue;
 				}
-				$key = array( 'space' => 'space', 'section-space' => 'section', 'text' => 'text', 'radius' => 'radius', 'h' => 'text' )[ $m[1] ];
+				$key               = array(
+					'space'         => 'space',
+					'section-space' => 'section',
+					'text'          => 'text',
+					'radius'        => 'radius',
+					'h'             => 'text',
+				)[ $m[1] ];
 				$out[ $key ][ $n ] = $r[1];
 			}
 		}
@@ -823,28 +932,33 @@ class Ai {
 						$best = $n;
 					}
 				}
-				$a     = self::alpha( $col );
+				$a = self::alpha( $col );
 				if ( null !== $a && $a < 1 ) {
-					$pct  = (int) max( 10, min( 90, round( $a * 10 ) * 10 ) );
-					$tok  = $best . '-trans-' . $pct;
+					$pct = (int) max( 10, min( 90, round( $a * 10 ) * 10 ) );
+					$tok = $best . '-trans-' . $pct;
 					if ( isset( $vars[ $tok ] ) ) {
-						$out[] = array( 'found' => $col, 'use' => 'var(--' . $tok . ')', 'match' => $bd < 40 ? 'close' : 'nearest token', 'reason' => 'Transparent colours come from the -trans-* tokens.' );
+						$out[] = array(
+							'found'  => $col,
+							'use'    => 'var(--' . $tok . ')',
+							'match'  => $bd < 40 ? 'close' : 'nearest token',
+							'reason' => 'Transparent colours come from the -trans-* tokens.',
+						);
 						continue;
 					}
 				}
 				$alpha = preg_match( '/(rgba|hsla)\(|\/\s*[\d.]+%?\s*\)|#[0-9a-f]{8}\b/i', $col ) ? ' (it has transparency: use a -trans-* token or color-mix(in oklch, var(--' . $best . ') 50%, transparent))' : '';
 				$out[] = array(
-					'found'   => $col,
-					'use'     => 'var(--' . $best . ')',
-					'match'   => $bd < 4 ? 'exact' : ( $bd < 40 ? 'close' : 'nearest token (the colour itself is not in the palette)' ),
-					'reason'  => 'Colours should come from the palette' . $alpha . '.',
+					'found'  => $col,
+					'use'    => 'var(--' . $best . ')',
+					'match'  => $bd < 4 ? 'exact' : ( $bd < 40 ? 'close' : 'nearest token (the colour itself is not in the palette)' ),
+					'reason' => 'Colours should come from the palette' . $alpha . '.',
 				);
 			}
 		}
 		// Lengths.
 		$map = array(
 			'/^(padding|margin|gap|row-gap|column-gap|inset|top|right|bottom|left)(-(block|inline|top|right|bottom|left)(-(start|end))?)?$/' => array( 'space', 'section' ),
-			'/^font-size$/'     => array( 'text' ),
+			'/^font-size$/' => array( 'text' ),
 			'/^(border-radius|border-(top|bottom)-(left|right)-radius)$/' => array( 'radius' ),
 		);
 		foreach ( $map as $re => $scale_keys ) {
@@ -886,16 +1000,31 @@ class Ai {
 		}
 		// Shadows, widths, fonts.
 		if ( 'box-shadow' === $prop && 'none' !== strtolower( $value ) && false === strpos( $value, 'var(' ) ) {
-			$out[] = array( 'found' => $value, 'use' => 'var(--shadow-1) … var(--shadow-5)', 'match' => 'pick the level', 'reason' => 'Shadows come from the elevation scale.' );
+			$out[] = array(
+				'found'  => $value,
+				'use'    => 'var(--shadow-1) … var(--shadow-5)',
+				'match'  => 'pick the level',
+				'reason' => 'Shadows come from the elevation scale.',
+			);
 		}
 		if ( in_array( $prop, array( 'max-width', 'width', 'max-inline-size', 'inline-size' ), true ) && isset( $vars['content-width'] ) && preg_match( '/^(\d+)px$/', trim( $value ), $wm ) ) {
 			$cw = self::px_range( $vars['content-width'] );
 			if ( $cw && abs( $cw[1] - (float) $wm[1] ) < 60 ) {
-				$out[] = array( 'found' => $value, 'use' => 'var(--content-width)', 'match' => 'close', 'reason' => 'Matches the site’s content width.' );
+				$out[] = array(
+					'found'  => $value,
+					'use'    => 'var(--content-width)',
+					'match'  => 'close',
+					'reason' => 'Matches the site’s content width.',
+				);
 			}
 		}
 		if ( 'font-family' === $prop && false === strpos( $value, 'var(' ) && ( isset( $vars['text-font-family'] ) || isset( $vars['heading-font-family'] ) ) ) {
-			$out[] = array( 'found' => $value, 'use' => 'var(--text-font-family) or var(--heading-font-family)', 'match' => 'check', 'reason' => 'Fonts are set globally; usually leave font-family out.' );
+			$out[] = array(
+				'found'  => $value,
+				'use'    => 'var(--text-font-family) or var(--heading-font-family)',
+				'match'  => 'check',
+				'reason' => 'Fonts are set globally; usually leave font-family out.',
+			);
 		}
 		return $out;
 	}
@@ -912,7 +1041,7 @@ class Ai {
 	 */
 	public function server_config( $config ) {
 		if ( is_array( $config ) ) {
-			$desc                        = isset( $config['server_description'] ) ? (string) $config['server_description'] : '';
+			$desc                         = isset( $config['server_description'] ) ? (string) $config['server_description'] : '';
 			$config['server_description'] = trim( $desc . "\n\n" . self::pointer() );
 		}
 		return $config;
@@ -943,7 +1072,7 @@ class Ai {
 			$result['orientation'] .= "\n\n" . self::pointer();
 		}
 		if ( 'bricks/get-design-context' === $name && ! isset( $result['tokenforge'] ) ) {
-			$t = self::tokens();
+			$t                    = self::tokens();
 			$result['tokenforge'] = array(
 				'about'     => self::pointer(),
 				'guideTool' => 'tokenforge-get-framework',

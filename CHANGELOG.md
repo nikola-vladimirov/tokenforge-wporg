@@ -6,6 +6,8 @@ All the changes to TokenForge, newest first.
 
 Developers can extend Export / Import and the Starter reset. Five hooks: tokenforge_transfer_parts (add parts to an export), tokenforge_transfer_export_data (add data to an export), tokenforge_transfer_imported (runs after an import), tokenforge_starter_parts (add parts to a reset) and tokenforge_starter_reset (runs after a reset).
 
+Undo now restores add-on parts too, and an import passes only the parts you selected to the import hook. Export leaves out keys that look like secrets (licence, token, password), except the core and registered parts.
+
 Nothing changes for sites that do not use these hooks.
 
 ## 0.54.1

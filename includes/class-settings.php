@@ -17,7 +17,11 @@ class Settings {
 	const OPTION_TOKENS   = 'tokenforge_tokens';
 	const OPTION_SETTINGS = 'tokenforge_settings';
 
-	/** @var Settings|null */
+	/**
+	 * Singleton instance.
+	 *
+	 * @var Settings|null
+	 */
 	private static $instance = null;
 
 	/**
@@ -48,35 +52,35 @@ class Settings {
 	 */
 	public function builtin_settings() {
 		return array(
-			'sync_bricks_vars'    => true,
-			'vars_trans'          => true,  // builder variables: transparent steps (-trans-10 … -90)
-			'vars_channels'       => false, // builder variables: colour channel values (-hex, -rgb, -h …, -ref)
-			'vars_alt'            => false, // builder variables: dark mode values (-alt)
-			'vars_parts'          => false, // builder variables: buttons, cards, blockquotes, shop
-			'bricks_theme_sync'   => true,  // keep a Bricks theme style in step with TokenForge (both ways)
-			'ui_theme'            => 'bricks', // dashboard look: bricks | flat | light
-			'sync_bricks_colors'  => true,
-			'category_name'       => 'TokenForge',
-			'enqueue_in_builder'  => true,
-			'admin_bar_link'      => true,
-			'prune_classes'       => true,  // drop generated Bricks classes that are no longer output
-			'prune_variables'     => true,  // drop synced Bricks variables/colors for removed tokens
-			'inline_css'          => false, // print the stylesheet inline instead of linking the file
-			'layer_defaults'      => false, // @layer the reset/defaults
-			'layer_base'          => false, // @layer the base element styles
-			'layer_content'       => false, // @layer the prose styles
-			'layer_buttons'       => false, // @layer buttons + the external-link indicator
-			'layer_cards'         => false, // @layer cards
-			'layer_icons'         => false, // @layer the icon system
-			'hot_reload'          => true,  // live-update the CSS in open tabs (admins only)
-			'gutenberg_palette'   => 'off', // 'off' | 'add' (to the theme palette) | 'replace'
-			'panel_shortcut'      => 'alt+shift+t', // opens/closes the TokenForge window (builder + front end)
-			'frontend_panel'      => true,  // the window on the site's pages too (administrators only; never in the builder)
-			'frontend_launcher'   => false, // a floating TokenForge button on the front end
-			'canvas_panel'        => true,  // a TokenForge button in the builder canvas while editing (opens the window)
-			'ai_abilities'        => true,  // tokenforge/* abilities (MCP tools) for AI agents
-			'ai_guidance'         => true,  // tell agents to use TokenForge (MCP instructions, Bricks orientation + design context)
-		) + Features\A11y_Auto::defaults(); // automatic accessibility attributes, all off
+			'sync_bricks_vars'   => true,
+			'vars_trans'         => true,  // builder variables: transparent steps (-trans-10 … -90).
+			'vars_channels'      => false, // builder variables: colour channel values (-hex, -rgb, -h …, -ref).
+			'vars_alt'           => false, // builder variables: dark mode values (-alt).
+			'vars_parts'         => false, // builder variables: buttons, cards, blockquotes, shop.
+			'bricks_theme_sync'  => true,  // keep a Bricks theme style in step with TokenForge (both ways).
+			'ui_theme'           => 'bricks', // dashboard look: bricks | flat | light.
+			'sync_bricks_colors' => true,
+			'category_name'      => 'TokenForge',
+			'enqueue_in_builder' => true,
+			'admin_bar_link'     => true,
+			'prune_classes'      => true,  // drop generated Bricks classes that are no longer output.
+			'prune_variables'    => true,  // drop synced Bricks variables/colors for removed tokens.
+			'inline_css'         => false, // print the stylesheet inline instead of linking the file.
+			'layer_defaults'     => false, // @layer the reset/defaults
+			'layer_base'         => false, // @layer the base element styles
+			'layer_content'      => false, // @layer the prose styles
+			'layer_buttons'      => false, // @layer buttons + the external-link indicator
+			'layer_cards'        => false, // @layer cards
+			'layer_icons'        => false, // @layer the icon system
+			'hot_reload'         => true,  // live-update the CSS in open tabs (admins only).
+			'gutenberg_palette'  => 'off', // 'off' | 'add' (to the theme palette) | 'replace'
+			'panel_shortcut'     => 'alt+shift+t', // opens/closes the TokenForge window (builder + front end).
+			'frontend_panel'     => true,  // the window on the site's pages too (administrators only; never in the builder).
+			'frontend_launcher'  => false, // a floating TokenForge button on the front end.
+			'canvas_panel'       => true,  // a TokenForge button in the builder canvas while editing (opens the window).
+			'ai_abilities'       => true,  // tokenforge/* abilities (MCP tools) for AI agents.
+			'ai_guidance'        => true,  // tell agents to use TokenForge (MCP instructions, Bricks orientation + design context).
+		) + Features\A11y_Auto::defaults(); // automatic accessibility attributes, all off.
 	}
 
 	/**
@@ -149,7 +153,7 @@ class Settings {
 			}
 		}
 		if ( '' === $key || ( ! preg_match( '/^f\d/', $key ) && ! isset( $mods['ctrl'] ) && ! isset( $mods['alt'] ) && ! isset( $mods['meta'] ) ) ) {
-			return ''; // a bare (or shift+) letter would fire while typing
+			return ''; // a bare (or shift+) letter would fire while typing.
 		}
 		$out = array();
 		foreach ( array( 'ctrl', 'alt', 'shift', 'meta' ) as $mod ) {

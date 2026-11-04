@@ -45,7 +45,7 @@ class Bricks {
 		if ( ! class_exists( '\Bricks\Elements' ) || ! class_exists( '\Bricks\Element' ) ) {
 			return;
 		}
-		\Bricks\Elements::register_element( TOKENFORGE_DIR . 'includes/platforms/bricks-element-scheme-toggle.php', 'tokenforge-scheme-toggle', __NAMESPACE__ . '\Element_Scheme_Toggle' );
+		\Bricks\Elements::register_element( TOKENFORGE_DIR . 'includes/platforms/class-element-scheme-toggle.php', 'tokenforge-scheme-toggle', __NAMESPACE__ . '\Element_Scheme_Toggle' );
 	}
 
 	/**
@@ -163,7 +163,10 @@ class Bricks {
 		if ( ! empty( $names ) ) {
 			$cats = (array) get_option( 'bricks_global_classes_categories', array() );
 			if ( false === array_search( self::CATEGORY_ID, array_column( $cats, 'id' ), true ) ) {
-				$cats[] = array( 'id' => self::CATEGORY_ID, 'name' => $category_name );
+				$cats[] = array(
+					'id'   => self::CATEGORY_ID,
+					'name' => $category_name,
+				);
 				update_option( 'bricks_global_classes_categories', $cats );
 			}
 		}
@@ -356,9 +359,9 @@ class Bricks {
 				$val[ $t['name'] ] = trim( (string) $t['value'] );
 			}
 		}
-		$out  = array();
-		$used = array();
-		$add  = function ( $name, $extra = array() ) use ( &$out, &$used, $val ) {
+		$out    = array();
+		$used   = array();
+		$add    = function ( $name, $extra = array() ) use ( &$out, &$used, $val ) {
 			if ( ! isset( $val[ $name ] ) || isset( $used[ $name ] ) ) {
 				return false;
 			}
@@ -377,21 +380,28 @@ class Bricks {
 		$shades = function ( $root, $steps ) use ( $add ) {
 			foreach ( $steps as $type => $names ) {
 				foreach ( array_values( $names ) as $i => $n ) {
-					$add( $n, array( 'parent' => self::VAR_ID_PREFIX . $root, 'type' => $type, 'index' => $i ) );
+					$add(
+						$n,
+						array(
+							'parent' => self::VAR_ID_PREFIX . $root,
+							'type'   => $type,
+							'index'  => $i,
+						)
+					);
 				}
 			}
 		};
-		$trans = function ( $name ) {
+		$trans  = function ( $name ) {
 			$list = array();
 			for ( $n = 10; $n <= 90; $n += 10 ) {
 				$list[] = $name . '-trans-' . $n;
 			}
 			return $list;
 		};
-		$pal = \TokenForge\Palette::settings();
+		$pal    = \TokenForge\Palette::settings();
 		foreach ( array_keys( (array) $pal['families'] ) as $fam ) {
 			if ( ! $add( $fam ) ) {
-				continue; // family off or without a colour
+				continue; // family off or without a colour.
 			}
 			$add( $fam . '-hover' );
 			$shades(
@@ -437,14 +447,14 @@ class Bricks {
 				'name'   => $category_name,
 				'colors' => array(),
 			);
-			$key = array_key_last( $palette );
+			$key       = array_key_last( $palette );
 		}
 
 		$colors                    = self::palette_colors( $tokens );
 		$palette[ $key ]['name']   = $category_name;
 		$palette[ $key ]['colors'] = $colors;
 
-		if ( $palette !== (array) get_option( 'bricks_color_palette', array() ) ) {
+		if ( (array) get_option( 'bricks_color_palette', array() ) !== $palette ) {
 			update_option( 'bricks_color_palette', array_values( $palette ) );
 		}
 	}

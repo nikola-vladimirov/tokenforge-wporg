@@ -123,8 +123,8 @@ class Class_Usage {
 	 */
 	public static function always() {
 		static $cache = null;
-		$fw   = Framework::settings();
-		$text = isset( $fw['prune_keep'] ) ? (string) $fw['prune_keep'] : '';
+		$fw           = Framework::settings();
+		$text         = isset( $fw['prune_keep'] ) ? (string) $fw['prune_keep'] : '';
 		if ( null !== $cache && $cache[0] === $text ) {
 			return $cache[1];
 		}
@@ -216,7 +216,7 @@ class Class_Usage {
 	 */
 	public static function scan() {
 		list( $names, $ids ) = self::lookup();
-		$found = array();
+		$found               = array();
 
 		foreach ( self::OPTIONS as $option ) {
 			$v = get_option( $option );
@@ -260,8 +260,8 @@ class Class_Usage {
 		if ( empty( $last['time'] ) ) {
 			return;
 		}
-		$full = Framework::build( true );
-		$kept = self::active() ? Framework::build() : $full;
+		$full            = Framework::build( true );
+		$kept            = self::active() ? Framework::build() : $full;
 		$last['full_kb'] = round( strlen( $full['css'] ) / 1024, 1 );
 		$last['kept_kb'] = round( strlen( $kept['css'] ) / 1024, 1 );
 		update_option( self::OPTION, $last, false );
@@ -335,12 +335,12 @@ class Class_Usage {
 			return;
 		}
 		list( $names, $ids ) = self::lookup();
-		$found = array();
+		$found               = array();
 		self::collect( $queue, $names, $ids, $found );
 		$last  = self::last();
 		$have  = array_fill_keys( isset( $last['classes'] ) ? (array) $last['classes'] : array(), true );
 		$new   = array_diff_key( $found, $have );
-		$attrs = Attribute_Usage::join( $queue ); // a data attribute used for the first time gets its rules back too
+		$attrs = Attribute_Usage::join( $queue ); // a data attribute used for the first time gets its rules back too.
 		if ( ! $new && ! $attrs ) {
 			return;
 		}

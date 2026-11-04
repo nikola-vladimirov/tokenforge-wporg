@@ -39,41 +39,41 @@ class Scale_Engine {
 	 */
 	public static function builtin_defaults() {
 		return array(
-			'min_vw'        => 375,
-			'max_vw'        => 1280,
+			'min_vw'                   => 375,
+			'max_vw'                   => 1280,
 			// Typography: base size (px) at min/max viewport, and the modular ratio.
-			'text_base_min' => 16,
-			'text_base_max' => 20,
-			'text_ratio_min' => 1.2,
-			'text_ratio_max' => 1.25,
+			'text_base_min'            => 16,
+			'text_base_max'            => 20,
+			'text_ratio_min'           => 1.2,
+			'text_ratio_max'           => 1.25,
 			// Headings (--h1…--h6, h4 = base): base size (px) at min/max viewport + ratios.
-			'heading_base_min'  => 18,
-			'heading_base_max'  => 20,
-			'heading_ratio_min' => 1.2,
-			'heading_ratio_max' => 1.333,
+			'heading_base_min'         => 18,
+			'heading_base_max'         => 20,
+			'heading_ratio_min'        => 1.2,
+			'heading_ratio_max'        => 1.333,
 			// Spacing: base size (px) at min/max viewport, and the ratio (desktop / mobile).
-			'space_base_min' => 16,
-			'space_base_max' => 24,
-			'space_ratio'    => 1.5,
-			'space_ratio_min' => 1.333,
+			'space_base_min'           => 16,
+			'space_base_max'           => 24,
+			'space_ratio'              => 1.5,
+			'space_ratio_min'          => 1.333,
 			// Section spacing = space scale × multiplier (mobile / desktop).
-			'section_mult_min' => 2,
-			'section_mult_max' => 3,
+			'section_mult_min'         => 2,
+			'section_mult_max'         => 3,
 			// Per-size overrides, one per line: "h5-min=13", "text-s-max=15" (px).
-			'overrides'      => '',
+			'overrides'                => '',
 			// Grid.
-			'grid_columns'   => 6,
-			'grid_gap'       => 24,
-			'content_width'  => 1140,
-			'content_gutter' => 24,
-			'enabled'        => true,
+			'grid_columns'             => 6,
+			'grid_gap'                 => 24,
+			'content_width'            => 1140,
+			'content_gutter'           => 24,
+			'enabled'                  => true,
 			// "Transition" variables: --space-l-to-m, --text-xl-to-l, --h1-to-h3 …
 			// (the larger step on desktop shrinking to the smaller one on mobile).
-			'transition_vars' => true,
+			'transition_vars'          => true,
 			// Auto grids (--grid-auto-2 … 12).
 			'auto_grid'                => true,
 			'auto_grid_aggressiveness' => 0.7,
-			'auto_grid_flow'           => 'auto-fit', // auto-fit | auto-fill
+			'auto_grid_flow'           => 'auto-fit', // auto-fit | auto-fill.
 		);
 	}
 
@@ -147,9 +147,9 @@ class Scale_Engine {
 		if ( empty( $s['enabled'] ) ) {
 			return array();
 		}
-		$out = array();
-		$mid = array_search( 'm', self::STEPS, true ); // "m" is the base step (as in ACSS)
-		$ov  = self::overrides();
+		$out  = array();
+		$mid  = array_search( 'm', self::STEPS, true ); // "m" is the base step (as in ACSS)
+		$ov   = self::overrides();
 		$pick = function ( $name, $min, $max ) use ( $ov ) {
 			return array(
 				isset( $ov[ $name ]['min'] ) ? $ov[ $name ]['min'] : $min,
@@ -158,37 +158,65 @@ class Scale_Engine {
 		};
 
 		// [min, max] px per step, kept for the transition variables below.
-		$sizes = array( 'text' => array(), 'h' => array(), 'space' => array(), 'section-space' => array() );
+		$sizes = array(
+			'text'          => array(),
+			'h'             => array(),
+			'space'         => array(),
+			'section-space' => array(),
+		);
 
 		// Typography: text sizes.
 		foreach ( self::STEPS as $i => $step ) {
-			$exp   = $i - $mid;
-			list( $min, $max ) = $pick( 'text-' . $step, $s['text_base_min'] * pow( $s['text_ratio_min'], $exp ), $s['text_base_max'] * pow( $s['text_ratio_max'], $exp ) );
+			$exp                    = $i - $mid;
+			list( $min, $max )      = $pick( 'text-' . $step, $s['text_base_min'] * pow( $s['text_ratio_min'], $exp ), $s['text_base_max'] * pow( $s['text_ratio_max'], $exp ) );
 			$sizes['text'][ $step ] = array( $min, $max );
-			$out[] = array( 'name' => 'text-' . $step, 'value' => self::fluid( $min, $max, $s['min_vw'], $s['max_vw'] ), 'group' => 'typography' );
+			$out[]                  = array(
+				'name'  => 'text-' . $step,
+				'value' => self::fluid( $min, $max, $s['min_vw'], $s['max_vw'] ),
+				'group' => 'typography',
+			);
 		}
 		// Typography: heading sizes (h4 = base, h1 largest, h6 smallest).
-		foreach ( array( 1 => 3, 2 => 2, 3 => 1, 4 => 0, 5 => -1, 6 => -2 ) as $lvl => $exp ) {
-			list( $min, $max ) = $pick( 'h' . $lvl, $s['heading_base_min'] * pow( $s['heading_ratio_min'], $exp ), $s['heading_base_max'] * pow( $s['heading_ratio_max'], $exp ) );
+		foreach ( array(
+			1 => 3,
+			2 => 2,
+			3 => 1,
+			4 => 0,
+			5 => -1,
+			6 => -2,
+		) as $lvl => $exp ) {
+			list( $min, $max )  = $pick( 'h' . $lvl, $s['heading_base_min'] * pow( $s['heading_ratio_min'], $exp ), $s['heading_base_max'] * pow( $s['heading_ratio_max'], $exp ) );
 			$sizes['h'][ $lvl ] = array( $min, $max );
-			$out[] = array( 'name' => 'h' . $lvl, 'value' => self::fluid( $min, $max, $s['min_vw'], $s['max_vw'] ), 'group' => 'typography' );
+			$out[]              = array(
+				'name'  => 'h' . $lvl,
+				'value' => self::fluid( $min, $max, $s['min_vw'], $s['max_vw'] ),
+				'group' => 'typography',
+			);
 		}
 		// Spacing (+ section spacing = space × multiplier).
 		foreach ( self::STEPS as $i => $step ) {
-			$exp = $i - $mid;
-			list( $min, $max ) = $pick( 'space-' . $step, $s['space_base_min'] * pow( $s['space_ratio_min'], $exp ), $s['space_base_max'] * pow( $s['space_ratio'], $exp ) );
-			$sizes['space'][ $step ] = array( $min, $max );
-			$out[] = array( 'name' => 'space-' . $step, 'value' => self::fluid( $min, $max, $s['min_vw'], $s['max_vw'] ), 'group' => 'space' );
-			list( $smin, $smax ) = $pick( 'section-space-' . $step, $min * $s['section_mult_min'], $max * $s['section_mult_max'] );
+			$exp                             = $i - $mid;
+			list( $min, $max )               = $pick( 'space-' . $step, $s['space_base_min'] * pow( $s['space_ratio_min'], $exp ), $s['space_base_max'] * pow( $s['space_ratio'], $exp ) );
+			$sizes['space'][ $step ]         = array( $min, $max );
+			$out[]                           = array(
+				'name'  => 'space-' . $step,
+				'value' => self::fluid( $min, $max, $s['min_vw'], $s['max_vw'] ),
+				'group' => 'space',
+			);
+			list( $smin, $smax )             = $pick( 'section-space-' . $step, $min * $s['section_mult_min'], $max * $s['section_mult_max'] );
 			$sizes['section-space'][ $step ] = array( $smin, $smax );
-			$out[] = array( 'name' => 'section-space-' . $step, 'value' => self::fluid( $smin, $smax, $s['min_vw'], $s['max_vw'] ), 'group' => 'space' );
+			$out[]                           = array(
+				'name'  => 'section-space-' . $step,
+				'value' => self::fluid( $smin, $smax, $s['min_vw'], $s['max_vw'] ),
+				'group' => 'space',
+			);
 		}
 
 		// Transition variables: from the larger step's desktop size down to the
 		// smaller step's mobile size (e.g. --section-space-l-to-m).
 		if ( ! empty( $s['transition_vars'] ) ) {
 			foreach ( $sizes as $scale => $steps ) {
-				$keys  = array_keys( $steps ); // small → large for t-shirt steps; h1 → h6 for headings
+				$keys  = array_keys( $steps ); // small → large for t-shirt steps; h1 → h6 for headings.
 				$group = 'h' === $scale || 'text' === $scale ? 'typography' : 'space';
 				foreach ( $keys as $a ) {
 					foreach ( $keys as $b ) {
@@ -197,7 +225,11 @@ class Scale_Engine {
 							continue;
 						}
 						$name  = 'h' === $scale ? "h$a-to-h$b" : "$scale-$a-to-$b";
-						$out[] = array( 'name' => $name, 'value' => self::fluid( $steps[ $b ][0], $steps[ $a ][1], $s['min_vw'], $s['max_vw'] ), 'group' => $group );
+						$out[] = array(
+							'name'  => $name,
+							'value' => self::fluid( $steps[ $b ][0], $steps[ $a ][1], $s['min_vw'], $s['max_vw'] ),
+							'group' => $group,
+						);
 					}
 				}
 			}
@@ -207,21 +239,45 @@ class Scale_Engine {
 		// than `aggressiveness` × its full-width size.
 		$cols = max( 12, (int) $s['grid_columns'] );
 		for ( $c = 1; $c <= $cols; $c++ ) {
-			$out[] = array( 'name' => 'grid-' . $c, 'value' => 'repeat(' . $c . ', minmax(0, 1fr))', 'group' => 'other' );
+			$out[] = array(
+				'name'  => 'grid-' . $c,
+				'value' => 'repeat(' . $c . ', minmax(0, 1fr))',
+				'group' => 'other',
+			);
 		}
 		foreach ( array( '1-2', '2-1', '1-3', '3-1', '2-3', '3-2' ) as $ratio ) {
 			list( $a, $b ) = explode( '-', $ratio );
-			$out[]         = array( 'name' => 'grid-' . $ratio, 'value' => "minmax(0, {$a}fr) minmax(0, {$b}fr)", 'group' => 'other' );
+			$out[]         = array(
+				'name'  => 'grid-' . $ratio,
+				'value' => "minmax(0, {$a}fr) minmax(0, {$b}fr)",
+				'group' => 'other',
+			);
 		}
 		if ( ! empty( $s['auto_grid'] ) ) {
-			$out[] = array( 'name' => 'auto-grid-aggressiveness', 'value' => (string) (float) $s['auto_grid_aggressiveness'], 'group' => 'other' );
+			$out[] = array(
+				'name'  => 'auto-grid-aggressiveness',
+				'value' => (string) (float) $s['auto_grid_aggressiveness'],
+				'group' => 'other',
+			);
 			$flow  = 'auto-fill' === $s['auto_grid_flow'] ? 'auto-fill' : 'auto-fit';
 			for ( $c = 2; $c <= 12; $c++ ) {
-				$out[] = array( 'name' => 'grid-auto-' . $c, 'value' => self::auto_columns( $c, $flow ), 'group' => 'other' );
+				$out[] = array(
+					'name'  => 'grid-auto-' . $c,
+					'value' => self::auto_columns( $c, $flow ),
+					'group' => 'other',
+				);
 			}
 		}
-		$out[] = array( 'name' => 'grid-gap', 'value' => self::rem( $s['grid_gap'] / Defaults::root_px() ), 'group' => 'space' );
-		$out[] = array( 'name' => 'content-gutter', 'value' => self::rem( $s['content_gutter'] / Defaults::root_px() ), 'group' => 'space' );
+		$out[] = array(
+			'name'  => 'grid-gap',
+			'value' => self::rem( $s['grid_gap'] / Defaults::root_px() ),
+			'group' => 'space',
+		);
+		$out[] = array(
+			'name'  => 'content-gutter',
+			'value' => self::rem( $s['content_gutter'] / Defaults::root_px() ),
+			'group' => 'space',
+		);
 
 		foreach ( $out as &$t ) {
 			$t['enabled'] = true;
@@ -254,7 +310,10 @@ class Scale_Engine {
 	public static function grid_css() {
 		$s = self::settings();
 		if ( empty( $s['enabled'] ) ) {
-			return array( 'css' => '', 'classes' => array() );
+			return array(
+				'css'     => '',
+				'classes' => array(),
+			);
 		}
 		$css     = array();
 		$classes = array();
@@ -265,7 +324,14 @@ class Scale_Engine {
 			$classes[] = "grid-$c";
 		}
 		// Asymmetric ratio grids.
-		$ratios = array( '1-2' => '1fr 2fr', '2-1' => '2fr 1fr', '1-3' => '1fr 3fr', '3-1' => '3fr 1fr', '2-3' => '2fr 3fr', '3-2' => '3fr 2fr' );
+		$ratios = array(
+			'1-2' => '1fr 2fr',
+			'2-1' => '2fr 1fr',
+			'1-3' => '1fr 3fr',
+			'3-1' => '3fr 1fr',
+			'2-3' => '2fr 3fr',
+			'3-2' => '3fr 2fr',
+		);
 		foreach ( $ratios as $name => $cols ) {
 			$css[]     = ".grid-$name{display:grid;grid-template-columns:$cols;gap:var(--grid-gap)}";
 			$classes[] = "grid-$name";
@@ -301,7 +367,10 @@ class Scale_Engine {
 		$css[]     = '.variable-grid{display:grid;grid-template-columns:repeat(var(--variable-grid-count,3),minmax(0,1fr));gap:var(--grid-gap)}';
 		$classes[] = 'variable-grid';
 		// (The content grid lives in Components → layout.)
-		return array( 'css' => "\n/* --- TokenForge grids --- */\n" . implode( "\n", $css ) . "\n", 'classes' => $classes );
+		return array(
+			'css'     => "\n/* --- TokenForge grids --- */\n" . implode( "\n", $css ) . "\n",
+			'classes' => $classes,
+		);
 	}
 
 	/**

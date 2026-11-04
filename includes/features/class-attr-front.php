@@ -43,7 +43,7 @@ class Attr_Front {
 	 */
 	public static function boot() {
 		if ( is_admin() || wp_doing_ajax() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || is_feed() || ( function_exists( 'bricks_is_builder' ) && bricks_is_builder() ) || self::in_builder() ) {
-			return; // in a builder every filter item stays visible and nothing loads (A11y_Auto may still note a piece; with no footer hook nothing loads)
+			return; // in a builder every filter item stays visible and nothing loads (A11y_Auto may still note a piece; with no footer hook nothing loads).
 		}
 		add_filter( 'the_content', array( __CLASS__, 'content' ), 20 );
 		// 19: after the builder's popups (wp_footer 10), before the footer scripts print (20).
@@ -101,7 +101,16 @@ class Attr_Front {
 	 */
 	public static function footer() {
 		if ( self::$script ) {
-			wp_enqueue_script( self::HANDLE, TOKENFORGE_URL . 'assets/front/attrs.js', array(), TOKENFORGE_VERSION, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+			wp_enqueue_script(
+				self::HANDLE,
+				TOKENFORGE_URL . 'assets/front/attrs.js',
+				array(),
+				TOKENFORGE_VERSION,
+				array(
+					'in_footer' => true,
+					'strategy'  => 'defer',
+				)
+			);
 			$strings = array(
 				'copied'     => __( 'Copied', 'tokenforge' ),
 				'copyFailed' => __( 'Could not copy', 'tokenforge' ),

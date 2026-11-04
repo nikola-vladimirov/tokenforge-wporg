@@ -56,10 +56,10 @@ class Changelog {
 	 * @return string
 	 */
 	public static function to_html( $md ) {
-		$html = '';
-		$list = false;
-		$para = array();
-		$flush = function () use ( &$html, &$para ) {
+		$html   = '';
+		$list   = false;
+		$para   = array();
+		$flush  = function () use ( &$html, &$para ) {
 			if ( $para ) {
 				$html .= '<p>' . implode( ' ', $para ) . "</p>\n";
 				$para  = array();

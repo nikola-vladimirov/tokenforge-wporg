@@ -189,6 +189,8 @@ The full history is in CHANGELOG.md, also shown from the Changelog link next to 
 
 = 0.54.2 =
 * Developers can extend Export / Import and the Starter reset: the hooks tokenforge_transfer_parts, tokenforge_transfer_export_data, tokenforge_transfer_imported, tokenforge_starter_parts and tokenforge_starter_reset.
+* Undo now restores add-on parts too, and an import passes only the parts you selected to the import hook.
+* Export leaves out keys that look like secrets (licence, token, password), except the core and registered parts.
 * Nothing changes for sites that do not use these hooks.
 
 = 0.54.1 =

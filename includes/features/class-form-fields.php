@@ -97,11 +97,11 @@ class Form_Fields {
 		$add = array();
 		if ( $this->on['looks'] ) {
 			$add += array(
-				'tfLookSep'     => array(
+				'tfLookSep'    => array(
 					'type'  => 'separator',
 					'label' => esc_html__( 'Input look (TokenForge)', 'tokenforge' ),
 				),
-				'tfLook'        => array(
+				'tfLook'       => array(
 					'label'       => esc_html__( 'Show as', 'tokenforge' ),
 					'type'        => 'select',
 					'options'     => array(
@@ -113,44 +113,44 @@ class Form_Fields {
 					'description' => esc_html__( 'Slider and stars use the Number field\'s Min, Max and Step (stars: Max is the number of stars, 5 when empty). A range sends "from - to", for example "100 - 500".', 'tokenforge' ),
 					'required'    => array( 'type', '=', array( 'number', 'text' ) ),
 				),
-				'tfRangeMin'    => array(
-					'label'    => esc_html__( 'Range: lowest', 'tokenforge' ),
-					'type'     => 'number',
+				'tfRangeMin'   => array(
+					'label'       => esc_html__( 'Range: lowest', 'tokenforge' ),
+					'type'        => 'number',
 					'placeholder' => '0',
-					'required' => array( array( 'type', '=', 'text' ), array( 'tfLook', '=', 'range' ) ),
+					'required'    => array( array( 'type', '=', 'text' ), array( 'tfLook', '=', 'range' ) ),
 				),
-				'tfRangeMax'    => array(
-					'label'    => esc_html__( 'Range: highest', 'tokenforge' ),
-					'type'     => 'number',
+				'tfRangeMax'   => array(
+					'label'       => esc_html__( 'Range: highest', 'tokenforge' ),
+					'type'        => 'number',
 					'placeholder' => '100',
-					'required' => array( array( 'type', '=', 'text' ), array( 'tfLook', '=', 'range' ) ),
+					'required'    => array( array( 'type', '=', 'text' ), array( 'tfLook', '=', 'range' ) ),
 				),
-				'tfRangeStep'   => array(
-					'label'    => esc_html__( 'Range: step', 'tokenforge' ),
-					'type'     => 'number',
+				'tfRangeStep'  => array(
+					'label'       => esc_html__( 'Range: step', 'tokenforge' ),
+					'type'        => 'number',
 					'placeholder' => '1',
-					'required' => array( array( 'type', '=', 'text' ), array( 'tfLook', '=', 'range' ) ),
+					'required'    => array( array( 'type', '=', 'text' ), array( 'tfLook', '=', 'range' ) ),
 				),
-				'tfLookPrefix'  => array(
+				'tfLookPrefix' => array(
 					'label'       => esc_html__( 'Before the value', 'tokenforge' ),
 					'type'        => 'text',
 					'placeholder' => '€',
 					'required'    => array( 'tfLook', '=', array( 'slider', 'range' ) ),
 				),
-				'tfLookSuffix'  => array(
+				'tfLookSuffix' => array(
 					'label'       => esc_html__( 'After the value', 'tokenforge' ),
 					'type'        => 'text',
 					'placeholder' => ' m²',
 					'required'    => array( 'tfLook', '=', array( 'slider', 'range' ) ),
 				),
-				'tfMask'        => array(
+				'tfMask'       => array(
 					'label'       => esc_html__( 'Input mask', 'tokenforge' ),
 					'type'        => 'text',
 					'placeholder' => '+359 ### ### ###',
 					'description' => esc_html__( '# = a digit, @ = a letter, * = a letter or digit; anything else is typed for the visitor. The field only counts as filled in when the mask is complete.', 'tokenforge' ),
 					'required'    => array( 'type', '=', array( 'text', 'tel' ) ),
 				),
-				'tfCounter'     => array(
+				'tfCounter'    => array(
 					'label'       => esc_html__( 'Character counter', 'tokenforge' ),
 					'type'        => 'checkbox',
 					'description' => esc_html__( 'Shows how many characters are typed, and the limit when the field has a max length.', 'tokenforge' ),
@@ -412,7 +412,7 @@ class Form_Fields {
 		if ( $look ) {
 			$attr['data-tf-look'] = wp_json_encode( $look );
 			if ( 'slider' === $look['t'] ) {
-				$attr['type'] = 'range'; // a native slider; min, max and step stay the builder's
+				$attr['type'] = 'range'; // a native slider; min, max and step stay the builder's.
 				if ( ! isset( $field['min'] ) ) {
 					$attr['min'] = '0';
 				}
@@ -425,7 +425,7 @@ class Form_Fields {
 			$mask                 = self::mask( $field );
 			$attr['data-tf-mask'] = $mask;
 			if ( empty( $field['pattern'] ) ) {
-				$attr['pattern'] = self::mask_pattern( $mask ); // the browser and the builder check the mask is complete
+				$attr['pattern'] = self::mask_pattern( $mask ); // the browser and the builder check the mask is complete.
 			}
 			if ( ! preg_match( '/[@*]/', $mask ) ) {
 				$attr['inputmode'] = 'numeric';
@@ -489,7 +489,7 @@ class Form_Fields {
 		}
 		$type = isset( $field['type'] ) ? $field['type'] : 'text';
 		$t    = $field['tfLook'];
-		$pre  = isset( $field['tfLookPrefix'] ) ? wp_kses( (string) $field['tfLookPrefix'], array() ) : ''; // spaces kept, like the calculation's
+		$pre  = isset( $field['tfLookPrefix'] ) ? wp_kses( (string) $field['tfLookPrefix'], array() ) : ''; // spaces kept, like the calculation's.
 		$suf  = isset( $field['tfLookSuffix'] ) ? wp_kses( (string) $field['tfLookSuffix'], array() ) : '';
 		if ( 'number' === $type && 'slider' === $t ) {
 			return array(
@@ -603,7 +603,10 @@ class Form_Fields {
 			return array();
 		}
 		$r = array();
-		foreach ( array( 'tfDateMin' => 'min', 'tfDateMax' => 'max' ) as $k => $out ) {
+		foreach ( array(
+			'tfDateMin' => 'min',
+			'tfDateMax' => 'max',
+		) as $k => $out ) {
 			if ( isset( $field[ $k ] ) && is_numeric( $field[ $k ] ) ) {
 				$r[ $out ] = max( 0, (int) $field[ $k ] );
 			}
@@ -632,9 +635,16 @@ class Form_Fields {
 	 */
 	private static function weekdays_off( $field ) {
 		$wd = isset( $field['tfDateWeekdays'] ) ? (array) $field['tfDateWeekdays'] : array();
-		$wd = array_values( array_unique( array_filter( array_map( 'intval', array_filter( $wd, 'is_numeric' ) ), function ( $d ) {
-			return $d >= 0 && $d <= 6;
-		} ) ) );
+		$wd = array_values(
+			array_unique(
+				array_filter(
+					array_map( 'intval', array_filter( $wd, 'is_numeric' ) ),
+					function ( $d ) {
+						return $d >= 0 && $d <= 6;
+					}
+				)
+			)
+		);
 		sort( $wd );
 		return $wd;
 	}
@@ -687,7 +697,7 @@ class Form_Fields {
 		$format = get_option( 'date_format' ) . ( isset( $field['time'] ) ? ' H:i' : '' );
 		$value  = self::english_names( $value );
 		// ponytail: a date the site's format and language cannot read is let through (the browser still blocked it); a hidden ISO copy from the script if that matters.
-		$d      = \DateTimeImmutable::createFromFormat( '!' . $format, $value, wp_timezone() );
+		$d = \DateTimeImmutable::createFromFormat( '!' . $format, $value, wp_timezone() );
 		if ( ! $d ) {
 			$t = strtotime( $value );
 			$d = false !== $t ? ( new \DateTimeImmutable( '@' . $t ) )->setTimezone( wp_timezone() ) : null;
@@ -709,18 +719,18 @@ class Form_Fields {
 		}
 		$map = array();
 		for ( $m = 1; $m <= 12; $m++ ) {
-			$local = $wp_locale->get_month( $m );
-			$time  = gmmktime( 0, 0, 0, $m, 1, 2026 );
-			$map[ $local ]                                   = gmdate( 'F', $time );
+			$local         = $wp_locale->get_month( $m );
+			$time          = gmmktime( 0, 0, 0, $m, 1, 2026 );
+			$map[ $local ] = gmdate( 'F', $time );
 			$map[ $wp_locale->get_month_abbrev( $local ) ] = gmdate( 'M', $time );
 		}
 		for ( $d = 0; $d <= 6; $d++ ) {
-			$local = $wp_locale->get_weekday( $d );
-			$time  = gmmktime( 0, 0, 0, 1, 4 + $d, 2026 ); // 4 January 2026 is a Sunday
-			$map[ $local ]                                     = gmdate( 'l', $time );
+			$local         = $wp_locale->get_weekday( $d );
+			$time          = gmmktime( 0, 0, 0, 1, 4 + $d, 2026 ); // 4 January 2026 is a Sunday
+			$map[ $local ] = gmdate( 'l', $time );
 			$map[ $wp_locale->get_weekday_abbrev( $local ) ] = gmdate( 'D', $time );
 		}
-		return strtr( $value, $map ); // strtr tries longer names first
+		return strtr( $value, $map ); // strtr tries longer names first.
 	}
 
 	/**
@@ -788,8 +798,8 @@ class Form_Fields {
 				}
 			}
 			if ( ! $ok ) {
-				$msg      = self::msg( $field, 'tfMsgInvalid' );
-				$label    = isset( $field['label'] ) && '' !== trim( (string) $field['label'] ) ? wp_strip_all_tags( (string) $field['label'] ) : __( 'the date', 'tokenforge' );
+				$msg   = self::msg( $field, 'tfMsgInvalid' );
+				$label = isset( $field['label'] ) && '' !== trim( (string) $field['label'] ) ? wp_strip_all_tags( (string) $field['label'] ) : __( 'the date', 'tokenforge' );
 				/* translators: %s: field label */
 				$errors[] = '' !== $msg ? $msg : sprintf( __( 'Please choose another date for %s.', 'tokenforge' ), $label );
 			}
@@ -885,7 +895,7 @@ class Form_Fields {
 	 */
 	public static function content_options( $field ) {
 		static $memo = array();
-		$key = md5( wp_json_encode( array_intersect_key( $field, array_flip( array( 'tfOptFrom', 'tfOptPostType', 'tfOptTax', 'tfOptRole', 'tfOptField', 'tfOptValue', 'tfOptLimit' ) ) ) ) );
+		$key         = md5( wp_json_encode( array_intersect_key( $field, array_flip( array( 'tfOptFrom', 'tfOptPostType', 'tfOptTax', 'tfOptRole', 'tfOptField', 'tfOptValue', 'tfOptLimit' ) ) ) ) );
 		if ( ! array_key_exists( $key, $memo ) ) {
 			$memo[ $key ] = self::query_options( $field );
 		}
@@ -918,8 +928,8 @@ class Form_Fields {
 					)
 				);
 				foreach ( $q as $p ) {
-					$title = wp_strip_all_tags( get_the_title( $p ) );
-					$value = 'id' === $by ? $p->ID : ( 'slug' === $by ? $p->post_name : $title );
+					$title                  = wp_strip_all_tags( get_the_title( $p ) );
+					$value                  = 'id' === $by ? $p->ID : ( 'slug' === $by ? $p->post_name : $title );
 					$out[ (string) $value ] = $title;
 				}
 				return $out;
@@ -937,7 +947,7 @@ class Form_Fields {
 					return array();
 				}
 				foreach ( $terms as $t ) {
-					$value = 'id' === $by ? $t->term_id : ( 'slug' === $by ? $t->slug : $t->name );
+					$value                  = 'id' === $by ? $t->term_id : ( 'slug' === $by ? $t->slug : $t->name );
 					$out[ (string) $value ] = wp_strip_all_tags( $t->name );
 				}
 				return $out;
@@ -950,10 +960,10 @@ class Form_Fields {
 				if ( ! empty( $field['tfOptRole'] ) && is_string( $field['tfOptRole'] ) ) {
 					$args['role'] = sanitize_key( $field['tfOptRole'] );
 				} else {
-					$args['role__not_in'] = array( 'administrator' ); // a public list never shows the site's admins unless picked
+					$args['role__not_in'] = array( 'administrator' ); // a public list never shows the site's admins unless picked.
 				}
 				foreach ( get_users( $args ) as $u ) {
-					$value = 'id' === $by ? $u->ID : ( 'slug' === $by ? $u->user_nicename : $u->display_name );
+					$value                  = 'id' === $by ? $u->ID : ( 'slug' === $by ? $u->user_nicename : $u->display_name );
 					$out[ (string) $value ] = wp_strip_all_tags( $u->display_name );
 				}
 				return $out;
@@ -1012,7 +1022,7 @@ class Form_Fields {
 	 *
 	 * @param mixed  $tag     The tag without braces.
 	 * @param mixed  $post    Post.
-	 * @param string $context text, link, image, …
+	 * @param string $context Text, link, image, ….
 	 * @return mixed
 	 */
 	public function render_tag( $tag, $post, $context = 'text' ) {

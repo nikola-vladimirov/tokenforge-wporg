@@ -67,7 +67,7 @@ class Form_Submissions {
 	);
 
 	/** Rows deleted per query, and queries per rule per run. */
-	const BATCH = 500;
+	const BATCH   = 500;
 	const BATCHES = 20;
 
 	/**
@@ -311,7 +311,7 @@ class Form_Submissions {
 		foreach ( (array) $rows as $r ) {
 			$id = (int) $r['submission_id'];
 			if ( ! isset( $made[ $id ] ) || (string) $r['created_at'] !== $made[ $id ] ) {
-				continue; // left over from an older submission with the same ID
+				continue; // left over from an older submission with the same ID.
 			}
 			$out[ $id ] = array(
 				'status'     => in_array( $r['status'], self::STATUSES, true ) ? $r['status'] : 'new',
@@ -445,7 +445,7 @@ class Form_Submissions {
 	 */
 	public static function form_fields( $post_id, $form_id ) {
 		static $memo = array();
-		$key = $post_id . '|' . $form_id;
+		$key         = $post_id . '|' . $form_id;
 		if ( isset( $memo[ $key ] ) ) {
 			return $memo[ $key ];
 		}
@@ -527,7 +527,7 @@ class Form_Submissions {
 		$fields = array();
 		foreach ( array_unique( array_merge( array_keys( $known ), array_keys( $data ) ) ) as $fid ) {
 			if ( ! isset( $data[ $fid ] ) ) {
-				continue; // a field added to the form after this send
+				continue; // a field added to the form after this send.
 			}
 			$type     = isset( $data[ $fid ]['type'] ) ? (string) $data[ $fid ]['type'] : ( isset( $known[ $fid ] ) ? $known[ $fid ]['type'] : 'text' );
 			$value    = isset( $data[ $fid ]['value'] ) ? $data[ $fid ]['value'] : '';
@@ -604,7 +604,12 @@ class Form_Submissions {
 		global $wpdb;
 		$per  = max( 1, min( 100, (int) ( isset( $args['per_page'] ) ? $args['per_page'] : 20 ) ) );
 		$page = max( 1, (int) ( isset( $args['page'] ) ? $args['page'] : 1 ) );
-		$none = array( 'total' => 0, 'page' => $page, 'per_page' => $per, 'items' => array() );
+		$none = array(
+			'total'    => 0,
+			'page'     => $page,
+			'per_page' => $per,
+			'items'    => array(),
+		);
 		if ( ! self::ready() ) {
 			return $none;
 		}
@@ -693,7 +698,10 @@ class Form_Submissions {
 			if ( is_array( $v ) && ! in_array( $type, array( 'checkbox', 'select' ), true ) ) {
 				$v = implode( ', ', $v );
 			}
-			$changed[ $fid ] = array( 'type' => $type, 'value' => $v );
+			$changed[ $fid ] = array(
+				'type'  => $type,
+				'value' => $v,
+			);
 		}
 		if ( ! $changed ) {
 			return true;
@@ -706,7 +714,7 @@ class Form_Submissions {
 		if ( false === $ok ) {
 			return new \WP_Error( 'tokenforge_save_failed', __( 'The submission could not be saved.', 'tokenforge' ), array( 'status' => 500 ) );
 		}
-		self::set_meta( array( $id ), array() ); // records who changed it and when
+		self::set_meta( array( $id ), array() ); // records who changed it and when.
 		return true;
 	}
 
@@ -866,7 +874,7 @@ class Form_Submissions {
 		$items = array();
 		$total = 0;
 		foreach ( $rules as $r ) {
-			$row = $wpdb->get_row( // phpcs:ignore WordPress.DB, PluginCheck.Security.DirectDB.UnescapedDBParameter -- table names from the prefix, IDs through absint
+			$row     = $wpdb->get_row( // phpcs:ignore WordPress.DB, PluginCheck.Security.DirectDB.UnescapedDBParameter -- table names from the prefix, IDs through absint
 				$wpdb->prepare(
 					'SELECT COUNT(*) AS n, MIN(created_at) AS oldest FROM ' . self::bricks_table() . ' WHERE form_id = %s AND post_id = %d AND created_at < %s', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 					$r['form_id'],
@@ -875,8 +883,8 @@ class Form_Submissions {
 				),
 				ARRAY_A
 			);
-			$n      = $row ? (int) $row['n'] : 0;
-			$total += $n;
+			$n       = $row ? (int) $row['n'] : 0;
+			$total  += $n;
 			$items[] = array(
 				'form_id'    => $r['form_id'],
 				'form_name'  => self::form_name( $r['form_id'] ),
@@ -902,6 +910,7 @@ class Form_Submissions {
 	 * Created before this time (UTC, the builder's created_at) is older than N days.
 	 *
 	 * @param int $days Days.
+	 * @param int $now  Timestamp to count from (0 = now).
 	 * @return string
 	 */
 	private static function cutoff( $days, $now = 0 ) {
@@ -935,9 +944,25 @@ class Form_Submissions {
 				}
 			}
 		}
-		update_option( self::ACK, array( 'site' => self::site_days(), 'own' => $own, 'pinned' => $pinned ), false );
+		update_option(
+			self::ACK,
+			array(
+				'site'   => self::site_days(),
+				'own'    => $own,
+				'pinned' => $pinned,
+			),
+			false
+		);
 		$n = self::delete_old( $rules, $time > 0 ? min( (int) $time, time() ) : 0 );
-		update_option( self::LAST, array( 'time' => time(), 'deleted' => $n, 'waiting' => false ), false );
+		update_option(
+			self::LAST,
+			array(
+				'time'    => time(),
+				'deleted' => $n,
+				'waiting' => false,
+			),
+			false
+		);
 		return array(
 			'deleted' => $n,
 			'hash'    => $now,
@@ -960,13 +985,22 @@ class Form_Submissions {
 		}
 		$ok = array_values( array_filter( $rules, array( __CLASS__, 'confirmed' ) ) );
 		$n  = $ok ? self::delete_old( $ok ) : 0;
-		update_option( self::LAST, array( 'time' => time(), 'deleted' => $n, 'waiting' => count( $ok ) < count( $rules ) ), false );
+		update_option(
+			self::LAST,
+			array(
+				'time'    => time(),
+				'deleted' => $n,
+				'waiting' => count( $ok ) < count( $rules ),
+			),
+			false
+		);
 	}
 
 	/**
 	 * Delete rows older than each rule's days, in batches, then our orphans.
 	 *
 	 * @param array $rules rules().
+	 * @param int   $now   Timestamp to count from (0 = now).
 	 * @return int Rows deleted from the builder's table.
 	 */
 	private static function delete_old( $rules, $now = 0 ) {
@@ -1011,7 +1045,7 @@ class Form_Submissions {
 			return self::can() && self::on( 'status' );
 		};
 		$edit   = function () {
-			return self::can_delete() && self::on( 'edit' ); // overwrites the visitor's answers, like deleting
+			return self::can_delete() && self::on( 'edit' ); // overwrites the visitor's answers, like deleting.
 		};
 		$clean  = function () {
 			return self::can_delete() && self::on( 'cleanup' );
@@ -1032,10 +1066,23 @@ class Form_Submissions {
 				'args'                => array(
 					'form_id'  => array( 'type' => 'string' ),
 					's'        => array( 'type' => 'string' ),
-					'status'   => array( 'type' => 'string', 'enum' => array_merge( array( '' ), self::STATUSES ) ),
-					'read'     => array( 'type' => 'string', 'enum' => array( '', '0', '1' ) ),
-					'page'     => array( 'type' => 'integer', 'minimum' => 1 ),
-					'per_page' => array( 'type' => 'integer', 'minimum' => 1, 'maximum' => 100 ),
+					'status'   => array(
+						'type' => 'string',
+						'enum' => array_merge( array( '' ), self::STATUSES ),
+					),
+					'read'     => array(
+						'type' => 'string',
+						'enum' => array( '', '0', '1' ),
+					),
+					'page'     => array(
+						'type'    => 'integer',
+						'minimum' => 1,
+					),
+					'per_page' => array(
+						'type'    => 'integer',
+						'minimum' => 1,
+						'maximum' => 100,
+					),
 				),
 				'callback'            => function ( $req ) {
 					return rest_ensure_response( self::search( $req->get_params() ) );
@@ -1093,7 +1140,7 @@ class Form_Submissions {
 							return new \WP_Error( 'tokenforge_bad_status', __( 'Unknown status.', 'tokenforge' ), array( 'status' => 400 ) );
 						}
 						if ( count( $ids ) > 1 && isset( $fields['note'] ) ) {
-							unset( $fields['note'] ); // a note belongs to one submission
+							unset( $fields['note'] ); // a note belongs to one submission.
 						}
 						self::set_meta( $ids, $fields );
 						return rest_ensure_response(

@@ -138,16 +138,16 @@ class Form_Extras {
 	public function controls( $controls ) {
 		if ( isset( $controls['fields']['fields'] ) && is_array( $controls['fields']['fields'] ) ) {
 			$controls['fields']['fields'] += array(
-				'tfSeparator'   => array(
+				'tfSeparator'     => array(
 					'type'  => 'separator',
 					'label' => esc_html__( 'Steps and conditions (TokenForge)', 'tokenforge' ),
 				),
-				'tfStep'        => array(
+				'tfStep'          => array(
 					'label'       => esc_html__( 'New step starts here', 'tokenforge' ),
 					'type'        => 'checkbox',
 					'description' => esc_html__( 'Splits the form into steps with Back and Next buttons. This field is the first of its step.', 'tokenforge' ),
 				),
-				'tfStepTitle'   => array(
+				'tfStepTitle'     => array(
 					'label'       => esc_html__( 'Step title', 'tokenforge' ),
 					'type'        => 'text',
 					'placeholder' => esc_html__( 'Step 2', 'tokenforge' ),
@@ -197,20 +197,20 @@ class Form_Extras {
 						array( 'tfStepShowRules', '!=', '' ),
 					),
 				),
-				'tfShowField'   => array(
+				'tfShowField'     => array(
 					'label'       => esc_html__( 'Show only when field', 'tokenforge' ),
 					'type'        => 'text',
 					'placeholder' => esc_html__( 'Label or ID of another field', 'tokenforge' ),
 					'description' => esc_html__( 'Hidden fields are not sent and are never required.', 'tokenforge' ),
 				),
-				'tfShowOp'      => array(
+				'tfShowOp'        => array(
 					'label'       => esc_html__( 'Condition', 'tokenforge' ),
 					'type'        => 'select',
 					'options'     => self::op_options(),
 					'placeholder' => esc_html__( 'is', 'tokenforge' ),
 					'required'    => array( 'tfShowField', '!=', '' ),
 				),
-				'tfShowValue'   => array(
+				'tfShowValue'     => array(
 					'label'       => esc_html__( 'Value', 'tokenforge' ),
 					'type'        => 'text',
 					'placeholder' => esc_html__( 'For a checkbox or choice: the option value', 'tokenforge' ),
@@ -219,43 +219,43 @@ class Form_Extras {
 						array( 'tfShowOp', '!=', array( 'empty', 'notempty' ) ),
 					),
 				),
-				'tfShowRules'   => array(
+				'tfShowRules'     => array(
 					'label'       => esc_html__( 'More conditions (one per line)', 'tokenforge' ),
 					'type'        => 'textarea',
 					'placeholder' => "{Budget} > 1000\n{Topic} = Web design\n{Phone} not empty",
 					'description' => esc_html__( 'Each line: a field in braces (its label or ID), then = != > < >= <= contains, empty or not empty, then the value. They count together with "Show only when field" above.', 'tokenforge' ),
 				),
-				'tfShowMatch'   => array(
+				'tfShowMatch'     => array(
 					'label'       => esc_html__( 'Show when', 'tokenforge' ),
 					'type'        => 'select',
 					'options'     => self::match_options(),
 					'placeholder' => esc_html__( 'All conditions hold', 'tokenforge' ),
 					'required'    => array( 'tfShowRules', '!=', '' ),
 				),
-				'tfRequireRules' => array(
+				'tfRequireRules'  => array(
 					'label'       => esc_html__( 'Required only when (one per line)', 'tokenforge' ),
 					'type'        => 'textarea',
-					'placeholder' => "{Contact by} = Phone",
+					'placeholder' => '{Contact by} = Phone',
 					'description' => esc_html__( 'The field must be filled in only while these conditions hold; the Required switch above is then not used. The same lines as the conditions above. Checked again on the server when the form is sent.', 'tokenforge' ),
 				),
-				'tfRequireMatch' => array(
+				'tfRequireMatch'  => array(
 					'label'       => esc_html__( 'Required when', 'tokenforge' ),
 					'type'        => 'select',
 					'options'     => self::match_options(),
 					'placeholder' => esc_html__( 'All conditions hold', 'tokenforge' ),
 					'required'    => array( 'tfRequireRules', '!=', '' ),
 				),
-				'tfCalcSep'     => array(
+				'tfCalcSep'       => array(
 					'type'  => 'separator',
 					'label' => esc_html__( 'Calculation (TokenForge)', 'tokenforge' ),
 				),
-				'tfCalc'        => array(
+				'tfCalc'          => array(
 					'label'       => esc_html__( 'Calculate', 'tokenforge' ),
 					'type'        => 'text',
 					'placeholder' => '{Quantity} * {Price} + 25',
 					'description' => esc_html__( 'Makes this field a result worked out from other fields while the visitor fills in the form (read only; worked out again on the server when the form is sent). Fields in braces by label or ID; numbers; + - * / % ^ and brackets; round(x, 2), ceil(), floor(), min(), max(), abs(), if(test, then, else) with > < >= <= = !=. A choice counts its value (tick "Set options as value:label" and write 250:Logo design); ticked checkboxes add up; hidden fields count as 0. Use a Number, Text or Hidden field.', 'tokenforge' ),
 				),
-				'tfCalcDecimals' => array(
+				'tfCalcDecimals'  => array(
 					'label'       => esc_html__( 'Decimals', 'tokenforge' ),
 					'type'        => 'number',
 					'min'         => 0,
@@ -263,20 +263,20 @@ class Form_Extras {
 					'placeholder' => '2',
 					'required'    => array( 'tfCalc', '!=', '' ),
 				),
-				'tfCalcPrefix'  => array(
+				'tfCalcPrefix'    => array(
 					'label'       => esc_html__( 'Before the number', 'tokenforge' ),
 					'type'        => 'text',
 					'placeholder' => '€ ',
 					'description' => esc_html__( 'Text fields only (a Number field holds just the number).', 'tokenforge' ),
 					'required'    => array( 'tfCalc', '!=', '' ),
 				),
-				'tfCalcSuffix'  => array(
+				'tfCalcSuffix'    => array(
 					'label'       => esc_html__( 'After the number', 'tokenforge' ),
 					'type'        => 'text',
 					'placeholder' => ' / month',
 					'required'    => array( 'tfCalc', '!=', '' ),
 				),
-				'tfCalcFormat'  => array(
+				'tfCalcFormat'    => array(
 					'label'       => esc_html__( 'Number format', 'tokenforge' ),
 					'type'        => 'select',
 					'options'     => self::format_options(),
@@ -284,7 +284,7 @@ class Form_Extras {
 					'description' => esc_html__( 'Thousands and decimal separators. Text fields only.', 'tokenforge' ),
 					'required'    => array( 'tfCalc', '!=', '' ),
 				),
-				'tfCalcShow'    => array(
+				'tfCalcShow'      => array(
 					'label'       => esc_html__( 'Show the result', 'tokenforge' ),
 					'type'        => 'select',
 					'options'     => array(
@@ -297,7 +297,7 @@ class Form_Extras {
 				),
 			);
 		}
-		$controls['tfStepsProgress'] = array(
+		$controls['tfStepsProgress']     = array(
 			'group'       => 'tfSteps',
 			'label'       => esc_html__( 'Progress', 'tokenforge' ),
 			'type'        => 'select',
@@ -310,19 +310,19 @@ class Form_Extras {
 			'placeholder' => esc_html__( 'Numbered steps with titles', 'tokenforge' ),
 			'description' => esc_html__( 'Tick "New step starts here" on a field to split the form into steps.', 'tokenforge' ),
 		);
-		$controls['tfStepsNext']     = array(
+		$controls['tfStepsNext']         = array(
 			'group'       => 'tfSteps',
 			'label'       => esc_html__( 'Next button', 'tokenforge' ),
 			'type'        => 'text',
 			'placeholder' => esc_html__( 'Next', 'tokenforge' ),
 		);
-		$controls['tfStepsBack']     = array(
+		$controls['tfStepsBack']         = array(
 			'group'       => 'tfSteps',
 			'label'       => esc_html__( 'Back button', 'tokenforge' ),
 			'type'        => 'text',
 			'placeholder' => esc_html__( 'Back', 'tokenforge' ),
 		);
-		$controls['tfStepsFirst']    = array(
+		$controls['tfStepsFirst']        = array(
 			'group'       => 'tfSteps',
 			'label'       => esc_html__( 'First step title', 'tokenforge' ),
 			'type'        => 'text',
@@ -363,7 +363,7 @@ class Form_Extras {
 			return $attributes;
 		}
 		$settings = is_array( $element->settings ) ? $element->settings : array();
-		$by_index = isset( $settings['fields'] ) && is_array( $settings['fields'] ) ? $settings['fields'] : array(); // keys as the form renders them
+		$by_index = isset( $settings['fields'] ) && is_array( $settings['fields'] ) ? $settings['fields'] : array(); // keys as the form renders them.
 		$fields   = array_values( $by_index );
 		if ( '_root' === $key ) {
 			$steps   = self::step_count( $fields );
@@ -406,7 +406,7 @@ class Form_Extras {
 		$field = $by_index[ (int) $m[1] ];
 		$first = array_key_first( $by_index );
 		if ( ! empty( $field['tfStep'] ) && (int) $m[1] !== (int) $first ) {
-			$title = isset( $field['tfStepTitle'] ) ? trim( wp_strip_all_tags( (string) $field['tfStepTitle'] ) ) : '';
+			$title                              = isset( $field['tfStepTitle'] ) ? trim( wp_strip_all_tags( (string) $field['tfStepTitle'] ) ) : '';
 			$attributes[ $key ]['data-tf-step'] = '' !== $title ? $title : '';
 			if ( self::has_step_condition( $field ) ) {
 				$attributes[ $key ]['data-tf-step-show'] = wp_json_encode( self::browser_rules( $fields, self::field_rules( $field, true ), self::match( $field, 'tfStepShow' ) ) );
@@ -416,12 +416,12 @@ class Form_Extras {
 			$attributes[ $key ]['data-tf-show'] = wp_json_encode( self::browser_rules( $fields, self::field_rules( $field, false ), self::match( $field, 'tfShow' ) ) );
 		}
 		if ( self::has_require( $field ) ) {
-			$req         = self::browser_rules( $fields, self::parse_rules( $field['tfRequireRules'] ), self::match( $field, 'tfRequire' ) );
-			$req['star'] = ! empty( $settings['requiredAsterisk'] ); // the label's asterisk follows
+			$req                                   = self::browser_rules( $fields, self::parse_rules( $field['tfRequireRules'] ), self::match( $field, 'tfRequire' ) );
+			$req['star']                           = ! empty( $settings['requiredAsterisk'] ); // the label's asterisk follows.
 			$attributes[ $key ]['data-tf-require'] = wp_json_encode( $req );
 		}
 		if ( self::has_calc( $field ) ) {
-			list( $expr, $refs ) = self::calc_parts( $fields, (string) $field['tfCalc'] );
+			list( $expr, $refs )                = self::calc_parts( $fields, (string) $field['tfCalc'] );
 			$attributes[ $key ]['data-tf-calc'] = wp_json_encode(
 				array(
 					'e' => $expr,
@@ -717,15 +717,15 @@ class Form_Extras {
 	 * @return float
 	 */
 	public static function calc_eval( $expr, $vals ) {
-		$s   = (string) $expr;
-		$len = strlen( $s );
-		$i   = 0;
-		$ws  = function () use ( $s, $len, &$i ) {
+		$s     = (string) $expr;
+		$len   = strlen( $s );
+		$i     = 0;
+		$ws    = function () use ( $s, $len, &$i ) {
 			while ( $i < $len && ctype_space( $s[ $i ] ) ) {
-				$i++;
+				++$i;
 			}
 		};
-		$take = function ( $t ) use ( $s, $ws, &$i ) {
+		$take  = function ( $t ) use ( $s, $ws, &$i ) {
 			$ws();
 			if ( substr( $s, $i, strlen( $t ) ) === $t ) {
 				$i += strlen( $t );
@@ -733,8 +733,8 @@ class Form_Extras {
 			}
 			return false;
 		};
-		$cmp  = null;
-		$atom = function () use ( $s, $len, $ws, $take, $vals, &$i, &$cmp ) {
+		$cmp   = null;
+		$atom  = function () use ( $s, $len, $ws, $take, $vals, &$i, &$cmp ) {
 			$ws();
 			if ( $take( '(' ) ) {
 				$v = $cmp();
@@ -762,7 +762,7 @@ class Form_Extras {
 				}
 				return self::calc_fn( strtolower( $m[1] ), $args );
 			}
-			$i = $len; // anything else ends the formula
+			$i = $len; // anything else ends the formula.
 			return 0.0;
 		};
 		$unary = null;
@@ -779,7 +779,7 @@ class Form_Extras {
 			}
 			return $power();
 		};
-		$prod = function () use ( $take, $unary ) {
+		$prod  = function () use ( $take, $unary ) {
 			$v = $unary();
 			while ( true ) {
 				if ( $take( '*' ) ) {
@@ -795,7 +795,7 @@ class Form_Extras {
 				}
 			}
 		};
-		$sum = function () use ( $take, $prod ) {
+		$sum   = function () use ( $take, $prod ) {
 			$v = $prod();
 			while ( true ) {
 				if ( $take( '+' ) ) {
@@ -807,7 +807,7 @@ class Form_Extras {
 				}
 			}
 		};
-		$cmp = function () use ( $take, $sum ) {
+		$cmp   = function () use ( $take, $sum ) {
 			$a = $sum();
 			foreach ( array( '>=', '<=', '!=', '==', '>', '<', '=' ) as $op ) {
 				if ( $take( $op ) ) {
@@ -830,7 +830,7 @@ class Form_Extras {
 			}
 			return $a;
 		};
-		$out = $cmp();
+		$out   = $cmp();
 		return is_finite( $out ) ? $out : 0.0;
 	}
 
@@ -938,9 +938,9 @@ class Form_Extras {
 			return $text;
 		}
 		list( $thousands, $decimal ) = self::FORMATS[ $format ];
-		$neg   = '-' === substr( $text, 0, 1 );
-		$parts = explode( '.', $neg ? substr( $text, 1 ) : $text, 2 );
-		$int   = (string) preg_replace( '/\B(?=(\d{3})+(?!\d))/', $thousands, $parts[0] );
+		$neg                         = '-' === substr( $text, 0, 1 );
+		$parts                       = explode( '.', $neg ? substr( $text, 1 ) : $text, 2 );
+		$int                         = (string) preg_replace( '/\B(?=(\d{3})+(?!\d))/', $thousands, $parts[0] );
 		return ( $neg ? '-' : '' ) . $int . ( isset( $parts[1] ) && '' !== $parts[1] ? $decimal . $parts[1] : '' );
 	}
 
@@ -966,7 +966,7 @@ class Form_Extras {
 					continue;
 				}
 				list( $expr, $refs ) = self::calc_parts( $fields, (string) $field['tfCalc'] );
-				$vals = array();
+				$vals                = array();
 				foreach ( $refs as $ref ) {
 					if ( ! $ref || in_array( $ref['id'], $hidden, true ) ) {
 						$vals[] = 0.0;
@@ -978,9 +978,9 @@ class Form_Extras {
 					}
 					$vals[] = array_sum( array_map( array( __CLASS__, 'to_number' ), self::submitted( $submitted, $ref ) ) );
 				}
-				$n                    = self::calc_eval( $expr, $vals );
-				$raw[ $field['id'] ]  = self::calc_round( $field, $n );
-				$text                 = self::calc_text( $field, $n );
+				$n                   = self::calc_eval( $expr, $vals );
+				$raw[ $field['id'] ] = self::calc_round( $field, $n );
+				$text                = self::calc_text( $field, $n );
 				if ( ! isset( $out[ $field['id'] ] ) || $out[ $field['id'] ] !== $text ) {
 					$out[ $field['id'] ] = $text;
 					$changed             = true;
@@ -1031,7 +1031,7 @@ class Form_Extras {
 					}
 				}
 			};
-			$bound = \Closure::bind( $set_required, $form, get_class( $form ) );
+			$bound        = \Closure::bind( $set_required, $form, get_class( $form ) );
 			if ( $bound ) {
 				$bound( $need );
 			}
@@ -1080,7 +1080,7 @@ class Form_Extras {
 		$step    = 0;
 		foreach ( $fields as $i => $field ) {
 			if ( $i > 0 && is_array( $field ) && ! empty( $field['tfStep'] ) ) {
-				$step++;
+				++$step;
 				$starts[ $step ] = $field;
 			}
 			$step_of[ $i ] = $step;
@@ -1158,7 +1158,7 @@ class Form_Extras {
 					$a = self::to_number( $v );
 					$b = self::to_number( $value );
 					if ( ! preg_match( '/\d/', $value ) || ! preg_match( '/\d/', $v ) ) {
-						continue; // a number is compared with a number only
+						continue; // a number is compared with a number only.
 					}
 					if ( ( 'gt' === $op && $a > $b ) || ( 'lt' === $op && $a < $b ) || ( 'gte' === $op && $a >= $b ) || ( 'lte' === $op && $a <= $b ) ) {
 						return true;
@@ -1180,7 +1180,7 @@ class Form_Extras {
 		$n = 1;
 		foreach ( array_values( $fields ) as $i => $field ) {
 			if ( $i > 0 && ! empty( $field['tfStep'] ) ) {
-				$n++;
+				++$n;
 			}
 		}
 		return $n;
@@ -1248,7 +1248,8 @@ class Form_Extras {
 	/**
 	 * A field's operator (sanitised).
 	 *
-	 * @param array $field Field settings.
+	 * @param array  $field Field settings.
+	 * @param string $key   Settings key holding the operator.
 	 * @return string
 	 */
 	private static function op( $field, $key = 'tfShowOp' ) {

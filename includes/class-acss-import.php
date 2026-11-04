@@ -25,10 +25,18 @@ defined( 'ABSPATH' ) || exit;
  */
 class Acss_Import {
 
-	/** @var array ACSS settings. */
+	/**
+	 * ACSS settings.
+	 *
+	 * @var array
+	 */
 	private $a = array();
 
-	/** @var array Report: module => [ "setting ← acss-key = value" ]. */
+	/**
+	 * Report: module => [ "setting ← acss-key = value" ].
+	 *
+	 * @var array
+	 */
 	private $report = array();
 
 	/**
@@ -39,7 +47,12 @@ class Acss_Import {
 	public static function run() {
 		$raw = get_option( 'automatic_css_settings' );
 		if ( ! is_array( $raw ) || ! $raw ) {
-			return array( 'ok' => false, 'mapped' => 0, 'report' => array(), 'error' => 'No settings to import were found on this site.' );
+			return array(
+				'ok'     => false,
+				'mapped' => 0,
+				'report' => array(),
+				'error'  => 'No settings to import were found on this site.',
+			);
 		}
 		$self    = new self();
 		$self->a = $raw;
@@ -67,7 +80,12 @@ class Acss_Import {
 		foreach ( $self->report as $rows ) {
 			$n += count( $rows );
 		}
-		return array( 'ok' => true, 'mapped' => $n, 'report' => $self->report, 'error' => '' );
+		return array(
+			'ok'     => true,
+			'mapped' => $n,
+			'report' => $self->report,
+			'error'  => '',
+		);
 	}
 
 	// ------------------------------------------------------------------
@@ -178,8 +196,8 @@ class Acss_Import {
 			if ( null === $value ) {
 				continue;
 			}
-			$settings[ $target ]        = $value;
-			$shown                      = is_bool( $value ) ? ( $value ? 'on' : 'off' ) : ( is_array( $value ) ? count( $value ) . ' item(s)' : $value );
+			$settings[ $target ]       = $value;
+			$shown                     = is_bool( $value ) ? ( $value ? 'on' : 'off' ) : ( is_array( $value ) ? count( $value ) . ' item(s)' : $value );
 			$this->report[ $module ][] = $target . ' ← ' . $key . ' = ' . $shown;
 		}
 	}
@@ -196,38 +214,38 @@ class Acss_Import {
 			'Defaults',
 			$s,
 			array(
-				'root_font_size'        => array( 'root-font-size', ( null !== $pct && $pct >= 50 && $pct <= 200 ) ? $pct : null ),
-				'output_root_font_size' => array( 'root-font-size', null !== $pct ? true : null ),
-				'reset'                 => array( 'option-load-reset', $this->on( 'option-load-reset' ) ),
-				'smooth_scroll'         => array( 'option-smooth-scrolling', $this->on( 'option-smooth-scrolling' ) ),
-				'reduce_motion'         => array( 'option-reduce-motion', $this->on( 'option-reduce-motion' ) ),
-				'focus_styles'          => array( 'option-focus-styles', $this->on( 'option-focus-styles' ) ),
-				'object_fit'            => array( 'option-auto-object-fit', $this->on( 'option-auto-object-fit' ) ),
-				'is_bg'                 => array( 'option-is-bg', $this->on( 'option-is-bg' ) ),
-				'sticky'                => array( 'option-position', $this->on( 'option-position' ) ),
-				'sr_only'               => array( 'option-accessibility-classes', $this->on( 'option-accessibility-classes' ) ),
-				'focus_color'           => array( 'focus-color', $this->css( 'focus-color' ) ),
-				'focus_width'           => array( 'focus-width', $this->css( 'focus-width' ) ),
-				'focus_offset'          => array( 'focus-offset', $this->css( 'focus-offset' ) ),
-				'selection_bg'          => array( 'selection-bg', $this->css( 'selection-bg' ) ),
-				'selection_text'        => array( 'selection-text', $this->css( 'selection-text' ) ),
+				'root_font_size'            => array( 'root-font-size', ( null !== $pct && $pct >= 50 && $pct <= 200 ) ? $pct : null ),
+				'output_root_font_size'     => array( 'root-font-size', null !== $pct ? true : null ),
+				'reset'                     => array( 'option-load-reset', $this->on( 'option-load-reset' ) ),
+				'smooth_scroll'             => array( 'option-smooth-scrolling', $this->on( 'option-smooth-scrolling' ) ),
+				'reduce_motion'             => array( 'option-reduce-motion', $this->on( 'option-reduce-motion' ) ),
+				'focus_styles'              => array( 'option-focus-styles', $this->on( 'option-focus-styles' ) ),
+				'object_fit'                => array( 'option-auto-object-fit', $this->on( 'option-auto-object-fit' ) ),
+				'is_bg'                     => array( 'option-is-bg', $this->on( 'option-is-bg' ) ),
+				'sticky'                    => array( 'option-position', $this->on( 'option-position' ) ),
+				'sr_only'                   => array( 'option-accessibility-classes', $this->on( 'option-accessibility-classes' ) ),
+				'focus_color'               => array( 'focus-color', $this->css( 'focus-color' ) ),
+				'focus_width'               => array( 'focus-width', $this->css( 'focus-width' ) ),
+				'focus_offset'              => array( 'focus-offset', $this->css( 'focus-offset' ) ),
+				'selection_bg'              => array( 'selection-bg', $this->css( 'selection-bg' ) ),
+				'selection_text'            => array( 'selection-text', $this->css( 'selection-text' ) ),
 				// ACSS's reset leaves images inline.
-				'media_block'           => array( '(the imported reset keeps media inline)', null !== $this->on( 'option-load-reset' ) ? false : null ),
-				'scroll_margin_min'     => array( 'scroll-margin-min', null !== $this->num( 'scroll-margin-min' ) ? $this->num( 'scroll-margin-min' ) . 'px' : null ),
-				'scroll_margin_max'     => array( 'scroll-margin-max', null !== $this->num( 'scroll-margin-max' ) ? $this->num( 'scroll-margin-max' ) . 'px' : null ),
-				'scroll_offset_header'  => array( 'option-use-header-height-for-scroll-offset', $this->on( 'option-use-header-height-for-scroll-offset' ) ),
-				'sticky_offset_header'  => array( 'option-sticky-offset', $this->on( 'option-sticky-offset' ) ),
-				'sticky_offset_custom'  => array( 'sticky-offset-custom', $this->css( 'sticky-offset-custom' ) ),
-				'content_offset'        => array( 'option-offset-page-content', $this->on( 'option-offset-page-content' ) ),
+				'media_block'               => array( '(the imported reset keeps media inline)', null !== $this->on( 'option-load-reset' ) ? false : null ),
+				'scroll_margin_min'         => array( 'scroll-margin-min', null !== $this->num( 'scroll-margin-min' ) ? $this->num( 'scroll-margin-min' ) . 'px' : null ),
+				'scroll_margin_max'         => array( 'scroll-margin-max', null !== $this->num( 'scroll-margin-max' ) ? $this->num( 'scroll-margin-max' ) . 'px' : null ),
+				'scroll_offset_header'      => array( 'option-use-header-height-for-scroll-offset', $this->on( 'option-use-header-height-for-scroll-offset' ) ),
+				'sticky_offset_header'      => array( 'option-sticky-offset', $this->on( 'option-sticky-offset' ) ),
+				'sticky_offset_custom'      => array( 'sticky-offset-custom', $this->css( 'sticky-offset-custom' ) ),
+				'content_offset'            => array( 'option-offset-page-content', $this->on( 'option-offset-page-content' ) ),
 				'content_offset_exclusions' => array( 'offset-content-page-exclusions', $this->selector( 'offset-content-page-exclusions' ) ),
 				'content_offset_header_not' => array( 'offset-content-header-exclusion', $this->selector( 'offset-content-header-exclusion' ) ),
-				'columns'               => array( 'option-column-variables', $this->on( 'option-column-variables' ) ),
-				'col_width_s'           => array( 'col-width-s', $this->css( 'col-width-s' ) ),
-				'col_width_m'           => array( 'col-width-m', $this->css( 'col-width-m' ) ),
-				'col_width_l'           => array( 'col-width-l', $this->css( 'col-width-l' ) ),
-				'col_rule_width_s'      => array( 'col-rule-width-s', $this->css( 'col-rule-width-s' ) ),
-				'col_rule_width_m'      => array( 'col-rule-width-m', $this->css( 'col-rule-width-m' ) ),
-				'col_rule_width_l'      => array( 'col-rule-width-l', $this->css( 'col-rule-width-l' ) ),
+				'columns'                   => array( 'option-column-variables', $this->on( 'option-column-variables' ) ),
+				'col_width_s'               => array( 'col-width-s', $this->css( 'col-width-s' ) ),
+				'col_width_m'               => array( 'col-width-m', $this->css( 'col-width-m' ) ),
+				'col_width_l'               => array( 'col-width-l', $this->css( 'col-width-l' ) ),
+				'col_rule_width_s'          => array( 'col-rule-width-s', $this->css( 'col-rule-width-s' ) ),
+				'col_rule_width_m'          => array( 'col-rule-width-m', $this->css( 'col-rule-width-m' ) ),
+				'col_rule_width_l'          => array( 'col-rule-width-l', $this->css( 'col-rule-width-l' ) ),
 			)
 		);
 		Defaults::save_settings( $s );
@@ -246,26 +264,26 @@ class Acss_Import {
 			'Scales',
 			$s,
 			array(
-				'min_vw'            => array( 'vp-min', $this->num( 'vp-min' ) ),
-				'max_vw'            => array( 'vp-max', $this->num( 'vp-max' ) ),
-				'text_base_min'     => array( 'base-text-mob', $this->num( 'base-text-mob' ) ),
-				'text_base_max'     => array( 'base-text-desk', $this->num( 'base-text-desk' ) ),
-				'text_ratio_min'    => array( 'mob-text-scale', $this->num( 'mob-text-scale' ) ),
-				'text_ratio_max'    => array( 'text-scale', $this->num( 'text-scale' ) ),
-				'heading_base_min'  => array( 'base-heading-mob', $this->num( 'base-heading-mob' ) ),
-				'heading_base_max'  => array( 'base-heading-desk', $this->num( 'base-heading-desk' ) ),
-				'heading_ratio_min' => array( 'mob-heading-scale', $this->num( 'mob-heading-scale' ) ),
-				'heading_ratio_max' => array( 'heading-scale', $this->num( 'heading-scale' ) ),
-				'space_base_min'    => array( 'base-space-min', $this->num( 'base-space-min' ) ),
-				'space_base_max'    => array( 'base-space', $this->num( 'base-space' ) ),
-				'space_ratio_min'   => array( 'mob-space-scale', $this->num( 'mob-space-scale' ) ),
-				'space_ratio'       => array( 'space-scale', $this->num( 'space-scale' ) ),
-				'section_mult_min'  => array( 'mob-space-adjust-section', $this->num( 'mob-space-adjust-section' ) ),
-				'section_mult_max'  => array( 'space-adjust-section', $this->num( 'space-adjust-section' ) ),
-				'overrides'         => array( 'h*/text-*-min|max', $ov ? implode( "\n", $ov ) : null ),
-				'auto_grid'         => array( 'option-auto-grid-variables', $this->on( 'option-auto-grid-variables' ) ),
+				'min_vw'                   => array( 'vp-min', $this->num( 'vp-min' ) ),
+				'max_vw'                   => array( 'vp-max', $this->num( 'vp-max' ) ),
+				'text_base_min'            => array( 'base-text-mob', $this->num( 'base-text-mob' ) ),
+				'text_base_max'            => array( 'base-text-desk', $this->num( 'base-text-desk' ) ),
+				'text_ratio_min'           => array( 'mob-text-scale', $this->num( 'mob-text-scale' ) ),
+				'text_ratio_max'           => array( 'text-scale', $this->num( 'text-scale' ) ),
+				'heading_base_min'         => array( 'base-heading-mob', $this->num( 'base-heading-mob' ) ),
+				'heading_base_max'         => array( 'base-heading-desk', $this->num( 'base-heading-desk' ) ),
+				'heading_ratio_min'        => array( 'mob-heading-scale', $this->num( 'mob-heading-scale' ) ),
+				'heading_ratio_max'        => array( 'heading-scale', $this->num( 'heading-scale' ) ),
+				'space_base_min'           => array( 'base-space-min', $this->num( 'base-space-min' ) ),
+				'space_base_max'           => array( 'base-space', $this->num( 'base-space' ) ),
+				'space_ratio_min'          => array( 'mob-space-scale', $this->num( 'mob-space-scale' ) ),
+				'space_ratio'              => array( 'space-scale', $this->num( 'space-scale' ) ),
+				'section_mult_min'         => array( 'mob-space-adjust-section', $this->num( 'mob-space-adjust-section' ) ),
+				'section_mult_max'         => array( 'space-adjust-section', $this->num( 'space-adjust-section' ) ),
+				'overrides'                => array( 'h*/text-*-min|max', $ov ? implode( "\n", $ov ) : null ),
+				'auto_grid'                => array( 'option-auto-grid-variables', $this->on( 'option-auto-grid-variables' ) ),
 				'auto_grid_aggressiveness' => array( 'auto-grid-aggressiveness', $this->num( 'auto-grid-aggressiveness' ) ),
-				'auto_grid_flow'    => array( 'auto-grid-flow-option', in_array( $this->raw( 'auto-grid-flow-option' ), array( 'auto-fit', 'auto-fill' ), true ) ? $this->raw( 'auto-grid-flow-option' ) : null ),
+				'auto_grid_flow'           => array( 'auto-grid-flow-option', in_array( $this->raw( 'auto-grid-flow-option' ), array( 'auto-fit', 'auto-fill' ), true ) ? $this->raw( 'auto-grid-flow-option' ) : null ),
 			)
 		);
 		Scale_Engine::save_settings( $s );
@@ -352,7 +370,7 @@ class Acss_Import {
 				'btn_font_size'          => array( 'btn-font-size', $this->css( 'btn-font-size' ) ),
 				'btn_border_width'       => array( 'btn-border-width', $this->css( 'btn-border-width' ) ),
 				'btn_min_width'          => array( 'btn-min-width', $px( $this->css( 'btn-min-width' ) ) ),
-				'btn_line_height'        => array( 'btn-line-height', null !== $this->css( 'btn-line-height' ) ? $this->css( 'btn-line-height' ) : '1' ), // empty = ACSS default 1
+				'btn_line_height'        => array( 'btn-line-height', null !== $this->css( 'btn-line-height' ) ? $this->css( 'btn-line-height' ) : '1' ), // empty = ACSS default 1.
 				'btn_text_transform'     => array( 'btn-text-transform', $this->css( 'btn-text-transform' ) ),
 				'btn_letter_spacing'     => array( 'btn-letter-spacing', $this->css( 'btn-letter-spacing' ) ),
 				// ACSS 4 styles WS Form only, never native/Bricks fields.
@@ -405,20 +423,20 @@ class Acss_Import {
 	private function typography() {
 		$s   = Components::settings();
 		$map = array(
-			'text_font_style'        => array( 'text-font-style', $this->css( 'text-font-style' ) ),
-			'text_letter_spacing'    => array( 'text-letter-spacing', $this->css( 'text-letter-spacing' ) ),
-			'text_transform'         => array( 'text-transform', $this->css( 'text-transform' ) ),
-			'heading_font_style'     => array( 'heading-font-style', $this->css( 'heading-font-style' ) ),
-			'heading_text_transform' => array( 'heading-text-transform', $this->css( 'heading-text-transform' ) ),
-			'text_size_classes'      => array( 'option-text-size-classes', $this->on( 'option-text-size-classes' ) ),
-			'link_weight'            => array( 'link-weight', $this->css( 'link-weight' ) ),
-			'link_decoration'        => array( 'link-decoration', $this->css( 'link-decoration' ) ),
-			'link_decoration_hover'  => array( 'link-decoration-hover', $this->css( 'link-decoration-hover' ) ),
-			'link_decoration_color'  => array( 'link-decoration-color', $this->css( 'link-decoration-color' ) ),
+			'text_font_style'             => array( 'text-font-style', $this->css( 'text-font-style' ) ),
+			'text_letter_spacing'         => array( 'text-letter-spacing', $this->css( 'text-letter-spacing' ) ),
+			'text_transform'              => array( 'text-transform', $this->css( 'text-transform' ) ),
+			'heading_font_style'          => array( 'heading-font-style', $this->css( 'heading-font-style' ) ),
+			'heading_text_transform'      => array( 'heading-text-transform', $this->css( 'heading-text-transform' ) ),
+			'text_size_classes'           => array( 'option-text-size-classes', $this->on( 'option-text-size-classes' ) ),
+			'link_weight'                 => array( 'link-weight', $this->css( 'link-weight' ) ),
+			'link_decoration'             => array( 'link-decoration', $this->css( 'link-decoration' ) ),
+			'link_decoration_hover'       => array( 'link-decoration-hover', $this->css( 'link-decoration-hover' ) ),
+			'link_decoration_color'       => array( 'link-decoration-color', $this->css( 'link-decoration-color' ) ),
 			'link_decoration_color_hover' => array( 'link-decoration-color-hover', $this->css( 'link-decoration-color-hover' ) ),
 			'link_decoration_thickness'   => array( 'link-decoration-thickness', $this->css( 'link-decoration-thickness' ) ),
-			'link_underline_offset'  => array( 'link-underline-offset', $this->css( 'link-underline-offset' ) ),
-			'link_transition'        => array( 'link-transition', $this->css( 'link-transition' ) ),
+			'link_underline_offset'       => array( 'link-underline-offset', $this->css( 'link-underline-offset' ) ),
+			'link_transition'             => array( 'link-transition', $this->css( 'link-transition' ) ),
 		);
 		foreach ( array_keys( Components::TYPE_PROPS ) as $p ) {
 			$id = str_replace( '_', '-', $p );
@@ -454,13 +472,61 @@ class Acss_Import {
 			$shades[]  = "option-$f-btn-shades";
 		}
 		// Only what differs from TokenForge's defaults is stored as an override.
-		$keys = array(
-			'solid'         => array( 'bg' => 'btn-%s-bg', 'text' => 'btn-%s-text', 'border' => 'btn-%s-border-color', 'hover' => 'btn-%s-hover', 'hover_text' => 'btn-%s-hover-text', 'hover_border' => 'btn-%s-hover-border-color', 'focus' => 'btn-%s-focus-color' ),
-			'dark'          => array( 'bg' => 'btn-%s-dark-bg', 'text' => 'btn-%s-dark-text', 'border' => 'btn-%s-dark-border-color', 'hover' => 'btn-%s-dark-hover', 'hover_text' => 'btn-%s-dark-hover-text', 'hover_border' => 'btn-%s-dark-hover-border-color', 'focus' => 'btn-%s-dark-focus-color' ),
-			'light'         => array( 'bg' => 'btn-%s-light-bg', 'text' => 'btn-%s-light-text', 'border' => 'btn-%s-light-border-color', 'hover' => 'btn-%s-light-hover', 'hover_text' => 'btn-%s-light-hover-text', 'hover_border' => 'btn-%s-light-hover-border-color', 'focus' => 'btn-%s-light-focus-color' ),
-			'outline'       => array( 'bg' => 'btn-%s-outline-background', 'hover' => 'btn-%s-outline-background-hover', 'border' => 'btn-%s-outline-border-color', 'hover_border' => 'btn-%s-outline-border-hover', 'focus' => 'btn-%s-outline-focus-color', 'text' => '%s-outline-btn-text', 'hover_text' => '%s-outline-hover-text' ),
-			'outline-dark'  => array( 'bg' => 'btn-%s-outline-dark-background', 'hover' => 'btn-%s-outline-dark-background-hover', 'border' => 'btn-%s-outline-dark-border-color', 'hover_border' => 'btn-%s-outline-dark-border-hover', 'focus' => 'btn-%s-outline-dark-focus-color', 'text' => '%s-outline-dark-btn-text', 'hover_text' => '%s-outline-dark-hover-text' ),
-			'outline-light' => array( 'bg' => 'btn-%s-outline-light-background', 'hover' => 'btn-%s-outline-light-background-hover', 'border' => 'btn-%s-outline-light-border-color', 'hover_border' => 'btn-%s-outline-light-border-hover', 'focus' => 'btn-%s-outline-light-focus-color', 'text' => '%s-outline-light-btn-text', 'hover_text' => '%s-outline-light-hover-text' ),
+		$keys      = array(
+			'solid'         => array(
+				'bg'           => 'btn-%s-bg',
+				'text'         => 'btn-%s-text',
+				'border'       => 'btn-%s-border-color',
+				'hover'        => 'btn-%s-hover',
+				'hover_text'   => 'btn-%s-hover-text',
+				'hover_border' => 'btn-%s-hover-border-color',
+				'focus'        => 'btn-%s-focus-color',
+			),
+			'dark'          => array(
+				'bg'           => 'btn-%s-dark-bg',
+				'text'         => 'btn-%s-dark-text',
+				'border'       => 'btn-%s-dark-border-color',
+				'hover'        => 'btn-%s-dark-hover',
+				'hover_text'   => 'btn-%s-dark-hover-text',
+				'hover_border' => 'btn-%s-dark-hover-border-color',
+				'focus'        => 'btn-%s-dark-focus-color',
+			),
+			'light'         => array(
+				'bg'           => 'btn-%s-light-bg',
+				'text'         => 'btn-%s-light-text',
+				'border'       => 'btn-%s-light-border-color',
+				'hover'        => 'btn-%s-light-hover',
+				'hover_text'   => 'btn-%s-light-hover-text',
+				'hover_border' => 'btn-%s-light-hover-border-color',
+				'focus'        => 'btn-%s-light-focus-color',
+			),
+			'outline'       => array(
+				'bg'           => 'btn-%s-outline-background',
+				'hover'        => 'btn-%s-outline-background-hover',
+				'border'       => 'btn-%s-outline-border-color',
+				'hover_border' => 'btn-%s-outline-border-hover',
+				'focus'        => 'btn-%s-outline-focus-color',
+				'text'         => '%s-outline-btn-text',
+				'hover_text'   => '%s-outline-hover-text',
+			),
+			'outline-dark'  => array(
+				'bg'           => 'btn-%s-outline-dark-background',
+				'hover'        => 'btn-%s-outline-dark-background-hover',
+				'border'       => 'btn-%s-outline-dark-border-color',
+				'hover_border' => 'btn-%s-outline-dark-border-hover',
+				'focus'        => 'btn-%s-outline-dark-focus-color',
+				'text'         => '%s-outline-dark-btn-text',
+				'hover_text'   => '%s-outline-dark-hover-text',
+			),
+			'outline-light' => array(
+				'bg'           => 'btn-%s-outline-light-background',
+				'hover'        => 'btn-%s-outline-light-background-hover',
+				'border'       => 'btn-%s-outline-light-border-color',
+				'hover_border' => 'btn-%s-outline-light-border-hover',
+				'focus'        => 'btn-%s-outline-light-focus-color',
+				'text'         => '%s-outline-light-btn-text',
+				'hover_text'   => '%s-outline-light-hover-text',
+			),
 		);
 		$norm      = function ( $v ) {
 			return preg_replace( '/\s+/', '', strtolower( (string) $v ) );
@@ -488,22 +554,22 @@ class Acss_Import {
 			'Buttons',
 			$s,
 			array(
-				'btn_families'        => array( 'option-{family}-btn', $seen ? implode( ',', $families ) : null ),
-				'btn_outline'         => array( 'option-{family}-btn-outline', $this->any_on( $outline ) ),
-				'btn_shades'          => array( 'option-{family}-btn-shades', $this->any_on( $shades ) ),
-				'btn_overrides'       => array( 'btn-{family}-* (' . $n . ' differ from the defaults)', $overrides ),
-				'btn_font_family'     => array( 'btn-font-family', $this->css( 'btn-font-family' ) ),
-				'btn_font_style'      => array( 'btn-font-style', $this->css( 'btn-font-style' ) ),
-				'btn_text_align'      => array( 'btn-text-align', $this->css( 'btn-text-align' ) ),
-				'btn_justify'         => array( 'btn-justify-content', $this->css( 'btn-justify-content' ) ),
-				'btn_width'           => array( 'btn-width', $this->css( 'btn-width' ) ),
-				'btn_border_style'    => array( 'btn-border-style', $this->css( 'btn-border-style' ) ),
-				'btn_text_decoration' => array( 'btn-text-decoration', $this->css( 'btn-text-decoration' ) ),
+				'btn_families'              => array( 'option-{family}-btn', $seen ? implode( ',', $families ) : null ),
+				'btn_outline'               => array( 'option-{family}-btn-outline', $this->any_on( $outline ) ),
+				'btn_shades'                => array( 'option-{family}-btn-shades', $this->any_on( $shades ) ),
+				'btn_overrides'             => array( 'btn-{family}-* (' . $n . ' differ from the defaults)', $overrides ),
+				'btn_font_family'           => array( 'btn-font-family', $this->css( 'btn-font-family' ) ),
+				'btn_font_style'            => array( 'btn-font-style', $this->css( 'btn-font-style' ) ),
+				'btn_text_align'            => array( 'btn-text-align', $this->css( 'btn-text-align' ) ),
+				'btn_justify'               => array( 'btn-justify-content', $this->css( 'btn-justify-content' ) ),
+				'btn_width'                 => array( 'btn-width', $this->css( 'btn-width' ) ),
+				'btn_border_style'          => array( 'btn-border-style', $this->css( 'btn-border-style' ) ),
+				'btn_text_decoration'       => array( 'btn-text-decoration', $this->css( 'btn-text-decoration' ) ),
 				'btn_text_decoration_hover' => array( 'btn-text-decoration-hover', $this->css( 'btn-text-decoration-hover' ) ),
-				'btn_transition'      => array( 'btn-transition', $this->css( 'btn-transition' ) ),
-				'btn_gap'             => array( '(no button gap in the imported setup)', '' ),
-				'btn_mobile_full'     => array( 'option-btn-full-width-on-mobile', $this->on( 'option-btn-full-width-on-mobile' ) ),
-				'btn_mobile_bp'       => array( 'option-btn-full-width-mobile-breakpoint', null !== $bp && $bp > 0 ? $bp : null ),
+				'btn_transition'            => array( 'btn-transition', $this->css( 'btn-transition' ) ),
+				'btn_gap'                   => array( '(no button gap in the imported setup)', '' ),
+				'btn_mobile_full'           => array( 'option-btn-full-width-on-mobile', $this->on( 'option-btn-full-width-on-mobile' ) ),
+				'btn_mobile_bp'             => array( 'option-btn-full-width-mobile-breakpoint', null !== $bp && $bp > 0 ? $bp : null ),
 			)
 		);
 		// A list value in the report reads better as a count.
@@ -514,12 +580,12 @@ class Acss_Import {
 	private function cards() {
 		$s   = Components::settings();
 		$map = array(
-			'card_selectors'   => array( 'card-selectors', $this->selector( 'card-selectors' ) ),
-			'card_scheme'      => array( '(imported cards are light)', null !== $this->on( 'option-cards' ) ? 'light' : null ),
-			'card_boxed_icons' => array( 'option-card-boxed-icons', $this->on( 'option-card-boxed-icons' ) ),
-			'card_concentric'  => array( 'option-card-concentric-radius', $this->on( 'option-card-concentric-radius' ) ),
-			'card_min_radius'  => array( 'card-min-radius', $this->px( 'card-min-radius' ) ),
-			'card_button_family' => array( 'card-button-style', '' !== $this->raw( 'card-button-style' ) ? preg_replace( '/[^a-z0-9\-]/', '', strtolower( $this->raw( 'card-button-style' ) ) ) : null ),
+			'card_selectors'        => array( 'card-selectors', $this->selector( 'card-selectors' ) ),
+			'card_scheme'           => array( '(imported cards are light)', null !== $this->on( 'option-cards' ) ? 'light' : null ),
+			'card_boxed_icons'      => array( 'option-card-boxed-icons', $this->on( 'option-card-boxed-icons' ) ),
+			'card_concentric'       => array( 'option-card-concentric-radius', $this->on( 'option-card-concentric-radius' ) ),
+			'card_min_radius'       => array( 'card-min-radius', $this->px( 'card-min-radius' ) ),
+			'card_button_family'    => array( 'card-button-style', '' !== $this->raw( 'card-button-style' ) ? preg_replace( '/[^a-z0-9\-]/', '', strtolower( $this->raw( 'card-button-style' ) ) ) : null ),
 			'card_link_color_hover' => array( 'card-link-hover-color', $this->css( 'card-link-hover-color' ) ),
 			'card_media_aspect'     => array( 'card-media-aspect-ratio', $this->css( 'card-media-aspect-ratio' ) ),
 			'card_media_fit'        => array( 'card-media-object-fit', $this->css( 'card-media-object-fit' ) ),
@@ -542,33 +608,33 @@ class Acss_Import {
 		$rad   = function ( $f ) use ( $r ) {
 			return null === $r ? null : round( $r * $f, 4 ) . 'px';
 		};
-		$map = array(
-			'radius_xs'           => array( 'base-radius ÷ radius-scale²', $rad( 1 / ( $sc * $sc ) ) ),
-			'radius_xxl'          => array( 'base-radius × radius-scale³', $rad( $sc * $sc * $sc ) ),
-			'border_color_light'  => array( 'border-color-light', $this->css( 'border-color-light' ) ),
-			'divider_size'        => array( 'divider-size', $this->px( 'divider-size' ) ),
-			'divider_style'       => array( 'divider-style', $this->css( 'divider-style' ) ),
-			'divider_color_dark'  => array( 'divider-color-dark', $this->css( 'divider-color-dark' ) ),
-			'divider_color_light' => array( 'divider-color-light', $this->css( 'divider-color-light' ) ),
-			'divider_gap'         => array( 'divider-gap', $this->css( 'divider-gap' ) ),
-			'enable_icon'         => array( 'option-icons', $this->on( 'option-icons' ) ),
-			'icon_padding'        => array( 'icon-padding', $this->css( 'icon-padding' ) ),
-			'icon_color'          => array( 'icon-color', $this->css( 'icon-color' ) ),
-			'icon_color_hover'    => array( 'icon-color-hover', $this->css( 'icon-color-hover' ) ),
-			'icon_background'     => array( 'icon-background', $this->css( 'icon-background' ) ),
-			'icon_background_hover' => array( 'icon-background-hover', $this->css( 'icon-background-hover' ) ),
-			'icon_border_width'   => array( 'icon-border-width', $this->css( 'icon-border-width' ) ),
-			'icon_border_style'   => array( 'icon-border-style', $this->css( 'icon-border-style' ) ),
-			'icon_border_color'   => array( 'icon-border-color', $this->css( 'icon-border-color' ) ),
+		$map   = array(
+			'radius_xs'               => array( 'base-radius ÷ radius-scale²', $rad( 1 / ( $sc * $sc ) ) ),
+			'radius_xxl'              => array( 'base-radius × radius-scale³', $rad( $sc * $sc * $sc ) ),
+			'border_color_light'      => array( 'border-color-light', $this->css( 'border-color-light' ) ),
+			'divider_size'            => array( 'divider-size', $this->px( 'divider-size' ) ),
+			'divider_style'           => array( 'divider-style', $this->css( 'divider-style' ) ),
+			'divider_color_dark'      => array( 'divider-color-dark', $this->css( 'divider-color-dark' ) ),
+			'divider_color_light'     => array( 'divider-color-light', $this->css( 'divider-color-light' ) ),
+			'divider_gap'             => array( 'divider-gap', $this->css( 'divider-gap' ) ),
+			'enable_icon'             => array( 'option-icons', $this->on( 'option-icons' ) ),
+			'icon_padding'            => array( 'icon-padding', $this->css( 'icon-padding' ) ),
+			'icon_color'              => array( 'icon-color', $this->css( 'icon-color' ) ),
+			'icon_color_hover'        => array( 'icon-color-hover', $this->css( 'icon-color-hover' ) ),
+			'icon_background'         => array( 'icon-background', $this->css( 'icon-background' ) ),
+			'icon_background_hover'   => array( 'icon-background-hover', $this->css( 'icon-background-hover' ) ),
+			'icon_border_width'       => array( 'icon-border-width', $this->css( 'icon-border-width' ) ),
+			'icon_border_style'       => array( 'icon-border-style', $this->css( 'icon-border-style' ) ),
+			'icon_border_color'       => array( 'icon-border-color', $this->css( 'icon-border-color' ) ),
 			'icon_border_color_hover' => array( 'icon-border-color-hover', $this->css( 'icon-border-color-hover' ) ),
-			'icon_radius'         => array( 'icon-radius', $this->css( 'icon-radius' ) ),
-			'icon_scheme'         => array( 'icon-default-scheme', in_array( $this->raw( 'icon-default-scheme' ), array( 'light', 'dark' ), true ) ? $this->raw( 'icon-default-scheme' ) : ( '' !== $this->raw( 'icon-default-scheme' ) ? '' : null ) ),
-			'icon_default_style'  => array( 'icon-default-style', in_array( $this->raw( 'icon-default-style' ), array( 'plain', 'boxed' ), true ) ? $this->raw( 'icon-default-style' ) : null ),
-			'icon_list_gap'       => array( 'icon-list-gap', $this->css( 'icon-list-gap' ) ),
-			'icon_list_icon_size' => array( 'icon-list-icon-size', $this->css( 'icon-list-icon-size' ) ),
-			'boxed_list_icons'    => array( 'option-boxed-list-icons', $this->on( 'option-boxed-list-icons' ) ),
-			'inverted_radius'     => array( 'option-inverted-radius-framework', $this->on( 'option-inverted-radius-framework' ) ),
-			'ribbons'             => array( 'option-corner-ribbons', $this->on( 'option-corner-ribbons' ) ),
+			'icon_radius'             => array( 'icon-radius', $this->css( 'icon-radius' ) ),
+			'icon_scheme'             => array( 'icon-default-scheme', in_array( $this->raw( 'icon-default-scheme' ), array( 'light', 'dark' ), true ) ? $this->raw( 'icon-default-scheme' ) : ( '' !== $this->raw( 'icon-default-scheme' ) ? '' : null ) ),
+			'icon_default_style'      => array( 'icon-default-style', in_array( $this->raw( 'icon-default-style' ), array( 'plain', 'boxed' ), true ) ? $this->raw( 'icon-default-style' ) : null ),
+			'icon_list_gap'           => array( 'icon-list-gap', $this->css( 'icon-list-gap' ) ),
+			'icon_list_icon_size'     => array( 'icon-list-icon-size', $this->css( 'icon-list-icon-size' ) ),
+			'boxed_list_icons'        => array( 'option-boxed-list-icons', $this->on( 'option-boxed-list-icons' ) ),
+			'inverted_radius'         => array( 'option-inverted-radius-framework', $this->on( 'option-inverted-radius-framework' ) ),
+			'ribbons'                 => array( 'option-corner-ribbons', $this->on( 'option-corner-ribbons' ) ),
 		);
 		foreach ( Extras::ICON_SIZES as $sz ) {
 			$map[ 'icon_' . $sz ]         = array( "icon-size-$sz", $this->px( "icon-size-$sz" ) );
@@ -592,7 +658,7 @@ class Acss_Import {
 			if ( '' === $fam || '' === $src || isset( $have[ $fam . '|' . $src ] ) ) {
 				continue;
 			}
-			$s['fonts'][] = array(
+			$s['fonts'][]            = array(
 				'family'    => $fam,
 				'src'       => $src,
 				'src2'      => $this->raw( "font-$i-src-fallback" ),
@@ -605,7 +671,7 @@ class Acss_Import {
 				'preload'   => false,
 			);
 			$this->report['Fonts'][] = "fonts ← font-$i ($fam)";
-			$n++;
+			++$n;
 		}
 		if ( $n ) {
 			Fonts::save_settings( $s );
@@ -670,11 +736,11 @@ class Acss_Import {
 		foreach ( array( 'bg-ultra-light', 'bg-light', 'bg-dark', 'bg-ultra-dark', 'text-dark', 'text-dark-muted', 'text-light', 'text-light-muted' ) as $k ) {
 			$map[ str_replace( '-', '_', $k ) ] = array( $k, $this->css( $k ) );
 		}
-		$ws = strtolower( $this->raw( 'website-color-scheme' ) );
+		$ws                    = strtolower( $this->raw( 'website-color-scheme' ) );
 		$map['default_scheme'] = array( 'website-color-scheme', in_array( $ws, array( 'light', 'dark', 'auto' ), true ) ? $ws : null );
 		// What each .bg--* sets inside it.
 		foreach ( Scheme::CONTEXTS as $ctx ) {
-			$k = 'ctx_' . str_replace( '-', '_', $ctx ) . '_';
+			$k                        = 'ctx_' . str_replace( '-', '_', $ctx ) . '_';
 			$map[ $k . 'text' ]       = array( "bg-$ctx-text", $this->css( "bg-$ctx-text" ) );
 			$map[ $k . 'heading' ]    = array( "bg-$ctx-heading", $this->css( "bg-$ctx-heading" ) );
 			$map[ $k . 'button' ]     = array( "bg-$ctx-button", '' !== $this->raw( "bg-$ctx-button" ) ? $this->raw( "bg-$ctx-button" ) : null );
@@ -691,25 +757,29 @@ class Acss_Import {
 	private function content() {
 		$s   = Content::settings();
 		$map = array(
-			'smart_spacing'         => array( 'option-smart-spacing', $this->on( 'option-smart-spacing' ) ),
-			'flow'                  => array( 'option-smart-spacing', $this->on( 'option-smart-spacing' ) ),
-			'flow_selectors'        => array( 'smart-spacing-selectors', $this->selector( 'smart-spacing-selectors' ) ),
+			'smart_spacing'  => array( 'option-smart-spacing', $this->on( 'option-smart-spacing' ) ),
+			'flow'           => array( 'option-smart-spacing', $this->on( 'option-smart-spacing' ) ),
+			'flow_selectors' => array( 'smart-spacing-selectors', $this->selector( 'smart-spacing-selectors' ) ),
 			// ACSS has no prose layer: don't double-style Rich Text / post content.
-			'prose_auto'            => array( '(no automatic prose in the imported setup)', false ),
-			'rich_text'             => array( '(no automatic prose in the imported setup)', false ),
-			'blockquotes'           => array( 'option-blockquote-styling', $this->on( 'option-blockquote-styling' ) ),
-			'bq_auto'               => array( 'option-auto-style-blockquotes', $this->on( 'option-auto-style-blockquotes' ) ),
-			'bq_exclude'            => array( 'blockquote-selector-exclusions', $this->selector( 'blockquote-selector-exclusions' ) ),
+			'prose_auto'     => array( '(no automatic prose in the imported setup)', false ),
+			'rich_text'      => array( '(no automatic prose in the imported setup)', false ),
+			'blockquotes'    => array( 'option-blockquote-styling', $this->on( 'option-blockquote-styling' ) ),
+			'bq_auto'        => array( 'option-auto-style-blockquotes', $this->on( 'option-auto-style-blockquotes' ) ),
+			'bq_exclude'     => array( 'blockquote-selector-exclusions', $this->selector( 'blockquote-selector-exclusions' ) ),
 		);
 		// ACSS setting ids differ from their variable names for three of these.
-		$ids = array( 'border-radius' => 'blockquote-radius', 'text-text-align' => 'blockquote-text-align', 'text-text-transform' => 'blockquote-text-transform' );
+		$ids = array(
+			'border-radius'       => 'blockquote-radius',
+			'text-text-align'     => 'blockquote-text-align',
+			'text-text-transform' => 'blockquote-text-transform',
+		);
 		foreach ( array_keys( Content::BLOCKQUOTE ) as $k ) {
 			$id = isset( $ids[ $k ] ) ? $ids[ $k ] : 'blockquote-' . $k;
 			$map[ 'bq_' . str_replace( '-', '_', $k ) ] = array( $id, $this->css( $id ) );
 		}
 		foreach ( Content::FLOW_KEYS as $k ) {
-			$id          = str_replace( '_', '-', $k );
-			$map[ $k ]   = array( $id, $this->css( $id ) );
+			$id        = str_replace( '_', '-', $k );
+			$map[ $k ] = array( $id, $this->css( $id ) );
 		}
 		$this->apply( 'Content', $s, $map );
 		Content::save_settings( $s );
@@ -717,9 +787,9 @@ class Acss_Import {
 
 	/** Transitions, easing presets and effects. */
 	private function motion() {
-		$old = Motion::settings();
-		$s   = $old;
-		$fx  = function ( $family, $extra = array() ) {
+		$old     = Motion::settings();
+		$s       = $old;
+		$fx      = function ( $family, $extra = array() ) {
 			$keys = array();
 			foreach ( array_merge( array( 'fade', 'float', 'sink', 'slide', 'grow', 'shrink', 'blur' ), $extra ) as $f ) {
 				$keys[] = "option-$family-$f";
@@ -800,7 +870,11 @@ class Acss_Import {
 			'border_fx'           => array( 'option-border-ripple/outline/underline', $this->any_on( array( 'option-border-ripple', 'option-border-outline', 'option-border-underline' ) ) ),
 			'disable_in_builder'  => array( 'option-disable-effects-in-builder', $this->on( 'option-disable-effects-in-builder' ) ),
 		);
-		foreach ( array( 'ripple' => array( 'color', 'width', 'duration', 'distance' ), 'outline' => array( 'color', 'width', 'duration' ), 'underline' => array( 'color', 'width', 'duration' ) ) as $fx_name => $props ) {
+		foreach ( array(
+			'ripple'    => array( 'color', 'width', 'duration', 'distance' ),
+			'outline'   => array( 'color', 'width', 'duration' ),
+			'underline' => array( 'color', 'width', 'duration' ),
+		) as $fx_name => $props ) {
 			foreach ( $props as $p ) {
 				$map[ $fx_name . '_' . $p ] = array( "border-$fx_name-$p", $c( "border-$fx_name-$p" ) );
 			}
@@ -814,7 +888,7 @@ class Acss_Import {
 
 	/** Basic + custom overlays, surfaces. */
 	private function overlays() {
-		$s = Overlays::settings();
+		$s      = Overlays::settings();
 		$pseudo = function ( $k ) {
 			$v = $this->raw( $k );
 			return in_array( $v, array( 'before', 'after' ), true ) ? $v : null;
@@ -834,7 +908,10 @@ class Acss_Import {
 		};
 		// Numbered presets keep their numbers (.overlay-3 stays .overlay-3), so
 		// the list runs up to the last one that actually paints something.
-		foreach ( array( 'overlay' => 'overlays', 'surface' => 'surfaces' ) as $kind => $key ) {
+		foreach ( array(
+			'overlay' => 'overlays',
+			'surface' => 'surfaces',
+		) as $kind => $key ) {
 			$list = array();
 			$last = 0;
 			for ( $i = 1; $i <= Overlays::MAX; $i++ ) {
@@ -927,9 +1004,9 @@ class Acss_Import {
 
 	/** Bricks builder options (TokenForge + native Bricks equivalents). */
 	private function builder() {
-		$s    = Features\Builder_Enhancements::settings();
-		$ctx  = $this->on( 'option-contextual-menus-enable' );
-		$css  = $this->on( 'option-bricks-css-improved' );
+		$s   = Features\Builder_Enhancements::settings();
+		$ctx = $this->on( 'option-contextual-menus-enable' );
+		$css = $this->on( 'option-bricks-css-improved' );
 		$this->apply(
 			'Builder',
 			$s,

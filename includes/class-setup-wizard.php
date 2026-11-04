@@ -137,16 +137,16 @@ class Setup_Wizard {
 				__( 'Shop', 'tokenforge' ),
 				__( 'The builder\'s shop elements and features: the newer cart, checkout and account elements, AJAX add to cart, quantity in product lists, variation swatches, and "New" and "Sale" badges.', 'tokenforge' ),
 				array(
-					'woocommerceUseAdvancedModularElements'          => array( true, __( 'Advanced modular shop elements (cart, checkout and account v2)', 'tokenforge' ) ),
-					'woocommerceEnableAjaxAddToCart'                 => array( true, __( 'AJAX add to cart', 'tokenforge' ) ),
-					'woocommerceUseQtyInLoop'                        => array( true, __( 'Quantity field in product lists', 'tokenforge' ) ),
-					'woocommerceUseVariationSwatches'                => array( true, __( 'Variation swatches', 'tokenforge' ) ),
-					'woocommerceVariationAwareAttributeStockFilter'  => array( true, __( 'Variation-aware stock filter', 'tokenforge' ) ),
-					'woocommerceUseBricksWooNotice'                  => array( true, __( 'The builder\'s notice element (add it where notices should show)', 'tokenforge' ) ),
-					'woocommerceUseBricksWooCheckoutCoupon'          => array( true, __( 'The builder\'s checkout coupon element (add it to the checkout)', 'tokenforge' ) ),
-					'woocommerceUseBricksWooCheckoutLogin'           => array( true, __( 'The builder\'s checkout login element (add it to the checkout)', 'tokenforge' ) ),
-					'woocommerceBadgeNew'                            => array( '30', __( '"New" badge for products up to 30 days old', 'tokenforge' ) ),
-					'woocommerceBadgeSale'                           => array( 'text', __( '"Sale" badge as text', 'tokenforge' ) ),
+					'woocommerceUseAdvancedModularElements' => array( true, __( 'Advanced modular shop elements (cart, checkout and account v2)', 'tokenforge' ) ),
+					'woocommerceEnableAjaxAddToCart'       => array( true, __( 'AJAX add to cart', 'tokenforge' ) ),
+					'woocommerceUseQtyInLoop'              => array( true, __( 'Quantity field in product lists', 'tokenforge' ) ),
+					'woocommerceUseVariationSwatches'      => array( true, __( 'Variation swatches', 'tokenforge' ) ),
+					'woocommerceVariationAwareAttributeStockFilter' => array( true, __( 'Variation-aware stock filter', 'tokenforge' ) ),
+					'woocommerceUseBricksWooNotice'        => array( true, __( 'The builder\'s notice element (add it where notices should show)', 'tokenforge' ) ),
+					'woocommerceUseBricksWooCheckoutCoupon' => array( true, __( 'The builder\'s checkout coupon element (add it to the checkout)', 'tokenforge' ) ),
+					'woocommerceUseBricksWooCheckoutLogin' => array( true, __( 'The builder\'s checkout login element (add it to the checkout)', 'tokenforge' ) ),
+					'woocommerceBadgeNew'                  => array( '30', __( '"New" badge for products up to 30 days old', 'tokenforge' ) ),
+					'woocommerceBadgeSale'                 => array( 'text', __( '"Sale" badge as text', 'tokenforge' ) ),
 				),
 			);
 		}
@@ -176,8 +176,8 @@ class Setup_Wizard {
 			$items   = array();
 			$changes = 0;
 			foreach ( $g[2] as $key => $def ) {
-				$cur  = array_key_exists( $key, $now ) ? $now[ $key ] : null;
-				$diff = ! self::same( $cur, $def[0] );
+				$cur      = array_key_exists( $key, $now ) ? $now[ $key ] : null;
+				$diff     = ! self::same( $cur, $def[0] );
 				$changes += $diff ? 1 : 0;
 				$items[]  = array(
 					'key'    => $key,
@@ -227,11 +227,23 @@ class Setup_Wizard {
 	 * @return array
 	 */
 	private static function connect_state() {
-		$s    = Settings::get_instance()->get_settings();
+		$s = Settings::get_instance()->get_settings();
 		return array(
-			array( 'id' => 'sync', 'label' => __( 'Send TokenForge\'s variables, colours and classes to the builder', 'tokenforge' ), 'on' => ! empty( $s['sync_bricks_vars'] ) && ! empty( $s['sync_bricks_colors'] ) && ! empty( Framework::settings()['register_with_bricks'] ) ),
-			array( 'id' => 'canvas', 'label' => __( 'Load TokenForge\'s stylesheet in the builder canvas', 'tokenforge' ), 'on' => ! empty( $s['enqueue_in_builder'] ) ),
-			array( 'id' => 'theme', 'label' => __( 'Link the site\'s theme style to TokenForge (buttons, forms, typography follow your settings)', 'tokenforge' ), 'on' => Platforms\Bricks_Theme::enabled() && '' !== Platforms\Bricks_Theme::style_id( get_option( Platforms\Bricks_Theme::OPTION, array() ) ) ),
+			array(
+				'id'    => 'sync',
+				'label' => __( 'Send TokenForge\'s variables, colours and classes to the builder', 'tokenforge' ),
+				'on'    => ! empty( $s['sync_bricks_vars'] ) && ! empty( $s['sync_bricks_colors'] ) && ! empty( Framework::settings()['register_with_bricks'] ),
+			),
+			array(
+				'id'    => 'canvas',
+				'label' => __( 'Load TokenForge\'s stylesheet in the builder canvas', 'tokenforge' ),
+				'on'    => ! empty( $s['enqueue_in_builder'] ),
+			),
+			array(
+				'id'    => 'theme',
+				'label' => __( 'Link the site\'s theme style to TokenForge (buttons, forms, typography follow your settings)', 'tokenforge' ),
+				'on'    => Platforms\Bricks_Theme::enabled() && '' !== Platforms\Bricks_Theme::style_id( get_option( Platforms\Bricks_Theme::OPTION, array() ) ),
+			),
 		);
 	}
 
@@ -260,13 +272,20 @@ class Setup_Wizard {
 				} else {
 					$new[ $key ] = $def[0];
 				}
-				$changed++;
+				++$changed;
 			}
 		}
 		if ( $changed ) {
 			// Keep the settings from before the first run, so Undo can always go back to them.
 			if ( ! is_array( get_option( self::BACKUP, null ) ) ) {
-				update_option( self::BACKUP, array( 'time' => time(), 'settings' => $now ), false );
+				update_option(
+					self::BACKUP,
+					array(
+						'time'     => time(),
+						'settings' => $now,
+					),
+					false
+				);
 			}
 			update_option( 'bricks_global_settings', $new );
 			self::after_save( $new );
@@ -336,9 +355,9 @@ class Setup_Wizard {
 			}
 		}
 		if ( in_array( 'theme', $parts, true ) && Platforms\Bricks_Theme::enabled() ) {
-			Platforms\Bricks_Theme::setup(); // links the site-wide style, or makes one
+			Platforms\Bricks_Theme::setup(); // links the site-wide style, or makes one.
 		}
-		Css_Generator::get_instance()->rebuild(); // variables, colours and classes to the builder
+		Css_Generator::get_instance()->rebuild(); // variables, colours and classes to the builder.
 	}
 
 	/**

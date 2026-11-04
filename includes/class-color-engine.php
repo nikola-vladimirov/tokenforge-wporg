@@ -64,9 +64,9 @@ class Color_Engine {
 	 * @return array [h,s,l]
 	 */
 	public static function rgb_to_hsl( $r, $g, $b ) {
-		$r /= 255;
-		$g /= 255;
-		$b /= 255;
+		$r  /= 255;
+		$g  /= 255;
+		$b  /= 255;
 		$max = max( $r, $g, $b );
 		$min = min( $r, $g, $b );
 		$l   = ( $max + $min ) / 2;
@@ -105,9 +105,9 @@ class Color_Engine {
 	public static function hsl_to_hex( $h, $s, $l ) {
 		$s /= 100;
 		$l /= 100;
-		$c = ( 1 - abs( 2 * $l - 1 ) ) * $s;
-		$x = $c * ( 1 - abs( fmod( $h / 60, 2 ) - 1 ) );
-		$m = $l - $c / 2;
+		$c  = ( 1 - abs( 2 * $l - 1 ) ) * $s;
+		$x  = $c * ( 1 - abs( fmod( $h / 60, 2 ) - 1 ) );
+		$m  = $l - $c / 2;
 		if ( $h < 60 ) {
 			$rgb = array( $c, $x, 0 );
 		} elseif ( $h < 120 ) {
@@ -165,7 +165,7 @@ class Color_Engine {
 	const TRANS = array( '', 'light', 'dark', 'ultra-dark' );
 
 	/**
-	 * sRGB channel (0-1) to linear light.
+	 * Convert an sRGB channel (0-1) to linear light.
 	 *
 	 * @param float $c Channel.
 	 * @return float
@@ -175,7 +175,7 @@ class Color_Engine {
 	}
 
 	/**
-	 * sRGB (0-255) to OKLCH.
+	 * Convert sRGB (0-255) to OKLCH.
 	 *
 	 * @param int $r Red.
 	 * @param int $g Green.
@@ -183,34 +183,34 @@ class Color_Engine {
 	 * @return array [L 0-1, C, H deg]
 	 */
 	public static function rgb_to_oklch( $r, $g, $b ) {
-		$r  = self::lin( $r / 255 );
-		$g  = self::lin( $g / 255 );
-		$b  = self::lin( $b / 255 );
-		$l  = pow( 0.4122214708 * $r + 0.5363325363 * $g + 0.0514459929 * $b, 1 / 3 );
-		$m  = pow( 0.2119034982 * $r + 0.6806995451 * $g + 0.1073969566 * $b, 1 / 3 );
-		$s  = pow( 0.0883024619 * $r + 0.2817188376 * $g + 0.6299787005 * $b, 1 / 3 );
-		$L  = 0.2104542553 * $l + 0.7936177850 * $m - 0.0040720468 * $s;
-		$A  = 1.9779984951 * $l - 2.4285922050 * $m + 0.4505937099 * $s;
-		$B  = 0.0259040371 * $l + 0.7827717662 * $m - 0.8086757660 * $s;
-		$C  = sqrt( $A * $A + $B * $B );
-		$H  = $C < 1e-7 ? 0.0 : fmod( rad2deg( atan2( $B, $A ) ) + 360, 360 );
-		return array( $L, $C, $H );
+		$r         = self::lin( $r / 255 );
+		$g         = self::lin( $g / 255 );
+		$b         = self::lin( $b / 255 );
+		$l         = pow( 0.4122214708 * $r + 0.5363325363 * $g + 0.0514459929 * $b, 1 / 3 );
+		$m         = pow( 0.2119034982 * $r + 0.6806995451 * $g + 0.1073969566 * $b, 1 / 3 );
+		$s         = pow( 0.0883024619 * $r + 0.2817188376 * $g + 0.6299787005 * $b, 1 / 3 );
+		$lightness = 0.2104542553 * $l + 0.7936177850 * $m - 0.0040720468 * $s;
+		$axis_a    = 1.9779984951 * $l - 2.4285922050 * $m + 0.4505937099 * $s;
+		$axis_b    = 0.0259040371 * $l + 0.7827717662 * $m - 0.8086757660 * $s;
+		$chroma    = sqrt( $axis_a * $axis_a + $axis_b * $axis_b );
+		$hue       = $chroma < 1e-7 ? 0.0 : fmod( rad2deg( atan2( $axis_b, $axis_a ) ) + 360, 360 );
+		return array( $lightness, $chroma, $hue );
 	}
 
 	/**
 	 * Is OKLCH(L C H) inside the Display P3 gamut?
 	 *
-	 * @param float $L Lightness 0-1.
-	 * @param float $C Chroma.
-	 * @param float $H Hue deg.
+	 * @param float $lightness Lightness 0-1.
+	 * @param float $chroma Chroma.
+	 * @param float $hue Hue deg.
 	 * @return bool
 	 */
-	public static function in_p3( $L, $C, $H ) {
-		$a  = $C * cos( deg2rad( $H ) );
-		$bb = $C * sin( deg2rad( $H ) );
-		$l  = pow( $L + 0.3963377774 * $a + 0.2158037573 * $bb, 3 );
-		$m  = pow( $L - 0.1055613458 * $a - 0.0638541728 * $bb, 3 );
-		$s  = pow( $L - 0.0894841775 * $a - 1.2914855480 * $bb, 3 );
+	public static function in_p3( $lightness, $chroma, $hue ) {
+		$a  = $chroma * cos( deg2rad( $hue ) );
+		$bb = $chroma * sin( deg2rad( $hue ) );
+		$l  = pow( $lightness + 0.3963377774 * $a + 0.2158037573 * $bb, 3 );
+		$m  = pow( $lightness - 0.1055613458 * $a - 0.0638541728 * $bb, 3 );
+		$s  = pow( $lightness - 0.0894841775 * $a - 1.2914855480 * $bb, 3 );
 		// OKLab → linear sRGB → linear Display P3 (via XYZ D65, folded into one matrix).
 		$r  = 4.0767416621 * $l - 3.3077115913 * $m + 0.2309699292 * $s;
 		$g  = -1.2684380046 * $l + 2.6097574011 * $m - 0.3413193965 * $s;
@@ -231,20 +231,20 @@ class Color_Engine {
 	/**
 	 * The chroma to use at a lightness/hue: the wanted chroma, or the most P3 allows.
 	 *
-	 * @param float $L Lightness.
-	 * @param float $C Wanted chroma.
-	 * @param float $H Hue.
+	 * @param float $lightness Lightness.
+	 * @param float $chroma Wanted chroma.
+	 * @param float $hue Hue.
 	 * @return float
 	 */
-	public static function fit_chroma( $L, $C, $H ) {
-		if ( $C <= 0 || self::in_p3( $L, $C, $H ) ) {
-			return max( 0, $C );
+	public static function fit_chroma( $lightness, $chroma, $hue ) {
+		if ( $chroma <= 0 || self::in_p3( $lightness, $chroma, $hue ) ) {
+			return max( 0, $chroma );
 		}
 		$lo = 0.0;
-		$hi = $C;
+		$hi = $chroma;
 		for ( $i = 0; $i < 32; $i++ ) {
 			$mid = ( $lo + $hi ) / 2;
-			if ( self::in_p3( $L, $mid, $H ) ) {
+			if ( self::in_p3( $lightness, $mid, $hue ) ) {
 				$lo = $mid;
 			} else {
 				$hi = $mid;
@@ -280,17 +280,17 @@ class Color_Engine {
 	/**
 	 * CSS oklch() with trimmed numbers.
 	 *
-	 * @param float $L Lightness.
-	 * @param float $C Chroma.
-	 * @param float $H Hue.
+	 * @param float $lightness Lightness.
+	 * @param float $chroma Chroma.
+	 * @param float $hue Hue.
 	 * @return string
 	 */
-	public static function oklch_css( $L, $C, $H ) {
+	public static function oklch_css( $lightness, $chroma, $hue ) {
 		$n = function ( $v, $d ) {
 			$v = rtrim( rtrim( number_format( (float) $v, $d, '.', '' ), '0' ), '.' );
 			return '-0' === $v ? '0' : ( '' === $v ? '0' : $v );
 		};
-		return 'oklch(' . $n( $L, 6 ) . ' ' . $n( $C, 3 ) . ' ' . $n( $H, 2 ) . ')';
+		return 'oklch(' . $n( $lightness, 6 ) . ' ' . $n( $chroma, 3 ) . ' ' . $n( $hue, 2 ) . ')';
 	}
 
 	/**
@@ -313,16 +313,33 @@ class Color_Engine {
 		if ( null === $rgb ) {
 			return array();
 		}
-		$opt = array_merge( array( 'lightness' => null, 'alt' => '', 'trans' => true, 'alt_l' => '', 'alt_c' => '', 'hover_l' => '', 'hover_c' => '', 'alt_tokens' => false ), (array) $opt );
-		list( $r, $g, $b ) = $rgb;
-		list( $h, $s, $l ) = self::rgb_to_hsl( $r, $g, $b );
-		list( $L0, $C0, $H0 ) = self::rgb_to_oklch( $r, $g, $b );
-		$H = round( $H0 );
-		$C = round( $C0, 3 );
+		$opt                                 = array_merge(
+			array(
+				'lightness'  => null,
+				'alt'        => '',
+				'trans'      => true,
+				'alt_l'      => '',
+				'alt_c'      => '',
+				'hover_l'    => '',
+				'hover_c'    => '',
+				'alt_tokens' => false,
+			),
+			(array) $opt
+		);
+		list( $r, $g, $b )                   = $rgb;
+		list( $h, $s, $l )                   = self::rgb_to_hsl( $r, $g, $b );
+		list( $lightness0, $chroma0, $hue0 ) = self::rgb_to_oklch( $r, $g, $b );
+		$hue                                 = round( $hue0 );
+		$chroma                              = round( $chroma0, 3 );
 
 		$tokens = array();
 		$add    = function ( $n, $v ) use ( &$tokens ) {
-			$tokens[] = array( 'name' => $n, 'value' => (string) $v, 'group' => 'color', 'enabled' => true );
+			$tokens[] = array(
+				'name'    => $n,
+				'value'   => (string) $v,
+				'group'   => 'color',
+				'enabled' => true,
+			);
 		};
 
 		// HSL shade lightness (%), as in Automatic.css.
@@ -349,14 +366,14 @@ class Color_Engine {
 		}
 
 		// OKLCH: base, hover and shades.
-		$base_l = null === $opt['lightness'] ? round( $L0, 3 ) : (float) $opt['lightness'];
-		$ok     = array();
-		$ok['']      = array( $base_l, self::fit_chroma( $base_l, $C, $H ), $H );
+		$base_l      = null === $opt['lightness'] ? round( $lightness0, 3 ) : (float) $opt['lightness'];
+		$ok          = array();
+		$ok['']      = array( $base_l, self::fit_chroma( $base_l, $chroma, $hue ), $hue );
 		$hl          = self::r3( $base_l * 1.15 <= 0.98 ? $base_l * 1.15 : $base_l * 0.85 );
-		$ok['hover'] = array( $hl, self::fit_chroma( $hl, $ok[''][1], $H ), $H );
+		$ok['hover'] = array( $hl, self::fit_chroma( $hl, $ok[''][1], $hue ), $hue );
 		foreach ( $shades as $sh => $sl ) {
-			$sL        = round( self::hsl_oklch_l( $h, $s, $sl ), 6 );
-			$ok[ $sh ] = array( $sL, self::fit_chroma( $sL, $ok[''][1], $H ), $H );
+			$s_lightness = round( self::hsl_oklch_l( $h, $s, $sl ), 6 );
+			$ok[ $sh ]   = array( $s_lightness, self::fit_chroma( $s_lightness, $ok[''][1], $hue ), $hue );
 		}
 		$css = array();
 		foreach ( $ok as $k => $v ) {
@@ -364,36 +381,39 @@ class Color_Engine {
 		}
 
 		// Dark mode: the alt colour for the base (and its hover), shades swap.
-		$dark = array( '' => $css[''], 'hover' => $css['hover'] );
-		$dm   = $ok[''];     // dark main [ L, C, H ]
-		$dh   = $ok['hover']; // dark hover
+		$dark = array(
+			''      => $css[''],
+			'hover' => $css['hover'],
+		);
+		$dm   = $ok[''];     // dark main [ L, C, H ].
+		$dh   = $ok['hover']; // dark hover.
 		$alt  = self::hex_to_rgb( (string) $opt['alt'] );
 		if ( null !== $alt ) {
-			list( $aL, $aC, $aH ) = self::rgb_to_oklch( $alt[0], $alt[1], $alt[2] );
-			$aL = round( $aL, 3 );
-			$aH = round( $aH );
-			$ahl = self::r3( $aL * 1.15 <= 0.98 ? $aL * 1.15 : $aL * 0.85 );
-			$dm  = array( $aL, self::fit_chroma( $aL, round( $aC, 3 ), $aH ), $aH );
-			$dh  = array( $ahl, self::fit_chroma( $ahl, round( $aC, 3 ), $aH ), $aH );
+			list( $a_lightness, $a_chroma, $a_hue ) = self::rgb_to_oklch( $alt[0], $alt[1], $alt[2] );
+			$a_lightness                            = round( $a_lightness, 3 );
+			$a_hue                                  = round( $a_hue );
+			$ahl                                    = self::r3( $a_lightness * 1.15 <= 0.98 ? $a_lightness * 1.15 : $a_lightness * 0.85 );
+			$dm                                     = array( $a_lightness, self::fit_chroma( $a_lightness, round( $a_chroma, 3 ), $a_hue ), $a_hue );
+			$dh                                     = array( $ahl, self::fit_chroma( $ahl, round( $a_chroma, 3 ), $a_hue ), $a_hue );
 		}
 		// Fine tuning: the dark main colour's lightness / chroma (its hue stays),
 		// then the dark hover's (else the hover follows the dark main colour).
 		$num = function ( $v ) {
 			return is_numeric( $v ) ? (float) $v : null;
 		};
-		$al = $num( $opt['alt_l'] );
-		$ac = $num( $opt['alt_c'] );
+		$al  = $num( $opt['alt_l'] );
+		$ac  = $num( $opt['alt_c'] );
 		if ( null !== $al || null !== $ac ) {
-			$L   = null !== $al ? $al : $dm[0];
-			$dm  = array( $L, self::fit_chroma( $L, null !== $ac ? $ac : $dm[1], $dm[2] ), $dm[2] );
-			$hl  = self::r3( $L * 1.15 <= 0.98 ? $L * 1.15 : $L * 0.85 );
-			$dh  = array( $hl, self::fit_chroma( $hl, $dm[1], $dm[2] ), $dm[2] );
+			$lightness = null !== $al ? $al : $dm[0];
+			$dm        = array( $lightness, self::fit_chroma( $lightness, null !== $ac ? $ac : $dm[1], $dm[2] ), $dm[2] );
+			$hl        = self::r3( $lightness * 1.15 <= 0.98 ? $lightness * 1.15 : $lightness * 0.85 );
+			$dh        = array( $hl, self::fit_chroma( $hl, $dm[1], $dm[2] ), $dm[2] );
 		}
 		$hlo = $num( $opt['hover_l'] );
 		$hco = $num( $opt['hover_c'] );
 		if ( null !== $hlo || null !== $hco ) {
-			$L  = null !== $hlo ? $hlo : $dh[0];
-			$dh = array( $L, self::fit_chroma( $L, null !== $hco ? $hco : $dh[1], $dh[2] ), $dh[2] );
+			$lightness = null !== $hlo ? $hlo : $dh[0];
+			$dh        = array( $lightness, self::fit_chroma( $lightness, null !== $hco ? $hco : $dh[1], $dh[2] ), $dh[2] );
 		}
 		if ( null !== $alt || null !== $al || null !== $ac || null !== $hlo || null !== $hco ) {
 			$dark['']      = self::oklch_css( $dm[0], $dm[1], $dm[2] );

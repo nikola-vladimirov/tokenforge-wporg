@@ -40,51 +40,51 @@ class Scheme {
 	 */
 	public static function builtin_defaults() {
 		return array(
-			'assignments' => true,   // output .bg--* / .text--* + context vars
-			'dark_mode'   => 'off',  // 'off' | 'auto', generate dark values (light-dark())
-			'default_scheme' => 'auto', // with dark mode: 'light' | 'dark' | 'auto' (follow the visitor's OS)
-			'switcher'    => false,  // visitor light/dark toggle (.scheme-toggle / shortcode)
+			'assignments'                => true,   // output .bg--* / .text--* + context vars.
+			'dark_mode'                  => 'off',  // 'off' | 'auto', generate dark values (light-dark())
+			'default_scheme'             => 'auto', // with dark mode: 'light' | 'dark' | 'auto' (follow the visitor's OS).
+			'switcher'                   => false,  // visitor light/dark toggle (.scheme-toggle / shortcode)
 			// Background relationships: what each .bg--* sets inside it.
-			'ctx_ultra_light_text'    => 'var(--text-dark)',
-			'ctx_light_text'          => 'var(--text-dark)',
-			'ctx_dark_text'           => 'var(--text-light)',
-			'ctx_ultra_dark_text'     => 'var(--text-light)',
-			'ctx_ultra_light_heading' => 'var(--text-dark)',
-			'ctx_light_heading'       => 'var(--text-dark)',
-			'ctx_dark_heading'        => 'var(--text-light)',
-			'ctx_ultra_dark_heading'  => 'var(--text-light)',
-			'ctx_ultra_light_button'  => '', // a button family (e.g. primary) for btn--* inside
-			'ctx_light_button'        => '',
-			'ctx_dark_button'         => '',
-			'ctx_ultra_dark_button'   => '',
-			'ctx_ultra_light_icon'    => '', // icon colour scheme: light | dark
-			'ctx_light_icon'          => '',
-			'ctx_dark_icon'           => '',
-			'ctx_ultra_dark_icon'     => '',
-			'ctx_ultra_light_link'    => '',
-			'ctx_light_link'          => '',
-			'ctx_dark_link'           => '',
-			'ctx_ultra_dark_link'     => '',
+			'ctx_ultra_light_text'       => 'var(--text-dark)',
+			'ctx_light_text'             => 'var(--text-dark)',
+			'ctx_dark_text'              => 'var(--text-light)',
+			'ctx_ultra_dark_text'        => 'var(--text-light)',
+			'ctx_ultra_light_heading'    => 'var(--text-dark)',
+			'ctx_light_heading'          => 'var(--text-dark)',
+			'ctx_dark_heading'           => 'var(--text-light)',
+			'ctx_ultra_dark_heading'     => 'var(--text-light)',
+			'ctx_ultra_light_button'     => '', // a button family (e.g. primary) for btn--* inside.
+			'ctx_light_button'           => '',
+			'ctx_dark_button'            => '',
+			'ctx_ultra_dark_button'      => '',
+			'ctx_ultra_light_icon'       => '', // icon colour scheme: light | dark.
+			'ctx_light_icon'             => '',
+			'ctx_dark_icon'              => '',
+			'ctx_ultra_dark_icon'        => '',
+			'ctx_ultra_light_link'       => '',
+			'ctx_light_link'             => '',
+			'ctx_dark_link'              => '',
+			'ctx_ultra_dark_link'        => '',
 			'ctx_ultra_light_link_hover' => '',
 			'ctx_light_link_hover'       => '',
 			'ctx_dark_link_hover'        => '',
 			'ctx_ultra_dark_link_hover'  => '',
-			'ctx_ultra_light_focus'   => '',
-			'ctx_light_focus'         => '',
-			'ctx_dark_focus'          => '',
-			'ctx_ultra_dark_focus'    => '',
+			'ctx_ultra_light_focus'      => '',
+			'ctx_light_focus'            => '',
+			'ctx_dark_focus'             => '',
+			'ctx_ultra_dark_focus'       => '',
 			// Context colours (the light-scheme values; dark mode swaps the pairs).
-			'bg_ultra_light'   => 'var(--base-ultra-light, #f7f8fa)',
-			'bg_light'         => 'var(--base-light, #e9edf2)',
-			'bg_dark'          => 'var(--base-dark, #1a2433)',
-			'bg_ultra_dark'    => 'var(--base-ultra-dark, #0a0f18)',
-			'text_dark'        => 'var(--base, #10151c)',
-			'text_dark_muted'  => 'var(--base-semi-dark, #47505c)',
-			'text_light'       => 'var(--base-ultra-light, #f7f8fa)',
-			'text_light_muted' => 'var(--base-light, #c9d2dd)',
+			'bg_ultra_light'             => 'var(--base-ultra-light, #f7f8fa)',
+			'bg_light'                   => 'var(--base-light, #e9edf2)',
+			'bg_dark'                    => 'var(--base-dark, #1a2433)',
+			'bg_ultra_dark'              => 'var(--base-ultra-dark, #0a0f18)',
+			'text_dark'                  => 'var(--base, #10151c)',
+			'text_dark_muted'            => 'var(--base-semi-dark, #47505c)',
+			'text_light'                 => 'var(--base-ultra-light, #f7f8fa)',
+			'text_light_muted'           => 'var(--base-light, #c9d2dd)',
 			// Always render these selectors in one scheme (one per line / comma separated).
-			'force_dark'       => '',
-			'force_light'      => '',
+			'force_dark'                 => '',
+			'force_light'                => '',
 		);
 	}
 
@@ -119,10 +119,10 @@ class Scheme {
 		update_option(
 			self::OPTION,
 			array(
-				'assignments' => ! empty( $in['assignments'] ),
-				'dark_mode'   => ( isset( $in['dark_mode'] ) && 'auto' === $in['dark_mode'] ) ? 'auto' : 'off',
+				'assignments'    => ! empty( $in['assignments'] ),
+				'dark_mode'      => ( isset( $in['dark_mode'] ) && 'auto' === $in['dark_mode'] ) ? 'auto' : 'off',
 				'default_scheme' => ( isset( $in['default_scheme'] ) && in_array( $in['default_scheme'], array( 'light', 'dark' ), true ) ) ? $in['default_scheme'] : 'auto',
-				'switcher'    => ! empty( $in['switcher'] ),
+				'switcher'       => ! empty( $in['switcher'] ),
 			) + self::clean_values( $in ) + self::clean_ctx( $in )
 		);
 	}
@@ -141,7 +141,7 @@ class Scheme {
 				$k = 'ctx_' . str_replace( '-', '_', $c ) . '_' . $p;
 				$v = isset( $in[ $k ] ) ? trim( (string) $in[ $k ] ) : $d[ $k ];
 				if ( 'button' === $p ) {
-					$v = preg_replace( '/[^a-z0-9\-]/', '', strtolower( $v ) ); // a family name
+					$v = preg_replace( '/[^a-z0-9\-]/', '', strtolower( $v ) ); // a family name.
 				} elseif ( 'icon' === $p ) {
 					$v = in_array( $v, array( 'light', 'dark' ), true ) ? $v : '';
 				} else {
@@ -192,7 +192,10 @@ class Scheme {
 		};
 
 		// Forced schemes for specific selectors.
-		foreach ( array( 'dark' => $s['force_dark'], 'light' => $s['force_light'] ) as $scheme => $sel ) {
+		foreach ( array(
+			'dark'  => $s['force_dark'],
+			'light' => $s['force_light'],
+		) as $scheme => $sel ) {
 			// One per line or comma separated (commas inside :is()/:not() kept); unquote.
 			$list = array_filter( array_map( 'trim', preg_split( '/[\r\n]+|,(?![^(]*\))/', str_replace( '"', '', (string) $sel ) ) ) );
 			if ( $list ) {
@@ -202,9 +205,9 @@ class Scheme {
 
 		if ( $dark ) {
 			// The site's default scheme: fixed light/dark, or following the visitor's OS.
-			$css[] = ':root{color-scheme:' . ( 'auto' === $s['default_scheme'] ? 'light dark' : $s['default_scheme'] ) . '}';
-			$css[] = '.scheme--light{color-scheme:light}';
-			$css[] = '.scheme--dark{color-scheme:dark}';
+			$css[]     = ':root{color-scheme:' . ( 'auto' === $s['default_scheme'] ? 'light dark' : $s['default_scheme'] ) . '}';
+			$css[]     = '.scheme--light{color-scheme:light}';
+			$css[]     = '.scheme--dark{color-scheme:dark}';
 			$classes[] = 'scheme--light';
 			$classes[] = 'scheme--dark';
 
@@ -214,9 +217,9 @@ class Scheme {
 				$css[] = '.scheme-toggle{display:inline-grid;place-items:center;inline-size:2.5em;block-size:2.5em;padding:0;border:1px solid color-mix(in srgb, currentColor 25%, transparent);border-radius:999px;background:transparent;color:inherit;cursor:pointer}';
 				$css[] = '.scheme-toggle svg{inline-size:1.25em;block-size:1.25em;grid-area:1/1}';
 				// Show the moon while light is in effect, the sun while dark is.
-				$css[] = '.scheme-toggle .tf-sun{display:none}';
-				$css[] = ':root[data-scheme="dark"] .scheme-toggle .tf-sun{display:block}:root[data-scheme="dark"] .scheme-toggle .tf-moon{display:none}';
-				$css[] = '@media (prefers-color-scheme:dark){:root:not([data-scheme="light"]) .scheme-toggle .tf-sun{display:block}:root:not([data-scheme="light"]) .scheme-toggle .tf-moon{display:none}}';
+				$css[]     = '.scheme-toggle .tf-sun{display:none}';
+				$css[]     = ':root[data-scheme="dark"] .scheme-toggle .tf-sun{display:block}:root[data-scheme="dark"] .scheme-toggle .tf-moon{display:none}';
+				$css[]     = '@media (prefers-color-scheme:dark){:root:not([data-scheme="light"]) .scheme-toggle .tf-sun{display:block}:root:not([data-scheme="light"]) .scheme-toggle .tf-moon{display:none}}';
 				$classes[] = 'scheme-toggle';
 			}
 		}
@@ -251,7 +254,11 @@ class Scheme {
 				if ( '' !== $s[ $key . 'icon' ] ) {
 					$extra .= ';--icon-scheme:var(--bg-' . $surface . '-icon)';
 				}
-				foreach ( array( 'link' => '--link-color', 'link_hover' => '--link-color-hover', 'focus' => '--focus-color' ) as $p => $var ) {
+				foreach ( array(
+					'link'       => '--link-color',
+					'link_hover' => '--link-color-hover',
+					'focus'      => '--focus-color',
+				) as $p => $var ) {
 					if ( '' !== $s[ $key . $p ] ) {
 						$extra .= ";$var:" . $s[ $key . $p ];
 					}

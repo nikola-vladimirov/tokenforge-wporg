@@ -57,7 +57,7 @@ function tokenforge_uninstall_site() {
 	// 3) Strip our namespaced entries from Bricks globals.
 	$prefix = 'tokenforge_';
 
-	// Global variables. (No default on get_option(): an option that was never there stays absent, so a network does not gain empty ones on sites without a builder.)
+	// Global variables. (No default on get_option(): an option that was never there stays absent, so a network does not gain empty ones on sites without a builder.).
 	$vars = get_option( 'bricks_global_variables' );
 	if ( is_array( $vars ) ) {
 		$vars = array_values(
@@ -133,8 +133,13 @@ function tokenforge_uninstall_site() {
  */
 function tokenforge_uninstall() {
 	if ( is_multisite() ) {
-		// shortcut: one request loops all sites, fine up to a few thousand; use WP-CLI or batches beyond that
-		foreach ( get_sites( array( 'fields' => 'ids', 'number' => 0 ) ) as $tf_site ) {
+		// shortcut: one request loops all sites, fine up to a few thousand; use WP-CLI or batches beyond that.
+		foreach ( get_sites(
+			array(
+				'fields' => 'ids',
+				'number' => 0,
+			)
+		) as $tf_site ) {
 			switch_to_blog( $tf_site );
 			tokenforge_uninstall_site();
 			restore_current_blog();

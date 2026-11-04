@@ -155,7 +155,7 @@ class Token_Catalog {
 					|| ( ! empty( $t['enabled'] ) && $same )
 					|| ( $all_colors && ! empty( $t['enabled'] ) && ( 'colors' === $c['kind'] || isset( $scale[ $t['name'] ] ) ) );
 				if ( $drop ) {
-					$n++;
+					++$n;
 					continue;
 				}
 			}
@@ -196,7 +196,7 @@ class Token_Catalog {
 			// A switched-off token leaves the stylesheet's own value; one set after the list wins anyway.
 			$t = $tokens[ $at[ $name ] ];
 			if ( empty( $t['enabled'] ) || ! $d[2] ) {
-				$row['group']              = $t['group'];
+				$row['group']           = $t['group'];
 				$tokens[ $at[ $name ] ] = $row;
 			}
 		}
@@ -260,7 +260,7 @@ class Token_Catalog {
 		}
 		// Several lists can ask in one request; parse each version of the file once.
 		static $memo = array();
-		$key = md5( $css );
+		$key         = md5( $css );
 		if ( ! isset( $memo[ $key ] ) ) {
 			$memo = array( $key => self::parse_variables( $css ) );
 		}
@@ -351,22 +351,27 @@ class Token_Catalog {
 	 */
 	private static function section_source( $section, $name ) {
 		$section = strtolower( $section );
-		foreach ( array( 'woocommerce' => 'woo', 'color scheme' => 'scheme', 'content' => 'content', 'blockquote' => 'content' ) as $needle => $id ) {
+		foreach ( array(
+			'woocommerce'  => 'woo',
+			'color scheme' => 'scheme',
+			'content'      => 'content',
+			'blockquote'   => 'content',
+		) as $needle => $id ) {
 			if ( false !== strpos( $section, $needle ) ) {
 				return $id;
 			}
 		}
 		$by_name = array(
-			'/^(root-font-size|text-|heading-|h[1-6]-|font-)/'                                            => 'typography',
-			'/^(paragraph|heading-spacing|list-|nested-list|flow-|figure|figcaption|blockquote|prose)/'   => 'content',
-			'/^(section-|gutter|content-|container-|grid-|scroll-margin|offset|admin-bar|boxed)/'               => 'layout',
-			'/^(btn-|link-|option-)/'                                                                     => 'buttons',
-			'/^card-/'                                                                                    => 'cards',
-			'/^(field-|form-|input-)/'                                                                    => 'forms',
-			'/^icon/'                                                                                     => 'icons',
-			'/^(radius|border|divider|shadow|box-shadow|text-shadow|drop-shadow)/'                        => 'borders',
-			'/^(transition|ease|motion)/'                                                                 => 'effects',
-			'/^(overlay|surface)/'                                                                        => 'overlays',
+			'/^(root-font-size|text-|heading-|h[1-6]-|font-)/' => 'typography',
+			'/^(paragraph|heading-spacing|list-|nested-list|flow-|figure|figcaption|blockquote|prose)/' => 'content',
+			'/^(section-|gutter|content-|container-|grid-|scroll-margin|offset|admin-bar|boxed)/' => 'layout',
+			'/^(btn-|link-|option-)/'     => 'buttons',
+			'/^card-/'                    => 'cards',
+			'/^(field-|form-|input-)/'    => 'forms',
+			'/^icon/'                     => 'icons',
+			'/^(radius|border|divider|shadow|box-shadow|text-shadow|drop-shadow)/' => 'borders',
+			'/^(transition|ease|motion)/' => 'effects',
+			'/^(overlay|surface)/'        => 'overlays',
 		);
 		foreach ( $by_name as $re => $id ) {
 			if ( preg_match( $re, $name ) ) {

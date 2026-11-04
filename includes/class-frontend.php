@@ -99,7 +99,7 @@ class Frontend {
 				'shopUrl'  => $css->shop_css_url(),
 				'restUrl'  => esc_url_raw( rest_url( Rest::NS ) ),
 				'nonce'    => wp_create_nonce( 'wp_rest' ),
-				'interval' => 15000, // fallback poll only: a dashboard save reaches this browser at once by the signals
+				'interval' => 15000, // fallback poll only: a dashboard save reaches this browser at once by the signals.
 			)
 		);
 	}

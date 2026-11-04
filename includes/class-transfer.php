@@ -52,7 +52,7 @@ class Transfer {
 			'overlays'     => Overlays::class,
 			'enhancements' => Features\Builder_Enhancements::class,
 			'woo'          => Woo::class,
-			'scss'         => Scss::class, // the breakpoints
+			'scss'         => Scss::class, // the breakpoints.
 		);
 	}
 
@@ -68,20 +68,30 @@ class Transfer {
 				foreach ( self::modules() as $key => $class ) {
 					$settings[ $key ] = $class::settings();
 				}
+				$core = array(
+					'tokens'   => Settings::get_instance()->get_tokens(),
+					'palette'  => Palette::settings(),
+					'settings' => $settings,
+					'modules'  => Modules::settings(),
+					'recipes'  => Recipes::settings(),
+					'fonts'    => Fonts::settings(),
+				);
+				$data = apply_filters( 'tokenforge_transfer_export_data', $core );
+				// Add-ons must not export secrets: drop any added key that looks like one (the core and registered parts stay).
+				// Add-ons: do not put secrets (licence keys, API tokens) in export data; this strip only catches top-level key names.
+				$parts = self::parts();
+				foreach ( array_keys( (array) $data ) as $k ) {
+					if ( ! isset( $core[ $k ] ) && ! in_array( $k, $parts, true ) && array_intersect( preg_split( '/[_.\-]+/', strtolower( (string) $k ) ), array( 'licence', 'license', 'key', 'token', 'secret', 'password' ) ) ) {
+						unset( $data[ $k ] );
+					}
+				}
 				return array(
 					'plugin'   => 'tokenforge',
 					'format'   => self::FORMAT,
 					'version'  => TOKENFORGE_VERSION,
 					'exported' => gmdate( 'c' ),
 					'site'     => home_url( '/' ),
-					'data'     => apply_filters( 'tokenforge_transfer_export_data', array(
-						'tokens'   => Settings::get_instance()->get_tokens(),
-						'palette'  => Palette::settings(),
-						'settings' => $settings,
-						'modules'  => Modules::settings(),
-						'recipes'  => Recipes::settings(),
-						'fonts'    => Fonts::settings(),
-					) ),
+					'data'     => $data,
 				);
 			}
 		);
@@ -157,7 +167,7 @@ class Transfer {
 				Settings::get_instance()->save_tokens( $tokens );
 			}
 		}
-		do_action( 'tokenforge_transfer_imported', $done, $data );
+		do_action( 'tokenforge_transfer_imported', $done, array_intersect_key( $data, array_flip( $done ) ) );
 		return $done;
 	}
 }

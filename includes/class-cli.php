@@ -149,7 +149,7 @@ class Cli {
 				}
 				$held[ $option ] = $value;
 				add_filter( 'pre_option_' . $option, $read, PHP_INT_MAX, 2 );
-				return $old; // unchanged, so update_option writes nothing
+				return $old; // unchanged, so update_option writes nothing.
 			};
 			add_filter( 'pre_update_option', $hold, PHP_INT_MIN, 3 );
 			Transfer::import( $file, $parts );
@@ -158,7 +158,7 @@ class Cli {
 			foreach ( array_keys( $held ) as $option ) {
 				remove_filter( 'pre_option_' . $option, $read, PHP_INT_MAX );
 			}
-			$rows  = array();
+			$rows = array();
 			foreach ( $parts as $p ) {
 				$in     = isset( $file['data'][ $p ] ) && is_array( $file['data'][ $p ] );
 				$rows[] = array(
@@ -170,7 +170,14 @@ class Cli {
 			\WP_CLI::success( 'Dry run: nothing was written. Each part was compared after the same checks the import makes.' );
 			return;
 		}
-		$d = self::rest()->import_file( self::request( array( 'file' => $file, 'parts' => $parts ) ) )->get_data();
+		$d = self::rest()->import_file(
+			self::request(
+				array(
+					'file'  => $file,
+					'parts' => $parts,
+				)
+			)
+		)->get_data();
 		if ( empty( $d['ok'] ) ) {
 			\WP_CLI::error( $d['error'] ?? 'The import failed.' );
 		}
@@ -289,10 +296,16 @@ class Cli {
 			'shop' => $css->shop_css_path(),
 		);
 		$rows  = array(
-			array( 'item' => 'version', 'value' => TOKENFORGE_VERSION ),
+			array(
+				'item'  => 'version',
+				'value' => TOKENFORGE_VERSION,
+			),
 		);
 		foreach ( $files as $k => $f ) {
-			$rows[] = array( 'item' => "stylesheet $k", 'value' => file_exists( $f ) ? size_format( (int) filesize( $f ), 1 ) . ' (' . $f . ')' : 'not written' );
+			$rows[] = array(
+				'item'  => "stylesheet $k",
+				'value' => file_exists( $f ) ? size_format( (int) filesize( $f ), 1 ) . ' (' . $f . ')' : 'not written',
+			);
 		}
 		$builders = array();
 		foreach ( Platforms\Platforms::detected() as $p ) {
@@ -300,8 +313,14 @@ class Cli {
 				$builders[] = $p['label'] . ( '' !== $p['version'] ? ' ' . $p['version'] : '' );
 			}
 		}
-		$rows[] = array( 'item' => 'active builders', 'value' => $builders ? implode( ', ', $builders ) : 'none' );
-		$rows[] = array( 'item' => 'snapshots', 'value' => (string) count( History::index() ) );
+		$rows[] = array(
+			'item'  => 'active builders',
+			'value' => $builders ? implode( ', ', $builders ) : 'none',
+		);
+		$rows[] = array(
+			'item'  => 'snapshots',
+			'value' => (string) count( History::index() ),
+		);
 		\WP_CLI\Utils\format_items( isset( $assoc['format'] ) ? $assoc['format'] : 'table', $rows, array( 'item', 'value' ) );
 	}
 
@@ -333,13 +352,13 @@ class Cli {
 				continue;
 			}
 			$rows[] = array(
-				'where'  => $p['where'],
-				'what'   => $p['what'],
-				'needs'  => $p['min'],
-				'light'  => $p['modes'][0]['ratio'],
-				'dark'   => isset( $p['modes'][1] ) ? $p['modes'][1]['ratio'] : '',
-				'pass'   => $p['pass'] ? 'yes' : 'no',
-				'fix'    => ! empty( $p['fix']['value'] ) ? $p['fix']['value'] : '',
+				'where' => $p['where'],
+				'what'  => $p['what'],
+				'needs' => $p['min'],
+				'light' => $p['modes'][0]['ratio'],
+				'dark'  => isset( $p['modes'][1] ) ? $p['modes'][1]['ratio'] : '',
+				'pass'  => $p['pass'] ? 'yes' : 'no',
+				'fix'   => ! empty( $p['fix']['value'] ) ? $p['fix']['value'] : '',
 			);
 		}
 		if ( $rows ) {

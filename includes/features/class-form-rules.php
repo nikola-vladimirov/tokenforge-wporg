@@ -354,7 +354,7 @@ class Form_Rules {
 		if ( $this->on['limits'] && ! empty( $settings['tfSubmitRules'] ) ) {
 			$rules = Form_Extras::browser_rules( $fields, Form_Extras::parse_rules( $settings['tfSubmitRules'] ), self::submit_match( $settings ) );
 			if ( $rules['rules'] ) {
-				$rules['mode']                          = isset( $settings['tfSubmitMode'] ) && 'hide' === $settings['tfSubmitMode'] ? 'hide' : 'disable';
+				$rules['mode']                         = isset( $settings['tfSubmitMode'] ) && 'hide' === $settings['tfSubmitMode'] ? 'hide' : 'disable';
 				$attributes['_root']['data-tf-submit'] = wp_json_encode( $rules );
 				$used                                  = true;
 			}
@@ -760,7 +760,7 @@ class Form_Rules {
 					if ( '' !== $value && ! in_array( $value, $list, true ) ) {
 						$list[] = $value;
 					}
-					return array_slice( $list, -1000 ); // a list anyone can add to keeps its newest 1000
+					return array_slice( $list, -1000 ); // a list anyone can add to keeps its newest 1000.
 				}
 				return array_values(
 					array_filter(
@@ -956,7 +956,7 @@ class Form_Rules {
 					$list
 				)
 			);
-			$text = trim( wp_strip_all_tags( $text ) );
+			$text   = trim( wp_strip_all_tags( $text ) );
 			if ( '' === $text ) {
 				continue;
 			}

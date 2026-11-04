@@ -2,7 +2,7 @@
 /**
  * Gutenberg blocks (builder-agnostic: registered on every site).
  *
- * tokenforge/scheme-toggle: the light/dark toggle as a dynamic block. Server
+ * The tokenforge/scheme-toggle block: the light/dark toggle as a dynamic block. Server
  * rendered so the markup matches the shortcode and the Bricks element; the
  * behaviour (remembered choice, no flash) comes from TokenForge's front-end
  * script. Colour / font size / margin come from core block supports.
@@ -79,9 +79,14 @@ class Blocks {
 		}
 		$color = array( 'palette' => $palette );
 		if ( 'replace' === $mode ) {
-			$color['defaultPalette'] = false; // hide WordPress' default colours too
+			$color['defaultPalette'] = false; // hide WordPress' default colours too.
 		}
-		return $theme_json->update_with( array( 'version' => 2, 'settings' => array( 'color' => $color ) ) );
+		return $theme_json->update_with(
+			array(
+				'version'  => 2,
+				'settings' => array( 'color' => $color ),
+			)
+		);
 	}
 
 	/**
@@ -149,7 +154,12 @@ class Blocks {
 		}
 		$label   = ! empty( $atts['label'] ) ? $atts['label'] : __( 'Toggle dark mode', 'tokenforge' );
 		$wrapper = function_exists( 'get_block_wrapper_attributes' )
-			? get_block_wrapper_attributes( array( 'class' => 'scheme-toggle', 'aria-label' => $label ) )
+			? get_block_wrapper_attributes(
+				array(
+					'class'      => 'scheme-toggle',
+					'aria-label' => $label,
+				)
+			)
 			: 'class="scheme-toggle" aria-label="' . esc_attr( $label ) . '"';
 		return '<button type="button" ' . $wrapper . '>' . Scheme::toggle_icons() . '</button>';
 	}

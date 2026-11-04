@@ -39,22 +39,22 @@ class Builder_Enhancements {
 	 */
 	public static function builtin_defaults() {
 		return array(
-			'stack_add_elements' => false,
-			'pro_mode'           => false,
-			'element_outlines'   => false,
-			'grid_overlay'       => true,  // Bricks' own grid overlay on the selected grid element (off = hidden)
-			'grid_visualizer'    => false, // outline EVERY grid/flex container in the canvas (debug aid)
-			'overflow_detection' => false,
-			'canvas_headings'    => false, // a heading level badge (h1 to h6) on each heading in the canvas
-			'canvas_focus'       => false, // a number on each element Tab reaches, in tab order
-			'template_gallery'   => false, // tidier remote-template gallery (covered thumbnails, less clutter)
-			'hide_elements'      => '',    // Bricks element names to hide from Add Elements (comma separated)
-			'bigger_code_editor' => false,
-			'ctx_vars_menu'      => true,  // right-click a control input → insert a variable
-			'ctx_class_menu'     => true,  // right-click the class selector → add utility classes
-			'original_template_classes' => true, // remote templates keep their own classes (only on id/name conflicts)
-			'css_group_top'      => true,  // Style tab: CSS control group first
-			'css_autocomplete'   => true,  // CSS editor: complete --variables and .classes while typing
+			'stack_add_elements'        => false,
+			'pro_mode'                  => false,
+			'element_outlines'          => false,
+			'grid_overlay'              => true,  // Bricks' own grid overlay on the selected grid element (off = hidden).
+			'grid_visualizer'           => false, // outline EVERY grid/flex container in the canvas (debug aid).
+			'overflow_detection'        => false,
+			'canvas_headings'           => false, // a heading level badge (h1 to h6) on each heading in the canvas.
+			'canvas_focus'              => false, // a number on each element Tab reaches, in tab order.
+			'template_gallery'          => false, // tidier remote-template gallery (covered thumbnails, less clutter).
+			'hide_elements'             => '',    // Bricks element names to hide from Add Elements (comma separated).
+			'bigger_code_editor'        => false,
+			'ctx_vars_menu'             => true,  // right-click a control input → insert a variable.
+			'ctx_class_menu'            => true,  // right-click the class selector → add utility classes.
+			'original_template_classes' => true, // remote templates keep their own classes (only on id/name conflicts).
+			'css_group_top'             => true,  // Style tab: CSS control group first.
+			'css_autocomplete'          => true,  // CSS editor: complete --variables and .classes while typing.
 		);
 	}
 
@@ -79,9 +79,15 @@ class Builder_Enhancements {
 		foreach ( self::defaults() as $k => $v ) {
 			if ( 'hide_elements' === $k ) {
 				$names       = array_filter( array_map( 'trim', explode( ',', strtolower( isset( $in[ $k ] ) ? (string) $in[ $k ] : '' ) ) ) );
-				$clean[ $k ] = implode( ', ', array_map( function ( $n ) {
-					return preg_replace( '/[^a-z0-9_\-]/', '', $n );
-				}, $names ) );
+				$clean[ $k ] = implode(
+					', ',
+					array_map(
+						function ( $n ) {
+							return preg_replace( '/[^a-z0-9_\-]/', '', $n );
+						},
+						$names
+					)
+				);
 			} else {
 				$clean[ $k ] = ! empty( $in[ $k ] );
 			}
@@ -95,13 +101,13 @@ class Builder_Enhancements {
 	 * switches. Bricks stores each as 'on' in bricks_global_settings (absent = off).
 	 */
 	const NATIVE = array(
-		'builderClassPreviewOnHover'        => 'Class preview on hover (also while arrowing through the class list)',
-		'builderClassExpandSelectedOnType'  => 'Keep typing to extend the selected class suggestion',
-		'builderClassAutoSelectFirst'       => 'Auto-select the first class suggestion',
-		'builderVariablePreviewOnHover'     => 'Variable preview on hover',
-		'builderVariableSelectFirstOnEnter' => 'Enter picks the exact / first variable suggestion',
-		'builderColorPreviewOnHover'        => 'Color preview on hover',
-		'builderFontFamilyPreviewOnHover'   => 'Font family preview on hover',
+		'builderClassPreviewOnHover'           => 'Class preview on hover (also while arrowing through the class list)',
+		'builderClassExpandSelectedOnType'     => 'Keep typing to extend the selected class suggestion',
+		'builderClassAutoSelectFirst'          => 'Auto-select the first class suggestion',
+		'builderVariablePreviewOnHover'        => 'Variable preview on hover',
+		'builderVariableSelectFirstOnEnter'    => 'Enter picks the exact / first variable suggestion',
+		'builderColorPreviewOnHover'           => 'Color preview on hover',
+		'builderFontFamilyPreviewOnHover'      => 'Font family preview on hover',
 		'builderApplyVariablesAndCalculations' => 'Expand variables and calculations on Enter (e.g. space-m → var(--space-m), maths in inputs)',
 	);
 
@@ -203,7 +209,7 @@ class Builder_Enhancements {
 					'vars_menu'  => ! empty( $s['ctx_vars_menu'] ),
 					'class_menu' => ! empty( $s['ctx_class_menu'] ),
 					'css_ac'     => ! empty( $s['css_autocomplete'] ),
-					'recipes'    => $recipes, // null = off
+					'recipes'    => $recipes, // null = off.
 					'vars'       => self::menu_variables(),
 					'classes'    => self::menu_classes(),
 					'restUrl'    => esc_url_raw( rest_url( \TokenForge\Rest::NS ) ),
@@ -247,20 +253,20 @@ class Builder_Enhancements {
 			'attrs' => $list,
 			'menu'  => (bool) $menu,
 			'i18n'  => array(
-				'add'        => __( 'Add attribute', 'tokenforge' ),
-				'search'     => __( 'Search attributes...', 'tokenforge' ),
-				'noMatch'    => __( 'No matches', 'tokenforge' ),
+				'add'       => __( 'Add attribute', 'tokenforge' ),
+				'search'    => __( 'Search attributes...', 'tokenforge' ),
+				'noMatch'   => __( 'No matches', 'tokenforge' ),
 				/* translators: %s: an attribute name such as data-tf-clamp */
-				'valueFor'   => __( 'Value for %s', 'tokenforge' ),
-				'listName'   => __( 'Attribute suggestions', 'tokenforge' ),
-				'listValue'  => __( 'Attribute value suggestions', 'tokenforge' ),
+				'valueFor'  => __( 'Value for %s', 'tokenforge' ),
+				'listName'  => __( 'Attribute suggestions', 'tokenforge' ),
+				'listValue' => __( 'Attribute value suggestions', 'tokenforge' ),
 				/* translators: %d: number of suggestions */
-				'count'      => __( '%d suggestions', 'tokenforge' ),
+				'count'     => __( '%d suggestions', 'tokenforge' ),
 				/* translators: %s: the attribute that was added, e.g. data-tf-clamp="3" */
-				'added'      => __( 'Added %s', 'tokenforge' ),
-				'noElement'  => __( 'Select an element first.', 'tokenforge' ),
-				'hintAc'     => __( 'Up/Down move, Enter pick, Esc close', 'tokenforge' ),
-				'hintMenu'   => __( 'Enter pick, Esc back, Shift+right-click: browser menu', 'tokenforge' ),
+				'added'     => __( 'Added %s', 'tokenforge' ),
+				'noElement' => __( 'Select an element first.', 'tokenforge' ),
+				'hintAc'    => __( 'Up/Down move, Enter pick, Esc close', 'tokenforge' ),
+				'hintMenu'  => __( 'Enter pick, Esc back, Shift+right-click: browser menu', 'tokenforge' ),
 			),
 		);
 	}

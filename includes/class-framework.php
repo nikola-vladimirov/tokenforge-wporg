@@ -49,8 +49,8 @@ class Framework {
 			'utilities_typography' => true,
 			'utilities_layout'     => true,
 			'register_with_bricks' => true,
-			'prune_unused'         => false, // leave out utility classes the site does not use (after a scan)
-			'prune_keep'           => '',    // class names (or prefixes ending in *) always kept
+			'prune_unused'         => false, // leave out utility classes the site does not use (after a scan).
+			'prune_keep'           => '',    // class names (or prefixes ending in *) always kept.
 		);
 	}
 
@@ -112,7 +112,7 @@ class Framework {
 		for ( $depth = 0; $depth < 6 && preg_match( '/^var\(\s*--([a-z0-9-]+)\s*(?:,[^()]*)?\)$/i', $v, $m ); $depth++ ) {
 			$name = strtolower( $m[1] );
 			if ( ! isset( $vars[ $name ] ) ) {
-				return true; // set somewhere else (a scheme colour, the theme): keep the class
+				return true; // set somewhere else (a scheme colour, the theme): keep the class.
 			}
 			$v = trim( $vars[ $name ] );
 		}
@@ -231,7 +231,14 @@ class Framework {
 				if ( 0 === strpos( $t['name'], 'space-' ) ) {
 					$emit( ".padding--$scale", "padding:$var" );
 					$emit( ".pad--$scale", "padding:$var" );
-					foreach ( array( 'top' => 'block-start', 'right' => 'inline-end', 'bottom' => 'block-end', 'left' => 'inline-start', 'block' => 'block', 'inline' => 'inline' ) as $side => $prop ) {
+					foreach ( array(
+						'top'    => 'block-start',
+						'right'  => 'inline-end',
+						'bottom' => 'block-end',
+						'left'   => 'inline-start',
+						'block'  => 'block',
+						'inline' => 'inline',
+					) as $side => $prop ) {
 						$emit( ".margin-$side--$scale", "margin-$prop:$var" );
 					}
 					$emit( ".gap--$scale", "gap:$var" );
@@ -316,7 +323,7 @@ class Framework {
 		$out = array();
 		foreach ( explode( "\n", $text ) as $line ) {
 			if ( ! preg_match( '/^(\.[A-Za-z0-9_,.-]+)\{/', $line, $m ) ) {
-				$out[] = $line; // comments and blank lines
+				$out[] = $line; // comments and blank lines.
 				continue;
 			}
 			foreach ( explode( ',', $m[1] ) as $sel ) {

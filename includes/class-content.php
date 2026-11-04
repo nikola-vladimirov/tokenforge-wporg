@@ -34,39 +34,39 @@ class Content {
 	 * Stored as bq_{suffix with underscores}.
 	 */
 	const BLOCKQUOTE = array(
-		'padding'             => 'var(--space-m)',
-		'gap'                 => '1em',
-		'border-width'        => '0 0 0 3px',
-		'border-style'        => 'solid',
-		'border-color'        => 'var(--primary, currentColor)',
-		'border-radius'       => 'var(--radius, 0)',
-		'background'          => 'var(--neutral-ultra-light, transparent)',
-		'box-shadow'          => 'none',
-		'max-width'           => '',
-		'text-color'          => 'inherit',
-		'text-font-family'    => 'inherit',
-		'text-font-style'     => 'normal',
-		'text-font-size'      => 'var(--text-l)',
-		'text-font-weight'    => 'normal',
-		'text-line-height'    => 'inherit',
-		'text-text-align'     => 'start',
-		'text-text-transform' => 'none',
-		'footer-padding'      => '0',
-		'footer-margin-block' => '1em 0',
-		'footer-font-family'  => 'inherit',
-		'footer-font-size'    => 'var(--text-s)',
-		'footer-font-weight'  => 'normal',
-		'footer-font-style'   => 'normal',
-		'footer-line-height'  => '1.5',
+		'padding'               => 'var(--space-m)',
+		'gap'                   => '1em',
+		'border-width'          => '0 0 0 3px',
+		'border-style'          => 'solid',
+		'border-color'          => 'var(--primary, currentColor)',
+		'border-radius'         => 'var(--radius, 0)',
+		'background'            => 'var(--neutral-ultra-light, transparent)',
+		'box-shadow'            => 'none',
+		'max-width'             => '',
+		'text-color'            => 'inherit',
+		'text-font-family'      => 'inherit',
+		'text-font-style'       => 'normal',
+		'text-font-size'        => 'var(--text-l)',
+		'text-font-weight'      => 'normal',
+		'text-line-height'      => 'inherit',
+		'text-text-align'       => 'start',
+		'text-text-transform'   => 'none',
+		'footer-padding'        => '0',
+		'footer-margin-block'   => '1em 0',
+		'footer-font-family'    => 'inherit',
+		'footer-font-size'      => 'var(--text-s)',
+		'footer-font-weight'    => 'normal',
+		'footer-font-style'     => 'normal',
+		'footer-line-height'    => '1.5',
 		'footer-text-transform' => 'none',
-		'footer-color'        => 'currentColor',
-		'cite-font-family'    => 'inherit',
-		'cite-font-size'      => 'inherit',
-		'cite-font-weight'    => 'inherit',
-		'cite-font-style'     => 'inherit',
-		'cite-line-height'    => 'inherit',
-		'cite-text-transform' => 'inherit',
-		'cite-color'          => 'currentColor',
+		'footer-color'          => 'currentColor',
+		'cite-font-family'      => 'inherit',
+		'cite-font-size'        => 'inherit',
+		'cite-font-weight'      => 'inherit',
+		'cite-font-style'       => 'inherit',
+		'cite-line-height'      => 'inherit',
+		'cite-text-transform'   => 'inherit',
+		'cite-color'            => 'currentColor',
 	);
 
 	/**
@@ -89,36 +89,40 @@ class Content {
 			$bq[ 'bq_' . str_replace( '-', '_', $k ) ] = $v;
 		}
 		return $bq + array(
-			'prose'         => true,                       // output the .prose class
-			'prose_auto'    => true,                       // also style post-content containers
-			'prose_spacing' => 'var(--space-m, 1.5em)',   // gap between blocks
-			'prose_width'   => '',                         // optional measure, e.g. 70ch
-			'prose_accent'  => 'var(--primary, currentColor)',
-			'prose_heading_spacing' => '',   // space above headings (empty = 2× / 1.5× block spacing)
-			'rich_text'     => true,         // also treat Bricks Rich Text (.brxe-text) as prose
-			'smart_spacing' => true,         // zero stray margins on p/h/ul/ol/li so spacing comes from gaps + prose rules
+			'prose'                      => true,                       // output the .prose class.
+			'prose_auto'                 => true,                       // also style post-content containers.
+			'prose_spacing'              => 'var(--space-m, 1.5em)',   // gap between blocks.
+			'prose_width'                => '',                         // optional measure, e.g. 70ch.
+			'prose_accent'               => 'var(--primary, currentColor)',
+			'prose_heading_spacing'      => '',   // space above headings (empty = 2× / 1.5× block spacing).
+			'rich_text'                  => true,         // also treat Bricks Rich Text (.brxe-text) as prose.
+			'smart_spacing'              => true,         // zero stray margins on p/h/ul/ol/li so spacing comes from gaps + prose rules
 			// Flow spacing (vertical rhythm between siblings) on .smart-spacing and
 			// automatically inside Bricks Rich Text / post content.
-			'flow'              => true,
-			'flow_auto'         => true,
-			'flow_selectors'    => '',   // extra containers that get flow spacing
-			'paragraph_spacing' => '1em',
-			'heading_spacing'   => '1.2em',
-			'flow_spacing'      => 'var(--paragraph-spacing)',
-			'list_spacing'      => '',
-			'list_indent_spacing' => '2em',
-			'list_item_spacing' => '.5em',
-			'nested_list_spacing' => '',
+			'flow'                       => true,
+			'flow_auto'                  => true,
+			'flow_selectors'             => '',   // extra containers that get flow spacing.
+			'paragraph_spacing'          => '1em',
+			'heading_spacing'            => '1.2em',
+			'flow_spacing'               => 'var(--paragraph-spacing)',
+			'list_spacing'               => '',
+			'list_indent_spacing'        => '2em',
+			'list_item_spacing'          => '.5em',
+			'nested_list_spacing'        => '',
 			'nested_list_indent_spacing' => '1em',
-			'nested_list_item_spacing' => '',
-			'figure_spacing'    => 'var(--paragraph-spacing)',
-			'figcaption_spacing' => '.5em',
-			'blockquote_spacing' => 'var(--paragraph-spacing)',
-			'h2_spacing' => '', 'h3_spacing' => '', 'h4_spacing' => '', 'h5_spacing' => '', 'h6_spacing' => '',
+			'nested_list_item_spacing'   => '',
+			'figure_spacing'             => 'var(--paragraph-spacing)',
+			'figcaption_spacing'         => '.5em',
+			'blockquote_spacing'         => 'var(--paragraph-spacing)',
+			'h2_spacing'                 => '',
+			'h3_spacing'                 => '',
+			'h4_spacing'                 => '',
+			'h5_spacing'                 => '',
+			'h6_spacing'                 => '',
 			// Blockquotes everywhere (not only in prose).
-			'blockquotes'   => true,
-			'bq_auto'       => true,         // style every <blockquote> (off = only the .blockquote class)
-			'bq_exclude'    => ':is([class*="-card"] blockquote, figure[class*="-card"], figure[class*="-card"] blockquote)',
+			'blockquotes'                => true,
+			'bq_auto'                    => true,         // style every <blockquote> (off = only the .blockquote class).
+			'bq_exclude'                 => ':is([class*="-card"] blockquote, figure[class*="-card"], figure[class*="-card"] blockquote)',
 		);
 	}
 
@@ -148,21 +152,21 @@ class Content {
 		update_option(
 			self::OPTION,
 			$bq + array(
-				'blockquotes'   => ! empty( $in['blockquotes'] ),
-				'bq_auto'       => ! empty( $in['bq_auto'] ),
+				'blockquotes'           => ! empty( $in['blockquotes'] ),
+				'bq_auto'               => ! empty( $in['bq_auto'] ),
 				// A selector: keep ">" (child combinator), drop what could end a rule or tag.
-				'bq_exclude'    => isset( $in['bq_exclude'] ) ? trim( preg_replace( '/[;{}<]/', '', (string) $in['bq_exclude'] ) ) : $d['bq_exclude'],
-				'prose'         => ! empty( $in['prose'] ),
-				'prose_auto'    => ! empty( $in['prose_auto'] ),
-				'prose_spacing' => self::clean_value( isset( $in['prose_spacing'] ) ? $in['prose_spacing'] : '', $d['prose_spacing'] ),
-				'prose_width'   => self::clean_value( isset( $in['prose_width'] ) ? $in['prose_width'] : '', '' ),
-				'prose_accent'  => self::clean_value( isset( $in['prose_accent'] ) ? $in['prose_accent'] : '', $d['prose_accent'] ),
+				'bq_exclude'            => isset( $in['bq_exclude'] ) ? trim( preg_replace( '/[;{}<]/', '', (string) $in['bq_exclude'] ) ) : $d['bq_exclude'],
+				'prose'                 => ! empty( $in['prose'] ),
+				'prose_auto'            => ! empty( $in['prose_auto'] ),
+				'prose_spacing'         => self::clean_value( isset( $in['prose_spacing'] ) ? $in['prose_spacing'] : '', $d['prose_spacing'] ),
+				'prose_width'           => self::clean_value( isset( $in['prose_width'] ) ? $in['prose_width'] : '', '' ),
+				'prose_accent'          => self::clean_value( isset( $in['prose_accent'] ) ? $in['prose_accent'] : '', $d['prose_accent'] ),
 				'prose_heading_spacing' => self::clean_value( isset( $in['prose_heading_spacing'] ) ? $in['prose_heading_spacing'] : '', '' ),
-				'rich_text'     => ! empty( $in['rich_text'] ),
-				'smart_spacing' => ! empty( $in['smart_spacing'] ),
-				'flow'          => ! empty( $in['flow'] ),
-				'flow_auto'     => ! empty( $in['flow_auto'] ),
-				'flow_selectors' => isset( $in['flow_selectors'] ) ? trim( preg_replace( '/[;{}<]/', '', (string) $in['flow_selectors'] ) ) : '',
+				'rich_text'             => ! empty( $in['rich_text'] ),
+				'smart_spacing'         => ! empty( $in['smart_spacing'] ),
+				'flow'                  => ! empty( $in['flow'] ),
+				'flow_auto'             => ! empty( $in['flow_auto'] ),
+				'flow_selectors'        => isset( $in['flow_selectors'] ) ? trim( preg_replace( '/[;{}<]/', '', (string) $in['flow_selectors'] ) ) : '',
 			) + self::clean_flow( $in, $d )
 		);
 	}
@@ -203,7 +207,7 @@ class Content {
 	 * @return array [ 'css' => string, 'classes' => string[] ]
 	 */
 	public static function build() {
-		$s = self::settings();
+		$s   = self::settings();
 		$pre = array();
 		if ( ! empty( $s['smart_spacing'] ) ) {
 			// Zero-specificity margin reset: spacing then comes from gaps + flow rules.
@@ -220,7 +224,11 @@ class Content {
 			array_push( $qclass, 'smart-spacing', 'smart-spacing--off', 'smart-spacing-normalize' );
 		}
 		if ( empty( $s['prose'] ) && empty( $s['prose_auto'] ) ) {
-			return array( 'css' => $pre ? "\n/* --- TokenForge content --- */\n" . implode( "\n", $pre ) . "\n" : '', 'base' => $base, 'classes' => $qclass );
+			return array(
+				'css'     => $pre ? "\n/* --- TokenForge content --- */\n" . implode( "\n", $pre ) . "\n" : '',
+				'base'    => $base,
+				'classes' => $qclass,
+			);
 		}
 
 		$sel = array();
@@ -308,8 +316,8 @@ class Content {
 		foreach ( array_filter( array_map( 'trim', preg_split( '/,(?![^(]*\))/', str_replace( '"', "'", (string) $s['flow_selectors'] ) ) ) ) as $extra ) {
 			$targets[] = $extra;
 		}
-		$f   = 'var(--flow-spacing, initial)';
-		$css = array( ':root{' . implode( ';', $vars ) . '}' );
+		$f     = 'var(--flow-spacing, initial)';
+		$css   = array( ':root{' . implode( ';', $vars ) . '}' );
 		$css[] = '.smart-spacing-normalize :where(p,h1,h2,h3,h4,h5,h6,ul,ol,li),.smart-spacing--off :where(p,h1,h2,h3,h4,h5,h6,ul,ol,li){margin-block:0}';
 		foreach ( $targets as $t ) {
 			$css[] = "$t{row-gap:0!important}";

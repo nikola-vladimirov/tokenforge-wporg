@@ -14,10 +14,18 @@ defined( 'ABSPATH' ) || exit;
  */
 class Plugin {
 
-	/** @var Plugin|null */
+	/**
+	 * Singleton instance.
+	 *
+	 * @var Plugin|null
+	 */
 	private static $instance = null;
 
-	/** @var Platforms\Bricks */
+	/**
+	 * Bricks platform.
+	 *
+	 * @var Platforms\Bricks
+	 */
 	public $bricks;
 
 	/**
@@ -42,35 +50,35 @@ class Plugin {
 			new Changelog(); // "Changelog" link on the Plugins screen
 		}
 		new Rest();
-		new Ai(); // abilities + guidance for AI agents (MCP / Bricks AI)
-		new Fonts(); // self-hosted fonts: preload tags + Bricks font list
-		new Woo(); // WooCommerce styling (only does something while WooCommerce is active)
+		new Ai(); // abilities + guidance for AI agents (MCP / Bricks AI).
+		new Fonts(); // self-hosted fonts: preload tags + Bricks font list.
+		new Woo(); // WooCommerce styling (only does something while WooCommerce is active).
 
 		// Builder-agnostic: load the stylesheet on the front end + Gutenberg on
 		// ANY WordPress site.
 		new Frontend();
-		new Blocks(); // Gutenberg blocks (all sites)
-		new Features\A11y_Auto(); // missing accessibility attributes on the front end (every switch off by default)
-		new Features\Attr_Front(); // data-tf-copy, -tooltip and -filter: the small script and the filter rules, only on pages that use them
-		Class_Usage::init(); // new utility classes in saved content join the stylesheet (when unused ones are left out)
-		new Features\Builder_Panel(); // the TokenForge window: Bricks builder + front end (admins)
-		new Features\A11y(); // axe-core test engine: the builder loads it on demand, never a visitor page
-		new Features\Check(); // page check engine in the builder + its read-only /check lookups
+		new Blocks(); // Gutenberg blocks (all sites).
+		new Features\A11y_Auto(); // missing accessibility attributes on the front end (every switch off by default).
+		new Features\Attr_Front(); // data-tf-copy, -tooltip and -filter: the small script and the filter rules, only on pages that use them.
+		Class_Usage::init(); // new utility classes in saved content join the stylesheet (when unused ones are left out).
+		new Features\Builder_Panel(); // the TokenForge window: Bricks builder + front end (admins).
+		new Features\A11y(); // axe-core test engine: the builder loads it on demand, never a visitor page.
+		new Features\Check(); // page check engine in the builder + its read-only /check lookups.
 
-		add_action( 'update_option_' . Components::OPTION, array( Features\Form_Submissions::class, 'settings_saved' ), 10, 2 ); // also while Bricks is inactive
+		add_action( 'update_option_' . Components::OPTION, array( Features\Form_Submissions::class, 'settings_saved' ), 10, 2 ); // also while Bricks is inactive.
 
 		// Bricks integration only when Bricks is the active theme.
 		if ( Platforms\Bricks::is_active() ) {
 			$this->bricks = new Platforms\Bricks();
 			new Features\Bem_Generator();
 			new Features\Builder_Enhancements();
-			new Features\Form_Extras(); // steps and conditional fields in the builder's form (when switched on)
-			new Features\Form_Fields(); // input looks, date rules, messages, options from content, live values
-			new Features\Form_Rules(); // limits, submit rules, update meta and add to cart actions
-			new Features\Form_Presets(); // form, field, style and saved presets (when switched on)
-			new Features\Form_Submissions(); // the builder's submissions screen, extended (when switched on)
-			new Platforms\Bricks_Theme(); // TokenForge <-> the site's Bricks theme style
-			new Font_Convert(); // Bricks font manager: TTF/OTF faces get a WOFF2 (or WOFF) file
+			new Features\Form_Extras(); // steps and conditional fields in the builder's form (when switched on).
+			new Features\Form_Fields(); // input looks, date rules, messages, options from content, live values.
+			new Features\Form_Rules(); // limits, submit rules, update meta and add to cart actions.
+			new Features\Form_Presets(); // form, field, style and saved presets (when switched on).
+			new Features\Form_Submissions(); // the builder's submissions screen, extended (when switched on).
+			new Platforms\Bricks_Theme(); // TokenForge <-> the site's Bricks theme style.
+			new Font_Convert(); // Bricks font manager: TTF/OTF faces get a WOFF2 (or WOFF) file.
 		}
 
 		$this->maybe_upgrade();
@@ -118,7 +126,7 @@ class Plugin {
 	 */
 	private function maybe_upgrade() {
 		$previous = get_option( 'tokenforge_version' );
-		if ( $previous === TOKENFORGE_VERSION ) {
+		if ( TOKENFORGE_VERSION === $previous ) {
 			return;
 		}
 		// < 0.25: "grid visualizer" was mis-mapped from ACSS's grid overlay (which
@@ -132,7 +140,7 @@ class Plugin {
 			}
 		}
 		// Fix tokens mis-filed as colours by the pre-0.18 group heuristic.
-		$settings = Settings::get_instance();
+		$settings                 = Settings::get_instance();
 		list( $tokens, $changed ) = Tokens::repair_groups( $settings->get_tokens() );
 		if ( $changed ) {
 			$settings->save_tokens( $tokens );
@@ -160,7 +168,7 @@ class Plugin {
 			foreach ( $tokens as $i => $t ) {
 				if ( 'color' === $t['group'] && preg_match( '/-(lh|line-height|transition|duration|timing|delay)$/', $t['name'] ) ) {
 					$tokens[ $i ]['group'] = Tokens::derive_group( $t['name'] );
-					$fixed++;
+					++$fixed;
 				}
 			}
 			if ( $fixed ) {

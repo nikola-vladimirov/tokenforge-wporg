@@ -22,13 +22,17 @@ defined( 'ABSPATH' ) || exit;
  */
 class Scss {
 
-	const OPTION = 'tokenforge_scss';       // breakpoints
-	const BUILD  = 'tokenforge_scss_build'; // last compile: hash, css, error, time
+	const OPTION = 'tokenforge_scss';       // breakpoints.
+	const BUILD  = 'tokenforge_scss_build'; // last compile: hash, css, error, time.
 
 	/** Breakpoint names, smallest first. */
 	const BREAKPOINTS = array( 'xs', 's', 'm', 'l', 'xl', 'xxl' );
 
-	/** @var bool */
+	/**
+	 * Whether the option autoloads.
+	 *
+	 * @var bool
+	 */
 	private static $autoload = false;
 
 	/**
@@ -49,12 +53,12 @@ class Scss {
 		return array(
 			// Breakpoints (px) for breakpoint()/breakpoint-up(), the media-query recipes
 			// and $breakpoints. "Below" queries use max-width: value.
-			'bp_xs'   => 478,
-			'bp_s'    => 767,
-			'bp_m'    => 991,
-			'bp_l'    => 1279,
-			'bp_xl'   => 1439,
-			'bp_xxl'  => 1919,
+			'bp_xs'  => 478,
+			'bp_s'   => 767,
+			'bp_m'   => 991,
+			'bp_l'   => 1279,
+			'bp_xl'  => 1439,
+			'bp_xxl' => 1919,
 		);
 	}
 
@@ -78,8 +82,8 @@ class Scss {
 		$d     = self::defaults();
 		$clean = array();
 		foreach ( self::BREAKPOINTS as $bp ) {
-			$v                    = isset( $in[ "bp_$bp" ] ) ? (int) $in[ "bp_$bp" ] : $d[ "bp_$bp" ];
-			$clean[ "bp_$bp" ]    = ( $v >= 100 && $v <= 5000 ) ? $v : $d[ "bp_$bp" ];
+			$v                 = isset( $in[ "bp_$bp" ] ) ? (int) $in[ "bp_$bp" ] : $d[ "bp_$bp" ];
+			$clean[ "bp_$bp" ] = ( $v >= 100 && $v <= 5000 ) ? $v : $d[ "bp_$bp" ];
 		}
 		update_option( self::OPTION, $clean, false );
 	}
@@ -151,8 +155,8 @@ class Scss {
 	 */
 	private static function pretty( $css ) {
 		$out   = '';
-		$depth = 0;   // parentheses / brackets
-		$level = 0;   // braces
+		$depth = 0;   // parentheses / brackets.
+		$level = 0;   // braces.
 		$quote = '';
 		$len   = strlen( $css );
 		$nl    = function ( $lvl ) {
@@ -171,19 +175,19 @@ class Scss {
 				$quote = $ch;
 				$out  .= $ch;
 			} elseif ( '(' === $ch || '[' === $ch ) {
-				$depth++;
+				++$depth;
 				$out .= $ch;
 			} elseif ( ')' === $ch || ']' === $ch ) {
-				$depth--;
+				--$depth;
 				$out .= $ch;
 			} elseif ( 0 === $depth && '{' === $ch ) {
-				$level++;
+				++$level;
 				$out .= ' {' . $nl( $level );
 			} elseif ( 0 === $depth && ';' === $ch ) {
 				$out .= ';' . $nl( $level );
 			} elseif ( 0 === $depth && '}' === $ch ) {
-				$level--;
-				$out  = rtrim( $out, "\t\n " ) . ';' . $nl( $level ) . '}' . $nl( $level );
+				--$level;
+				$out = rtrim( $out, "\t\n " ) . ';' . $nl( $level ) . '}' . $nl( $level );
 			} else {
 				$out .= $ch;
 			}
@@ -219,7 +223,7 @@ class Scss {
 		$out[] = '$tf-overlay-pseudo: ' . ( 'after' === $ov['basic_pseudo'] ? 'after' : 'before' ) . ';';
 		$out[] = '$tf-icon-style: ' . ( 'boxed' === $ex['icon_default_style'] ? 'boxed' : 'plain' ) . ';';
 
-		$file = TOKENFORGE_DIR . 'assets/scss/_library.scss';
+		$file  = TOKENFORGE_DIR . 'assets/scss/_library.scss';
 		$out[] = file_exists( $file ) ? (string) file_get_contents( $file ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions
 
 		// ---- Buttons: btn($style, $props) with every family / variant.
@@ -249,17 +253,17 @@ class Scss {
 		}
 		$out[] = "@mixin heading-style(\$level: h2) {\n\t\$l: \"#{\$level}\";\n\t@if str-index(\$l, \"h\") != 1 { \$l: \"h#{\$l}\"; }\n\t"
 			. implode( '', $h ) . "} @else { @error \"heading-style(): use h1 … h6 (got `#{\$level}`).\"; }\n}";
-		$t = array();
+		$t     = array();
 		foreach ( Scale_Engine::STEPS as $n => $sz ) {
 			$t[] = ( 0 === $n ? '@if' : '} @else if' ) . " \$l == \"$sz\" {\n\t\t" . self::decls( Components::text_decls( $sz ) ) . "\n\t";
 		}
-		$out[] = "@mixin text-style(\$level: m) {\n\t\$l: \"#{\$level}\";\n\t" . implode( '', $t ) . "} @else { @error \"text-style(): use " . implode( ', ', Scale_Engine::STEPS ) . " (got `#{\$level}`).\"; }\n}";
+		$out[] = "@mixin text-style(\$level: m) {\n\t\$l: \"#{\$level}\";\n\t" . implode( '', $t ) . '} @else { @error "text-style(): use ' . implode( ', ', Scale_Engine::STEPS ) . " (got `#{\$level}`).\"; }\n}";
 
 		// ---- Cards: card($style: null, $output: all).
-		$cs   = Components::settings();
-		$rule = Components::card_rules( $cs, '&', '&' );
-		$main = array_shift( $rule );
-		$main = preg_replace( '/^&\{(.*)\}$/s', '$1', $main );
+		$cs    = Components::settings();
+		$rule  = Components::card_rules( $cs, '&', '&' );
+		$main  = array_shift( $rule );
+		$main  = preg_replace( '/^&\{(.*)\}$/s', '$1', $main );
 		$out[] = "@mixin card(\$style: null, \$output: all) {\n"
 			. "\t@if \$output == all {\n\t\t" . self::decls( $main ) . "\n\t}\n"
 			. "\t@if \$style == light or \$style == Light { color-scheme: light; }\n"
@@ -293,23 +297,32 @@ class Scss {
 	public static function compile( $source ) {
 		$source = (string) $source;
 		if ( '' === trim( $source ) ) {
-			return array( 'css' => '', 'error' => null );
+			return array(
+				'css'   => '',
+				'error' => null,
+			);
 		}
 		self::autoload();
 		$lib    = self::library();
-		$offset = substr_count( $lib, "\n" ); // library ends with "\n": your line 1 = line $offset + 1
+		$offset = substr_count( $lib, "\n" ); // library ends with "\n": your line 1 = line $offset + 1.
 		try {
 			$c = new \TokenForge\Vendor\ScssPhp\ScssPhp\Compiler();
 			$c->setLogger( new \TokenForge\Vendor\ScssPhp\ScssPhp\Logger\QuietLogger() );
 			$c->setOutputStyle( \TokenForge\Vendor\ScssPhp\ScssPhp\OutputStyle::EXPANDED );
 			$c->setCharset( false );
-			$c->setImportPaths( array() ); // no file imports (url()/.css @imports still pass through)
+			$c->setImportPaths( array() ); // no file imports (url()/.css @imports still pass through).
 			$css = $c->compileString( $lib . $source )->getCss();
 			// Never let a stylesheet close an inline <style> element.
 			$css = str_ireplace( '</style', '<\/style', (string) $css );
-			$out = array( 'css' => trim( $css ), 'error' => null );
+			$out = array(
+				'css'   => trim( $css ),
+				'error' => null,
+			);
 		} catch ( \Throwable $e ) {
-			$out = array( 'css' => '', 'error' => self::error_info( $e->getMessage(), $offset ) );
+			$out = array(
+				'css'   => '',
+				'error' => self::error_info( $e->getMessage(), $offset ),
+			);
 		}
 		return $out;
 	}
@@ -347,7 +360,11 @@ class Scss {
 		if ( ! $line && $lib ) {
 			$text .= ' (inside the TokenForge library)';
 		}
-		return array( 'message' => trim( $text ), 'line' => $line, 'column' => $col );
+		return array(
+			'message' => trim( $text ),
+			'line'    => $line,
+			'column'  => $col,
+		);
 	}
 
 	/**

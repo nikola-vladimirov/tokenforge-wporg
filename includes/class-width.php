@@ -31,7 +31,14 @@ class Width {
 	const PERCENT = array( 10, 20, 30, 40, 50, 60, 70, 80, 90 );
 
 	/** T-shirt steps → fraction of the content width. */
-	const STEPS = array( 'xs' => 0.1, 's' => 0.2, 'm' => 0.4, 'l' => 0.6, 'xl' => 0.8, 'xxl' => 0.9 );
+	const STEPS = array(
+		'xs'  => 0.1,
+		's'   => 0.2,
+		'm'   => 0.4,
+		'l'   => 0.6,
+		'xl'  => 0.8,
+		'xxl' => 0.9,
+	);
 
 	/**
 	 * Defaults. The content width falls back to the value older versions kept
@@ -52,7 +59,7 @@ class Width {
 		$scales = get_option( Scale_Engine::OPTION, array() );
 		$legacy = ( is_array( $scales ) && isset( $scales['content_width'] ) && is_numeric( $scales['content_width'] ) ) ? 0 + $scales['content_width'] : 1366;
 		return array(
-			'content_width' => $legacy, // px
+			'content_width' => $legacy, // px.
 			'variables'     => true,    // --width-* scale
 			'utilities'     => true,    // .width--* classes
 		);
@@ -122,17 +129,32 @@ class Width {
 	public static function variables() {
 		$s   = self::settings();
 		$out = array(
-			array( 'name' => 'content-width', 'value' => self::content_width_value() ),
-			array( 'name' => 'content-width-safe', 'value' => 'min(var(--content-width), calc(100% - var(--gutter, var(--content-gutter, 1.5rem)) * 2))' ),
+			array(
+				'name'  => 'content-width',
+				'value' => self::content_width_value(),
+			),
+			array(
+				'name'  => 'content-width-safe',
+				'value' => 'min(var(--content-width), calc(100% - var(--gutter, var(--content-gutter, 1.5rem)) * 2))',
+			),
 		);
 		if ( ! empty( $s['variables'] ) ) {
 			foreach ( self::PERCENT as $p ) {
-				$out[] = array( 'name' => 'width-' . $p, 'value' => 'calc(var(--content-width) * ' . ( $p / 100 ) . ')' );
+				$out[] = array(
+					'name'  => 'width-' . $p,
+					'value' => 'calc(var(--content-width) * ' . ( $p / 100 ) . ')',
+				);
 			}
 			foreach ( self::STEPS as $step => $f ) {
-				$out[] = array( 'name' => 'width-' . $step, 'value' => 'calc(var(--content-width) * ' . $f . ')' );
+				$out[] = array(
+					'name'  => 'width-' . $step,
+					'value' => 'calc(var(--content-width) * ' . $f . ')',
+				);
 			}
-			$out[] = array( 'name' => 'width-full', 'value' => '100%' );
+			$out[] = array(
+				'name'  => 'width-full',
+				'value' => '100%',
+			);
 		}
 		foreach ( $out as &$t ) {
 			$t['group']   = 'space';
@@ -149,11 +171,14 @@ class Width {
 	public static function build() {
 		$s = self::settings();
 		if ( empty( $s['utilities'] ) ) {
-			return array( 'css' => '', 'classes' => array() );
+			return array(
+				'css'     => '',
+				'classes' => array(),
+			);
 		}
 		$css     = array();
 		$classes = array();
-		// Name → fraction. (Built as pairs: array_merge() would renumber 10…90.)
+		// Name → fraction. (Built as pairs: array_merge() would renumber 10…90.).
 		$steps = array();
 		foreach ( self::PERCENT as $p ) {
 			$steps[] = array( $p, $p / 100 );
@@ -164,8 +189,8 @@ class Width {
 		// max-inline-size (not width) so these never overflow a small screen.
 		foreach ( $steps as $pair ) {
 			list( $name, $f ) = $pair;
-			$css[]     = ".width--$name{inline-size:100%;max-inline-size:calc(var(--content-width) * $f)}";
-			$classes[] = "width--$name";
+			$css[]            = ".width--$name{inline-size:100%;max-inline-size:calc(var(--content-width) * $f)}";
+			$classes[]        = "width--$name";
 		}
 		$css[] = '.width--full{inline-size:100%;max-inline-size:100%}';
 		$css[] = '.width--auto{inline-size:auto!important;max-inline-size:100%}';
@@ -176,7 +201,7 @@ class Width {
 		$classes[] = 'width--full';
 		$classes[] = 'width--auto';
 		// Sized figures: let the image fill the figure.
-		$css[] = 'figure[class*="width--"] img{inline-size:100%}';
+		$css[]     = 'figure[class*="width--"] img{inline-size:100%}';
 		$css[]     = '.content-width{inline-size:100%;max-inline-size:min(var(--content-width), 100%);margin-inline:auto}';
 		$css[]     = '.content-width--safe{inline-size:100%;max-inline-size:var(--content-width-safe);margin-inline:auto}';
 		$classes[] = 'content-width';

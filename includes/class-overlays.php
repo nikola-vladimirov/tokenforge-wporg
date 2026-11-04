@@ -34,7 +34,11 @@ class Overlays {
 	/** Maximum presets of each kind. */
 	const MAX = 10;
 
-	/** @var array Surface number => its declarations (filled by build(); used by the texture() mixins). */
+	/**
+	 * Surface number => its declarations (filled by build(); used by the texture() mixins).
+	 *
+	 * @var array
+	 */
 	private static $surface_decls = array();
 
 	/** Colour relationships → the readable text colour they set. */
@@ -78,21 +82,21 @@ class Overlays {
 	public static function overlay_defaults() {
 		return array(
 			'name'       => '',
-			'color'      => '',        // background colour
-			'type'       => 'none',    // none | gradient | image
+			'color'      => '',        // background colour.
+			'type'       => 'none',    // none | gradient | image.
 			'gradient'   => '',
-			'image'      => '',        // URL
+			'image'      => '',        // URL.
 			'size'       => 'cover',
 			'position'   => 'center',
 			'attachment' => 'scroll',
 			'repeat'     => 'no-repeat',
-			'blur'       => '',        // backdrop blur, e.g. 6px
+			'blur'       => '',        // backdrop blur, e.g. 6px.
 			'opacity'    => '0.7',
-			'blend'      => '',        // mix-blend-mode
+			'blend'      => '',        // mix-blend-mode.
 			'radius'     => '',
 			'inset'      => '0',
 			'animation'  => '',
-			'layer'      => '',        // extra gradient painted on top
+			'layer'      => '',        // extra gradient painted on top.
 		);
 	}
 
@@ -104,16 +108,16 @@ class Overlays {
 	public static function surface_defaults() {
 		return array(
 			'name'         => '',
-			'color'        => '',       // background colour under the texture
-			'asset'        => '',       // URL, raw <svg>, or a CSS image (gradient)
+			'color'        => '',       // background colour under the texture.
+			'asset'        => '',       // URL, raw <svg>, or a CSS image (gradient).
 			'asset_is_url' => true,
 			'size'         => '200px',
 			'position'     => 'center center',
 			'attachment'   => 'scroll',
 			'repeat'       => 'repeat',
-			'relationship' => 'none',   // none | ultra-light | light | dark | ultra-dark
+			'relationship' => 'none',   // none | ultra-light | light | dark | ultra-dark.
 			'animation'    => '',
-			'layer'        => '',       // gradient painted over the texture
+			'layer'        => '',       // gradient painted over the texture.
 		);
 	}
 
@@ -125,7 +129,10 @@ class Overlays {
 	public static function settings() {
 		$saved = get_option( self::OPTION, array() );
 		$s     = wp_parse_args( is_array( $saved ) ? $saved : array(), self::defaults() );
-		foreach ( array( 'overlays' => self::overlay_defaults(), 'surfaces' => self::surface_defaults() ) as $k => $d ) {
+		foreach ( array(
+			'overlays' => self::overlay_defaults(),
+			'surfaces' => self::surface_defaults(),
+		) as $k => $d ) {
 			$list = array();
 			foreach ( is_array( $s[ $k ] ) ? array_values( $s[ $k ] ) : array() as $item ) {
 				if ( is_array( $item ) ) {
@@ -167,7 +174,7 @@ class Overlays {
 		$pseudo = function ( $v ) {
 			return 'after' === $v ? 'after' : 'before';
 		};
-		$clean = array(
+		$clean  = array(
 			'basic'         => ! empty( $in['basic'] ),
 			'basic_pseudo'  => $pseudo( isset( $in['basic_pseudo'] ) ? $in['basic_pseudo'] : '' ),
 			'basic_color'   => isset( $in['basic_color'] ) ? self::clean( $in['basic_color'] ) : self::defaults()['basic_color'],
@@ -283,10 +290,10 @@ class Overlays {
 	 */
 	public static function build() {
 		self::$surface_decls = array();
-		$s       = self::settings();
-		$css     = array();
-		$vars    = array();
-		$classes = array();
+		$s                   = self::settings();
+		$css                 = array();
+		$vars                = array();
+		$classes             = array();
 
 		// ---- Basic overlay ----
 		if ( $s['basic'] ) {
@@ -294,7 +301,7 @@ class Overlays {
 			$css[] = $b . '{position:relative;z-index:0;isolation:isolate}';
 			$css[] = ':is(' . $b . ')::' . $s['basic_pseudo'] . '{content:"";position:absolute;inset:0;z-index:var(--overlay-z-index, -1);background:var(--overlay-color, ' . ( '' !== $s['basic_color'] ? $s['basic_color'] : 'rgb(0 0 0 / .7)' ) . ');pointer-events:none}';
 			// Over media inside a figure the overlay has to sit above the image.
-			$css[] = 'figure:where(:has(>img,>picture,>svg,>video,>iframe)):where(' . $b . '){--overlay-z-index:0}';
+			$css[]     = 'figure:where(:has(>img,>picture,>svg,>video,>iframe)):where(' . $b . '){--overlay-z-index:0}';
 			$classes[] = 'overlay';
 		}
 
@@ -306,26 +313,26 @@ class Overlays {
 				continue; // Nothing to paint.
 			}
 			list( $sel, $names ) = self::selector( 'overlay', $i, $o['name'] );
-			$p      = "--overlay-$i";
-			$v      = function ( $prop, $fallback = '' ) use ( $p ) {
+			$p                   = "--overlay-$i";
+			$v                   = function ( $prop, $fallback = '' ) use ( $p ) {
 				return 'var(--overlay-' . $prop . ', var(' . $p . '-' . $prop . ( '' !== $fallback ? ', ' . $fallback : '' ) . '))';
 			};
-			$images = array();
-			$decl   = array( 'content:""', 'position:absolute', 'pointer-events:none', 'inset:' . $v( 'inset', '0' ), 'z-index:var(--overlay-z-index, var(' . $p . '-z-index, -1))', 'opacity:' . $v( 'opacity', '1' ) );
+			$images              = array();
+			$decl                = array( 'content:""', 'position:absolute', 'pointer-events:none', 'inset:' . $v( 'inset', '0' ), 'z-index:var(--overlay-z-index, var(' . $p . '-z-index, -1))', 'opacity:' . $v( 'opacity', '1' ) );
 			if ( '' !== $o['color'] ) {
 				$vars[ "overlay-$i-bg-color" ] = $o['color'];
-				$decl[]                         = 'background-color:' . $v( 'bg-color' );
+				$decl[]                        = 'background-color:' . $v( 'bg-color' );
 			}
 			if ( '' !== $o['layer'] ) {
 				$vars[ "overlay-$i-layer" ] = $o['layer'];
-				$images[]                    = array( $v( 'layer' ), '100% 100%', 'center', 'no-repeat' );
+				$images[]                   = array( $v( 'layer' ), '100% 100%', 'center', 'no-repeat' );
 			}
 			if ( 'gradient' === $o['type'] && '' !== $o['gradient'] ) {
 				$vars[ "overlay-$i-background" ] = $o['gradient'];
-				$images[]                         = array( $v( 'background' ), $o['size'], $o['position'], $o['repeat'] );
+				$images[]                        = array( $v( 'background' ), $o['size'], $o['position'], $o['repeat'] );
 			} elseif ( 'image' === $o['type'] && '' !== $o['image'] ) {
 				$vars[ "overlay-$i-background" ] = 'url("' . str_replace( array( '"', '\\' ), '', $o['image'] ) . '")';
-				$images[]                         = array( $v( 'background' ), $o['size'], $o['position'], $o['repeat'] );
+				$images[]                        = array( $v( 'background' ), $o['size'], $o['position'], $o['repeat'] );
 			}
 			if ( $images ) {
 				$decl[] = 'background-image:' . implode( ',', array_column( $images, 0 ) );
@@ -336,28 +343,31 @@ class Overlays {
 					$decl[] = 'background-attachment:' . $o['attachment'];
 				}
 			}
-			foreach ( array( 'inset' => 'inset', 'opacity' => 'opacity' ) as $key => $prop ) {
+			foreach ( array(
+				'inset'   => 'inset',
+				'opacity' => 'opacity',
+			) as $key => $prop ) {
 				if ( '' !== $o[ $key ] ) {
 					$vars[ "overlay-$i-$prop" ] = $o[ $key ];
 				}
 			}
 			if ( '' !== $o['blur'] ) {
 				$vars[ "overlay-$i-background-blur" ] = $o['blur'];
-				$decl[]                                = 'backdrop-filter:blur(' . $v( 'background-blur' ) . ')';
+				$decl[]                               = 'backdrop-filter:blur(' . $v( 'background-blur' ) . ')';
 			}
 			if ( '' !== $o['blend'] ) {
 				$vars[ "overlay-$i-blend-mode" ] = $o['blend'];
-				$decl[]                           = 'mix-blend-mode:' . $v( 'blend-mode' );
+				$decl[]                          = 'mix-blend-mode:' . $v( 'blend-mode' );
 			}
 			if ( '' !== $o['radius'] ) {
 				$vars[ "overlay-$i-border-radius" ] = $o['radius'];
-				$decl[]                              = 'border-radius:' . $v( 'border-radius' );
+				$decl[]                             = 'border-radius:' . $v( 'border-radius' );
 			} else {
 				$decl[] = 'border-radius:inherit';
 			}
 			if ( '' !== $o['animation'] ) {
 				$vars[ "overlay-$i-animation" ] = $o['animation'];
-				$decl[]                          = 'animation:' . $v( 'animation' );
+				$decl[]                         = 'animation:' . $v( 'animation' );
 			}
 			$css[]   = ':where(' . $sel . '){position:relative}';
 			$css[]   = $sel . '{isolation:isolate}';
@@ -374,26 +384,26 @@ class Overlays {
 				continue;
 			}
 			list( $sel, $names ) = self::selector( 'surface', $i, $o['name'] );
-			$p      = "--surface-$i";
-			$v      = function ( $prop, $fallback = '' ) use ( $p ) {
+			$p                   = "--surface-$i";
+			$v                   = function ( $prop, $fallback = '' ) use ( $p ) {
 				return 'var(--surface-' . $prop . ', var(' . $p . '-' . $prop . ( '' !== $fallback ? ', ' . $fallback : '' ) . '))';
 			};
-			$decl   = array();
-			$images = array();
+			$decl                = array();
+			$images              = array();
 			if ( '' !== $o['color'] ) {
 				$vars[ "surface-$i-bg-color" ] = $o['color'];
-				$decl[]                         = 'background-color:' . $v( 'bg-color' );
+				$decl[]                        = 'background-color:' . $v( 'bg-color' );
 			}
 			if ( '' !== $o['layer'] ) {
 				$vars[ "surface-$i-layer" ] = $o['layer'];
-				$images[]                    = array( $v( 'layer' ), '100% 100%', 'center', 'no-repeat' );
+				$images[]                   = array( $v( 'layer' ), '100% 100%', 'center', 'no-repeat' );
 			}
 			if ( '' !== $asset ) {
 				$vars[ "surface-$i-asset" ]    = $asset;
 				$vars[ "surface-$i-size" ]     = '' !== $o['size'] ? $o['size'] : 'auto';
 				$vars[ "surface-$i-position" ] = '' !== $o['position'] ? $o['position'] : 'center';
 				$vars[ "surface-$i-repeat" ]   = '' !== $o['repeat'] ? $o['repeat'] : 'repeat';
-				$images[]                       = array( $v( 'asset' ), $v( 'size' ), $v( 'position' ), $v( 'repeat' ) );
+				$images[]                      = array( $v( 'asset' ), $v( 'size' ), $v( 'position' ), $v( 'repeat' ) );
 			}
 			if ( $images ) {
 				$decl[] = 'background-image:' . implode( ',', array_column( $images, 0 ) );
@@ -402,12 +412,12 @@ class Overlays {
 				$decl[] = 'background-repeat:' . implode( ',', array_column( $images, 3 ) );
 				if ( '' !== $o['attachment'] && 'scroll' !== $o['attachment'] ) {
 					$vars[ "surface-$i-attachment" ] = $o['attachment'];
-					$decl[]                           = 'background-attachment:' . $v( 'attachment' );
+					$decl[]                          = 'background-attachment:' . $v( 'attachment' );
 				}
 			}
 			if ( '' !== $o['animation'] ) {
 				$vars[ "surface-$i-animation" ] = $o['animation'];
-				$decl[]                          = 'animation:' . $v( 'animation' );
+				$decl[]                         = 'animation:' . $v( 'animation' );
 			}
 			if ( isset( self::RELATIONSHIPS[ $o['relationship'] ] ) ) {
 				// Same readable text as the matching .bg--* class.
@@ -417,7 +427,7 @@ class Overlays {
 				$css[]  = ':is(' . $sel . ') :is(h1,h2,h3,h4,h5,h6){color:var(--text-' . $t . ', ' . $fb . ')}';
 			}
 			if ( $decl ) {
-				$css[] = $sel . '{' . implode( ';', $decl ) . '}';
+				$css[]                     = $sel . '{' . implode( ';', $decl ) . '}';
 				self::$surface_decls[ $i ] = implode( ';', $decl );
 			}
 			$classes = array_merge( $classes, $names );
@@ -437,17 +447,32 @@ class Overlays {
 		);
 	}
 
-	/** @param string $v Size. @return string */
+	/**
+	 * Size.
+	 *
+	 * @param string $v Size.
+	 * @return string
+	 */
 	public static function or_auto( $v ) {
 		return '' === (string) $v ? 'auto' : $v;
 	}
 
-	/** @param string $v Position. @return string */
+	/**
+	 * Position.
+	 *
+	 * @param string $v Position.
+	 * @return string
+	 */
 	public static function or_center( $v ) {
 		return '' === (string) $v ? 'center' : $v;
 	}
 
-	/** @param string $v Repeat. @return string */
+	/**
+	 * Repeat.
+	 *
+	 * @param string $v Repeat.
+	 * @return string
+	 */
 	public static function or_repeat( $v ) {
 		return '' === (string) $v ? 'no-repeat' : $v;
 	}

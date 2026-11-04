@@ -27,28 +27,164 @@ class A11y_Auto {
 	const NEW_TAB_ID = 'tf-a11y-new-tab';
 
 	/** Elements without a closing tag: data-tf-a11y="off" on one skips only itself. */
-	const VOID = array( 'AREA' => 1, 'BASE' => 1, 'BR' => 1, 'COL' => 1, 'EMBED' => 1, 'HR' => 1, 'IMG' => 1, 'INPUT' => 1, 'LINK' => 1, 'META' => 1, 'SOURCE' => 1, 'TRACK' => 1, 'WBR' => 1 );
+	const VOID = array(
+		'AREA'   => 1,
+		'BASE'   => 1,
+		'BR'     => 1,
+		'COL'    => 1,
+		'EMBED'  => 1,
+		'HR'     => 1,
+		'IMG'    => 1,
+		'INPUT'  => 1,
+		'LINK'   => 1,
+		'META'   => 1,
+		'SOURCE' => 1,
+		'TRACK'  => 1,
+		'WBR'    => 1,
+	);
 
 	/** The processor reports these as one token (content is text, the closer is never visited). */
-	const ATOMIC = array( 'IFRAME' => 1, 'NOEMBED' => 1, 'NOFRAMES' => 1, 'SCRIPT' => 1, 'STYLE' => 1, 'TEXTAREA' => 1, 'TITLE' => 1, 'XMP' => 1 );
+	const ATOMIC = array(
+		'IFRAME'   => 1,
+		'NOEMBED'  => 1,
+		'NOFRAMES' => 1,
+		'SCRIPT'   => 1,
+		'STYLE'    => 1,
+		'TEXTAREA' => 1,
+		'TITLE'    => 1,
+		'XMP'      => 1,
+	);
 
 	/** The end tag may be left out (the browser closes them itself), so what is inside one is never proven. */
-	const OPTIONAL_END = array( 'P' => 1, 'LI' => 1, 'DT' => 1, 'DD' => 1, 'OPTION' => 1, 'OPTGROUP' => 1, 'TR' => 1, 'TD' => 1, 'TH' => 1, 'THEAD' => 1, 'TBODY' => 1, 'TFOOT' => 1, 'CAPTION' => 1, 'COLGROUP' => 1, 'RB' => 1, 'RT' => 1, 'RTC' => 1, 'RP' => 1, 'HTML' => 1, 'HEAD' => 1, 'BODY' => 1 );
+	const OPTIONAL_END = array(
+		'P'        => 1,
+		'LI'       => 1,
+		'DT'       => 1,
+		'DD'       => 1,
+		'OPTION'   => 1,
+		'OPTGROUP' => 1,
+		'TR'       => 1,
+		'TD'       => 1,
+		'TH'       => 1,
+		'THEAD'    => 1,
+		'TBODY'    => 1,
+		'TFOOT'    => 1,
+		'CAPTION'  => 1,
+		'COLGROUP' => 1,
+		'RB'       => 1,
+		'RT'       => 1,
+		'RTC'      => 1,
+		'RP'       => 1,
+		'HTML'     => 1,
+		'HEAD'     => 1,
+		'BODY'     => 1,
+	);
 
 	/** Openers that close an open p. */
-	const P_CLOSERS = array( 'ADDRESS' => 1, 'ARTICLE' => 1, 'ASIDE' => 1, 'BLOCKQUOTE' => 1, 'CENTER' => 1, 'DETAILS' => 1, 'DIALOG' => 1, 'DIR' => 1, 'DIV' => 1, 'DL' => 1, 'DD' => 1, 'DT' => 1, 'FIELDSET' => 1, 'FIGCAPTION' => 1, 'FIGURE' => 1, 'FOOTER' => 1, 'FORM' => 1, 'H1' => 1, 'H2' => 1, 'H3' => 1, 'H4' => 1, 'H5' => 1, 'H6' => 1, 'HEADER' => 1, 'HGROUP' => 1, 'HR' => 1, 'LI' => 1, 'LISTING' => 1, 'MAIN' => 1, 'MENU' => 1, 'NAV' => 1, 'OL' => 1, 'P' => 1, 'PLAINTEXT' => 1, 'PRE' => 1, 'SEARCH' => 1, 'SECTION' => 1, 'SUMMARY' => 1, 'TABLE' => 1, 'UL' => 1, 'XMP' => 1 );
+	const P_CLOSERS = array(
+		'ADDRESS'    => 1,
+		'ARTICLE'    => 1,
+		'ASIDE'      => 1,
+		'BLOCKQUOTE' => 1,
+		'CENTER'     => 1,
+		'DETAILS'    => 1,
+		'DIALOG'     => 1,
+		'DIR'        => 1,
+		'DIV'        => 1,
+		'DL'         => 1,
+		'DD'         => 1,
+		'DT'         => 1,
+		'FIELDSET'   => 1,
+		'FIGCAPTION' => 1,
+		'FIGURE'     => 1,
+		'FOOTER'     => 1,
+		'FORM'       => 1,
+		'H1'         => 1,
+		'H2'         => 1,
+		'H3'         => 1,
+		'H4'         => 1,
+		'H5'         => 1,
+		'H6'         => 1,
+		'HEADER'     => 1,
+		'HGROUP'     => 1,
+		'HR'         => 1,
+		'LI'         => 1,
+		'LISTING'    => 1,
+		'MAIN'       => 1,
+		'MENU'       => 1,
+		'NAV'        => 1,
+		'OL'         => 1,
+		'P'          => 1,
+		'PLAINTEXT'  => 1,
+		'PRE'        => 1,
+		'SEARCH'     => 1,
+		'SECTION'    => 1,
+		'SUMMARY'    => 1,
+		'TABLE'      => 1,
+		'UL'         => 1,
+		'XMP'        => 1,
+	);
 
 	/** Open elements that stop a p or a list item from being closed by an opener. */
-	const WALLS = array( 'APPLET' => 1, 'BUTTON' => 1, 'CAPTION' => 1, 'HTML' => 1, 'MARQUEE' => 1, 'MATH' => 1, 'OBJECT' => 1, 'SVG' => 1, 'TABLE' => 1, 'TD' => 1, 'TEMPLATE' => 1, 'TH' => 1 );
+	const WALLS = array(
+		'APPLET'   => 1,
+		'BUTTON'   => 1,
+		'CAPTION'  => 1,
+		'HTML'     => 1,
+		'MARQUEE'  => 1,
+		'MATH'     => 1,
+		'OBJECT'   => 1,
+		'SVG'      => 1,
+		'TABLE'    => 1,
+		'TD'       => 1,
+		'TEMPLATE' => 1,
+		'TH'       => 1,
+	);
 
 	/** Openers the browser only nests inside one of these; without one open in the scope they close something outside it. */
-	const NEEDS = array( 'LI' => array( 'UL', 'OL', 'MENU' ), 'DT' => array( 'DL' ), 'DD' => array( 'DL' ), 'TR' => array( 'TABLE', 'TBODY', 'THEAD', 'TFOOT' ), 'TD' => array( 'TR' ), 'TH' => array( 'TR' ), 'TBODY' => array( 'TABLE' ), 'THEAD' => array( 'TABLE' ), 'TFOOT' => array( 'TABLE' ), 'CAPTION' => array( 'TABLE' ), 'COLGROUP' => array( 'TABLE' ), 'OPTION' => array( 'SELECT', 'DATALIST', 'OPTGROUP' ), 'OPTGROUP' => array( 'SELECT' ), 'RB' => array( 'RUBY' ), 'RT' => array( 'RUBY', 'RTC' ), 'RTC' => array( 'RUBY' ), 'RP' => array( 'RUBY', 'RTC' ) );
+	const NEEDS = array(
+		'LI'       => array( 'UL', 'OL', 'MENU' ),
+		'DT'       => array( 'DL' ),
+		'DD'       => array( 'DL' ),
+		'TR'       => array( 'TABLE', 'TBODY', 'THEAD', 'TFOOT' ),
+		'TD'       => array( 'TR' ),
+		'TH'       => array( 'TR' ),
+		'TBODY'    => array( 'TABLE' ),
+		'THEAD'    => array( 'TABLE' ),
+		'TFOOT'    => array( 'TABLE' ),
+		'CAPTION'  => array( 'TABLE' ),
+		'COLGROUP' => array( 'TABLE' ),
+		'OPTION'   => array( 'SELECT', 'DATALIST', 'OPTGROUP' ),
+		'OPTGROUP' => array( 'SELECT' ),
+		'RB'       => array( 'RUBY' ),
+		'RT'       => array( 'RUBY', 'RTC' ),
+		'RTC'      => array( 'RUBY' ),
+		'RP'       => array( 'RUBY', 'RTC' ),
+	);
 
 	/** Tags that cannot nest (the browser closes the open one): tag => group. */
-	const NO_NEST = array( 'A' => 'A', 'BUTTON' => 'BUTTON', 'NOBR' => 'NOBR', 'H1' => 'H', 'H2' => 'H', 'H3' => 'H', 'H4' => 'H', 'H5' => 'H', 'H6' => 'H' );
+	const NO_NEST = array(
+		'A'      => 'A',
+		'BUTTON' => 'BUTTON',
+		'NOBR'   => 'NOBR',
+		'H1'     => 'H',
+		'H2'     => 'H',
+		'H3'     => 'H',
+		'H4'     => 'H',
+		'H5'     => 'H',
+		'H6'     => 'H',
+	);
 
 	/** Always focusable or operable (data-tf-decorative never hides them or what holds them). */
-	const FOCUSABLE = array( 'BUTTON' => 1, 'SELECT' => 1, 'TEXTAREA' => 1, 'IFRAME' => 1, 'SUMMARY' => 1, 'EMBED' => 1, 'OBJECT' => 1 );
+	const FOCUSABLE = array(
+		'BUTTON'   => 1,
+		'SELECT'   => 1,
+		'TEXTAREA' => 1,
+		'IFRAME'   => 1,
+		'SUMMARY'  => 1,
+		'EMBED'    => 1,
+		'OBJECT'   => 1,
+	);
 
 	/** Most icon-link title lookups per request (each is a query). */
 	const MAX_LOOKUPS = 20;
@@ -70,25 +206,49 @@ class A11y_Auto {
 		'TEXTAREA' => array( 'rule_field' ),
 	);
 
-	/** @var array|null Switches on for this request: key => true. */
+	/**
+	 * Switches on for this request: key => true.
+	 *
+	 * @var array|null
+	 */
 	private static $on = null;
 
-	/** @var array What was added and what was left alone in this request. */
+	/**
+	 * What was added and what was left alone in this request.
+	 *
+	 * @var array
+	 */
 	private static $stats = array(
 		'added' => array(),
 		'left'  => array(),
 	);
 
-	/** @var int Block nesting while rendering (only top-level blocks are read). */
+	/**
+	 * Block nesting while rendering (only top-level blocks are read).
+	 *
+	 * @var int
+	 */
 	private static $depth = 0;
 
-	/** @var int Builder render_data() nesting: an inner tree (post content, template, popup) is read with the outer one. */
+	/**
+	 * Builder render_data() nesting: an inner tree (post content, template, popup) is read with the outer one.
+	 *
+	 * @var int
+	 */
 	private static $trees = 0;
 
-	/** @var bool A link points to the hidden new-tab text, so print it. */
+	/**
+	 * A link points to the hidden new-tab text, so print it.
+	 *
+	 * @var bool
+	 */
 	private static $new_tab = false;
 
-	/** @var array Per-request lookups (menu names, alt texts, linked titles). */
+	/**
+	 * Per-request lookups (menu names, alt texts, linked titles).
+	 *
+	 * @var array
+	 */
 	private static $memo = array();
 
 	/**
@@ -204,10 +364,26 @@ class A11y_Auto {
 		if ( ! $on ) {
 			return array();
 		}
-		$out = array( 'attributes' => array( array( 'n' => 'data-tf-a11y', 'k' => 'attr', 'copy' => 'data-tf-a11y="off"', 'd' => 'Set to off on an element: the automatic accessibility attributes leave it and everything inside it exactly as you built it.', 'css' => '' ) ) );
+		$out = array(
+			'attributes' => array(
+				array(
+					'n'    => 'data-tf-a11y',
+					'k'    => 'attr',
+					'copy' => 'data-tf-a11y="off"',
+					'd'    => 'Set to off on an element: the automatic accessibility attributes leave it and everything inside it exactly as you built it.',
+					'css'  => '',
+				),
+			),
+		);
 		foreach ( self::items() as $k => $it ) {
 			if ( isset( $on[ $k ] ) ) {
-				$out['utilities'][] = array( 'n' => $it[0] . ' (automatic)', 'k' => 'attr', 'copy' => 'data-tf-a11y="off"', 'd' => $it[1] . ' Added on the page only where it is missing; anything you set is never changed. Copy data-tf-a11y="off" to opt an element out.', 'css' => '' );
+				$out['utilities'][] = array(
+					'n'    => $it[0] . ' (automatic)',
+					'k'    => 'attr',
+					'copy' => 'data-tf-a11y="off"',
+					'd'    => $it[1] . ' Added on the page only where it is missing; anything you set is never changed. Copy data-tf-a11y="off" to opt an element out.',
+					'css'  => '',
+				);
 			}
 		}
 		return $out;
@@ -335,7 +511,7 @@ class A11y_Auto {
 			++$n;
 			if ( isset( $st['plan'][ $n ] ) ) {
 				foreach ( $st['plan'][ $n ] as $k => $v ) {
-					if ( null === $p->get_attribute( $k ) ) { // never replace what is there
+					if ( null === $p->get_attribute( $k ) ) { // never replace what is there.
 						$p->set_attribute( $k, $v );
 						++$queue;
 					}
@@ -350,7 +526,7 @@ class A11y_Auto {
 	}
 
 	/**
-	 * data-tf-decorative: the element is only decoration. It gets aria-hidden="true" (replacing
+	 * Handle data-tf-decorative: the element is only decoration. It gets aria-hidden="true" (replacing
 	 * another value: the author said decorative); an img gets alt=""; an svg also focusable="false".
 	 * role is never touched. Images inside get alt="" only when the element's own closing tag is found
 	 * where the browser closes it (see scope_opener()); otherwise only the element itself is changed and
@@ -374,11 +550,11 @@ class A11y_Auto {
 		$text  = method_exists( 'WP_HTML_Tag_Processor', 'next_token' );
 		$todo  = substr_count( strtolower( $html ), 'data-tf-decorative' );
 		$sc    = self::scope_new();
-		$own   = array(); // mark => its own attributes
-		$inner = array(); // mark => images inside it
-		$left  = array(); // mark => why it is left as built
-		$ctl   = array(); // open links and buttons: [ tag, has a name besides the marks, marks inside ]
-		$held  = 0;       // controls holding marks
+		$own   = array(); // mark => its own attributes.
+		$inner = array(); // mark => images inside it.
+		$left  = array(); // mark => why it is left as built.
+		$ctl   = array(); // open links and buttons: [ tag, has a name besides the marks, marks inside ].
+		$held  = 0;       // controls holding marks.
 		$n     = 0;
 		$k     = 0;
 		$p     = new \WP_HTML_Tag_Processor( $html );
@@ -402,7 +578,7 @@ class A11y_Auto {
 				if ( $mark ) {
 					--$todo;
 					if ( $ctl ) {
-						$held                           += $ctl[ count( $ctl ) - 1 ][2] ? 0 : 1;
+						$held                         += $ctl[ count( $ctl ) - 1 ][2] ? 0 : 1;
 						$ctl[ count( $ctl ) - 1 ][2][] = $n;
 					}
 				}
@@ -444,7 +620,7 @@ class A11y_Auto {
 				}
 				if ( ( 'A' === $tag && null !== $p->get_attribute( 'href' ) ) || 'BUTTON' === $tag ) {
 					if ( $ctl && end( $ctl )[0] === $tag ) {
-						self::control_end( array_pop( $ctl ), $left, $held ); // they do not nest: the parser closes the open one
+						self::control_end( array_pop( $ctl ), $left, $held ); // they do not nest: the parser closes the open one.
 					}
 					$named = false;
 					foreach ( array( 'aria-label', 'aria-labelledby', 'title' ) as $a ) {
@@ -455,10 +631,10 @@ class A11y_Auto {
 				}
 			}
 			if ( ! $todo && ! $sc['live'] && ! $sc['broken'] && ! $held ) {
-				break; // every mark settled: the rest of the fragment cannot change anything
+				break; // every mark settled: the rest of the fragment cannot change anything.
 			}
 		}
-		self::scope_break( $sc ); // still open at the end of the fragment: not proven
+		self::scope_break( $sc ); // still open at the end of the fragment: not proven.
 		while ( $ctl ) {
 			self::control_end( array_pop( $ctl ), $left, $held );
 		}
@@ -589,14 +765,14 @@ class A11y_Auto {
 				$close = self::last_open( $sc, 'LI' === $tag ? array( 'LI' ) : array( 'DT', 'DD' ), null );
 			}
 			if ( null !== $close ) {
-				self::pop_to( $sc, $close, $k - 1 ); // the browser closes it here
+				self::pop_to( $sc, $close, $k - 1 ); // the browser closes it here.
 			}
 		}
 		if ( $sc['live'] ) {
 			$group  = isset( self::NO_NEST[ $tag ] ) ? self::NO_NEST[ $tag ] : null;
 			$nested = false;
 			foreach ( $sc['open'] as $o ) {
-				$nested = $nested || ( null !== $group && isset( self::NO_NEST[ $o ] ) && $group === self::NO_NEST[ $o ] );
+				$nested = $nested || ( null !== $group && isset( self::NO_NEST[ $o ] ) && self::NO_NEST[ $o ] === $group );
 			}
 			if ( $nested || ( isset( self::NEEDS[ $tag ] ) && ! array_intersect( self::NEEDS[ $tag ], $sc['open'] ) ) || ( $sc['pin'] && isset( self::P_CLOSERS[ $tag ] ) && ! in_array( 'P', $sc['open'], true ) ) ) {
 				self::scope_break( $sc );
@@ -616,10 +792,10 @@ class A11y_Auto {
 		// A self-closing flag only ends an element in svg or math; on 6.2 (no flag) such a tag stays open and the scope is not proven.
 		$leaf = method_exists( $p, 'has_self_closing_flag' ) && $p->has_self_closing_flag() && ( null !== $sc['fg'] || 'SVG' === $tag || 'MATH' === $tag );
 		if ( $leaf || isset( self::VOID[ $tag ] ) || isset( self::ATOMIC[ $tag ] ) ) {
-			return; // nothing can be inside it
+			return; // nothing can be inside it.
 		}
-		$i              = count( $sc['open'] );
-		$sc['open'][]   = $tag;
+		$i            = count( $sc['open'] );
+		$sc['open'][] = $tag;
 		if ( null === $sc['fg'] && ( 'SVG' === $tag || 'MATH' === $tag ) ) {
 			$sc['fg'] = $i;
 		}
@@ -688,8 +864,8 @@ class A11y_Auto {
 	 * @return void
 	 */
 	private static function pop_to( &$sc, $i, $k ) {
-		while ( count( $sc['open'] ) > $i ) {
-			$j = count( $sc['open'] ) - 1;
+		for ( $n = count( $sc['open'] ); $n > $i; $n-- ) {
+			$j = $n - 1;
 			array_pop( $sc['open'] );
 			if ( null !== $sc['fg'] && $j <= $sc['fg'] ) {
 				$sc['fg'] = null;
@@ -716,11 +892,11 @@ class A11y_Auto {
 		$sc['live'] = array();
 		$sc['open'] = array();
 		$sc['fg']   = null;
-		$sc['pin']  = true; // unknown from here: assume a p may be open
+		$sc['pin']  = true; // unknown from here: assume a p may be open.
 	}
 
 	/**
-	 * data-tf-a11y="off" elements: opening-tag number => tag-token number of the closer when what is
+	 * Find data-tf-a11y="off" elements: opening-tag number => tag-token number of the closer when what is
 	 * inside is proven (or bounded: skipping too little only adds a missing attribute), or 0 (skip
 	 * only the element itself).
 	 *
@@ -798,7 +974,7 @@ class A11y_Auto {
 	private static function plan( $html, $on ) {
 		$text = method_exists( 'WP_HTML_Tag_Processor', 'next_token' );
 		if ( ! $text ) {
-			unset( $on['a11y_icons'], $on['a11y_guess_icon_link'] ); // they need to read text (6.5+)
+			unset( $on['a11y_icons'], $on['a11y_guess_icon_link'] ); // they need to read text (6.5+).
 		}
 		$p    = new \WP_HTML_Tag_Processor( $html );
 		$st   = array(
@@ -806,28 +982,28 @@ class A11y_Auto {
 			'plan'   => array(),
 			'added'  => array(),
 			'left'   => array(),
-			'nav'    => 0,       // open <nav> depth
+			'nav'    => 0,       // open <nav> depth.
 			'wait'   => null,    // [ nav number, nav depth ] waiting for its menu name
-			'label'  => 0,       // open <label> depth
-			'fors'   => array(), // label for="" ids in this HTML
-			'fields' => array(), // placeholder-only fields: [ n, id, placeholder ]
+			'label'  => 0,       // open <label> depth.
+			'fors'   => array(), // label for="" ids in this HTML.
+			'fields' => array(), // placeholder-only fields: [ n, id, placeholder ].
 		);
 		$n    = 0;
-		$k    = 0;       // tag-token number (openers and closers)
-		$skip = 0;       // inside a data-tf-a11y="off" element up to this tag token
-		$ctl  = array(); // open links and buttons
+		$k    = 0;       // tag-token number (openers and closers).
+		$skip = 0;       // inside a data-tf-a11y="off" element up to this tag token.
+		$ctl  = array(); // open links and buttons.
 		$svg  = 0;
-		$ic   = null;    // index of the open <i> icon in the top control
-		$sv   = null;    // index of the open svg icon in the top control
+		$ic   = null;    // index of the open <i> icon in the top control.
+		$sv   = null;    // index of the open svg icon in the top control.
 		$ah   = null;    // [ tag, depth ] inside an aria-hidden="true" element within a control
-		$offs = false !== stripos( $html, 'data-tf-a11y' ) ? self::off_scopes( $html ) : array(); // read only when it is there
+		$offs = false !== stripos( $html, 'data-tf-a11y' ) ? self::off_scopes( $html ) : array(); // read only when it is there.
 		while ( $text ? $p->next_token() : $p->next_tag( array( 'tag_closers' => 'visit' ) ) ) {
 			if ( $text && '#tag' !== $p->get_token_type() ) {
 				if ( $ctl && ! $svg && ! $ah && '#text' === $p->get_token_type() && '' !== trim( $p->get_modifiable_text(), " \t\n\r\f\v\0\xC2\xA0" ) ) {
-					$top = count( $ctl ) - 1;
+					$top                 = count( $ctl ) - 1;
 					$ctl[ $top ]['text'] = true;
 					if ( null !== $ic ) {
-						$ctl[ $top ]['icons'][ $ic ][1] = false; // an <i> with text is italic text, not an icon
+						$ctl[ $top ]['icons'][ $ic ][1] = false; // an <i> with text is italic text, not an icon.
 						$ctl[ $top ]['icons'][ $ic ][2] = false;
 					}
 				}
@@ -873,7 +1049,7 @@ class A11y_Auto {
 				if ( $ah && $tag === $ah[0] ) {
 					++$ah[1];
 				} elseif ( ! $ah && 'true' === strtolower( trim( (string) $p->get_attribute( 'aria-hidden' ) ) ) && ! ( method_exists( $p, 'has_self_closing_flag' ) && $p->has_self_closing_flag() ) ) {
-					$ah = array( $tag, 1 ); // its text is not part of the control's name
+					$ah = array( $tag, 1 ); // its text is not part of the control's name.
 				}
 			}
 			foreach ( array( '*', $tag ) as $key ) {
@@ -884,7 +1060,7 @@ class A11y_Auto {
 			// Structure: links and buttons, icons inside them, svg, nav, label.
 			if ( 'A' === $tag || 'BUTTON' === $tag ) {
 				if ( 'A' === $tag && $ctl && 'A' === end( $ctl )['tag'] ) {
-					self::finish( array_pop( $ctl ), $st ); // links do not nest: the parser closes the open one
+					self::finish( array_pop( $ctl ), $st ); // links do not nest: the parser closes the open one.
 				}
 				$ctl[] = array(
 					'tag'   => $tag,
@@ -912,7 +1088,7 @@ class A11y_Auto {
 				}
 			} elseif ( 'TITLE' === $tag && $svg && $ctl ) {
 				$top                  = count( $ctl ) - 1;
-				$ctl[ $top ]['named'] = true; // an svg <title> names it, so the svg is never hidden
+				$ctl[ $top ]['named'] = true; // an svg <title> names it, so the svg is never hidden.
 				if ( null !== $sv && isset( $ctl[ $top ]['icons'][ $sv ] ) ) {
 					$ctl[ $top ]['icons'][ $sv ][1] = false;
 				}
@@ -1189,12 +1365,12 @@ class A11y_Auto {
 			$title = '';
 			$used  = isset( self::$memo['lookups'] ) ? self::$memo['lookups'] : 0;
 			if ( $used >= self::MAX_LOOKUPS ) {
-				return ''; // each lookup is a query: past the cap the link is counted as left alone
+				return ''; // each lookup is a query: past the cap the link is counted as left alone.
 			}
 			if ( '' !== self::path_of( $href ) ) {
 				self::$memo['lookups'] = $used + 1;
-				$id = url_to_postid( $href );
-				if ( $id && 'publish' === get_post_status( $id ) ) { // never show a private title
+				$id                    = url_to_postid( $href );
+				if ( $id && 'publish' === get_post_status( $id ) ) { // never show a private title.
 					$title = self::plain( get_post_field( 'post_title', $id, 'raw' ) );
 				}
 			}
@@ -1210,7 +1386,7 @@ class A11y_Auto {
 	 */
 	private static function here() {
 		if ( ! isset( self::$memo['here'] ) ) {
-			$req                  = isset( $GLOBALS['wp'] ) && is_object( $GLOBALS['wp'] ) && isset( $GLOBALS['wp']->request ) ? (string) $GLOBALS['wp']->request : null;
+			$req                = isset( $GLOBALS['wp'] ) && is_object( $GLOBALS['wp'] ) && isset( $GLOBALS['wp']->request ) ? (string) $GLOBALS['wp']->request : null;
 			self::$memo['here'] = null === $req ? '' : self::path_of( home_url( $req ) );
 		}
 		return self::$memo['here'];

@@ -29,7 +29,11 @@ class Font_Convert {
 	/** WOFF2 known table tags (index = position). */
 	const WOFF2_TAGS = array( 'cmap', 'head', 'hhea', 'hmtx', 'maxp', 'name', 'OS/2', 'post', 'cvt ', 'fpgm', 'glyf', 'loca', 'prep', 'CFF ', 'VORG', 'EBDT', 'EBLC', 'gasp', 'hdmx', 'kern', 'LTSH', 'PCLT', 'VDMX', 'vhea', 'vmtx', 'BASE', 'GDEF', 'GPOS', 'GSUB', 'EBSC', 'JSTF', 'MATH', 'CBDT', 'CBLC', 'COLR', 'CPAL', 'SVG ', 'sbix', 'acnt', 'avar', 'bdat', 'bloc', 'bsln', 'cvar', 'fdsc', 'feat', 'fmtx', 'fvar', 'gvar', 'hsty', 'just', 'lcar', 'mort', 'morx', 'opbd', 'prop', 'trak', 'Zapf', 'Silf', 'Glat', 'Gloc', 'Feat', 'Sill' );
 
-	/** @var bool Our own post meta write in progress. */
+	/**
+	 * Our own post meta write in progress.
+	 *
+	 * @var bool
+	 */
 	private static $busy = false;
 
 	/**
@@ -77,9 +81,15 @@ class Font_Convert {
 			if ( $e['offset'] + $e['length'] > $len || isset( $tables[ $tag ] ) ) {
 				return null;
 			}
-			$tables[ $tag ] = array( 'data' => substr( $bytes, $e['offset'], $e['length'] ), 'checksum' => $e['checksum'] );
+			$tables[ $tag ] = array(
+				'data'     => substr( $bytes, $e['offset'], $e['length'] ),
+				'checksum' => $e['checksum'],
+			);
 		}
-		return array( 'flavor' => $flavor, 'tables' => $tables );
+		return array(
+			'flavor' => $flavor,
+			'tables' => $tables,
+		);
 	}
 
 	/**
@@ -108,16 +118,16 @@ class Font_Convert {
 			return null;
 		}
 		$tables = $font['tables'];
-		ksort( $tables, SORT_STRING ); // ascending tag order
+		ksort( $tables, SORT_STRING ); // ascending tag order.
 		$n      = count( $tables );
 		$offset = 44 + 20 * $n;
 		$dir    = '';
 		$data   = '';
 		foreach ( $tables as $tag => $t ) {
-			$orig = $t['data'];
-			$comp = gzcompress( $orig, 9 ); // zlib stream, as compress2()
-			$use  = ( false !== $comp && strlen( $comp ) < strlen( $orig ) ) ? $comp : $orig;
-			$dir .= pack( 'a4NNNN', $tag, $offset + strlen( $data ), strlen( $use ), strlen( $orig ), $t['checksum'] );
+			$orig  = $t['data'];
+			$comp  = gzcompress( $orig, 9 ); // zlib stream, as compress2().
+			$use   = ( false !== $comp && strlen( $comp ) < strlen( $orig ) ) ? $comp : $orig;
+			$dir  .= pack( 'a4NNNN', $tag, $offset + strlen( $data ), strlen( $use ), strlen( $orig ), $t['checksum'] );
 			$data .= $use . str_repeat( "\0", ( 4 - strlen( $use ) % 4 ) % 4 );
 		}
 		$length = 44 + strlen( $dir ) + strlen( $data );
@@ -177,13 +187,13 @@ class Font_Convert {
 			}
 			$tables = $ordered;
 		} elseif ( isset( $tables['glyf'] ) xor isset( $tables['loca'] ) ) {
-			return null; // broken TrueType font
+			return null; // broken TrueType font.
 		}
 		$known = array_flip( self::WOFF2_TAGS );
 		$dir   = '';
 		$raw   = '';
 		foreach ( $tables as $tag => $t ) {
-			$transform = ( 'glyf' === $tag || 'loca' === $tag ) ? 3 : 0; // null transform
+			$transform = ( 'glyf' === $tag || 'loca' === $tag ) ? 3 : 0; // null transform.
 			if ( isset( $known[ $tag ] ) ) {
 				$dir .= chr( $known[ $tag ] | ( $transform << 6 ) );
 			} else {
@@ -233,7 +243,10 @@ class Font_Convert {
 		if ( false === file_put_contents( $dest, $out ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- uploads folder
 			return null;
 		}
-		return array( 'path' => $dest, 'format' => $format );
+		return array(
+			'path'   => $dest,
+			'format' => $format,
+		);
 	}
 
 	/**

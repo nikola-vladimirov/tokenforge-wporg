@@ -56,7 +56,7 @@ class Form_Submissions_Screen {
 		if ( ! in_array( $hook, self::HOOKS, true ) || ! Form_Submissions::can() ) {
 			return;
 		}
-		Form_Submissions::purge_orphans(); // the builder deletes rows without a hook; drop our status/note rows for them
+		Form_Submissions::purge_orphans(); // the builder deletes rows without a hook; drop our status/note rows for them.
 		wp_enqueue_style( 'tokenforge-admin', TOKENFORGE_URL . 'assets/admin/admin.css', array(), TOKENFORGE_VERSION );
 		wp_enqueue_style( 'tokenforge-submissions', TOKENFORGE_URL . 'assets/admin/submissions.css', array( 'tokenforge-admin' ), TOKENFORGE_VERSION );
 		wp_enqueue_script( 'tokenforge-submissions', TOKENFORGE_URL . 'assets/admin/submissions.js', array( 'wp-i18n' ), TOKENFORGE_VERSION, true );
@@ -161,7 +161,7 @@ class Form_Submissions_Screen {
 		}
 		foreach ( (array) $menu as $item ) {
 			if ( isset( $item[2] ) && self::PAGE === $item[2] ) {
-				return false; // users without manage_options already get a top-level entry
+				return false; // users without manage_options already get a top-level entry.
 			}
 		}
 		// No page without the builder's "Save form submissions" setting.

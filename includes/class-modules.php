@@ -28,28 +28,63 @@ class Modules {
 	 */
 	const MAP = array(
 		'colors'     => array(
-			'scheme'    => array( 'assignments' => false, 'switcher' => false, 'dark_mode' => 'off' ),
+			'scheme'    => array(
+				'assignments' => false,
+				'switcher'    => false,
+				'dark_mode'   => 'off',
+			),
 			'framework' => array( 'utilities_color' => false ),
 		),
 		'typography' => array(
-			'components' => array( 'base_root' => false, 'text_size_classes' => false ),
+			'components' => array(
+				'base_root'         => false,
+				'text_size_classes' => false,
+			),
 			'fonts'      => array( 'enabled' => false ),
 			'framework'  => array( 'utilities_typography' => false ),
 		),
 		'spacing'    => array(
-			'components' => array( 'auto_container_gap' => false, 'auto_content_gap' => false, 'auto_grid_gap' => false ),
+			'components' => array(
+				'auto_container_gap' => false,
+				'auto_content_gap'   => false,
+				'auto_grid_gap'      => false,
+			),
 			'framework'  => array( 'utilities_spacing' => false ),
 		),
 		'layout'     => array(
-			'components' => array( 'base_layout' => false, 'container_width' => false, 'section_padding' => false, 'content_grid' => false ),
-			'defaults'   => array( 'sticky' => false, 'content_offset' => false, 'smooth_scroll' => false, 'scroll_offset_header' => false ),
+			'components' => array(
+				'base_layout'     => false,
+				'container_width' => false,
+				'section_padding' => false,
+				'content_grid'    => false,
+			),
+			'defaults'   => array(
+				'sticky'               => false,
+				'content_offset'       => false,
+				'smooth_scroll'        => false,
+				'scroll_offset_header' => false,
+			),
 			'framework'  => array( 'utilities_layout' => false ),
 		),
 		'borders'    => array(
-			'extras' => array( 'enable_radius' => false, 'auto_radius' => false, 'enable_border' => false, 'inverted_radius' => false, 'enable_shadow' => false, 'enable_text_shadow' => false, 'enable_drop_shadow' => false ),
+			'extras' => array(
+				'enable_radius'      => false,
+				'auto_radius'        => false,
+				'enable_border'      => false,
+				'inverted_radius'    => false,
+				'enable_shadow'      => false,
+				'enable_text_shadow' => false,
+				'enable_drop_shadow' => false,
+			),
 		),
 		'buttons'    => array(
-			'components' => array( 'base_buttons' => false, 'base_links' => false, 'ext_links' => false, 'bricks_button_styles' => false, 'control_bricks_buttons' => false ),
+			'components' => array(
+				'base_buttons'           => false,
+				'base_links'             => false,
+				'ext_links'              => false,
+				'bricks_button_styles'   => false,
+				'control_bricks_buttons' => false,
+			),
 		),
 		'cards'      => array(
 			'components' => array( 'base_cards' => false ),
@@ -62,16 +97,45 @@ class Modules {
 			'components' => array( 'base_forms' => false ),
 		),
 		'content'    => array(
-			'content' => array( 'prose' => false, 'prose_auto' => false, 'rich_text' => false, 'flow' => false, 'flow_auto' => false, 'smart_spacing' => false, 'blockquotes' => false, 'bq_auto' => false ),
+			'content' => array(
+				'prose'         => false,
+				'prose_auto'    => false,
+				'rich_text'     => false,
+				'flow'          => false,
+				'flow_auto'     => false,
+				'smart_spacing' => false,
+				'blockquotes'   => false,
+				'bq_auto'       => false,
+			),
 		),
 		'overlays'   => array(
-			'overlays' => array( 'basic' => false, 'overlays' => array(), 'surfaces' => array() ),
+			'overlays' => array(
+				'basic'    => false,
+				'overlays' => array(),
+				'surfaces' => array(),
+			),
 		),
 		'effects'    => array(
-			'motion' => array( 'enter' => false, 'exit' => false, 'visible' => false, 'hover' => false, 'border_fx' => false, 'transition_class' => false ),
+			'motion' => array(
+				'enter'            => false,
+				'exit'             => false,
+				'visible'          => false,
+				'hover'            => false,
+				'border_fx'        => false,
+				'transition_class' => false,
+			),
 		),
 		'base'       => array(
-			'defaults' => array( 'reset' => false, 'focus_styles' => false, 'object_fit' => false, 'is_bg' => false, 'sr_only' => false, 'columns' => false, 'media_block' => false, 'reduce_motion' => false ),
+			'defaults' => array(
+				'reset'         => false,
+				'focus_styles'  => false,
+				'object_fit'    => false,
+				'is_bg'         => false,
+				'sr_only'       => false,
+				'columns'       => false,
+				'media_block'   => false,
+				'reduce_motion' => false,
+			),
 		),
 		'recipes'    => array(
 			'recipes' => array( 'enabled' => false ),
@@ -81,11 +145,31 @@ class Modules {
 		),
 		// Builder off: no TokenForge tools; grid_overlay stays true, which leaves Bricks' own grid overlay as Bricks ships it.
 		'builder'    => array(
-			'enhancements' => array( 'stack_add_elements' => false, 'pro_mode' => false, 'element_outlines' => false, 'grid_overlay' => true, 'grid_visualizer' => false, 'overflow_detection' => false, 'canvas_headings' => false, 'canvas_focus' => false, 'template_gallery' => false, 'bigger_code_editor' => false, 'ctx_vars_menu' => false, 'ctx_class_menu' => false, 'original_template_classes' => false, 'css_group_top' => false, 'css_autocomplete' => false ),
+			'enhancements' => array(
+				'stack_add_elements'        => false,
+				'pro_mode'                  => false,
+				'element_outlines'          => false,
+				'grid_overlay'              => true,
+				'grid_visualizer'           => false,
+				'overflow_detection'        => false,
+				'canvas_headings'           => false,
+				'canvas_focus'              => false,
+				'template_gallery'          => false,
+				'bigger_code_editor'        => false,
+				'ctx_vars_menu'             => false,
+				'ctx_class_menu'            => false,
+				'original_template_classes' => false,
+				'css_group_top'             => false,
+				'css_autocomplete'          => false,
+			),
 		),
 	);
 
-	/** @var bool Read settings as stored (dashboard, export), not as the output sees them. */
+	/**
+	 * Read settings as stored (dashboard, export), not as the output sees them.
+	 *
+	 * @var bool
+	 */
 	private static $raw = false;
 
 
@@ -163,9 +247,14 @@ class Modules {
 	private static function off() {
 		// Read every time (get_option is cached): a reset or an import in the same
 		// request must be seen by the CSS that is built right after it.
-		return array_keys( array_filter( self::settings(), function ( $on ) {
-			return ! $on;
-		} ) );
+		return array_keys(
+			array_filter(
+				self::settings(),
+				function ( $on ) {
+					return ! $on;
+				}
+			)
+		);
 	}
 
 	/**

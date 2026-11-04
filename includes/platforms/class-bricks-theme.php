@@ -83,7 +83,12 @@ class Bricks_Theme {
 	);
 
 	/** Button sizes => TokenForge text size. */
-	const BUTTON_SIZES = array( 'Sm' => 's', 'Md' => 'm', 'Lg' => 'l', 'Xl' => 'xl' );
+	const BUTTON_SIZES = array(
+		'Sm' => 's',
+		'Md' => 'm',
+		'Lg' => 'l',
+		'Xl' => 'xl',
+	);
 
 	/** Button typography fields => TokenForge button setting (the field holds the matching variable). */
 	const BUTTON_TYPE = array(
@@ -93,7 +98,11 @@ class Bricks_Theme {
 		'text-transform' => 'btn_text_transform',
 	);
 
-	/** @var bool Our own write in progress. */
+	/**
+	 * Our own write in progress.
+	 *
+	 * @var bool
+	 */
 	private static $busy = false;
 
 	/**
@@ -123,7 +132,14 @@ class Bricks_Theme {
 	public static function state() {
 		$s = get_option( self::STATE, array() );
 		$s = is_array( $s ) ? $s : array();
-		return array_merge( array( 'style' => '', 'pushed' => array(), 'prev' => array() ), $s );
+		return array_merge(
+			array(
+				'style'  => '',
+				'pushed' => array(),
+				'prev'   => array(),
+			),
+			$s
+		);
 	}
 
 	/**
@@ -167,7 +183,10 @@ class Bricks_Theme {
 		$id  = self::style_id( $all );
 		if ( '' !== $id ) {
 			self::push();
-			return array( 'id' => $id, 'created' => false );
+			return array(
+				'id'      => $id,
+				'created' => false,
+			);
 		}
 		$sitewide = array_keys( array_filter( $all, array( __CLASS__, 'is_sitewide' ) ) );
 		$created  = false;
@@ -186,7 +205,14 @@ class Bricks_Theme {
 				'label'    => $label,
 				'settings' => array(
 					'_custom'    => true,
-					'conditions' => array( 'conditions' => array( array( 'id' => substr( md5( $id ), 0, 6 ), 'main' => 'any' ) ) ),
+					'conditions' => array(
+						'conditions' => array(
+							array(
+								'id'   => substr( md5( $id ), 0, 6 ),
+								'main' => 'any',
+							),
+						),
+					),
 					// Element defaults that suit a token-based setup.
 					'heading'    => array( 'tag' => 'h2' ),
 					'text-basic' => array( 'tag' => 'p' ),
@@ -219,11 +245,15 @@ class Bricks_Theme {
 			}
 		}
 		if ( $changes ) {
-			self::apply( $changes ); // saves, rebuilds, pushes
+			self::apply( $changes ); // saves, rebuilds, pushes.
 		} else {
 			self::push();
 		}
-		return array( 'id' => $id, 'created' => $created, 'adopted' => array_keys( $changes ) );
+		return array(
+			'id'      => $id,
+			'created' => $created,
+			'adopted' => array_keys( $changes ),
+		);
 	}
 
 	/**
@@ -292,14 +322,17 @@ class Bricks_Theme {
 	 * @return array
 	 */
 	public static function desired() {
-		$c   = Components::settings();
-		$d   = Defaults::settings();
-		$out = array();
+		$c                                = Components::settings();
+		$d                                = Defaults::settings();
+		$out                              = array();
 		$out['typography.typographyHtml'] = ! empty( $d['output_root_font_size'] ) ? 'var(--root-font-size)' : null;
 		$out['container.width']           = 'var(--content-width)';
-		foreach ( array( 'Body' => 'text', 'Headings' => 'heading' ) as $group => $pre ) {
-			$base                 = "typography.typography$group.";
-			list( $fam, $fall )   = self::split_stack( $c[ $pre . '_font_family' ] );
+		foreach ( array(
+			'Body'     => 'text',
+			'Headings' => 'heading',
+		) as $group => $pre ) {
+			$base                         = "typography.typography$group.";
+			list( $fam, $fall )           = self::split_stack( $c[ $pre . '_font_family' ] );
 			$out[ $base . 'font-family' ] = '' !== $fam ? $fam : null;
 			$out[ $base . 'fallback' ]    = '' !== $fam && '' !== $fall ? $fall : null;
 			foreach ( self::TYPE_FIELDS as $prop => $suffix ) {
@@ -312,15 +345,15 @@ class Bricks_Theme {
 		for ( $i = 1; $i <= 6; $i++ ) {
 			$out[ "typography.typographyHeadingH$i.font-size" ] = "var(--h$i)";
 		}
-		$links                                    = ! empty( $c['base_links'] );
-		$out['links.typography.color']            = $links ? array( 'raw' => 'var(--link-color)' ) : null;
-		$out['links.typography:hover.color']      = $links ? array( 'raw' => 'var(--link-color-hover)' ) : null;
-		$out['general.siteBackground.color']      = '' !== trim( (string) $c['body_bg'] ) ? array( 'raw' => 'var(--body-bg-color)' ) : null;
-		$out['typography.focusOutline']           = ! empty( $d['focus_styles'] ) ? 'var(--focus-width) solid var(--focus-color)' : null;
-		$pad                                      = ! empty( $c['base_layout'] ) && ! empty( $c['section_padding'] );
-		$out['section.padding.top']               = $pad ? 'var(--section-padding-block)' : null;
-		$out['section.padding.bottom']            = $pad ? 'var(--section-padding-block)' : null;
-		$fams = Palette::settings()['families'];
+		$links                               = ! empty( $c['base_links'] );
+		$out['links.typography.color']       = $links ? array( 'raw' => 'var(--link-color)' ) : null;
+		$out['links.typography:hover.color'] = $links ? array( 'raw' => 'var(--link-color-hover)' ) : null;
+		$out['general.siteBackground.color'] = '' !== trim( (string) $c['body_bg'] ) ? array( 'raw' => 'var(--body-bg-color)' ) : null;
+		$out['typography.focusOutline']      = ! empty( $d['focus_styles'] ) ? 'var(--focus-width) solid var(--focus-color)' : null;
+		$pad                                 = ! empty( $c['base_layout'] ) && ! empty( $c['section_padding'] );
+		$out['section.padding.top']          = $pad ? 'var(--section-padding-block)' : null;
+		$out['section.padding.bottom']       = $pad ? 'var(--section-padding-block)' : null;
+		$fams                                = Palette::settings()['families'];
 		foreach ( self::COLORS as $field => $fam ) {
 			$out[ "colors.$field" ] = ! empty( $fams[ $fam ]['on'] ) ? array( 'raw' => "var(--$fam)" ) : null;
 		}
@@ -345,7 +378,12 @@ class Bricks_Theme {
 	 * @return array
 	 */
 	private static function sides( $v ) {
-		return array( 'top' => $v, 'right' => $v, 'bottom' => $v, 'left' => $v );
+		return array(
+			'top'    => $v,
+			'right'  => $v,
+			'bottom' => $v,
+			'left'   => $v,
+		);
 	}
 
 	/**
@@ -362,12 +400,12 @@ class Bricks_Theme {
 		foreach ( self::BUTTONS as $prefix => $fv ) {
 			$map = $on && ! empty( $fams[ $fv[0] ]['on'] ) ? Components::btn_var_map( $c, $fv[0], $fv[1] ) : array();
 			// The TokenForge button variable first: a btn--* class on the button still decides.
-			$get = function ( $k ) use ( $map ) {
+			$get                             = function ( $k ) use ( $map ) {
 				return isset( $map[ $k ] ) ? array( 'raw' => 'var(--' . $k . ', ' . $map[ $k ] . ')' ) : null;
 			};
-			$bg = self::key( $prefix, 'Background' );
-			$ty = self::key( $prefix, 'Typography' );
-			$bo = self::key( $prefix, 'Border' );
+			$bg                              = self::key( $prefix, 'Background' );
+			$ty                              = self::key( $prefix, 'Typography' );
+			$bo                              = self::key( $prefix, 'Border' );
 			$out[ "button.$bg" ]             = $get( 'btn-background' );
 			$out[ "button.$bg:hover" ]       = $get( 'btn-background-hover' );
 			$out[ "button.$ty.color" ]       = $get( 'btn-text-color' );
@@ -378,11 +416,16 @@ class Bricks_Theme {
 		foreach ( self::BUTTON_TYPE as $prop => $key ) {
 			$out[ "button.typography.$prop" ] = $on && '' !== trim( (string) $c[ $key ] ) ? 'var(--' . str_replace( '_', '-', $key ) . ')' : null;
 		}
-		$out['button.border.width']        = $on ? self::sides( 'var(--btn-border-width)' ) : null;
-		$out['button.border.style']        = $on ? 'var(--btn-border-style, solid)' : null;
-		$out['button.border.radius']       = $on && '' !== trim( (string) $c['btn_radius'] ) ? self::sides( 'var(--btn-border-radius)' ) : null;
-		$pad                               = $on ? array( 'top' => 'var(--btn-padding-block)', 'right' => 'var(--btn-padding-inline)', 'bottom' => 'var(--btn-padding-block)', 'left' => 'var(--btn-padding-inline)' ) : null;
-		$out['button.sizeDefaultPadding']  = $pad;
+		$out['button.border.width']       = $on ? self::sides( 'var(--btn-border-width)' ) : null;
+		$out['button.border.style']       = $on ? 'var(--btn-border-style, solid)' : null;
+		$out['button.border.radius']      = $on && '' !== trim( (string) $c['btn_radius'] ) ? self::sides( 'var(--btn-border-radius)' ) : null;
+		$pad                              = $on ? array(
+			'top'    => 'var(--btn-padding-block)',
+			'right'  => 'var(--btn-padding-inline)',
+			'bottom' => 'var(--btn-padding-block)',
+			'left'   => 'var(--btn-padding-inline)',
+		) : null;
+		$out['button.sizeDefaultPadding'] = $pad;
 		foreach ( self::BUTTON_SIZES as $size => $text ) {
 			$out[ "button.size{$size}Padding" ]              = $pad;
 			$out[ "button.size{$size}Typography.font-size" ] = $on ? "var(--text-$text)" : null;
@@ -398,36 +441,46 @@ class Bricks_Theme {
 	 * @return array
 	 */
 	private static function desired_forms( $c, $fams ) {
-		$on  = ! empty( $c['base_forms'] );
-		$pad = preg_split( '/\s+/', trim( (string) $c['field_padding'] ) );
-		$pv  = isset( $pad[0] ) && '' !== $pad[0] ? $pad[0] : '0.6em';
-		$ph  = isset( $pad[1] ) ? $pad[1] : $pv;
-		$out = array(
-			'form.fieldBackgroundColor'     => $on ? array( 'raw' => 'var(--field-bg, #fff)' ) : null,
-			'form.fieldTypography.color'    => $on ? array( 'raw' => 'var(--field-color, var(--base, #1a1a1a))' ) : null,
-			'form.fieldTypography.font-size' => $on ? 'var(--text-m)' : null,
-			'form.fieldBorder'              => $on ? array(
+		$on                                       = ! empty( $c['base_forms'] );
+		$pad                                      = preg_split( '/\s+/', trim( (string) $c['field_padding'] ) );
+		$pv                                       = isset( $pad[0] ) && '' !== $pad[0] ? $pad[0] : '0.6em';
+		$ph                                       = isset( $pad[1] ) ? $pad[1] : $pv;
+		$out                                      = array(
+			'form.fieldBackgroundColor'           => $on ? array( 'raw' => 'var(--field-bg, #fff)' ) : null,
+			'form.fieldTypography.color'          => $on ? array( 'raw' => 'var(--field-color, var(--base, #1a1a1a))' ) : null,
+			'form.fieldTypography.font-size'      => $on ? 'var(--text-m)' : null,
+			'form.fieldBorder'                    => $on ? array(
 				'width'  => self::sides( '1px' ),
 				'style'  => 'solid',
 				'color'  => array( 'raw' => (string) $c['field_border'] ),
 				'radius' => self::sides( (string) $c['field_radius'] ),
 			) : null,
-			'form.fieldPadding'             => $on ? array( 'top' => $pv, 'right' => $ph, 'bottom' => $pv, 'left' => $ph ) : null,
-			'form.fieldMargin'              => $on ? array( 'bottom' => (string) $c['form_gap'] ) : null,
-			'form.labelTypography.font-size' => $on ? 'var(--text-s)' : null,
+			'form.fieldPadding'                   => $on ? array(
+				'top'    => $pv,
+				'right'  => $ph,
+				'bottom' => $pv,
+				'left'   => $ph,
+			) : null,
+			'form.fieldMargin'                    => $on ? array( 'bottom' => (string) $c['form_gap'] ) : null,
+			'form.labelTypography.font-size'      => $on ? 'var(--text-s)' : null,
 			'form.labelTypography.text-transform' => $on ? 'none' : null,
 			'form.labelTypography.letter-spacing' => $on ? 'normal' : null,
 		);
-		$btn = $on && ! empty( $c['base_buttons'] ) && ! empty( $fams[ $c['form_btn_family'] ]['on'] ) ? Components::btn_var_map( $c, $c['form_btn_family'], $c['form_btn_variant'] ) : array();
-		$out['form.submitButtonBackgroundColor'] = $btn ? array( 'raw' => 'var(--btn-background, ' . $btn['btn-background'] . ')' ) : null;
+		$btn                                      = $on && ! empty( $c['base_buttons'] ) && ! empty( $fams[ $c['form_btn_family'] ]['on'] ) ? Components::btn_var_map( $c, $c['form_btn_family'], $c['form_btn_variant'] ) : array();
+		$out['form.submitButtonBackgroundColor']  = $btn ? array( 'raw' => 'var(--btn-background, ' . $btn['btn-background'] . ')' ) : null;
 		$out['form.submitButtonTypography.color'] = $btn ? array( 'raw' => 'var(--btn-text-color, ' . $btn['btn-text-color'] . ')' ) : null;
-		$out['form.submitButtonBorder']          = $btn ? array(
+		$out['form.submitButtonBorder']           = $btn ? array(
 			'width'  => self::sides( 'var(--btn-border-width)' ),
 			'style'  => 'solid',
 			'color'  => array( 'raw' => $btn['btn-border-color'] ),
 			'radius' => self::sides( 'var(--btn-border-radius)' ),
 		) : null;
-		$out['form.submitButtonPadding']         = $btn ? array( 'top' => 'var(--btn-padding-block)', 'right' => 'var(--btn-padding-inline)', 'bottom' => 'var(--btn-padding-block)', 'left' => 'var(--btn-padding-inline)' ) : null;
+		$out['form.submitButtonPadding']          = $btn ? array(
+			'top'    => 'var(--btn-padding-block)',
+			'right'  => 'var(--btn-padding-inline)',
+			'bottom' => 'var(--btn-padding-block)',
+			'left'   => 'var(--btn-padding-inline)',
+		) : null;
 		return $out;
 	}
 
@@ -440,10 +493,10 @@ class Bricks_Theme {
 	 * @return array
 	 */
 	private static function desired_shop( $c, $fams ) {
-		$w   = Woo::active() ? Woo::settings() : array();
-		$on  = ! empty( $w['enabled'] );
-		$btn = $on && ! empty( $w['buttons'] ) && ! empty( $fams[ $w['btn_family'] ]['on'] ) ? Components::btn_var_map( $c, $w['btn_family'], $w['btn_variant'] ) : array();
-		$out = array(
+		$w       = Woo::active() ? Woo::settings() : array();
+		$on      = ! empty( $w['enabled'] );
+		$btn     = $on && ! empty( $w['buttons'] ) && ! empty( $fams[ $w['btn_family'] ]['on'] ) ? Components::btn_var_map( $c, $w['btn_family'], $w['btn_variant'] ) : array();
+		$out     = array(
 			'woocommerce-button.background'       => $btn ? array( 'raw' => $btn['btn-background'] ) : null,
 			'woocommerce-button.typography.color' => $btn ? array( 'raw' => $btn['btn-text-color'] ) : null,
 			'woocommerce-button.border'           => $btn ? array(
@@ -452,19 +505,28 @@ class Bricks_Theme {
 				'color'  => array( 'raw' => $btn['btn-border-color'] ),
 				'radius' => self::sides( 'var(--btn-border-radius)' ),
 			) : null,
-			'woocommerce-button.padding'          => $btn ? array( 'top' => 'var(--btn-padding-block)', 'right' => 'var(--btn-padding-inline)', 'bottom' => 'var(--btn-padding-block)', 'left' => 'var(--btn-padding-inline)' ) : null,
+			'woocommerce-button.padding'          => $btn ? array(
+				'top'    => 'var(--btn-padding-block)',
+				'right'  => 'var(--btn-padding-inline)',
+				'bottom' => 'var(--btn-padding-block)',
+				'left'   => 'var(--btn-padding-inline)',
+			) : null,
 		);
 		$notices = $on && ! empty( $w['notices'] );
-		foreach ( array( 'success' => 'success', 'error' => 'danger', 'notice' => 'info' ) as $type => $fam ) {
-			$out[ "woocommerce-notice.{$type}BackgroundColor" ] = $notices ? array( 'raw' => "var(--$fam-ultra-light)" ) : null;
+		foreach ( array(
+			'success' => 'success',
+			'error'   => 'danger',
+			'notice'  => 'info',
+		) as $type => $fam ) {
+			$out[ "woocommerce-notice.{$type}BackgroundColor" ]  = $notices ? array( 'raw' => "var(--$fam-ultra-light)" ) : null;
 			$out[ "woocommerce-notice.{$type}Typography.color" ] = $notices ? array( 'raw' => "var(--$fam-ultra-dark, var(--text-dark))" ) : null;
-			$out[ "woocommerce-notice.{$type}Border" ]          = $notices ? array(
+			$out[ "woocommerce-notice.{$type}Border" ]           = $notices ? array(
 				'width'  => array( 'left' => '4px' ),
 				'style'  => 'solid',
 				'color'  => array( 'raw' => "var(--$fam)" ),
 				'radius' => self::sides( 'var(--woo-notice-radius)' ),
 			) : null;
-			$out[ "woocommerce-notice.{$type}Padding" ]         = $notices ? self::sides( 'var(--space-s, 15px)' ) : null;
+			$out[ "woocommerce-notice.{$type}Padding" ]          = $notices ? self::sides( 'var(--space-s, 15px)' ) : null;
 		}
 		return $out;
 	}
@@ -482,7 +544,12 @@ class Bricks_Theme {
 	public static function pull( $path, $v, $settings ) {
 		if ( 'typography.typographyHtml' === $path ) {
 			if ( is_string( $v ) && preg_match( '/^([\d.]+)%$/', trim( $v ), $m ) ) {
-				return array( 'defaults' => array( 'root_font_size' => (float) $m[1], 'output_root_font_size' => true ) );
+				return array(
+					'defaults' => array(
+						'root_font_size'        => (float) $m[1],
+						'output_root_font_size' => true,
+					),
+				);
 			}
 			return array();
 		}
@@ -543,7 +610,11 @@ class Bricks_Theme {
 			if ( ! isset( self::BUTTONS[ $m[1] ] ) || ( 'Background' === $part ) === $color ) {
 				return array();
 			}
-			$prop = array( 'Background' => 'bg', 'Typography' => 'text', 'Border' => 'border' )[ $part ];
+			$prop = array(
+				'Background' => 'bg',
+				'Typography' => 'text',
+				'Border'     => 'border',
+			)[ $part ];
 			if ( ! empty( $m[3] ) ) {
 				$prop = 'bg' === $prop ? 'hover' : 'hover_' . $prop;
 			}
@@ -792,7 +863,7 @@ class Bricks_Theme {
 		}
 		if ( $changes ) {
 			self::apply( $changes );
-			return; // apply() saves, rebuilds and pushes back (fields point at TokenForge again)
+			return; // apply() saves, rebuilds and pushes back (fields point at TokenForge again).
 		}
 		if ( $stale ) {
 			self::push();

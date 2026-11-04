@@ -130,7 +130,7 @@ class History {
 			return false;
 		}
 		self::snapshot( 'restore' );
-		Transfer::import( array( 'data' => $data ), Transfer::PARTS );
+		Transfer::import( array( 'data' => $data ), Transfer::parts() );
 		return true;
 	}
 
@@ -166,7 +166,7 @@ class History {
 			return null;
 		}
 		$a    = self::flat( self::by_name( $then ) );
-		$b    = self::flat( self::by_name( json_decode( (string) wp_json_encode( self::data() ), true ) ) ); // same types as the stored copy
+		$b    = self::flat( self::by_name( json_decode( (string) wp_json_encode( self::data() ), true ) ) ); // same types as the stored copy.
 		$rows = array();
 		foreach ( array_keys( $a + $b ) as $k ) {
 			$x = array_key_exists( $k, $a ) ? $a[ $k ] : null;
@@ -175,7 +175,10 @@ class History {
 				$rows[] = array( (string) $k, self::show( $x ), self::show( $y ) );
 			}
 		}
-		return array( 'changes' => array_slice( $rows, 0, 300 ), 'total' => count( $rows ) );
+		return array(
+			'changes' => array_slice( $rows, 0, 300 ),
+			'total'   => count( $rows ),
+		);
 	}
 
 	/**

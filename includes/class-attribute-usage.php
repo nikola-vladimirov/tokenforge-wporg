@@ -58,11 +58,11 @@ class Attribute_Usage {
 			if ( ! preg_match_all( self::PATTERN, $text, $m ) ) {
 				return;
 			}
-			$places++;
+			++$places;
 			foreach ( array_count_values( array_map( 'strtolower', $m[1] ) ) as $name => $n ) {
 				if ( ! isset( $found[ $name ] ) ) {
 					if ( count( $found ) >= self::MAX_NAMES ) {
-						continue; // made-up names in prose must not grow the scan without end
+						continue; // made-up names in prose must not grow the scan without end.
 					}
 					$found[ $name ] = array(
 						'count' => 0,
@@ -133,13 +133,13 @@ class Attribute_Usage {
 		}
 
 		$out = array(
-			'time'    => time(),
-			'v'       => 2, // 2: reads widgets and joins saved content, so Attributes::build() may prune by it (an older scan lacks this)
-			'posts'   => $posts,
-			'places'  => $places,
-			'capped'  => $capped,
-			'uses'    => $uses,
-			'unknown' => $unk,
+			'time'          => time(),
+			'v'             => 2, // 2: reads widgets and joins saved content, so Attributes::build() may prune by it (an older scan lacks this)
+			'posts'         => $posts,
+			'places'        => $places,
+			'capped'        => $capped,
+			'uses'          => $uses,
+			'unknown'       => $unk,
 			'unknownCapped' => $unk_capped,
 		);
 		update_option( self::OPTION, $out, false );
@@ -157,7 +157,7 @@ class Attribute_Usage {
 		$last = self::last();
 		$text = (string) wp_json_encode( $value );
 		if ( empty( $last['time'] ) || ( false === stripos( $text, 'data-tf-' ) && false === stripos( $text, 'data-scheme' ) ) || ! preg_match_all( self::PATTERN, $text, $m ) ) {
-			return false; // no scan (nothing is left out), or no name in the text
+			return false; // no scan (nothing is left out), or no name in the text.
 		}
 		$known = self::known();
 		$new   = false;
@@ -167,7 +167,7 @@ class Attribute_Usage {
 					'count' => $n,
 					'where' => array(),
 				);
-				$new = true;
+				$new                   = true;
 			}
 		}
 		if ( $new ) {

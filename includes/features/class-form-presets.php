@@ -210,7 +210,11 @@ class Form_Presets {
 	 * @return array
 	 */
 	private static function f( $ref, $type, $label, $more = array() ) {
-		return array( 'ref' => $ref, 'type' => $type, 'label' => $label ) + $more;
+		return array(
+			'ref'   => $ref,
+			'type'  => $type,
+			'label' => $label,
+		) + $more;
 	}
 
 	/**
@@ -221,18 +225,133 @@ class Form_Presets {
 	public static function field_presets() {
 		$f = array( __CLASS__, 'f' );
 		return array(
-			'full-name'  => array( 'name' => __( 'Full name', 'tokenforge' ), 'field' => call_user_func( $f, 'name', 'text', __( 'Full name', 'tokenforge' ), array( 'autocomplete' => 'name', 'required' => true ) ) ),
-			'first-name' => array( 'name' => __( 'First name', 'tokenforge' ), 'field' => call_user_func( $f, 'first', 'text', __( 'First name', 'tokenforge' ), array( 'autocomplete' => 'given-name', 'width' => '50', 'required' => true ) ) ),
-			'last-name'  => array( 'name' => __( 'Last name', 'tokenforge' ), 'field' => call_user_func( $f, 'last', 'text', __( 'Last name', 'tokenforge' ), array( 'autocomplete' => 'family-name', 'width' => '50', 'required' => true ) ) ),
-			'email'      => array( 'name' => __( 'Email', 'tokenforge' ), 'field' => call_user_func( $f, 'email', 'email', __( 'Email', 'tokenforge' ), array( 'autocomplete' => 'email', 'required' => true ) ) ),
-			'phone'      => array( 'name' => __( 'Phone', 'tokenforge' ), 'field' => call_user_func( $f, 'phone', 'tel', __( 'Phone', 'tokenforge' ), array( 'autocomplete' => 'tel' ) ) ),
-			'phone-mask' => array( 'name' => __( 'Phone with mask', 'tokenforge' ), 'field' => call_user_func( $f, 'phone', 'tel', __( 'Phone', 'tokenforge' ), array( 'autocomplete' => 'tel', 'tfMask' => '+359 ### ### ###' ) ) ),
-			'company'    => array( 'name' => __( 'Company', 'tokenforge' ), 'field' => call_user_func( $f, 'company', 'text', __( 'Company', 'tokenforge' ), array( 'autocomplete' => 'organization' ) ) ),
-			'message'    => array( 'name' => __( 'Message', 'tokenforge' ), 'field' => call_user_func( $f, 'message', 'textarea', __( 'Message', 'tokenforge' ), array( 'required' => true ) ) ),
-			'consent'    => array( 'name' => __( 'Consent', 'tokenforge' ), 'field' => call_user_func( $f, 'consent', 'checkbox', __( 'Consent', 'tokenforge' ), array( 'options' => __( 'I agree to the privacy policy', 'tokenforge' ), 'required' => true ) ) ),
-			'date'       => array( 'name' => __( 'Date', 'tokenforge' ), 'field' => call_user_func( $f, 'date', 'datepicker', __( 'Date', 'tokenforge' ), array( 'tfDateMin' => 0 ) ) ),
-			'slider'     => array( 'name' => __( 'Number slider', 'tokenforge' ), 'field' => call_user_func( $f, 'amount', 'number', __( 'Amount', 'tokenforge' ), array( 'min' => 0, 'max' => 100, 'step' => 1, 'value' => '50', 'tfLook' => 'slider' ) ) ),
-			'rating'     => array( 'name' => __( 'Star rating', 'tokenforge' ), 'field' => call_user_func( $f, 'rating', 'number', __( 'Rating', 'tokenforge' ), array( 'min' => 1, 'max' => 5, 'step' => 1, 'tfLook' => 'rating' ) ) ),
+			'full-name'  => array(
+				'name'  => __( 'Full name', 'tokenforge' ),
+				'field' => call_user_func(
+					$f,
+					'name',
+					'text',
+					__( 'Full name', 'tokenforge' ),
+					array(
+						'autocomplete' => 'name',
+						'required'     => true,
+					)
+				),
+			),
+			'first-name' => array(
+				'name'  => __( 'First name', 'tokenforge' ),
+				'field' => call_user_func(
+					$f,
+					'first',
+					'text',
+					__( 'First name', 'tokenforge' ),
+					array(
+						'autocomplete' => 'given-name',
+						'width'        => '50',
+						'required'     => true,
+					)
+				),
+			),
+			'last-name'  => array(
+				'name'  => __( 'Last name', 'tokenforge' ),
+				'field' => call_user_func(
+					$f,
+					'last',
+					'text',
+					__( 'Last name', 'tokenforge' ),
+					array(
+						'autocomplete' => 'family-name',
+						'width'        => '50',
+						'required'     => true,
+					)
+				),
+			),
+			'email'      => array(
+				'name'  => __( 'Email', 'tokenforge' ),
+				'field' => call_user_func(
+					$f,
+					'email',
+					'email',
+					__( 'Email', 'tokenforge' ),
+					array(
+						'autocomplete' => 'email',
+						'required'     => true,
+					)
+				),
+			),
+			'phone'      => array(
+				'name'  => __( 'Phone', 'tokenforge' ),
+				'field' => call_user_func( $f, 'phone', 'tel', __( 'Phone', 'tokenforge' ), array( 'autocomplete' => 'tel' ) ),
+			),
+			'phone-mask' => array(
+				'name'  => __( 'Phone with mask', 'tokenforge' ),
+				'field' => call_user_func(
+					$f,
+					'phone',
+					'tel',
+					__( 'Phone', 'tokenforge' ),
+					array(
+						'autocomplete' => 'tel',
+						'tfMask'       => '+359 ### ### ###',
+					)
+				),
+			),
+			'company'    => array(
+				'name'  => __( 'Company', 'tokenforge' ),
+				'field' => call_user_func( $f, 'company', 'text', __( 'Company', 'tokenforge' ), array( 'autocomplete' => 'organization' ) ),
+			),
+			'message'    => array(
+				'name'  => __( 'Message', 'tokenforge' ),
+				'field' => call_user_func( $f, 'message', 'textarea', __( 'Message', 'tokenforge' ), array( 'required' => true ) ),
+			),
+			'consent'    => array(
+				'name'  => __( 'Consent', 'tokenforge' ),
+				'field' => call_user_func(
+					$f,
+					'consent',
+					'checkbox',
+					__( 'Consent', 'tokenforge' ),
+					array(
+						'options'  => __( 'I agree to the privacy policy', 'tokenforge' ),
+						'required' => true,
+					)
+				),
+			),
+			'date'       => array(
+				'name'  => __( 'Date', 'tokenforge' ),
+				'field' => call_user_func( $f, 'date', 'datepicker', __( 'Date', 'tokenforge' ), array( 'tfDateMin' => 0 ) ),
+			),
+			'slider'     => array(
+				'name'  => __( 'Number slider', 'tokenforge' ),
+				'field' => call_user_func(
+					$f,
+					'amount',
+					'number',
+					__( 'Amount', 'tokenforge' ),
+					array(
+						'min'    => 0,
+						'max'    => 100,
+						'step'   => 1,
+						'value'  => '50',
+						'tfLook' => 'slider',
+					)
+				),
+			),
+			'rating'     => array(
+				'name'  => __( 'Star rating', 'tokenforge' ),
+				'field' => call_user_func(
+					$f,
+					'rating',
+					'number',
+					__( 'Rating', 'tokenforge' ),
+					array(
+						'min'    => 1,
+						'max'    => 5,
+						'step'   => 1,
+						'tfLook' => 'rating',
+					)
+				),
+			),
 		);
 	}
 
@@ -246,7 +365,11 @@ class Form_Presets {
 		$field   = function ( $key, $more = array() ) use ( $fp ) {
 			return $more + $fp[ $key ]['field'];
 		};
-		$mail    = array( 'actions' => array( 'email' ), 'emailTo' => 'admin_email', 'emailContent' => '{{all_fields}}' );
+		$mail    = array(
+			'actions'      => array( 'email' ),
+			'emailTo'      => 'admin_email',
+			'emailContent' => '{{all_fields}}',
+		);
 		$service = __( 'Service', 'tokenforge' );
 		$qty     = __( 'Quantity', 'tokenforge' );
 		$start   = __( 'Start date', 'tokenforge' );
@@ -264,9 +387,37 @@ class Form_Presets {
 				'name'     => __( 'Quote calculator', 'tokenforge' ),
 				'settings' => array(
 					'fields'         => array(
-						self::f( 'service', 'select', $service, array( 'options' => "250:" . __( 'Logo design', 'tokenforge' ) . "\n600:" . __( 'Website', 'tokenforge' ) . "\n120:" . __( 'Poster', 'tokenforge' ), 'valueLabelOptions' => true, 'required' => true ) ),
-						self::f( 'qty', 'number', $qty, array( 'min' => 1, 'max' => 20, 'step' => 1, 'value' => '1', 'tfLook' => 'slider' ) ),
-						self::f( 'total', 'text', __( 'Total', 'tokenforge' ), array( 'tfCalc' => '{' . $service . '} * {' . $qty . '}', 'tfCalcPrefix' => 'EUR ' ) ),
+						self::f(
+							'service',
+							'select',
+							$service,
+							array(
+								'options'           => '250:' . __( 'Logo design', 'tokenforge' ) . "\n600:" . __( 'Website', 'tokenforge' ) . "\n120:" . __( 'Poster', 'tokenforge' ),
+								'valueLabelOptions' => true,
+								'required'          => true,
+							)
+						),
+						self::f(
+							'qty',
+							'number',
+							$qty,
+							array(
+								'min'    => 1,
+								'max'    => 20,
+								'step'   => 1,
+								'value'  => '1',
+								'tfLook' => 'slider',
+							)
+						),
+						self::f(
+							'total',
+							'text',
+							__( 'Total', 'tokenforge' ),
+							array(
+								'tfCalc'       => '{' . $service . '} * {' . $qty . '}',
+								'tfCalcPrefix' => 'EUR ',
+							)
+						),
 						$field( 'email' ),
 					),
 					'tfStepsSummary' => true,
@@ -282,9 +433,39 @@ class Form_Presets {
 					'fields'       => array(
 						$field( 'full-name' ),
 						$field( 'email' ),
-						self::f( 'start', 'datepicker', $start, array( 'tfDateMin' => 1, 'width' => '50', 'required' => true ) ),
-						self::f( 'end', 'datepicker', $end, array( 'tfDateAfter' => $start, 'tfDateGap' => 1, 'width' => '50', 'required' => true ) ),
-						self::f( 'guests', 'number', __( 'Guests', 'tokenforge' ), array( 'min' => 1, 'max' => 10, 'step' => 1, 'value' => '2', 'tfLook' => 'slider' ) ),
+						self::f(
+							'start',
+							'datepicker',
+							$start,
+							array(
+								'tfDateMin' => 1,
+								'width'     => '50',
+								'required'  => true,
+							)
+						),
+						self::f(
+							'end',
+							'datepicker',
+							$end,
+							array(
+								'tfDateAfter' => $start,
+								'tfDateGap'   => 1,
+								'width'       => '50',
+								'required'    => true,
+							)
+						),
+						self::f(
+							'guests',
+							'number',
+							__( 'Guests', 'tokenforge' ),
+							array(
+								'min'    => 1,
+								'max'    => 10,
+								'step'   => 1,
+								'value'  => '2',
+								'tfLook' => 'slider',
+							)
+						),
 						$field( 'message', array( 'required' => false ) ),
 					),
 					'actions'      => array( 'email', 'save-submission' ),
@@ -297,9 +478,25 @@ class Form_Presets {
 				'name'     => __( 'Sign-up', 'tokenforge' ),
 				'settings' => array(
 					'fields'               => array(
-						self::f( 'user', 'text', __( 'Username', 'tokenforge' ), array( 'autocomplete' => 'username', 'required' => true ) ),
+						self::f(
+							'user',
+							'text',
+							__( 'Username', 'tokenforge' ),
+							array(
+								'autocomplete' => 'username',
+								'required'     => true,
+							)
+						),
 						$field( 'email' ),
-						self::f( 'pass', 'password', __( 'Password', 'tokenforge' ), array( 'autocomplete' => 'new-password', 'required' => true ) ),
+						self::f(
+							'pass',
+							'password',
+							__( 'Password', 'tokenforge' ),
+							array(
+								'autocomplete' => 'new-password',
+								'required'     => true,
+							)
+						),
 					),
 					'actions'              => array( 'registration' ),
 					'registrationUserName' => '@user',
@@ -318,8 +515,18 @@ class Form_Presets {
 					'actions'        => array( 'tf-meta' ),
 					'tfMetaTarget'   => 'user',
 					'tfMetaRows'     => array(
-						array( 'key' => 'first_name', 'value' => '{{@first}}', 'mode' => 'replace', 'skipEmpty' => false ),
-						array( 'key' => 'last_name', 'value' => '{{@last}}', 'mode' => 'replace', 'skipEmpty' => false ),
+						array(
+							'key'       => 'first_name',
+							'value'     => '{{@first}}',
+							'mode'      => 'replace',
+							'skipEmpty' => false,
+						),
+						array(
+							'key'       => 'last_name',
+							'value'     => '{{@last}}',
+							'mode'      => 'replace',
+							'skipEmpty' => false,
+						),
 					),
 					'successMessage' => __( 'Profile updated.', 'tokenforge' ),
 				),
@@ -346,7 +553,11 @@ class Form_Presets {
 		$out = array();
 		foreach ( is_array( $all ) ? $all : array() as $id => $p ) {
 			if ( isset( $p['name'], $p['settings'] ) ) {
-				$out[] = array( 'id' => (string) $id, 'name' => (string) $p['name'], 'settings' => $p['settings'] );
+				$out[] = array(
+					'id'       => (string) $id,
+					'name'     => (string) $p['name'],
+					'settings' => $p['settings'],
+				);
 			}
 		}
 		return $out;
@@ -358,12 +569,12 @@ class Form_Presets {
 	 * @return void
 	 */
 	public function routes() {
-		$ns   = 'tokenforge/v1';
-		$edit = function () {
+		$ns     = 'tokenforge/v1';
+		$edit   = function () {
 			return current_user_can( 'edit_posts' );
 		};
 		$manage = function () {
-			return current_user_can( 'manage_options' ); // a preset can carry HTML fields
+			return current_user_can( 'manage_options' ); // a preset can carry HTML fields.
 		};
 		register_rest_route(
 			$ns,
@@ -416,7 +627,11 @@ class Form_Presets {
 			return new \WP_Error( 'tokenforge_many_presets', __( 'Too many saved presets. Delete one first.', 'tokenforge' ), array( 'status' => 400 ) );
 		}
 		$id         = strtolower( wp_generate_password( 8, false ) );
-		$all[ $id ] = array( 'name' => $name, 'settings' => $settings, 'saved' => time() );
+		$all[ $id ] = array(
+			'name'     => $name,
+			'settings' => $settings,
+			'saved'    => time(),
+		);
 		update_option( self::OPTION, $all, false );
 		return rest_ensure_response( self::saved_list() );
 	}

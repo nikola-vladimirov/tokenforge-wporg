@@ -58,9 +58,9 @@ class Fonts {
 	 */
 	public static function builtin_defaults() {
 		return array(
-			'enabled' => true,  // output the @font-face rules
-			'bricks'  => true,  // list the families in the Bricks font picker
-			'blocks'  => true,  // list them in the block editor font picker too
+			'enabled' => true,  // output the @font-face rules.
+			'bricks'  => true,  // list the families in the Bricks font picker.
+			'blocks'  => true,  // list them in the block editor font picker too.
 			'fonts'   => array(), // [ { family, src, src2, weight, style, display, variable, stretch, variation, preload } ]
 		);
 	}
@@ -71,7 +71,19 @@ class Fonts {
 	 * @return array
 	 */
 	public static function blank() {
-		return array( 'family' => '', 'src' => '', 'src2' => '', 'weight' => '400', 'style' => 'normal', 'display' => 'swap', 'variable' => false, 'stretch' => '', 'variation' => '', 'preload' => false, 'unicode' => '' );
+		return array(
+			'family'    => '',
+			'src'       => '',
+			'src2'      => '',
+			'weight'    => '400',
+			'style'     => 'normal',
+			'display'   => 'swap',
+			'variable'  => false,
+			'stretch'   => '',
+			'variation' => '',
+			'preload'   => false,
+			'unicode'   => '',
+		);
 	}
 
 	/**
@@ -80,8 +92,8 @@ class Fonts {
 	 * @return array
 	 */
 	public static function settings() {
-		$s = get_option( self::OPTION, array() );
-		$s = wp_parse_args( is_array( $s ) ? $s : array(), self::defaults() );
+		$s          = get_option( self::OPTION, array() );
+		$s          = wp_parse_args( is_array( $s ) ? $s : array(), self::defaults() );
 		$s['fonts'] = self::clean_fonts( $s['fonts'] );
 		return Modules::apply( 'fonts', $s );
 	}
@@ -131,7 +143,7 @@ class Fonts {
 				'stretch'   => preg_match( '/^[a-z0-9.%\s-]*$/i', (string) $f['stretch'] ) ? trim( (string) $f['stretch'] ) : '',
 				'variation' => trim( str_replace( array( ';', '{', '}', '<', '>', '\\' ), '', (string) $f['variation'] ) ),
 				'preload'   => ! empty( $f['preload'] ),
-				// unicode-range: U+0000-00FF, U+0131 …
+				// unicode-range: U+0000-00FF, U+0131 etc.
 				'unicode'   => preg_match( '/^[Uu+0-9A-Fa-f?,\s-]*$/', (string) $f['unicode'] ) ? trim( preg_replace( '/\s+/', ' ', (string) $f['unicode'] ) ) : '',
 			);
 		}
@@ -283,7 +295,7 @@ class Fonts {
 		$data = method_exists( $theme_json, 'get_data' ) ? (array) $theme_json->get_data() : array();
 		$list = isset( $data['settings']['typography']['fontFamilies'] ) && is_array( $data['settings']['typography']['fontFamilies'] ) ? $data['settings']['typography']['fontFamilies'] : array();
 		if ( isset( $list['theme'] ) && is_array( $list['theme'] ) ) {
-			$list = $list['theme']; // stored by origin
+			$list = $list['theme']; // stored by origin.
 		}
 		$list  = array_values( array_filter( $list, 'is_array' ) );
 		$slugs = array_column( $list, 'slug' );
@@ -348,19 +360,31 @@ class Fonts {
 	 */
 	public static function upload( $file ) {
 		if ( ! is_array( $file ) || ! isset( $file['tmp_name'], $file['name'] ) || ! empty( $file['error'] ) ) {
-			return array( 'ok' => false, 'error' => 'No file received.' );
+			return array(
+				'ok'    => false,
+				'error' => 'No file received.',
+			);
 		}
 		$name = sanitize_file_name( wp_basename( (string) $file['name'] ) );
 		$ext  = strtolower( pathinfo( $name, PATHINFO_EXTENSION ) );
 		if ( ! isset( self::TYPES[ $ext ] ) ) {
-			return array( 'ok' => false, 'error' => 'Use a .woff2, .woff, .ttf or .otf file.' );
+			return array(
+				'ok'    => false,
+				'error' => 'Use a .woff2, .woff, .ttf or .otf file.',
+			);
 		}
 		$size = isset( $file['size'] ) ? (int) $file['size'] : 0;
 		if ( $size <= 0 || $size > self::MAX_UPLOAD ) {
-			return array( 'ok' => false, 'error' => 'The file must be smaller than 10 MB.' );
+			return array(
+				'ok'    => false,
+				'error' => 'The file must be smaller than 10 MB.',
+			);
 		}
 		if ( ! self::signature_ok( (string) $file['tmp_name'], $ext ) ) {
-			return array( 'ok' => false, 'error' => 'That file is not a valid ' . $ext . ' font.' );
+			return array(
+				'ok'    => false,
+				'error' => 'That file is not a valid ' . $ext . ' font.',
+			);
 		}
 		// WordPress stores the file (same checks as its own font library), in uploads/tokenforge/fonts.
 		if ( ! function_exists( 'wp_handle_upload' ) ) {
@@ -377,7 +401,10 @@ class Fonts {
 		);
 		remove_filter( 'upload_dir', array( __CLASS__, 'upload_dir' ) );
 		if ( empty( $done['file'] ) || empty( $done['url'] ) ) {
-			return array( 'ok' => false, 'error' => ! empty( $done['error'] ) ? (string) $done['error'] : 'Could not store the file.' );
+			return array(
+				'ok'    => false,
+				'error' => ! empty( $done['error'] ) ? (string) $done['error'] : 'Could not store the file.',
+			);
 		}
 		$dest      = (string) $done['file'];
 		$name      = wp_basename( $dest );
@@ -421,7 +448,11 @@ class Fonts {
 	public static function google( $family, $weights, $italic ) {
 		$family = trim( preg_replace( '/\s+/', ' ', (string) $family ) );
 		if ( ! preg_match( '/^[A-Za-z0-9][A-Za-z0-9 ]{0,59}$/', $family ) ) {
-			return array( 'ok' => false, 'fonts' => array(), 'error' => 'Type a Google Fonts family name, for example Inter.' );
+			return array(
+				'ok'    => false,
+				'fonts' => array(),
+				'error' => 'Type a Google Fonts family name, for example Inter.',
+			);
 		}
 		$ws = array();
 		foreach ( preg_split( '/[\s,;]+/', (string) $weights ) as $w ) {
@@ -431,7 +462,10 @@ class Fonts {
 			}
 		}
 		if ( ! $ws ) {
-			$ws = array( 400 => 400, 700 => 700 );
+			$ws = array(
+				400 => 400,
+				700 => 700,
+			);
 		}
 		ksort( $ws );
 		$axes = array();
@@ -442,12 +476,26 @@ class Fonts {
 		}
 		$url = self::GOOGLE_CSS . '?family=' . str_replace( '%20', '+', rawurlencode( $family ) ) . ':ital,wght@' . implode( ';', $axes ) . '&display=swap';
 		// A current browser's user agent: Google then answers with .woff2 files.
-		$res = wp_safe_remote_get( $url, array( 'timeout' => 15, 'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36' ) );
+		$res = wp_safe_remote_get(
+			$url,
+			array(
+				'timeout'    => 15,
+				'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36',
+			)
+		);
 		if ( is_wp_error( $res ) ) {
-			return array( 'ok' => false, 'fonts' => array(), 'error' => 'Google Fonts could not be reached: ' . $res->get_error_message() );
+			return array(
+				'ok'    => false,
+				'fonts' => array(),
+				'error' => 'Google Fonts could not be reached: ' . $res->get_error_message(),
+			);
 		}
 		if ( 200 !== (int) wp_remote_retrieve_response_code( $res ) ) {
-			return array( 'ok' => false, 'fonts' => array(), 'error' => 'Google Fonts has no family called ' . $family . ' with those weights.' );
+			return array(
+				'ok'    => false,
+				'fonts' => array(),
+				'error' => 'Google Fonts has no family called ' . $family . ' with those weights.',
+			);
 		}
 		$faces = array();
 		preg_match_all( '#(?:/\*\s*([a-z0-9-]+)\s*\*/\s*)?@font-face\s*\{([^}]*)\}#i', (string) wp_remote_retrieve_body( $res ), $m, PREG_SET_ORDER );
@@ -472,7 +520,11 @@ class Fonts {
 			);
 		}
 		if ( ! $faces ) {
-			return array( 'ok' => false, 'fonts' => array(), 'error' => 'Google Fonts sent no font files for ' . $family . '.' );
+			return array(
+				'ok'    => false,
+				'fonts' => array(),
+				'error' => 'Google Fonts sent no font files for ' . $family . '.',
+			);
 		}
 		$faces = array_slice( $faces, 0, 80 );
 		if ( ! function_exists( 'download_url' ) ) {
@@ -494,8 +546,19 @@ class Fonts {
 				continue;
 			}
 			$name = $slug . '-' . $f['weight'] . ( 'italic' === $f['style'] ? '-italic' : '' ) . ( '' !== $f['subset'] ? '-' . $f['subset'] : '' ) . '.woff2';
-			$file = array( 'name' => $name, 'tmp_name' => $tmp, 'error' => 0, 'size' => (int) filesize( $tmp ) );
-			$done = wp_handle_sideload( $file, array( 'test_form' => false, 'mimes' => self::upload_mimes() ) );
+			$file = array(
+				'name'     => $name,
+				'tmp_name' => $tmp,
+				'error'    => 0,
+				'size'     => (int) filesize( $tmp ),
+			);
+			$done = wp_handle_sideload(
+				$file,
+				array(
+					'test_form' => false,
+					'mimes'     => self::upload_mimes(),
+				)
+			);
 			if ( empty( $done['url'] ) ) {
 				wp_delete_file( $tmp );
 				++$fail;
@@ -503,14 +566,28 @@ class Fonts {
 			}
 			$out[] = array_merge(
 				self::blank(),
-				array( 'family' => $family, 'src' => (string) $done['url'], 'weight' => (string) $f['weight'], 'style' => $f['style'], 'unicode' => $f['range'] )
+				array(
+					'family'  => $family,
+					'src'     => (string) $done['url'],
+					'weight'  => (string) $f['weight'],
+					'style'   => $f['style'],
+					'unicode' => $f['range'],
+				)
 			);
 		}
 		remove_filter( 'upload_dir', array( __CLASS__, 'upload_dir' ) );
 		if ( ! $out ) {
-			return array( 'ok' => false, 'fonts' => array(), 'error' => 'The font files could not be stored.' );
+			return array(
+				'ok'    => false,
+				'fonts' => array(),
+				'error' => 'The font files could not be stored.',
+			);
 		}
-		return array( 'ok' => true, 'fonts' => $out, 'error' => $fail ? $fail . ' file(s) could not be stored.' : '' );
+		return array(
+			'ok'    => true,
+			'fonts' => $out,
+			'error' => $fail ? $fail . ' file(s) could not be stored.' : '',
+		);
 	}
 
 	/**
@@ -583,8 +660,8 @@ class Fonts {
 			$file = self::local_file( $f['src'] );
 			$made = $file ? Font_Convert::convert_file( $file ) : null;
 			if ( $made ) {
-				$rel                 = ltrim( str_replace( '\\', '/', substr( $made['path'], strlen( realpath( $up['basedir'] ) ) ) ), '/' );
-				$fonts[ $i ]['src']  = trailingslashit( $up['baseurl'] ) . $rel;
+				$rel                = ltrim( str_replace( '\\', '/', substr( $made['path'], strlen( realpath( $up['basedir'] ) ) ) ), '/' );
+				$fonts[ $i ]['src'] = trailingslashit( $up['baseurl'] ) . $rel;
 			}
 		}
 		return $fonts;

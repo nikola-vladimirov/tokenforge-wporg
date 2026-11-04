@@ -21,13 +21,25 @@ defined( 'ABSPATH' ) || exit;
  */
 class Element_Scheme_Toggle extends \Bricks\Element {
 
-	/** @var string */
+	/**
+	 * Element category.
+	 *
+	 * @var string
+	 */
 	public $category = 'TokenForge';
 
-	/** @var string */
+	/**
+	 * Element name.
+	 *
+	 * @var string
+	 */
 	public $name = 'tokenforge-scheme-toggle';
 
-	/** @var string */
+	/**
+	 * Element icon.
+	 *
+	 * @var string
+	 */
 	public $icon = 'ti-shine';
 
 	/**
@@ -45,7 +57,7 @@ class Element_Scheme_Toggle extends \Bricks\Element {
 	 * @return void
 	 */
 	public function set_controls() {
-		$this->controls['info'] = array(
+		$this->controls['info']      = array(
 			'tab'     => 'content',
 			'type'    => 'info',
 			'content' => esc_html__( 'Switches the page between light and dark (remembered per visitor). Needs TokenForge → Colors → Dark mode "Auto" and the visitor switcher enabled.', 'tokenforge' ),
@@ -56,7 +68,7 @@ class Element_Scheme_Toggle extends \Bricks\Element {
 			'type'        => 'text',
 			'placeholder' => esc_html__( 'Toggle dark mode', 'tokenforge' ),
 		);
-		$this->controls['size'] = array(
+		$this->controls['size']      = array(
 			'tab'         => 'content',
 			'label'       => esc_html__( 'Size', 'tokenforge' ),
 			'type'        => 'number',
@@ -67,15 +79,21 @@ class Element_Scheme_Toggle extends \Bricks\Element {
 				array( 'property' => 'block-size' ),
 			),
 		);
-		$this->controls['iconSize'] = array(
+		$this->controls['iconSize']  = array(
 			'tab'         => 'content',
 			'label'       => esc_html__( 'Icon size', 'tokenforge' ),
 			'type'        => 'number',
 			'units'       => true,
 			'placeholder' => '1.25em',
 			'css'         => array(
-				array( 'selector' => 'svg', 'property' => 'inline-size' ),
-				array( 'selector' => 'svg', 'property' => 'block-size' ),
+				array(
+					'selector' => 'svg',
+					'property' => 'inline-size',
+				),
+				array(
+					'selector' => 'svg',
+					'property' => 'block-size',
+				),
 			),
 		);
 		$this->controls['iconColor'] = array(
@@ -84,13 +102,13 @@ class Element_Scheme_Toggle extends \Bricks\Element {
 			'type'  => 'color',
 			'css'   => array( array( 'property' => 'color' ) ),
 		);
-		$this->controls['bg'] = array(
+		$this->controls['bg']        = array(
 			'tab'   => 'content',
 			'label' => esc_html__( 'Background', 'tokenforge' ),
 			'type'  => 'color',
 			'css'   => array( array( 'property' => 'background-color' ) ),
 		);
-		$this->controls['border'] = array(
+		$this->controls['border']    = array(
 			'tab'   => 'content',
 			'label' => esc_html__( 'Border', 'tokenforge' ),
 			'type'  => 'border',

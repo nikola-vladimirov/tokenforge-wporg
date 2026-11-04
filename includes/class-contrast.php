@@ -68,7 +68,11 @@ class Contrast {
 			$c = array_map( 'hexdec', str_split( $h, 2 ) );
 			return array( $c[0] / 255, $c[1] / 255, $c[2] / 255, isset( $c[3] ) ? $c[3] / 255 : 1.0 );
 		}
-		$named = array( 'white' => array( 1, 1, 1, 1 ), 'black' => array( 0, 0, 0, 1 ), 'transparent' => array( 0, 0, 0, 0 ) );
+		$named = array(
+			'white'       => array( 1, 1, 1, 1 ),
+			'black'       => array( 0, 0, 0, 1 ),
+			'transparent' => array( 0, 0, 0, 0 ),
+		);
 		if ( isset( $named[ strtolower( $v ) ] ) ) {
 			return $named[ strtolower( $v ) ];
 		}
@@ -85,8 +89,8 @@ class Contrast {
 			$s   = $pct ? substr( $s, 0, -1 ) : preg_replace( '/deg$/i', '', $s );
 			return is_numeric( $s ) ? ( $pct ? (float) $s / 100 * $full : (float) $s ) : null;
 		};
-		$a  = isset( $p[3] ) ? $num( $p[3], 1 ) : 1.0;
-		$fn = rtrim( strtolower( $m[1] ), 'a' );
+		$a   = isset( $p[3] ) ? $num( $p[3], 1 ) : 1.0;
+		$fn  = rtrim( strtolower( $m[1] ), 'a' );
 		if ( 'rgb' === $fn ) {
 			$c = array( $num( $p[0], 255 ), $num( $p[1], 255 ), $num( $p[2], 255 ) );
 			$c = in_array( null, $c, true ) ? null : array( $c[0] / 255, $c[1] / 255, $c[2] / 255 );
@@ -111,20 +115,20 @@ class Contrast {
 	/**
 	 * OKLCH to sRGB (0-1, gamma encoded).
 	 *
-	 * ponytail: out-of-gamut colours are clipped; browsers map them to the
+	 * Out-of-gamut colours are clipped; browsers map them to the
 	 * gamut instead, which moves the luminance a little for very vivid colours.
 	 *
-	 * @param float $L Lightness 0-1.
-	 * @param float $C Chroma.
-	 * @param float $H Hue deg.
+	 * @param float $lightness Lightness 0-1.
+	 * @param float $chroma Chroma.
+	 * @param float $hue Hue deg.
 	 * @return array
 	 */
-	private static function oklch_srgb( $L, $C, $H ) {
-		$a   = $C * cos( deg2rad( $H ) );
-		$b   = $C * sin( deg2rad( $H ) );
-		$l   = pow( $L + 0.3963377774 * $a + 0.2158037573 * $b, 3 );
-		$m   = pow( $L - 0.1055613458 * $a - 0.0638541728 * $b, 3 );
-		$s   = pow( $L - 0.0894841775 * $a - 1.2914855480 * $b, 3 );
+	private static function oklch_srgb( $lightness, $chroma, $hue ) {
+		$a   = $chroma * cos( deg2rad( $hue ) );
+		$b   = $chroma * sin( deg2rad( $hue ) );
+		$l   = pow( $lightness + 0.3963377774 * $a + 0.2158037573 * $b, 3 );
+		$m   = pow( $lightness - 0.1055613458 * $a - 0.0638541728 * $b, 3 );
+		$s   = pow( $lightness - 0.0894841775 * $a - 1.2914855480 * $b, 3 );
 		$lin = array(
 			4.0767416621 * $l - 3.3077115913 * $m + 0.2309699292 * $s,
 			-1.2684380046 * $l + 2.6097574011 * $m - 0.3413193965 * $s,
@@ -224,12 +228,19 @@ class Contrast {
 	 * @return array
 	 */
 	public static function pairs() {
-		$sch  = Scheme::settings();
-		$comp = Components::settings();
-		$def  = Defaults::settings();
-		$out  = array();
-		$add  = function ( $where, $what, $fg, $bg, $min, $set ) use ( &$out ) {
-			$out[] = array( 'where' => $where, 'what' => $what, 'fg' => $fg, 'bg' => $bg, 'min' => $min, 'set' => $set );
+		$sch   = Scheme::settings();
+		$comp  = Components::settings();
+		$def   = Defaults::settings();
+		$out   = array();
+		$add   = function ( $where, $what, $fg, $bg, $min, $set ) use ( &$out ) {
+			$out[] = array(
+				'where' => $where,
+				'what'  => $what,
+				'fg'    => $fg,
+				'bg'    => $bg,
+				'min'   => $min,
+				'set'   => $set,
+			);
 		};
 		$page  = __( 'Page', 'tokenforge' );
 		$links = ! empty( $comp['base_links'] );
@@ -268,7 +279,7 @@ class Contrast {
 
 		// Buttons: text on the button, as it is and hovered; the focus ring on the page.
 		if ( ! empty( $comp['base_buttons'] ) ) {
-			$names = array(
+			$names    = array(
 				'solid'         => __( 'Solid', 'tokenforge' ),
 				'dark'          => __( 'Dark', 'tokenforge' ),
 				'light'         => __( 'Light', 'tokenforge' ),
@@ -405,16 +416,24 @@ class Contrast {
 			$p['pass']  = self::passes( $m, $p['min'] );
 			$p['fix']   = null;
 			if ( ! $p['pass'] ) {
-				$fail++;
+				++$fail;
 				// A fix changes one setting: every pair using that setting must pass with it.
-				$same     = array_filter( $pairs, function ( $q ) use ( $p ) {
-					return $q['set'] === $p['set'];
-				} );
+				$same     = array_filter(
+					$pairs,
+					function ( $q ) use ( $p ) {
+						return $q['set'] === $p['set'];
+					}
+				);
 				$p['fix'] = self::fix( $p, $same, $vars, $modes, $fams );
 			}
 			$rows[] = $p;
 		}
-		return array( 'dark' => count( $modes ) > 1, 'rows' => $rows, 'fail' => $fail, 'skipped' => $skipped );
+		return array(
+			'dark'    => count( $modes ) > 1,
+			'rows'    => $rows,
+			'fail'    => $fail,
+			'skipped' => $skipped,
+		);
 	}
 
 	/**
@@ -425,6 +444,7 @@ class Contrast {
 	 * @param string $bg   Background (a var() or a colour).
 	 * @param float  $min  Ratio needed.
 	 * @param bool   $dark Measure the dark side of light-dark().
+	 * @param mixed  $ctx  Cached palette context (built once when null).
 	 * @return array|null { value, modes }
 	 */
 	public static function nearest( $fg, $bg, $min, $dark = false, &$ctx = null ) {
@@ -437,7 +457,11 @@ class Contrast {
 			}
 			$ctx = array( self::variables(), $fams );
 		}
-		$p = array( 'fg' => (string) $fg, 'bg' => (string) $bg, 'min' => (float) $min );
+		$p = array(
+			'fg'  => (string) $fg,
+			'bg'  => (string) $bg,
+			'min' => (float) $min,
+		);
 		return self::fix( $p, array( $p ), $ctx[0], array( (bool) $dark ), $ctx[1] );
 	}
 
@@ -495,7 +519,7 @@ class Contrast {
 		if ( null === $cur ) {
 			return null;
 		}
-		$best  = null;
+		$best = null;
 		foreach ( array_unique( $names ) as $n ) {
 			$v = "var(--$n)";
 			if ( ! isset( $vars[ $n ] ) || $v === $p['fg'] ) {
@@ -520,7 +544,10 @@ class Contrast {
 				$best = array( $d, $v, $m );
 			}
 		}
-		return $best ? array( 'value' => $best[1], 'modes' => $best[2] ) : null;
+		return $best ? array(
+			'value' => $best[1],
+			'modes' => $best[2],
+		) : null;
 	}
 
 	/**
@@ -532,12 +559,12 @@ class Contrast {
 	 */
 	private static function lab_distance( $a, $b ) {
 		$lab = function ( $h ) {
-			list( $r, $g, $bl ) = sscanf( $h, '#%2x%2x%2x' );
-			list( $L, $C, $H )  = Color_Engine::rgb_to_oklch( $r, $g, $bl );
-			return array( $L, $C * cos( deg2rad( $H ) ), $C * sin( deg2rad( $H ) ) );
+			list( $r, $g, $bl )               = sscanf( $h, '#%2x%2x%2x' );
+			list( $lightness, $chroma, $hue ) = Color_Engine::rgb_to_oklch( $r, $g, $bl );
+			return array( $lightness, $chroma * cos( deg2rad( $hue ) ), $chroma * sin( deg2rad( $hue ) ) );
 		};
-		$x = $lab( $a );
-		$y = $lab( $b );
+		$x   = $lab( $a );
+		$y   = $lab( $b );
 		return sqrt( pow( $x[0] - $y[0], 2 ) + pow( $x[1] - $y[1], 2 ) + pow( $x[2] - $y[2], 2 ) );
 	}
 }

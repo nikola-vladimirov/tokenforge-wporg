@@ -29,7 +29,11 @@ class Factory {
 	/** The starter tokens (read only on a fresh install or a reset). */
 	const TOKENS_FILE = 'data/default-tokens.json';
 
-	/** @var array|null Parsed settings (once per request). */
+	/**
+	 * Parsed settings (once per request).
+	 *
+	 * @var array|null
+	 */
 	private static $data = null;
 
 	/**

@@ -101,7 +101,12 @@ class Rest {
 				'permission_callback' => $perm,
 				'callback'            => function () {
 					$ok = Setup_Wizard::undo();
-					return rest_ensure_response( array( 'ok' => $ok, 'state' => Setup_Wizard::state() ) );
+					return rest_ensure_response(
+						array(
+							'ok'    => $ok,
+							'state' => Setup_Wizard::state(),
+						)
+					);
 				},
 			)
 		);
@@ -114,17 +119,17 @@ class Rest {
 				'permission_callback' => $perm,
 				'callback'            => function () {
 					$r = Class_Usage::scan();
-					Attribute_Usage::scan(); // the same switch leaves out the rules of unused data attributes, so the stylesheet below goes by both scans
+					Attribute_Usage::scan(); // the same switch leaves out the rules of unused data attributes, so the stylesheet below goes by both scans.
 					$css_ok = Css_Generator::get_instance()->generate();
 					return rest_ensure_response(
 						array(
-							'ok'      => true,
-							'css_ok'  => (bool) $css_ok,
+							'ok'              => true,
+							'css_ok'          => (bool) $css_ok,
 							'attribute_usage' => Attribute_Usage::last(),
-							'usage'   => Class_Usage::summary(),
-							'css_ver' => Css_Generator::get_instance()->version(),
-							'css_url' => Css_Generator::get_instance()->css_url(),
-							'found'   => count( $r['classes'] ),
+							'usage'           => Class_Usage::summary(),
+							'css_ver'         => Css_Generator::get_instance()->version(),
+							'css_url'         => Css_Generator::get_instance()->css_url(),
+							'found'           => count( $r['classes'] ),
 						)
 					);
 				},
@@ -174,8 +179,24 @@ class Rest {
 		);
 
 		// Design token files (DTCG): export, preview an import, import.
-		register_rest_route( self::NS, '/token-files', array( 'methods' => 'GET', 'permission_callback' => $perm, 'callback' => array( Token_Files::class, 'rest_export' ) ) );
-		register_rest_route( self::NS, '/token-files/(?:preview|import)', array( 'methods' => 'POST', 'permission_callback' => $perm, 'callback' => array( Token_Files::class, 'rest_import' ) ) );
+		register_rest_route(
+			self::NS,
+			'/token-files',
+			array(
+				'methods'             => 'GET',
+				'permission_callback' => $perm,
+				'callback'            => array( Token_Files::class, 'rest_export' ),
+			)
+		);
+		register_rest_route(
+			self::NS,
+			'/token-files/(?:preview|import)',
+			array(
+				'methods'             => 'POST',
+				'permission_callback' => $perm,
+				'callback'            => array( Token_Files::class, 'rest_import' ),
+			)
+		);
 
 		register_rest_route(
 			self::NS,
@@ -207,7 +228,12 @@ class Rest {
 				'permission_callback' => $perm,
 				'callback'            => function ( $req ) {
 					$d = History::diff( (int) $req['id'] );
-					return rest_ensure_response( null === $d ? array( 'ok' => false, 'error' => 'This snapshot is gone or damaged.' ) : array_merge( array( 'ok' => true ), $d ) );
+					return rest_ensure_response(
+						null === $d ? array(
+							'ok'    => false,
+							'error' => 'This snapshot is gone or damaged.',
+						) : array_merge( array( 'ok' => true ), $d )
+					);
 				},
 			)
 		);
@@ -283,9 +309,20 @@ class Rest {
 				'methods'             => 'POST',
 				'permission_callback' => $font_perm,
 				'args'                => array(
-					'family'  => array( 'type' => 'string', 'required' => true, 'sanitize_callback' => 'sanitize_text_field' ),
-					'weights' => array( 'type' => 'string', 'default' => '400,700', 'sanitize_callback' => 'sanitize_text_field' ),
-					'italic'  => array( 'type' => 'boolean', 'default' => false ),
+					'family'  => array(
+						'type'              => 'string',
+						'required'          => true,
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+					'weights' => array(
+						'type'              => 'string',
+						'default'           => '400,700',
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+					'italic'  => array(
+						'type'    => 'boolean',
+						'default' => false,
+					),
 				),
 				'callback'            => function ( $req ) {
 					return rest_ensure_response( Fonts::google( (string) $req->get_param( 'family' ), (string) $req->get_param( 'weights' ), (bool) $req->get_param( 'italic' ) ) );
@@ -370,7 +407,12 @@ class Rest {
 	 */
 	public function css_version() {
 		$css = Css_Generator::get_instance();
-		return rest_ensure_response( array( 'ver' => $css->version(), 'url' => $css->css_url() ) );
+		return rest_ensure_response(
+			array(
+				'ver' => $css->version(),
+				'url' => $css->css_url(),
+			)
+		);
 	}
 
 	/**
@@ -380,7 +422,12 @@ class Rest {
 	 */
 	public function editor_css() {
 		$css = Css_Generator::get_instance();
-		return rest_ensure_response( array( 'ver' => $css->version(), 'css' => $css->editor_css() ) );
+		return rest_ensure_response(
+			array(
+				'ver' => $css->version(),
+				'css' => $css->editor_css(),
+			)
+		);
 	}
 
 	/**
@@ -446,13 +493,18 @@ class Rest {
 	 */
 	public function setup( $req ) {
 		if ( ! Setup_Wizard::available() ) {
-			return rest_ensure_response( array( 'ok' => false, 'error' => __( 'The builder is not active.', 'tokenforge' ) ) );
+			return rest_ensure_response(
+				array(
+					'ok'    => false,
+					'error' => __( 'The builder is not active.', 'tokenforge' ),
+				)
+			);
 		}
-		$body   = $req->get_json_params();
-		$groups = isset( $body['groups'] ) && is_array( $body['groups'] ) ? array_map( 'sanitize_key', $body['groups'] ) : array();
+		$body    = $req->get_json_params();
+		$groups  = isset( $body['groups'] ) && is_array( $body['groups'] ) ? array_map( 'sanitize_key', $body['groups'] ) : array();
 		$connect = isset( $body['connect'] ) && is_array( $body['connect'] ) ? array_map( 'sanitize_key', $body['connect'] ) : array();
 		History::snapshot( 'setup' );
-		$r       = Setup_Wizard::apply( $groups, $connect );
+		$r = Setup_Wizard::apply( $groups, $connect );
 		return rest_ensure_response(
 			array(
 				'ok'      => true,
@@ -486,15 +538,33 @@ class Rest {
 			// No generated CSS (e.g. ACSS removed), the saved settings may still be there.
 			$settings_import = Acss_Import::run();
 			if ( ! $settings_import['ok'] ) {
-				return rest_ensure_response( array( 'ok' => false, 'error' => 'Nothing to import: no generated variables or saved settings were found on this site.' ) );
+				return rest_ensure_response(
+					array(
+						'ok'    => false,
+						'error' => 'Nothing to import: no generated variables or saved settings were found on this site.',
+					)
+				);
 			}
 			Css_Generator::get_instance()->rebuild();
-			return rest_ensure_response( array( 'ok' => true, 'settings' => $settings_import, 'source' => 'settings only', 'imported' => 0, 'total' => count( Settings::get_instance()->get_tokens() ) ) );
+			return rest_ensure_response(
+				array(
+					'ok'       => true,
+					'settings' => $settings_import,
+					'source'   => 'settings only',
+					'imported' => 0,
+					'total'    => count( Settings::get_instance()->get_tokens() ),
+				)
+			);
 		}
 
 		$css = file_get_contents( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 		if ( false === $css ) {
-			return rest_ensure_response( array( 'ok' => false, 'error' => 'Could not read the variables file.' ) );
+			return rest_ensure_response(
+				array(
+					'ok'    => false,
+					'error' => 'Could not read the variables file.',
+				)
+			);
 		}
 
 		// Pull custom-property declarations (skip anything not a real token).
@@ -515,17 +585,22 @@ class Rest {
 			);
 		}
 		if ( empty( $imported ) ) {
-			return rest_ensure_response( array( 'ok' => false, 'error' => 'No variables found in the variables file.' ) );
+			return rest_ensure_response(
+				array(
+					'ok'    => false,
+					'error' => 'No variables found in the variables file.',
+				)
+			);
 		}
 
 		// Merge: imported values overwrite same-named existing tokens; keep the rest.
 		$settings = Settings::get_instance();
-		$byName   = array();
+		$by_name  = array();
 		foreach ( $settings->get_tokens() as $t ) {
-			$byName[ $t['name'] ] = $t;
+			$by_name[ $t['name'] ] = $t;
 		}
 		foreach ( $imported as $t ) {
-			$byName[ $t['name'] ] = $t;
+			$by_name[ $t['name'] ] = $t;
 		}
 		// Drop variables an EARLIER ACSS import brought in that ACSS no longer
 		// outputs (your own tokens are never touched, only recorded names).
@@ -533,11 +608,11 @@ class Rest {
 		$before  = get_option( 'tokenforge_acss_names', array() );
 		$stale   = array_diff( is_array( $before ) ? $before : array(), $current );
 		foreach ( $stale as $n ) {
-			unset( $byName[ $n ] );
+			unset( $by_name[ $n ] );
 		}
 		update_option( 'tokenforge_acss_names', $current, false );
-		$stored = $settings->save_tokens( array_values( $byName ) );
-		Defaults::adopt_root_token();   // ACSS's root font size first, it sets the rem base
+		$stored = $settings->save_tokens( array_values( $by_name ) );
+		Defaults::adopt_root_token();   // ACSS's root font size first, it sets the rem base.
 		Width::adopt_stored_token();
 
 		// Then the ACSS *settings* (typography, spacing, layout, buttons, …), which
@@ -562,7 +637,7 @@ class Rest {
 				'source'   => basename( $file ),
 				'imported' => count( $imported ),
 				'removed'  => count( $stale ),
-				'tidied'   => $tidied, // made by the settings, so not kept as tokens
+				'tidied'   => $tidied, // made by the settings, so not kept as tokens.
 				'total'    => count( $stored ),
 			)
 		);
@@ -580,11 +655,22 @@ class Rest {
 		$name = Tokens::sanitize_name( isset( $body['name'] ) ? $body['name'] : '' );
 		$hex  = isset( $body['hex'] ) ? $body['hex'] : '';
 		if ( '' === $name || null === Color_Engine::hex_to_rgb( $hex ) ) {
-			return rest_ensure_response( array( 'ok' => false, 'error' => 'Provide a name and a valid hex color.' ) );
+			return rest_ensure_response(
+				array(
+					'ok'    => false,
+					'error' => 'Provide a name and a valid hex color.',
+				)
+			);
 		}
 		$added = Palette::add( $name, $hex, isset( $body['alt'] ) ? (string) $body['alt'] : '' );
 		Css_Generator::get_instance()->rebuild();
-		return rest_ensure_response( array( 'ok' => $added > 0, 'added' => $added, 'total' => count( Settings::get_instance()->get_tokens() ) ) );
+		return rest_ensure_response(
+			array(
+				'ok'    => $added > 0,
+				'added' => $added,
+				'total' => count( Settings::get_instance()->get_tokens() ),
+			)
+		);
 	}
 
 	/**
@@ -596,7 +682,12 @@ class Rest {
 	public function remove_color( $req ) {
 		$body = $req->get_json_params();
 		if ( ! Palette::remove( isset( $body['name'] ) ? (string) $body['name'] : '' ) ) {
-			return rest_ensure_response( array( 'ok' => false, 'error' => 'Only your own families can be removed; switch a standard family off instead.' ) );
+			return rest_ensure_response(
+				array(
+					'ok'    => false,
+					'error' => 'Only your own families can be removed; switch a standard family off instead.',
+				)
+			);
 		}
 		Css_Generator::get_instance()->rebuild();
 		return rest_ensure_response( array( 'ok' => true ) );
@@ -614,8 +705,8 @@ class Rest {
 		$added  = array();
 
 		// Two input shapes:
-		//  - items: [{id, name}]  (BEM tool, ids must match the builder store)
-		//  - classes: [name, …]   (auto-generated ids)
+		// - items: [{id, name}]  (BEM tool, ids must match the builder store)
+		// - classes: [name, …]   (auto-generated ids).
 		$pairs = array();
 		if ( isset( $body['items'] ) && is_array( $body['items'] ) ) {
 			foreach ( $body['items'] as $it ) {
@@ -635,16 +726,24 @@ class Rest {
 			}
 		}
 		if ( empty( $pairs ) ) {
-			return rest_ensure_response( array( 'ok' => false, 'added' => array() ) );
+			return rest_ensure_response(
+				array(
+					'ok'    => false,
+					'added' => array(),
+				)
+			);
 		}
 
 		$cats = (array) get_option( 'bricks_global_classes_categories', array() );
 		if ( false === array_search( $cat_id, array_column( $cats, 'id' ), true ) ) {
-			$cats[] = array( 'id' => $cat_id, 'name' => 'TokenForge' );
+			$cats[] = array(
+				'id'   => $cat_id,
+				'name' => 'TokenForge',
+			);
 			update_option( 'bricks_global_classes_categories', $cats );
 		}
 
-		$classes       = (array) get_option( 'bricks_global_classes', array() );
+		$classes        = (array) get_option( 'bricks_global_classes', array() );
 		$existing_names = array_column( $classes, 'name' );
 		foreach ( $pairs as $name => $id ) {
 			if ( in_array( $name, $existing_names, true ) ) {
@@ -656,11 +755,16 @@ class Rest {
 				'settings' => array(),
 				'category' => $cat_id,
 			);
-			$added[] = $name;
+			$added[]   = $name;
 		}
 		update_option( 'bricks_global_classes', array_values( $classes ), false );
 
-		return rest_ensure_response( array( 'ok' => true, 'added' => $added ) );
+		return rest_ensure_response(
+			array(
+				'ok'    => true,
+				'added' => $added,
+			)
+		);
 	}
 
 	/**
@@ -669,7 +773,7 @@ class Rest {
 	 * @return \WP_REST_Response
 	 */
 	public function get_state() {
-		$fw = Framework::build(); // as the output sees it (module switches applied)
+		$fw = Framework::build(); // as the output sees it (module switches applied).
 		return rest_ensure_response(
 			Modules::raw(
 				function () use ( $fw ) {
@@ -686,75 +790,78 @@ class Rest {
 	 * @return array
 	 */
 	private function build_state( $fw ) {
-		$settings = Settings::get_instance();
-		$css      = Css_Generator::get_instance();
+		$settings  = Settings::get_instance();
+		$css       = Css_Generator::get_instance();
 		$platforms = Platforms\Platforms::detected();
 		$tokens    = $settings->get_tokens();
 		return array(
-				'tokens'      => $tokens,
-				'tokens_rev'  => self::tokens_rev( $tokens ), // Save sends it back: a window opened before a builder edit can't drop the new tokens
-				'settings'    => $settings->get_settings(),
-				'framework'   => Framework::settings(),
-				'scales'      => Scale_Engine::settings(),
-				'components'  => Components::settings(),
-				'scheme'      => Scheme::settings(),
-				'extras'      => Extras::settings(),
-				'defaults'    => Defaults::settings(),
-				'content'     => Content::settings(),
-				'width'       => Width::settings(),
-				'motion'      => Motion::settings(),
-				'overlays'    => Overlays::settings(),
-				'woo'         => Woo::settings(),
-				'woo_info'    => array( 'active' => Woo::active(), 'version' => Woo::version() ),
-				'fonts'       => Fonts::settings(),
-				'font_choices' => Fonts::choices(),
-				'palette'     => Palette::settings(),
-				'palette_rev' => Palette::rev(), // as tokens_rev: Save sends it back so a stale window can't drop a family made meanwhile
-				'scss'        => Scss::settings(),
-				'recipes'     => Recipes::settings(),
-				'recipe_list' => Recipes::all(),
-				'enhancements' => Features\Builder_Enhancements::settings(),
-				'bricks_native' => Features\Builder_Enhancements::native_settings(),
-				'bricks_native_labels' => Features\Builder_Enhancements::NATIVE,
-				'util_count'  => count( $fw['classes'] ),
-				// Defaults per module: placeholders + "reset to default" in the dashboard.
-				'defaults_map' => array(
-					'settings'     => $settings->default_settings(),
-					'scales'       => Scale_Engine::defaults(),
-					'components'   => Components::defaults(),
-					'scheme'       => Scheme::defaults(),
-					'extras'       => Extras::defaults(),
-					'defaults'     => Defaults::defaults(),
-					'content'      => Content::defaults(),
-					'width'        => Width::defaults(),
-					'motion'       => Motion::defaults(),
-					'enhancements' => Features\Builder_Enhancements::defaults(),
-					'palette'      => Palette::defaults(),
-					'fonts'        => Fonts::defaults(),
-					'scss'         => Scss::defaults(),
-					'recipes'      => Recipes::defaults(),
-					'woo'          => Woo::defaults(),
+			'tokens'               => $tokens,
+			'tokens_rev'           => self::tokens_rev( $tokens ), // Save sends it back: a window opened before a builder edit can't drop the new tokens.
+			'settings'             => $settings->get_settings(),
+			'framework'            => Framework::settings(),
+			'scales'               => Scale_Engine::settings(),
+			'components'           => Components::settings(),
+			'scheme'               => Scheme::settings(),
+			'extras'               => Extras::settings(),
+			'defaults'             => Defaults::settings(),
+			'content'              => Content::settings(),
+			'width'                => Width::settings(),
+			'motion'               => Motion::settings(),
+			'overlays'             => Overlays::settings(),
+			'woo'                  => Woo::settings(),
+			'woo_info'             => array(
+				'active'  => Woo::active(),
+				'version' => Woo::version(),
+			),
+			'fonts'                => Fonts::settings(),
+			'font_choices'         => Fonts::choices(),
+			'palette'              => Palette::settings(),
+			'palette_rev'          => Palette::rev(), // as tokens_rev: Save sends it back so a stale window can't drop a family made meanwhile.
+			'scss'                 => Scss::settings(),
+			'recipes'              => Recipes::settings(),
+			'recipe_list'          => Recipes::all(),
+			'enhancements'         => Features\Builder_Enhancements::settings(),
+			'bricks_native'        => Features\Builder_Enhancements::native_settings(),
+			'bricks_native_labels' => Features\Builder_Enhancements::NATIVE,
+			'util_count'           => count( $fw['classes'] ),
+			// Defaults per module: placeholders + "reset to default" in the dashboard.
+			'defaults_map'         => array(
+				'settings'     => $settings->default_settings(),
+				'scales'       => Scale_Engine::defaults(),
+				'components'   => Components::defaults(),
+				'scheme'       => Scheme::defaults(),
+				'extras'       => Extras::defaults(),
+				'defaults'     => Defaults::defaults(),
+				'content'      => Content::defaults(),
+				'width'        => Width::defaults(),
+				'motion'       => Motion::defaults(),
+				'enhancements' => Features\Builder_Enhancements::defaults(),
+				'palette'      => Palette::defaults(),
+				'fonts'        => Fonts::defaults(),
+				'scss'         => Scss::defaults(),
+				'recipes'      => Recipes::defaults(),
+				'woo'          => Woo::defaults(),
 				'modules'      => Modules::defaults(),
-				),
-				'families'     => Components::FAMILIES,
-				'groups'      => Tokens::GROUPS,
-				'token_catalog' => Token_Catalog::all(), // what the settings make (the Tokens screen lists them)
-				'token_usage'   => Token_Catalog::usage(), // how often each variable is used in the stylesheet
-				'site_usage'    => Token_Usage::last(), // where the site uses each variable (last scan)
-				'attribute_usage' => Attribute_Usage::last(), // where the site uses each data attribute (last scan)
-				'attribute_list' => Attributes::list(), // the names the Data attributes screen lists
-				'class_usage'   => Class_Usage::summary(), // which utility classes the site uses (last scan)
-				'setup'         => Platforms\Bricks::is_active() ? Setup_Wizard::state() : null,
-				'css_url'     => $css->css_url(),
-				'css_ver'     => $css->version(),
-				'css_exists'  => file_exists( $css->css_path() ),
-				'bricks'      => Platforms\Bricks::is_active(),
-				'platforms'   => $platforms, // builders on the site (Builder screen / Builder integrations)
-				'caps'        => Platforms\Platforms::caps( $platforms ), // what the active one supports (dashboard needs: '<cap>')
-				'modules'     => Modules::settings(),
-				'theme'       => self::theme_info(),
-				'history'     => History::items(),
-				'contrast'    => Contrast::report(),
+			),
+			'families'             => Components::FAMILIES,
+			'groups'               => Tokens::GROUPS,
+			'token_catalog'        => Token_Catalog::all(), // what the settings make (the Tokens screen lists them).
+			'token_usage'          => Token_Catalog::usage(), // how often each variable is used in the stylesheet.
+			'site_usage'           => Token_Usage::last(), // where the site uses each variable (last scan).
+			'attribute_usage'      => Attribute_Usage::last(), // where the site uses each data attribute (last scan).
+			'attribute_list'       => Attributes::list(), // the names the Data attributes screen lists.
+			'class_usage'          => Class_Usage::summary(), // which utility classes the site uses (last scan).
+			'setup'                => Platforms\Bricks::is_active() ? Setup_Wizard::state() : null,
+			'css_url'              => $css->css_url(),
+			'css_ver'              => $css->version(),
+			'css_exists'           => file_exists( $css->css_path() ),
+			'bricks'               => Platforms\Bricks::is_active(),
+			'platforms'            => $platforms, // builders on the site (Builder screen / Builder integrations).
+			'caps'                 => Platforms\Platforms::caps( $platforms ), // what the active one supports (dashboard needs: '<cap>').
+			'modules'              => Modules::settings(),
+			'theme'                => self::theme_info(),
+			'history'              => History::items(),
+			'contrast'             => Contrast::report(),
 		);
 	}
 
@@ -798,7 +905,10 @@ class Rest {
 		}
 		$all = get_option( Platforms\Bricks_Theme::OPTION, array() );
 		$id  = Platforms\Bricks_Theme::style_id( $all );
-		return '' === $id ? null : array( 'id' => $id, 'settings' => isset( $all[ $id ]['settings'] ) ? $all[ $id ]['settings'] : array() );
+		return '' === $id ? null : array(
+			'id'       => $id,
+			'settings' => isset( $all[ $id ]['settings'] ) ? $all[ $id ]['settings'] : array(),
+		);
 	}
 
 	/**
@@ -811,8 +921,8 @@ class Rest {
 		$settings = Settings::get_instance();
 		$body     = $req->get_json_params();
 		History::snapshot( 'save' );
-		$old_w    = Width::settings();
-		$old_m    = Motion::settings();
+		$old_w = Width::settings();
+		$old_m = Motion::settings();
 
 		if ( isset( $body['settings'] ) && is_array( $body['settings'] ) ) {
 			$settings->save_settings( $body['settings'] );
@@ -861,7 +971,7 @@ class Rest {
 			Features\Builder_Enhancements::save_settings( $body['enhancements'] );
 		}
 		if ( isset( $body['scss'] ) && is_array( $body['scss'] ) ) {
-			Scss::save_settings( $body['scss'] ); // the breakpoints
+			Scss::save_settings( $body['scss'] ); // the breakpoints.
 		}
 		if ( isset( $body['recipes'] ) && is_array( $body['recipes'] ) ) {
 			Recipes::save_settings( $body['recipes'] );
@@ -908,22 +1018,22 @@ class Rest {
 		}
 
 		$css_ok = Css_Generator::get_instance()->generate();
-		Class_Usage::measure(); // the sizes shown next to "Leave out unused utility classes"
+		Class_Usage::measure(); // the sizes shown next to "Leave out unused utility classes".
 
 		// Let platform integrations (Bricks) re-sync their globals.
 		do_action( 'tokenforge_tokens_saved' );
 
 		return rest_ensure_response(
 			array(
-				'ok'      => true,
-				'count'   => count( $stored ),
-				'css_url' => Css_Generator::get_instance()->css_url(),
-				'css_ver' => Css_Generator::get_instance()->version(),
-				'tokens_conflict' => $tokens_conflict,
+				'ok'               => true,
+				'count'            => count( $stored ),
+				'css_url'          => Css_Generator::get_instance()->css_url(),
+				'css_ver'          => Css_Generator::get_instance()->version(),
+				'tokens_conflict'  => $tokens_conflict,
 				'palette_conflict' => $palette_conflict,
-				'css_ok'  => (bool) $css_ok,
-				'palette' => $palette,
-				'theme_style' => self::theme_style(),
+				'css_ok'           => (bool) $css_ok,
+				'palette'          => $palette,
+				'theme_style'      => self::theme_style(),
 			)
 		);
 	}
@@ -984,13 +1094,23 @@ class Rest {
 		$file  = isset( $body['file'] ) ? $body['file'] : null;
 		$error = Transfer::check( $file );
 		if ( '' !== $error ) {
-			return rest_ensure_response( array( 'ok' => false, 'error' => $error ) );
+			return rest_ensure_response(
+				array(
+					'ok'    => false,
+					'error' => $error,
+				)
+			);
 		}
 		$parts = self::parts( isset( $body['parts'] ) ? $body['parts'] : Transfer::parts(), Transfer::parts() );
 		History::snapshot( 'import' );
-		$done  = Transfer::import( $file, $parts );
+		$done = Transfer::import( $file, $parts );
 		Css_Generator::get_instance()->rebuild();
-		return rest_ensure_response( array( 'ok' => true, 'imported' => $done ) );
+		return rest_ensure_response(
+			array(
+				'ok'       => true,
+				'imported' => $done,
+			)
+		);
 	}
 
 	/**
@@ -1003,12 +1123,22 @@ class Rest {
 		$body  = $req->get_json_params();
 		$parts = self::parts( isset( $body['parts'] ) ? $body['parts'] : array(), Starter::parts() );
 		if ( ! $parts ) {
-			return rest_ensure_response( array( 'ok' => false, 'error' => 'Choose what to reset.' ) );
+			return rest_ensure_response(
+				array(
+					'ok'    => false,
+					'error' => 'Choose what to reset.',
+				)
+			);
 		}
 		History::snapshot( 'reset' );
 		$done = Starter::reset( $parts );
 		Css_Generator::get_instance()->rebuild();
-		return rest_ensure_response( array( 'ok' => true, 'reset' => $done ) );
+		return rest_ensure_response(
+			array(
+				'ok'    => true,
+				'reset' => $done,
+			)
+		);
 	}
 
 	/**
@@ -1019,7 +1149,12 @@ class Rest {
 	 */
 	public function restore( $req ) {
 		if ( ! History::restore( (int) $req['id'] ) ) {
-			return rest_ensure_response( array( 'ok' => false, 'error' => 'This snapshot is gone or damaged.' ) );
+			return rest_ensure_response(
+				array(
+					'ok'    => false,
+					'error' => 'This snapshot is gone or damaged.',
+				)
+			);
 		}
 		Css_Generator::get_instance()->rebuild();
 		return rest_ensure_response( array( 'ok' => true ) );
@@ -1032,12 +1167,30 @@ class Rest {
 	 */
 	public function bricks_setup() {
 		if ( ! Platforms\Bricks::is_active() ) {
-			return rest_ensure_response( array( 'ok' => false, 'error' => 'Bricks is not the active theme.' ) );
+			return rest_ensure_response(
+				array(
+					'ok'    => false,
+					'error' => 'Bricks is not the active theme.',
+				)
+			);
 		}
 		if ( ! Platforms\Bricks_Theme::enabled() ) {
-			return rest_ensure_response( array( 'ok' => false, 'error' => 'Theme style sync is switched off (Builder, Theme style).' ) );
+			return rest_ensure_response(
+				array(
+					'ok'    => false,
+					'error' => 'Theme style sync is switched off (Builder, Theme style).',
+				)
+			);
 		}
 		$r = Platforms\Bricks_Theme::setup();
-		return rest_ensure_response( array( 'ok' => true, 'style' => $r['id'], 'created' => $r['created'], 'theme' => self::theme_info(), 'theme_style' => self::theme_style() ) );
+		return rest_ensure_response(
+			array(
+				'ok'          => true,
+				'style'       => $r['id'],
+				'created'     => $r['created'],
+				'theme'       => self::theme_info(),
+				'theme_style' => self::theme_style(),
+			)
+		);
 	}
 }

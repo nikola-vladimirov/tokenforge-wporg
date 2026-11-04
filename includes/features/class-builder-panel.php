@@ -41,17 +41,17 @@ class Builder_Panel {
 	private function config( $context ) {
 		$s = Settings::get_instance()->get_settings();
 		return array(
-			'restUrl'  => esc_url_raw( rest_url( \TokenForge\Rest::NS ) ),
-			'nonce'    => wp_create_nonce( 'wp_rest' ),
-			'groups'   => Tokens::GROUPS,
-			'adminUrl' => admin_url( 'admin.php?page=tokenforge' ),
-			'shortcut' => (string) $s['panel_shortcut'],
-			'context'  => $context,
+			'restUrl'    => esc_url_raw( rest_url( \TokenForge\Rest::NS ) ),
+			'nonce'      => wp_create_nonce( 'wp_rest' ),
+			'groups'     => Tokens::GROUPS,
+			'adminUrl'   => admin_url( 'admin.php?page=tokenforge' ),
+			'shortcut'   => (string) $s['panel_shortcut'],
+			'context'    => $context,
 			'axeUrl'     => esc_url_raw( A11y::axe_url() ), // loaded on demand by a11y-loader.js, never enqueued.
 			'axeVersion' => A11y::axe_version(),
 			'darkMode'   => 'auto' === Scheme::settings()['dark_mode'], // the contrast fix says one colour serves both modes
 			// Builder: its own corner button, unless the canvas shows one (Show in builder canvas while editing).
-			'launcher' => 'builder' === $context ? empty( $s['canvas_panel'] ) : ! empty( $s['frontend_launcher'] ),
+			'launcher'   => 'builder' === $context ? empty( $s['canvas_panel'] ) : ! empty( $s['frontend_launcher'] ),
 		);
 	}
 

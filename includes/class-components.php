@@ -67,179 +67,179 @@ class Components {
 	public static function builtin_defaults() {
 		$d = array(
 			// ---- Layout ----
-			'base_layout'           => true,   // section gutters + layout
-			'layout_type'           => 'full', // 'full' | 'boxed' (the whole page is boxed and centred)
-			'gutter_min'            => 20,     // side gutter px @ min viewport
-			'gutter_max'            => 60,     // side gutter px @ max viewport
-			'boxed_width'           => 1400,   // px, boxed page width
-			'container_width'       => true,   // Bricks containers (.brxe-container) take the content width
-			'body_shadow'           => '0 0 80px 0 var(--neutral-trans-20, rgb(0 0 0 / .1))',
-			'body_border_width'     => '0',
-			'body_border_style'     => 'none',
-			'body_border_color'     => 'transparent',
-			'body_border_radius'    => '0',
-			'body_margin_top'       => '0',
-			'device_bg'             => 'var(--white, #fff)', // behind a boxed page
-			'section_padding'       => true,   // default top/bottom padding on sections
-			'section_padding_block' => 'var(--section-space-m)',
-			'auto_container_gap'    => true,   // gap between a section's children
-			'auto_content_gap'      => true,   // gap inside containers/blocks
-			'auto_grid_gap'         => true,   // gap on grid--* elements
-			'container_gap'         => 'var(--space-xl)',
-			'content_gap'           => 'var(--space-m)',
-			'grid_gap_value'        => '',     // --grid-gap override (empty = the scale's grid gap)
+			'base_layout'                 => true,   // section gutters + layout.
+			'layout_type'                 => 'full', // 'full' | 'boxed' (the whole page is boxed and centred)
+			'gutter_min'                  => 20,     // side gutter px @ min viewport.
+			'gutter_max'                  => 60,     // side gutter px @ max viewport.
+			'boxed_width'                 => 1400,   // px, boxed page width.
+			'container_width'             => true,   // Bricks containers (.brxe-container) take the content width.
+			'body_shadow'                 => '0 0 80px 0 var(--neutral-trans-20, rgb(0 0 0 / .1))',
+			'body_border_width'           => '0',
+			'body_border_style'           => 'none',
+			'body_border_color'           => 'transparent',
+			'body_border_radius'          => '0',
+			'body_margin_top'             => '0',
+			'device_bg'                   => 'var(--white, #fff)', // behind a boxed page.
+			'section_padding'             => true,   // default top/bottom padding on sections.
+			'section_padding_block'       => 'var(--section-space-m)',
+			'auto_container_gap'          => true,   // gap between a section's children.
+			'auto_content_gap'            => true,   // gap inside containers/blocks.
+			'auto_grid_gap'               => true,   // gap on grid--* elements.
+			'container_gap'               => 'var(--space-xl)',
+			'content_gap'                 => 'var(--space-m)',
+			'grid_gap_value'              => '',     // --grid-gap override (empty = the scale's grid gap)
 			// Content grid: named columns content / feature / feature-max / full.
-			'content_grid'          => true,   // the .content-grid class
-			'content_grid_sections' => false,  // every top-level section is a content grid
-			'feature_width'         => '50px',
-			'feature_max_width'     => '100px',
-			'content_grid_exclusions' => '.content-grid--off, .pswp__scroll-wrap',
+			'content_grid'                => true,   // the .content-grid class.
+			'content_grid_sections'       => false,  // every top-level section is a content grid.
+			'feature_width'               => '50px',
+			'feature_max_width'           => '100px',
+			'content_grid_exclusions'     => '.content-grid--off, .pswp__scroll-wrap',
 			// ---- Typography ----
-			'base_root'             => true,   // body + heading defaults
-			'body_bg'               => '',     // e.g. var(--white)
-			'text_color'            => '',     // e.g. var(--text-dark)
-			'text_font_family'      => '',
-			'text_font_weight'      => '',
-			'text_font_style'       => '',
-			'text_letter_spacing'   => '',
-			'text_transform'        => '',
-			'text_line_height'      => 'calc(6px + 2ex)',
-			'text_wrap'             => 'pretty',
-			'heading_color'         => '',
-			'heading_font_family'   => '',
-			'heading_font_weight'   => '',
-			'heading_font_style'    => '',
-			'heading_text_transform' => '',
-			'heading_line_height'   => 'calc(4px + 2ex)',
-			'heading_letter_spacing' => '',
-			'heading_text_wrap'     => 'balance',
-			'text_size_classes'     => true,   // .text--xs … .text--xxl
+			'base_root'                   => true,   // body + heading defaults.
+			'body_bg'                     => '',     // e.g. var(--white).
+			'text_color'                  => '',     // e.g. var(--text-dark).
+			'text_font_family'            => '',
+			'text_font_weight'            => '',
+			'text_font_style'             => '',
+			'text_letter_spacing'         => '',
+			'text_transform'              => '',
+			'text_line_height'            => 'calc(6px + 2ex)',
+			'text_wrap'                   => 'pretty',
+			'heading_color'               => '',
+			'heading_font_family'         => '',
+			'heading_font_weight'         => '',
+			'heading_font_style'          => '',
+			'heading_text_transform'      => '',
+			'heading_line_height'         => 'calc(4px + 2ex)',
+			'heading_letter_spacing'      => '',
+			'heading_text_wrap'           => 'balance',
+			'text_size_classes'           => true,   // .text--xs … .text--xxl
 			// ---- Links ----
-			'base_links'            => true,
-			'link_color'            => 'var(--primary, var(--action, currentColor))',
-			'link_color_hover'      => 'var(--primary-hover, var(--action-hover, currentColor))',
-			'link_decoration'       => '',
-			'link_decoration_hover' => '',
-			'link_decoration_color' => '',
+			'base_links'                  => true,
+			'link_color'                  => 'var(--primary, var(--action, currentColor))',
+			'link_color_hover'            => 'var(--primary-hover, var(--action-hover, currentColor))',
+			'link_decoration'             => '',
+			'link_decoration_hover'       => '',
+			'link_decoration_color'       => '',
 			'link_decoration_color_hover' => '',
 			'link_decoration_thickness'   => '',
-			'link_underline_offset' => '',
-			'link_weight'           => '',
-			'link_transition'       => '',
+			'link_underline_offset'       => '',
+			'link_weight'                 => '',
+			'link_transition'             => '',
 			// ---- External-link indicator (links opening in a new tab) ----
-			'ext_links'             => false,
-			'ext_indicator'         => '\2197\FE0E', // ↗ (text presentation)
-			'ext_label'             => 'Link to external site', // read by screen readers instead of the glyph
-			'ext_position'          => 'end',        // end | start
-			'ext_gap'               => '.25em',
-			'ext_size'              => '.9em',
-			'ext_weight'            => 'inherit',
-			'ext_align'             => 'center',     // start | center | end | baseline | auto
-			'ext_offset'            => '0 0',        // translate
-			'ext_color'             => 'currentColor',
-			'ext_color_hover'       => 'currentColor',
-			'ext_not'               => ':has(img, > figure, > picture, > svg)', // links to leave alone
-			// ---- Buttons ----
-			'base_buttons'          => true,   // any btn--* class, and .btn
-			'control_bricks_buttons' => false, // restyle EVERY Bricks/Gutenberg/native button (ACSS doesn't)
-			'bricks_button_styles'  => true,   // Bricks button "Style" presets (Primary, Secondary…) → TokenForge families
-			'btn_family'            => 'primary', // colour family of the plain .btn class
-			'btn_families'          => implode( ',', self::FAMILIES ), // families that get btn--{family}
-			'btn_outline'           => true,   // .btn--{family}.btn--outline
-			'btn_shades'            => true,   // .btn--{family}-dark / -light
-			'btn_overrides'         => array(), // family => variant => prop => CSS value
-			'btn_padding_block'     => '0.75em',
-			'btn_padding_inline'    => '1.5em',
-			'btn_radius'            => '0.375rem',
-			'btn_font_weight'       => '600',
-			'btn_font_size'         => '',
-			'btn_font_family'       => 'inherit',
-			'btn_font_style'        => 'normal',
-			'btn_border_width'      => '1px',
-			'btn_border_style'      => 'solid',
-			'btn_min_width'         => '',
-			'btn_width'             => '',
-			'btn_line_height'       => '1.1',
-			'btn_text_transform'    => 'none',
-			'btn_letter_spacing'    => '0',
-			'btn_text_align'        => 'center',
-			'btn_justify'           => 'center',
-			'btn_text_decoration'   => 'none',
-			'btn_text_decoration_hover' => 'none',
-			'btn_transition'        => '',
-			'btn_gap'               => '.5em',
-			'btn_mobile_full'       => false,  // full-width buttons on small screens
-			'btn_mobile_bp'         => 480,    // px
-			// ---- Forms ----
-			'base_forms'            => true,
-			'field_radius'          => '0.375rem',
-			'field_padding'         => '0.6em 0.9em',
-			'field_border'          => 'var(--base-ultra-light, #d9dee5)',
-			'form_gap'              => 'var(--space-s, 1rem)', // between the fields of a form with .form--light / .form--dark
-			'form_btn_family'       => 'primary', // their submit button
-			'form_btn_variant'      => 'solid',
-			'form_extras'           => true,  // steps and conditional fields in the builder's form
-			'form_layouts'          => true,  // .form--columns, .form--inline, .form--compact, .form--card
-			'form_fields'           => true,  // slider, star rating, range, input mask, character counter
-			'form_dates'            => true,  // date rules
-			'form_messages'         => true,  // error messages per rule
-			'form_options'          => true,  // choice options from content
-			'form_live'             => true,  // live value tag
-			'form_limits'           => true,  // limits and submit rules
-			'form_actions'          => true,  // update meta and add to cart actions
-			'form_presets'          => true,  // form, field and saved presets in the builder
-			'form_styles'           => true,  // style presets
-			// ---- Form submissions (the builder's own screen, extended) ----
-			'subs_extend'           => true,  // master switch: everything below
-			'subs_status'           => true,  // read/unread, new count in the menu, statuses, notes
-			'subs_columns'          => true,  // choose and reorder columns
-			'subs_edit'             => true,  // edit an entry
-			'subs_export'           => true,  // export selected rows as CSV or JSON
-			'subs_top_menu'         => false, // the screen as a top-level menu item
-			'subs_role'             => 'administrator', // minimum role: administrator | editor | author | contributor
-			'subs_cleanup'          => false, // delete old submissions automatically
-			'subs_days'             => '0',   // after this many days, all forms (0 = only forms with their own number)
-			// ---- Cards ----
-			'base_cards'            => true,
-			'card_selectors'        => '',     // extra selectors styled as cards
-			'card_scheme'           => '',     // light | dark: fix the colour scheme inside cards
-			'card_background'       => 'var(--white, #fff)',
-			'card_text_color'       => '',
-			'card_text_size'        => '',
-			'card_line_height'      => '',
-			'card_padding'          => 'var(--space-m)',
-			'card_gap'              => 'calc(var(--content-gap, 1rem) / 2)',
-			'card_radius'           => 'var(--radius, .5rem)',
-			'card_border_width'     => '1px',
-			'card_border_style'     => 'solid',
-			'card_border_color'     => 'var(--border-color-dark, #e5e7eb)',
-			'card_shadow'           => '',
-			'card_heading_size'     => '',
-			'card_heading_color'    => '',
-			'card_link_color'       => '',
-			'card_link_color_hover' => '',
-			'card_media_aspect'     => '16/9',
-			'card_media_fit'        => 'cover',
-			'card_media_radius'     => '',
-			'card_avatar_size'      => '48px',
-			'card_avatar_radius'    => '50vw',
-			'card_avatar_border_width' => '0',
-			'card_avatar_border_style' => 'solid',
-			'card_avatar_border_color' => 'transparent',
-			'card_avatar_aspect'    => '1',
-			'card_icon_size'        => '48px',
-			'card_icon_background'  => '',
-			'card_icon_color'       => '',
-			'card_icon_padding'     => '',
-			'card_icon_radius'      => '',
-			'card_icon_border_width' => '',
-			'card_icon_border_style' => '',
-			'card_icon_border_color' => '',
-			'card_boxed_icons'      => true,
-			'card_button_size'      => 'var(--text-s)',
-			'card_button_family'    => '',    // buttons inside cards use this family
-			'card_concentric'       => false, // inner radius = card radius − padding
-			'card_min_radius'       => '4px',
+			'ext_links'                   => false,
+			'ext_indicator'               => '\2197\FE0E', // ↗ (text presentation)
+			'ext_label'                   => 'Link to external site', // read by screen readers instead of the glyph.
+			'ext_position'                => 'end',        // end | start.
+			'ext_gap'                     => '.25em',
+			'ext_size'                    => '.9em',
+			'ext_weight'                  => 'inherit',
+			'ext_align'                   => 'center',     // start | center | end | baseline | auto.
+			'ext_offset'                  => '0 0',        // translate.
+			'ext_color'                   => 'currentColor',
+			'ext_color_hover'             => 'currentColor',
+			'ext_not'                     => ':has(img, > figure, > picture, > svg)', // links to leave alone
+			// Buttons.
+			'base_buttons'                => true,   // any btn--* class, and .btn.
+			'control_bricks_buttons'      => false, // restyle EVERY Bricks/Gutenberg/native button (ACSS doesn't).
+			'bricks_button_styles'        => true,   // Bricks button "Style" presets (Primary, Secondary…) → TokenForge families.
+			'btn_family'                  => 'primary', // colour family of the plain .btn class.
+			'btn_families'                => implode( ',', self::FAMILIES ), // families that get btn--{family}.
+			'btn_outline'                 => true,   // .btn--{family}.btn--outline
+			'btn_shades'                  => true,   // .btn--{family}-dark / -light
+			'btn_overrides'               => array(), // family => variant => prop => CSS value.
+			'btn_padding_block'           => '0.75em',
+			'btn_padding_inline'          => '1.5em',
+			'btn_radius'                  => '0.375rem',
+			'btn_font_weight'             => '600',
+			'btn_font_size'               => '',
+			'btn_font_family'             => 'inherit',
+			'btn_font_style'              => 'normal',
+			'btn_border_width'            => '1px',
+			'btn_border_style'            => 'solid',
+			'btn_min_width'               => '',
+			'btn_width'                   => '',
+			'btn_line_height'             => '1.1',
+			'btn_text_transform'          => 'none',
+			'btn_letter_spacing'          => '0',
+			'btn_text_align'              => 'center',
+			'btn_justify'                 => 'center',
+			'btn_text_decoration'         => 'none',
+			'btn_text_decoration_hover'   => 'none',
+			'btn_transition'              => '',
+			'btn_gap'                     => '.5em',
+			'btn_mobile_full'             => false,  // full-width buttons on small screens.
+			'btn_mobile_bp'               => 480,    // px
+			// Forms.
+			'base_forms'                  => true,
+			'field_radius'                => '0.375rem',
+			'field_padding'               => '0.6em 0.9em',
+			'field_border'                => 'var(--base-ultra-light, #d9dee5)',
+			'form_gap'                    => 'var(--space-s, 1rem)', // between the fields of a form with .form--light / .form--dark.
+			'form_btn_family'             => 'primary', // their submit button.
+			'form_btn_variant'            => 'solid',
+			'form_extras'                 => true,  // steps and conditional fields in the builder's form.
+			'form_layouts'                => true,  // .form--columns, .form--inline, .form--compact, .form--card
+			'form_fields'                 => true,  // slider, star rating, range, input mask, character counter.
+			'form_dates'                  => true,  // date rules.
+			'form_messages'               => true,  // error messages per rule.
+			'form_options'                => true,  // choice options from content.
+			'form_live'                   => true,  // live value tag.
+			'form_limits'                 => true,  // limits and submit rules.
+			'form_actions'                => true,  // update meta and add to cart actions.
+			'form_presets'                => true,  // form, field and saved presets in the builder.
+			'form_styles'                 => true,  // style presets
+			// Form submissions (the builder's own screen, extended).
+			'subs_extend'                 => true,  // master switch: everything below.
+			'subs_status'                 => true,  // read/unread, new count in the menu, statuses, notes.
+			'subs_columns'                => true,  // choose and reorder columns.
+			'subs_edit'                   => true,  // edit an entry.
+			'subs_export'                 => true,  // export selected rows as CSV or JSON.
+			'subs_top_menu'               => false, // the screen as a top-level menu item.
+			'subs_role'                   => 'administrator', // minimum role: administrator | editor | author | contributor.
+			'subs_cleanup'                => false, // delete old submissions automatically.
+			'subs_days'                   => '0',   // after this many days, all forms (0 = only forms with their own number)
+			// Cards.
+			'base_cards'                  => true,
+			'card_selectors'              => '',     // extra selectors styled as cards.
+			'card_scheme'                 => '',     // light | dark: fix the colour scheme inside cards.
+			'card_background'             => 'var(--white, #fff)',
+			'card_text_color'             => '',
+			'card_text_size'              => '',
+			'card_line_height'            => '',
+			'card_padding'                => 'var(--space-m)',
+			'card_gap'                    => 'calc(var(--content-gap, 1rem) / 2)',
+			'card_radius'                 => 'var(--radius, .5rem)',
+			'card_border_width'           => '1px',
+			'card_border_style'           => 'solid',
+			'card_border_color'           => 'var(--border-color-dark, #e5e7eb)',
+			'card_shadow'                 => '',
+			'card_heading_size'           => '',
+			'card_heading_color'          => '',
+			'card_link_color'             => '',
+			'card_link_color_hover'       => '',
+			'card_media_aspect'           => '16/9',
+			'card_media_fit'              => 'cover',
+			'card_media_radius'           => '',
+			'card_avatar_size'            => '48px',
+			'card_avatar_radius'          => '50vw',
+			'card_avatar_border_width'    => '0',
+			'card_avatar_border_style'    => 'solid',
+			'card_avatar_border_color'    => 'transparent',
+			'card_avatar_aspect'          => '1',
+			'card_icon_size'              => '48px',
+			'card_icon_background'        => '',
+			'card_icon_color'             => '',
+			'card_icon_padding'           => '',
+			'card_icon_radius'            => '',
+			'card_icon_border_width'      => '',
+			'card_icon_border_style'      => '',
+			'card_icon_border_color'      => '',
+			'card_boxed_icons'            => true,
+			'card_button_size'            => 'var(--text-s)',
+			'card_button_family'          => '',    // buttons inside cards use this family.
+			'card_concentric'             => false, // inner radius = card radius − padding.
+			'card_min_radius'             => '4px',
 		);
 		// Per-heading (h1…h6) and per-text-size overrides, empty = inherit the defaults.
 		for ( $i = 1; $i <= 6; $i++ ) {
@@ -363,17 +363,65 @@ class Components {
 		};
 		switch ( $variant ) {
 			case 'dark':
-				return array( 'bg' => $v( 'dark' ), 'text' => $v( 'ultra-light' ), 'border' => $v( 'dark' ), 'hover' => $v( 'ultra-dark' ), 'hover_text' => $v( 'ultra-light' ), 'hover_border' => $v( 'ultra-dark' ), 'focus' => $v( 'semi-dark' ) );
+				return array(
+					'bg'           => $v( 'dark' ),
+					'text'         => $v( 'ultra-light' ),
+					'border'       => $v( 'dark' ),
+					'hover'        => $v( 'ultra-dark' ),
+					'hover_text'   => $v( 'ultra-light' ),
+					'hover_border' => $v( 'ultra-dark' ),
+					'focus'        => $v( 'semi-dark' ),
+				);
 			case 'light':
-				return array( 'bg' => $v( 'ultra-light' ), 'text' => $v( '' ), 'border' => $v( 'ultra-light' ), 'hover' => $v( 'light' ), 'hover_text' => $v( 'ultra-dark' ), 'hover_border' => $v( 'light' ), 'focus' => $v( 'light' ) );
+				return array(
+					'bg'           => $v( 'ultra-light' ),
+					'text'         => $v( '' ),
+					'border'       => $v( 'ultra-light' ),
+					'hover'        => $v( 'light' ),
+					'hover_text'   => $v( 'ultra-dark' ),
+					'hover_border' => $v( 'light' ),
+					'focus'        => $v( 'light' ),
+				);
 			case 'outline':
-				return array( 'bg' => 'transparent', 'text' => $v( '' ), 'border' => $v( '' ), 'hover' => $v( 'hover' ), 'hover_text' => $v( 'ultra-light' ), 'hover_border' => $v( 'hover' ), 'focus' => $v( 'light' ) );
+				return array(
+					'bg'           => 'transparent',
+					'text'         => $v( '' ),
+					'border'       => $v( '' ),
+					'hover'        => $v( 'hover' ),
+					'hover_text'   => $v( 'ultra-light' ),
+					'hover_border' => $v( 'hover' ),
+					'focus'        => $v( 'light' ),
+				);
 			case 'outline-dark':
-				return array( 'bg' => 'transparent', 'text' => $v( 'dark' ), 'border' => $v( 'dark' ), 'hover' => $v( 'dark' ), 'hover_text' => $v( 'ultra-light' ), 'hover_border' => $v( 'dark' ), 'focus' => $v( 'light' ) );
+				return array(
+					'bg'           => 'transparent',
+					'text'         => $v( 'dark' ),
+					'border'       => $v( 'dark' ),
+					'hover'        => $v( 'dark' ),
+					'hover_text'   => $v( 'ultra-light' ),
+					'hover_border' => $v( 'dark' ),
+					'focus'        => $v( 'light' ),
+				);
 			case 'outline-light':
-				return array( 'bg' => 'transparent', 'text' => $v( 'light' ), 'border' => $v( 'light' ), 'hover' => $v( 'light' ), 'hover_text' => $v( 'dark' ), 'hover_border' => $v( 'light' ), 'focus' => $v( 'light' ) );
+				return array(
+					'bg'           => 'transparent',
+					'text'         => $v( 'light' ),
+					'border'       => $v( 'light' ),
+					'hover'        => $v( 'light' ),
+					'hover_text'   => $v( 'dark' ),
+					'hover_border' => $v( 'light' ),
+					'focus'        => $v( 'light' ),
+				);
 			default:
-				return array( 'bg' => $v( '' ), 'text' => $v( 'ultra-light' ), 'border' => $v( '' ), 'hover' => $v( 'hover' ), 'hover_text' => $v( 'ultra-light' ), 'hover_border' => $v( 'hover' ), 'focus' => $v( 'light' ) );
+				return array(
+					'bg'           => $v( '' ),
+					'text'         => $v( 'ultra-light' ),
+					'border'       => $v( '' ),
+					'hover'        => $v( 'hover' ),
+					'hover_text'   => $v( 'ultra-light' ),
+					'hover_border' => $v( 'hover' ),
+					'focus'        => $v( 'light' ),
+				);
 		}
 	}
 
@@ -432,13 +480,13 @@ class Components {
 		$s   = self::settings();
 		$out = array();
 		foreach ( self::FAMILIES as $f ) {
-			$out[ $f ]                         = self::btn_var_map( $s, $f, 'solid' );
-			$out[ "$f-dark" ]                  = self::btn_var_map( $s, $f, 'dark' );
-			$out[ "$f-light" ]                 = self::btn_var_map( $s, $f, 'light' );
-			$out[ "$f.btn--outline" ]          = self::btn_var_map( $s, $f, 'outline' );
-			$out[ "$f--outline" ]              = $out[ "$f.btn--outline" ];
-			$out[ "$f-dark.btn--outline" ]     = self::btn_var_map( $s, $f, 'outline-dark' );
-			$out[ "$f-light.btn--outline" ]    = self::btn_var_map( $s, $f, 'outline-light' );
+			$out[ $f ]                      = self::btn_var_map( $s, $f, 'solid' );
+			$out[ "$f-dark" ]               = self::btn_var_map( $s, $f, 'dark' );
+			$out[ "$f-light" ]              = self::btn_var_map( $s, $f, 'light' );
+			$out[ "$f.btn--outline" ]       = self::btn_var_map( $s, $f, 'outline' );
+			$out[ "$f--outline" ]           = $out[ "$f.btn--outline" ];
+			$out[ "$f-dark.btn--outline" ]  = self::btn_var_map( $s, $f, 'outline-dark' );
+			$out[ "$f-light.btn--outline" ] = self::btn_var_map( $s, $f, 'outline-light' );
 		}
 		return $out;
 	}
@@ -469,11 +517,18 @@ class Components {
 	public static function heading_decls( $lvl ) {
 		$s    = self::settings();
 		$lvl  = max( 1, min( 6, (int) $lvl ) );
-		$step = array( 1 => 'xxl', 2 => 'xl', 3 => 'l', 4 => 'm', 5 => 's', 6 => 'xs' );
+		$step = array(
+			1 => 'xxl',
+			2 => 'xl',
+			3 => 'l',
+			4 => 'm',
+			5 => 's',
+			6 => 'xs',
+		);
 		$use  = function ( $prop, $key, $var ) use ( $s ) {
 			return '' === (string) $s[ $key ] ? '' : "$prop:var($var);";
 		};
-		$out = $use( 'font-family', 'heading_font_family', '--heading-font-family' )
+		$out  = $use( 'font-family', 'heading_font_family', '--heading-font-family' )
 			. $use( 'font-weight', 'heading_font_weight', '--heading-font-weight' )
 			. self::decl( 'font-style', $s['heading_font_style'] )
 			. self::decl( 'text-transform', $s['heading_text_transform'] )
@@ -521,9 +576,16 @@ class Components {
 	 */
 	public static function btn_families( $s ) {
 		$list = array_filter( array_map( 'trim', explode( ',', strtolower( (string) $s['btn_families'] ) ) ) );
-		return array_values( array_filter( array_map( function ( $f ) {
-			return preg_replace( '/[^a-z0-9\-]/', '', $f );
-		}, $list ) ) );
+		return array_values(
+			array_filter(
+				array_map(
+					function ( $f ) {
+						return preg_replace( '/[^a-z0-9\-]/', '', $f );
+					},
+					$list
+				)
+			)
+		);
 	}
 
 	/**
@@ -576,10 +638,15 @@ class Components {
 				$css[]     = ".header--$step{padding-block:var(--space-$step);padding-inline:var(--gutter)}";
 				$classes[] = "header--$step";
 			}
-			$css[] = '.section--none{padding-block:0;padding-inline:var(--gutter)}';
+			$css[]     = '.section--none{padding-block:0;padding-inline:var(--gutter)}';
 			$classes[] = 'section--none';
 			// Gap utilities (also expose --row-gap / --col-gap for grids).
-			foreach ( array( 'none' => '0', 'container' => 'var(--container-gap)', 'content' => 'var(--content-gap)', 'grid' => 'var(--grid-gap)' ) as $g => $val ) {
+			foreach ( array(
+				'none'      => '0',
+				'container' => 'var(--container-gap)',
+				'content'   => 'var(--content-gap)',
+				'grid'      => 'var(--grid-gap)',
+			) as $g => $val ) {
 				$cls       = 'none' === $g ? 'gap--none' : "$g-gap";
 				$css[]     = ".$cls{--row-gap:$val;--col-gap:$val;gap:$val}";
 				$classes[] = $cls;
@@ -652,7 +719,7 @@ class Components {
 					$root[] = "$n:$v";
 				}
 			}
-			$use = function ( $prop, $key, $var ) use ( $s ) {
+			$use   = function ( $prop, $key, $var ) use ( $s ) {
 				return '' === (string) $s[ $key ] ? '' : "$prop:var($var);";
 			};
 			$css[] = ':where(body){font-size:var(--text-m);overflow-x:clip;'
@@ -671,8 +738,8 @@ class Components {
 			}
 			// Headings + .h1….h6: element specificity (beats builder theme styles like
 			// Bricks' h1…h6{font-family}); margins are left to smart spacing.
-			$hsel  = 'h1,h2,h3,h4,h5,h6,:where(.h1,.h2,.h3,.h4,.h5,.h6,.brxe-heading)';
-			$css[] = $hsel . '{'
+			$hsel     = 'h1,h2,h3,h4,h5,h6,:where(.h1,.h2,.h3,.h4,.h5,.h6,.brxe-heading)';
+			$css[]    = $hsel . '{'
 				. $use( 'font-family', 'heading_font_family', '--heading-font-family' )
 				. $use( 'font-weight', 'heading_font_weight', '--heading-font-weight' )
 				. self::decl( 'font-style', $s['heading_font_style'] )
@@ -681,7 +748,14 @@ class Components {
 				. $use( 'line-height', 'heading_line_height', '--heading-line-height' )
 				. self::decl( 'letter-spacing', $s['heading_letter_spacing'] )
 				. $use( 'text-wrap', 'heading_text_wrap', '--heading-text-wrap' ) . '}';
-			$fallback = array( 1 => 'xxl', 2 => 'xl', 3 => 'l', 4 => 'm', 5 => 's', 6 => 'xs' );
+			$fallback = array(
+				1 => 'xxl',
+				2 => 'xl',
+				3 => 'l',
+				4 => 'm',
+				5 => 's',
+				6 => 'xs',
+			);
 			foreach ( $fallback as $lvl => $step ) {
 				$own = '';
 				$max = '';
@@ -696,7 +770,7 @@ class Components {
 						}
 					}
 				}
-				$css[]     = "h$lvl,.h$lvl{font-size:var(--h$lvl, var(--text-$step));$own}";
+				$css[] = "h$lvl,.h$lvl{font-size:var(--h$lvl, var(--text-$step));$own}";
 				if ( '' !== $max ) {
 					// Block editor: the title and heading blocks keep the editor's own width.
 					$css[] = ':is(h' . $lvl . ',.h' . $lvl . '):not(.wp-block){' . $max . '}';
@@ -705,7 +779,7 @@ class Components {
 			}
 			// Text-size classes (.text--m …): body text styles at a scale size.
 			if ( ! empty( $s['text_size_classes'] ) ) {
-				$all   = array();
+				$all = array();
 				foreach ( Scale_Engine::STEPS as $sz ) {
 					$all[] = ".text--$sz";
 				}
@@ -726,7 +800,7 @@ class Components {
 							$own .= "$prop:var($var);";
 						}
 					}
-					$css[]     = ".text--$sz{font-size:var(--text-$sz);$own}";
+					$css[] = ".text--$sz{font-size:var(--text-$sz);$own}";
 					if ( '' !== $max ) {
 						// Only text elements get the measure (not containers).
 						$css[] = ".text--$sz:is(p,li,blockquote,h1,h2,h3,h4,h5,h6,span,strong,cite){" . $max . '}';
@@ -739,7 +813,13 @@ class Components {
 		// ---- Links (buttons excluded) ----
 		if ( ! empty( $s['base_links'] ) ) {
 			$root[] = '--link-color:' . $s['link_color'] . ';--link-color-hover:' . $s['link_color_hover'];
-			foreach ( array( 'link_decoration' => '--link-decoration', 'link_decoration_hover' => '--link-decoration-hover', 'link_weight' => '--link-weight', 'link_underline_offset' => '--link-underline-offset', 'link_transition' => '--link-transition' ) as $k => $var ) {
+			foreach ( array(
+				'link_decoration'       => '--link-decoration',
+				'link_decoration_hover' => '--link-decoration-hover',
+				'link_weight'           => '--link-weight',
+				'link_underline_offset' => '--link-underline-offset',
+				'link_transition'       => '--link-transition',
+			) as $k => $var ) {
 				if ( '' !== $s[ $k ] ) {
 					$root[] = "$var:" . $s[ $k ];
 				}
@@ -768,7 +848,11 @@ class Components {
 			$not    = trim( (string) $s['ext_not'] );
 			$sel    = 'a[target="_blank"]' . ( '' !== $not ? ':where(:not(' . str_replace( '"', "'", $not ) . '))' : '' );
 			$label  = trim( str_replace( '\\', '', $str( $s['ext_label'] ) ) );
-			$valign = array( 'start' => 'text-top', 'center' => 'middle', 'end' => 'text-bottom' );
+			$valign = array(
+				'start'  => 'text-top',
+				'center' => 'middle',
+				'end'    => 'text-bottom',
+			);
 			$root[] = '--external-link-indicator-gap:' . $s['ext_gap'] . ';--external-link-indicator-size:' . $s['ext_size'] . ';--external-link-indicator-weight:' . $s['ext_weight']
 				. ';--external-link-indicator-offset:' . $s['ext_offset'] . ';--external-link-indicator-color:' . $s['ext_color'] . ';--external-link-indicator-color-hover:' . $s['ext_color_hover']
 				. ';--external-link-indicator-alignment:' . $s['ext_align'];
@@ -783,27 +867,27 @@ class Components {
 		// ---- Buttons ----
 		if ( ! empty( $s['base_buttons'] ) ) {
 			$bv = array(
-				'--btn-padding-block'  => $s['btn_padding_block'],
-				'--btn-padding-inline' => $s['btn_padding_inline'],
-				'--btn-border-radius'  => $s['btn_radius'],
-				'--btn-radius'         => '' !== $s['btn_radius'] ? 'var(--btn-border-radius)' : '',
-				'--btn-font-weight'    => $s['btn_font_weight'],
-				'--btn-font-size'      => $s['btn_font_size'],
-				'--btn-font-family'    => $s['btn_font_family'],
-				'--btn-font-style'     => $s['btn_font_style'],
-				'--btn-border-width'   => '' === $s['btn_border_width'] ? '1px' : $s['btn_border_width'],
-				'--btn-border-style'   => '' === $s['btn_border_style'] ? 'solid' : $s['btn_border_style'],
-				'--btn-line-height'    => '' === $s['btn_line_height'] ? '1.1' : $s['btn_line_height'],
-				'--btn-min-width'      => $s['btn_min_width'],
-				'--btn-width'          => $s['btn_width'],
-				'--btn-text-transform' => $s['btn_text_transform'],
-				'--btn-letter-spacing' => $s['btn_letter_spacing'],
-				'--btn-text-align'     => $s['btn_text_align'],
-				'--btn-justify-content' => $s['btn_justify'],
-				'--btn-text-decoration' => $s['btn_text_decoration'],
+				'--btn-padding-block'         => $s['btn_padding_block'],
+				'--btn-padding-inline'        => $s['btn_padding_inline'],
+				'--btn-border-radius'         => $s['btn_radius'],
+				'--btn-radius'                => '' !== $s['btn_radius'] ? 'var(--btn-border-radius)' : '',
+				'--btn-font-weight'           => $s['btn_font_weight'],
+				'--btn-font-size'             => $s['btn_font_size'],
+				'--btn-font-family'           => $s['btn_font_family'],
+				'--btn-font-style'            => $s['btn_font_style'],
+				'--btn-border-width'          => '' === $s['btn_border_width'] ? '1px' : $s['btn_border_width'],
+				'--btn-border-style'          => '' === $s['btn_border_style'] ? 'solid' : $s['btn_border_style'],
+				'--btn-line-height'           => '' === $s['btn_line_height'] ? '1.1' : $s['btn_line_height'],
+				'--btn-min-width'             => $s['btn_min_width'],
+				'--btn-width'                 => $s['btn_width'],
+				'--btn-text-transform'        => $s['btn_text_transform'],
+				'--btn-letter-spacing'        => $s['btn_letter_spacing'],
+				'--btn-text-align'            => $s['btn_text_align'],
+				'--btn-justify-content'       => $s['btn_justify'],
+				'--btn-text-decoration'       => $s['btn_text_decoration'],
 				'--btn-text-decoration-hover' => $s['btn_text_decoration_hover'],
-				'--btn-transition'     => $s['btn_transition'],
-				'--btn-gap'            => $s['btn_gap'],
+				'--btn-transition'            => $s['btn_transition'],
+				'--btn-gap'                   => $s['btn_gap'],
 			);
 			foreach ( $bv as $n => $v ) {
 				if ( '' !== (string) $v ) {
@@ -817,7 +901,7 @@ class Components {
 				// Opt-in: every Bricks / Gutenberg / native button (zero specificity).
 				$sel[] = ':where(.brxe-button.bricks-button,.wp-block-button__link,button:not([class]),input[type="submit"])';
 			}
-			$list  = implode( ',', $sel );
+			$list = implode( ',', $sel );
 			// The shared button declarations (also used by the skip link).
 			$look  = self::btn_look( $s );
 			$btn[] = $list . '{' . $look . ';cursor:pointer}';
@@ -825,20 +909,32 @@ class Components {
 			$btn[] = '.skip-link{position:absolute!important;inset-block-start:1rem;inset-inline-start:1rem;transform:translateY(-250%);--btn-min-width:fit-content;z-index:100;' . $look . ';' . self::btn_vars( $s, 'primary', 'solid' ) . '}';
 			$btn[] = '@media (hover:hover) and (pointer:fine){.skip-link:hover{background:var(--btn-background-hover);color:var(--btn-text-color-hover);border-color:var(--btn-border-color-hover);text-decoration:var(--btn-text-decoration-hover)}}';
 			$btn[] = '.skip-link:focus-visible{transform:translateY(0);outline-style:solid;outline-color:var(--focus-color);outline-width:var(--focus-width, 2px);outline-offset:var(--focus-offset, 2px)}';
-			$hov   = implode( ',', array_map( function ( $x ) {
-				return $x . ':hover';
-			}, $sel ) );
+			$hov   = implode(
+				',',
+				array_map(
+					function ( $x ) {
+						return $x . ':hover';
+					},
+					$sel
+				)
+			);
 			$btn[] = '@media (hover:hover) and (pointer:fine){' . $hov . '{background:var(--btn-background-hover);color:var(--btn-text-color-hover);border-color:var(--btn-border-color-hover);text-decoration:var(--btn-text-decoration-hover)}}';
-			$btn[] = implode( ',', array_map( function ( $x ) {
-				return $x . ':where(:focus-visible)';
-			}, $sel ) ) . '{outline-style:solid;outline-color:var(--focus-color);outline-width:var(--focus-width, 2px);outline-offset:var(--focus-offset, 2px)}';
+			$btn[] = implode(
+				',',
+				array_map(
+					function ( $x ) {
+						return $x . ':where(:focus-visible)';
+					},
+					$sel
+				)
+			) . '{outline-style:solid;outline-color:var(--focus-color);outline-width:var(--focus-width, 2px);outline-offset:var(--focus-offset, 2px)}';
 			if ( ! empty( $s['btn_mobile_full'] ) ) {
 				$bp    = round( max( 200, (float) $s['btn_mobile_bp'] ) / 16, 4 );
 				$btn[] = '@media (max-width:' . $bp . 'rem){' . $list . '{--btn-width:100%;--btn-min-width:100%}}';
 			}
 			// .btn = the default family; btn--{family} + -dark/-light + outline.
-			$def   = preg_replace( '/[^a-z0-9-]/', '', (string) $s['btn_family'] );
-			$btn[] = '.btn{' . self::btn_vars( $s, '' === $def ? 'primary' : $def, 'solid' ) . '}';
+			$def       = preg_replace( '/[^a-z0-9-]/', '', (string) $s['btn_family'] );
+			$btn[]     = '.btn{' . self::btn_vars( $s, '' === $def ? 'primary' : $def, 'solid' ) . '}';
 			$classes[] = 'btn';
 			foreach ( self::btn_families( $s ) as $fam ) {
 				$btn[]     = ".btn--$fam{" . self::btn_vars( $s, $fam, 'solid' ) . '}';
@@ -849,7 +945,7 @@ class Components {
 					array_push( $classes, "btn--$fam-dark", "btn--$fam-light" );
 				}
 				if ( ! empty( $s['btn_outline'] ) ) {
-					$btn[] = ".btn--$fam.btn--outline,.btn--$fam--outline{" . self::btn_vars( $s, $fam, 'outline' ) . '}';
+					$btn[]     = ".btn--$fam.btn--outline,.btn--$fam--outline{" . self::btn_vars( $s, $fam, 'outline' ) . '}';
 					$classes[] = "btn--$fam--outline";
 					if ( ! empty( $s['btn_shades'] ) ) {
 						$btn[] = ".btn--$fam-dark.btn--outline{" . self::btn_vars( $s, $fam, 'outline-dark' ) . '}';
@@ -938,7 +1034,7 @@ class Components {
 			$css[] = $form . ' .message.success{background-color:var(--success-ultra-light);color:var(--success-ultra-dark, var(--text-dark))}';
 			$css[] = $form . ' :is(.message.error,.form-group-error-message){background-color:var(--danger-ultra-light);color:var(--danger-ultra-dark, var(--text-dark))}';
 			if ( ! empty( $s['base_buttons'] ) ) {
-				$sub   = $fc . ' :is(:is(button,input)[type="submit"],.tf-form-next)'; // Next in a form with steps looks like the submit button
+				$sub   = $fc . ' :is(:is(button,input)[type="submit"],.tf-form-next)'; // Next in a form with steps looks like the submit button.
 				$css[] = $sub . '{' . self::btn_vars( $s, $s['form_btn_family'], $s['form_btn_variant'] ) . ';' . self::btn_look( $s ) . ';cursor:pointer}';
 				$css[] = '@media (hover:hover) and (pointer:fine){' . $sub . ':hover{background:var(--btn-background-hover);color:var(--btn-text-color-hover);border-color:var(--btn-border-color-hover);text-decoration:var(--btn-text-decoration-hover)}}';
 				$css[] = $sub . ':focus-visible{outline-style:solid;outline-color:var(--focus-color);outline-width:var(--focus-width, 2px);outline-offset:var(--focus-offset, 2px)}';
@@ -1011,7 +1107,7 @@ class Components {
 				$css[] = '@media (prefers-reduced-motion:reduce){.tf-form-progress__bar > span{transition:none}}';
 			}
 
-			// form_fields
+			// form_fields.
 			if ( ! empty( $s['form_fields'] ) ) {
 				$css[] = '.brxe-form .tf-sr-input{position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0,0,0,0) !important;white-space:nowrap !important;border:0 !important}';
 				$css[] = '.brxe-form .tf-look-value{font-size:var(--text-s, .875rem);font-weight:700;font-variant-numeric:tabular-nums}';
@@ -1038,13 +1134,13 @@ class Components {
 				$css[] = '.brxe-form .tf-counter{display:block;margin-top:.25rem;text-align:right;color:var(--text-dark-muted, #6b7280);font-size:var(--text-s, .875rem)}';
 			}
 
-			// form_limits
+			// form_limits.
 			if ( ! empty( $s['form_limits'] ) ) {
 				$css[] = '.tf-form-closed{padding:var(--space-s, 1rem);border:1px solid var(--neutral-trans-10, rgba(0,0,0,.1));border-radius:var(--radius, 6px);background:var(--neutral-ultra-light, #f7f7f8)}';
 				$css[] = '.brxe-form .tf-submit-off{display:none !important}';
 			}
 
-			// form_styles
+			// form_styles.
 			if ( ! empty( $s['form_styles'] ) ) {
 				$css[] = '.brxe-form.form--underline :is(input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="range"]):not([data-tf-ui]),select,textarea){border-width:0 0 1px;border-radius:0;background:transparent;padding-inline:0}';
 				$css[] = '.brxe-form.form--underline :is(input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="range"]):not([data-tf-ui]),select,textarea):focus{box-shadow:none;border-bottom-color:var(--primary)}';
@@ -1060,40 +1156,40 @@ class Components {
 		// ---- Cards ----
 		if ( ! empty( $s['base_cards'] ) ) {
 			$cv = array(
-				'--card-background'   => $s['card_background'],
-				'--card-text-color'   => $s['card_text_color'],
-				'--card-text-size'    => $s['card_text_size'],
-				'--card-line-height'  => $s['card_line_height'],
-				'--card-padding'      => $s['card_padding'],
-				'--card-gap'          => $s['card_gap'],
-				'--card-radius'       => $s['card_radius'],
-				'--card-border-width' => $s['card_border_width'],
-				'--card-border-style' => $s['card_border_style'],
-				'--card-border-color' => $s['card_border_color'],
-				'--card-shadow'       => '' !== $s['card_shadow'] ? $s['card_shadow'] : 'none', // always set: beats a stale stored token
-				'--card-heading-size' => $s['card_heading_size'],
-				'--card-heading-color' => $s['card_heading_color'],
-				'--card-link-color'   => $s['card_link_color'],
-				'--card-link-color-hover' => $s['card_link_color_hover'],
-				'--card-media-aspect-ratio' => $s['card_media_aspect'],
-				'--card-media-object-fit'   => $s['card_media_fit'],
-				'--card-media-radius'       => $s['card_media_radius'],
-				'--card-avatar-size'        => $s['card_avatar_size'],
-				'--card-avatar-radius'      => $s['card_avatar_radius'],
+				'--card-background'          => $s['card_background'],
+				'--card-text-color'          => $s['card_text_color'],
+				'--card-text-size'           => $s['card_text_size'],
+				'--card-line-height'         => $s['card_line_height'],
+				'--card-padding'             => $s['card_padding'],
+				'--card-gap'                 => $s['card_gap'],
+				'--card-radius'              => $s['card_radius'],
+				'--card-border-width'        => $s['card_border_width'],
+				'--card-border-style'        => $s['card_border_style'],
+				'--card-border-color'        => $s['card_border_color'],
+				'--card-shadow'              => '' !== $s['card_shadow'] ? $s['card_shadow'] : 'none', // always set: beats a stale stored token.
+				'--card-heading-size'        => $s['card_heading_size'],
+				'--card-heading-color'       => $s['card_heading_color'],
+				'--card-link-color'          => $s['card_link_color'],
+				'--card-link-color-hover'    => $s['card_link_color_hover'],
+				'--card-media-aspect-ratio'  => $s['card_media_aspect'],
+				'--card-media-object-fit'    => $s['card_media_fit'],
+				'--card-media-radius'        => $s['card_media_radius'],
+				'--card-avatar-size'         => $s['card_avatar_size'],
+				'--card-avatar-radius'       => $s['card_avatar_radius'],
 				'--card-avatar-border-width' => $s['card_avatar_border_width'],
 				'--card-avatar-border-style' => $s['card_avatar_border_style'],
 				'--card-avatar-border-color' => $s['card_avatar_border_color'],
 				'--card-avatar-aspect-ratio' => $s['card_avatar_aspect'],
-				'--card-icon-size'          => $s['card_icon_size'],
-				'--card-icon-background'    => $s['card_icon_background'],
-				'--card-icon-color'         => $s['card_icon_color'],
-				'--card-icon-padding'       => $s['card_icon_padding'],
-				'--card-icon-radius'        => $s['card_icon_radius'],
-				'--card-icon-border-width'  => $s['card_icon_border_width'],
-				'--card-icon-border-style'  => $s['card_icon_border_style'],
-				'--card-icon-border-color'  => $s['card_icon_border_color'],
-				'--card-button-font-size'   => $s['card_button_size'],
-				'--card-min-radius'         => $s['card_min_radius'],
+				'--card-icon-size'           => $s['card_icon_size'],
+				'--card-icon-background'     => $s['card_icon_background'],
+				'--card-icon-color'          => $s['card_icon_color'],
+				'--card-icon-padding'        => $s['card_icon_padding'],
+				'--card-icon-radius'         => $s['card_icon_radius'],
+				'--card-icon-border-width'   => $s['card_icon_border_width'],
+				'--card-icon-border-style'   => $s['card_icon_border_style'],
+				'--card-icon-border-color'   => $s['card_icon_border_color'],
+				'--card-button-font-size'    => $s['card_button_size'],
+				'--card-min-radius'          => $s['card_min_radius'],
 			);
 			if ( ! empty( $s['card_concentric'] ) ) {
 				// Inner corners follow the card: radius − padding (never below the minimum).
@@ -1106,9 +1202,9 @@ class Components {
 					$root[] = "$n:$v";
 				}
 			}
-			$extra = trim( str_replace( '"', "'", (string) $s['card_selectors'] ) );
-			$card  = '.card' . ( '' !== $extra ? ',' . $extra : '' );
-			$cards = array_merge( $cards, self::card_rules( $s, $card, ':is(' . $card . ')' ) );
+			$extra     = trim( str_replace( '"', "'", (string) $s['card_selectors'] ) );
+			$card      = '.card' . ( '' !== $extra ? ',' . $extra : '' );
+			$cards     = array_merge( $cards, self::card_rules( $s, $card, ':is(' . $card . ')' ) );
 			$classes[] = 'card';
 		}
 

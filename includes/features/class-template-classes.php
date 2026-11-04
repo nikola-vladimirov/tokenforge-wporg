@@ -38,7 +38,7 @@ class Template_Classes {
 		if ( ! is_array( $data ) || empty( $data['templates'] ) || ! is_array( $data['templates'] ) ) {
 			return $data;
 		}
-		$local = array(); // id => name
+		$local = array(); // id => name.
 		foreach ( (array) get_option( 'bricks_global_classes', array() ) as $c ) {
 			if ( isset( $c['id'], $c['name'] ) ) {
 				$local[ (string) $c['id'] ] = (string) $c['name'];
@@ -72,9 +72,9 @@ class Template_Classes {
 			$id   = (string) $class['id'];
 			$name = (string) $class['name'];
 			if ( ! isset( $local[ $id ] ) || $local[ $id ] === $name ) {
-				continue; // no clash, or the same class, Bricks' reuse is correct
+				continue; // no clash, or the same class, Bricks' reuse is correct.
 			}
-			$new = self::stable_id( $id, $name, $local );
+			$new         = self::stable_id( $id, $name, $local );
 			$map[ $id ]  = $new;
 			$class['id'] = $new;
 			if ( isset( $class['_mappedId'] ) ) {

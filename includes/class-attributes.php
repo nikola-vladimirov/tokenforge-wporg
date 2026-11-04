@@ -41,19 +41,19 @@ class Attributes {
 	 */
 	public static function all() {
 		return array(
-			'data-tf-clamp' => array( self::CLAMP, 'data-tf-clamp="3"', 'Cuts the text after 1 to 6 lines and ends it with an ellipsis (use it on an element without padding, or the next line shows a sliver). The text is still in the page for screen readers, so use it only where the full text is available elsewhere, such as a card that links to the full page. It only adds the cut: it never changes the font, colour or size you set, and anything you set on the element wins.' ),
-			'data-tf-ratio' => array( self::RATIO, 'data-tf-ratio="16/9"', 'Gives the element a fixed shape (1/1, 4/3, 3/2, 16/9, 21/9, 3/4, 2/3 or 9/16). On an image or video it also crops to fill. It never changes a width, height or ratio you set yourself.' ),
-			'data-tf-state' => array( self::STATE, 'data-tf-state="open"', 'Marks an element as open, active or disabled so your CSS and recipes can style that state. disabled is only a look and a mouse block: it dims the element and ignores mouse clicks, but the keyboard can still reach and use it and screen readers are not told. To block the keyboard too, use a real disabled control or the inert attribute. It never changes a colour or size you set.' ),
-			'data-tf-decorative' => array( array(), 'data-tf-decorative', 'Says this element is only decoration. On the page it gets aria-hidden="true" so screen readers skip it; an image inside gets an empty alt; an svg also gets focusable="false". Do not put it on, or around, a link, button or field. It takes no value and adds no styles.' ),
-			'data-tf-stack' => array( self::STACK, 'data-tf-stack="m"', 'A row that becomes a column on screens narrower than the breakpoint you pick (xs 478, s 767, m 991 or l 1279 pixels by default; the numbers come from your breakpoint settings). Put it on a container that is a row or a grid. Above that width nothing changes. Children keep any width you gave them, so set it to 100% for small screens.' ),
-			'data-tf-space' => array( self::SPACE, 'data-tf-space="m"', 'Spacing from your scale without a class per size (s, m or l). On a section or container it sets the space above and below; on one that also has data-tf-stack it sets the gap between the children instead. A spacing set in the element\'s own style settings still wins; a class on it does not.' ),
-			'data-tf-surface' => array( self::SURFACE, 'data-tf-surface="2"', 'A raised panel: a background, a thin border and readable text from your colour tokens, light and dark included. 1 is the quietest level and 3 the strongest. This is not the textures from Surfaces and Overlays. It never changes a colour you set yourself.' ),
-			'data-tf-reveal' => array( self::REVEAL, 'data-tf-reveal="up"', 'Shows the element when it scrolls into view, once: fade only fades it in, up fades it in and slides it up into place. It uses the Motion effects, so Motion, Visible effects must be on; with that off the element simply shows. Visitors who ask for less motion see no effect.' ),
-			'data-tf-copy' => array( array(), 'data-tf-copy="hello@example.com"', 'Makes a button or link copy text when clicked: the value you type, or the element\'s own text when the value is empty. The visitor sees "Copied" for a moment and a screen reader says it. Needs the small TokenForge script, which loads only on pages that use it.' ),
-			'data-tf-tooltip' => array( array(), 'data-tf-tooltip="Opens in a new tab"', 'Shows the text in a small bubble above the element on hover and on keyboard focus (Esc hides it); near the edge of a small screen the bubble moves sideways to stay in view. Screen readers read it as the description. Plain text only. Use it on a link or button, or on the box around a field (not on an image or a field itself, which cannot draw a bubble); on other elements add tabindex="0", or keyboard users never see it. The bubble is drawn with the element\'s ::before.' ),
+			'data-tf-clamp'        => array( self::CLAMP, 'data-tf-clamp="3"', 'Cuts the text after 1 to 6 lines and ends it with an ellipsis (use it on an element without padding, or the next line shows a sliver). The text is still in the page for screen readers, so use it only where the full text is available elsewhere, such as a card that links to the full page. It only adds the cut: it never changes the font, colour or size you set, and anything you set on the element wins.' ),
+			'data-tf-ratio'        => array( self::RATIO, 'data-tf-ratio="16/9"', 'Gives the element a fixed shape (1/1, 4/3, 3/2, 16/9, 21/9, 3/4, 2/3 or 9/16). On an image or video it also crops to fill. It never changes a width, height or ratio you set yourself.' ),
+			'data-tf-state'        => array( self::STATE, 'data-tf-state="open"', 'Marks an element as open, active or disabled so your CSS and recipes can style that state. disabled is only a look and a mouse block: it dims the element and ignores mouse clicks, but the keyboard can still reach and use it and screen readers are not told. To block the keyboard too, use a real disabled control or the inert attribute. It never changes a colour or size you set.' ),
+			'data-tf-decorative'   => array( array(), 'data-tf-decorative', 'Says this element is only decoration. On the page it gets aria-hidden="true" so screen readers skip it; an image inside gets an empty alt; an svg also gets focusable="false". Do not put it on, or around, a link, button or field. It takes no value and adds no styles.' ),
+			'data-tf-stack'        => array( self::STACK, 'data-tf-stack="m"', 'A row that becomes a column on screens narrower than the breakpoint you pick (xs 478, s 767, m 991 or l 1279 pixels by default; the numbers come from your breakpoint settings). Put it on a container that is a row or a grid. Above that width nothing changes. Children keep any width you gave them, so set it to 100% for small screens.' ),
+			'data-tf-space'        => array( self::SPACE, 'data-tf-space="m"', 'Spacing from your scale without a class per size (s, m or l). On a section or container it sets the space above and below; on one that also has data-tf-stack it sets the gap between the children instead. A spacing set in the element\'s own style settings still wins; a class on it does not.' ),
+			'data-tf-surface'      => array( self::SURFACE, 'data-tf-surface="2"', 'A raised panel: a background, a thin border and readable text from your colour tokens, light and dark included. 1 is the quietest level and 3 the strongest. This is not the textures from Surfaces and Overlays. It never changes a colour you set yourself.' ),
+			'data-tf-reveal'       => array( self::REVEAL, 'data-tf-reveal="up"', 'Shows the element when it scrolls into view, once: fade only fades it in, up fades it in and slides it up into place. It uses the Motion effects, so Motion, Visible effects must be on; with that off the element simply shows. Visitors who ask for less motion see no effect.' ),
+			'data-tf-copy'         => array( array(), 'data-tf-copy="hello@example.com"', 'Makes a button or link copy text when clicked: the value you type, or the element\'s own text when the value is empty. The visitor sees "Copied" for a moment and a screen reader says it. Needs the small TokenForge script, which loads only on pages that use it.' ),
+			'data-tf-tooltip'      => array( array(), 'data-tf-tooltip="Opens in a new tab"', 'Shows the text in a small bubble above the element on hover and on keyboard focus (Esc hides it); near the edge of a small screen the bubble moves sideways to stay in view. Screen readers read it as the description. Plain text only. Use it on a link or button, or on the box around a field (not on an image or a field itself, which cannot draw a bubble); on other elements add tabindex="0", or keyboard users never see it. The bubble is drawn with the element\'s ::before.' ),
 			'data-tf-filter-group' => array( array(), 'data-tf-filter-group', 'Put it on the box that holds both the filter buttons and the list. Items show only when their data-tf-term matches the chosen button\'s data-tf-filter. Needs the small TokenForge script; without it, or with no button chosen, every item shows.' ),
-			'data-tf-filter' => array( array(), 'data-tf-filter="design"', 'On a button inside a filter group: the term it shows. Use all to show every item again. Use the same words as the items\' data-tf-term.' ),
-			'data-tf-term' => array( array(), 'data-tf-term="design web"', 'On each list item inside a filter group: its terms, separated by spaces. Dynamic data such as the item\'s category slugs fills it in a loop. Items added after the page loads are filtered on the next click.' ),
+			'data-tf-filter'       => array( array(), 'data-tf-filter="design"', 'On a button inside a filter group: the term it shows. Use all to show every item again. Use the same words as the items\' data-tf-term.' ),
+			'data-tf-term'         => array( array(), 'data-tf-term="design web"', 'On each list item inside a filter group: its terms, separated by spaces. Dynamic data such as the item\'s category slugs fills it in a loop. Items added after the page loads are filtered on the next click.' ),
 		);
 	}
 
@@ -92,10 +92,13 @@ class Attributes {
 			$out[ $n ] = $a[2] . ( $a[0] ? ' Values: ' . implode( ', ', $a[0] ) . '.' : '' );
 		}
 		$out['data-tf-a11y'] = 'Set to off on an element: the automatic accessibility attributes leave it and everything inside it exactly as you built it.';
-		$list = array();
+		$list                = array();
 		foreach ( $out as $n => $d ) {
 			if ( preg_match( '/^data-(tf-|scheme)/', $n ) ) {
-				$list[] = array( 'n' => $n, 'd' => $d );
+				$list[] = array(
+					'n' => $n,
+					'd' => $d,
+				);
 			}
 		}
 		return $list;
@@ -118,7 +121,7 @@ class Attributes {
 			if ( strlen( $n ) > 64 || 0 !== strpos( $n, 'data-tf-' ) || in_array( $n, $known, true ) || isset( $out[ $n ] ) ) {
 				continue;
 			}
-			$seen++; // at most 200 names are compared.
+			++$seen; // at most 200 names are compared.
 			$best = '';
 			$bd   = 99;
 			foreach ( $known as $k ) {
@@ -128,7 +131,10 @@ class Attributes {
 					$best = $k;
 				}
 			}
-			$out[ $n ] = array( 'attribute' => $n, 'didYouMean' => $bd <= 3 ? $best : '' );
+			$out[ $n ] = array(
+				'attribute'  => $n,
+				'didYouMean' => $bd <= 3 ? $best : '',
+			);
 		}
 		return array_values( $out );
 	}
@@ -143,21 +149,26 @@ class Attributes {
 	public static function build( $prune = false ) {
 		$used = $prune ? self::used() : null;
 		// The "Always keep" list may name attributes the scan cannot see (theme templates, shortcodes, scripts): data-tf-tooltip or a prefix such as data-tf-*.
-		$keep = $prune ? array_filter( Class_Usage::always(), function ( $r ) { return 0 === strpos( $r, "data-" ); } ) : array();
+		$keep = $prune ? array_filter(
+			Class_Usage::always(),
+			function ( $r ) {
+				return 0 === strpos( $r, 'data-' );
+			}
+		) : array();
 		$has  = function ( $names ) use ( $used, $keep ) {
 			if ( null === $used || array_intersect_key( $used, array_flip( (array) $names ) ) ) {
 				return true;
 			}
 			foreach ( (array) $names as $n ) {
 				foreach ( $keep as $r ) {
-					if ( $r === $n || ( "*" === substr( $r, -1 ) && 0 === strpos( $n, rtrim( $r, "*" ) ) ) ) {
+					if ( $r === $n || ( '*' === substr( $r, -1 ) && 0 === strpos( $n, rtrim( $r, '*' ) ) ) ) {
 						return true;
 					}
 				}
 			}
 			return false;
 		};
-		$css = '';
+		$css  = '';
 		if ( $has( 'data-tf-clamp' ) ) {
 			foreach ( self::CLAMP as $n ) {
 				$css .= ":where([data-tf-clamp=\"$n\"]){display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:$n;line-clamp:$n;overflow:hidden}";
@@ -219,7 +230,7 @@ class Attributes {
 	private static function used() {
 		$scan = Attribute_Usage::last();
 		if ( ! Class_Usage::active() || empty( $scan['time'] ) || empty( $scan['v'] ) || ! empty( $scan['capped'] ) ) {
-			return null; // without Class_Usage::active() the builder canvas has no full stylesheet of its own
+			return null; // without Class_Usage::active() the builder canvas has no full stylesheet of its own.
 		}
 		return isset( $scan['uses'] ) && is_array( $scan['uses'] ) ? $scan['uses'] : array();
 	}
