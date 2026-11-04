@@ -961,6 +961,7 @@
 			var f = state.transferFile, html = '<p><label class="tf-btn tf-upload">Choose export file<input type="file" accept=".json,application/json" class="tf-import-file"></label> ' + ( f ? '<span class="tf-muted">' + esc( state.transferName ) + ( f.site ? ', from ' + esc( f.site ) : '' ) + ( f.exported ? ', ' + esc( String( f.exported ).slice( 0, 10 ) ) : '' ) + '</span>' : '' ) + '</p>';
 			if ( f ) {
 				var labels = { tokens: 'Tokens', palette: 'Colour families', settings: 'All settings', modules: 'Module switches', recipes: 'Recipe settings', fonts: 'Fonts' };
+			labels = window.wp && wp.hooks ? wp.hooks.applyFilters( 'tokenforge.import_labels', labels ) : labels;
 				html += '<div class="tf-fields">' + Object.keys( labels ).filter( function ( k ) { return f.data && f.data[ k ]; } ).map( function ( k ) {
 					return '<label class="tf-field tf-switchrow"><span class="tf-switch"><input type="checkbox" data-part="import" data-p="' + k + '"' + ( false !== state.transferParts[ k ] ? ' checked' : '' ) + '><i></i></span><span class="tf-flabel">' + labels[ k ] + '</span></label>';
 				} ).join( '' ) + '</div><p><button type="button" class="tf-btn tf-primary" data-act="importrun">Import</button> <button type="button" class="tf-btn" data-act="importclear">Cancel</button></p>';
@@ -992,6 +993,7 @@
 		},
 		resetBox: function () {
 			var parts = [ [ 'settings', 'All settings', 'every switch and value' ], [ 'tokens', 'Tokens and colour families', 'the starter colours' ], [ 'fonts', 'Font list', 'files stay in uploads' ] ];
+			parts = window.wp && wp.hooks ? wp.hooks.applyFilters( 'tokenforge.reset_parts', parts ) : parts;
 			return '<div class="tf-fields">' + parts.map( function ( p ) {
 				return '<label class="tf-field tf-switchrow"><span class="tf-switch"><input type="checkbox" data-part="reset" data-p="' + p[0] + '"' + ( state.resetParts[ p[0] ] ? ' checked' : '' ) + '><i></i></span><span class="tf-flabel">' + p[1] + ' <span class="tf-muted">(' + p[2] + ')</span></span></label>';
 			} ).join( '' ) + '</div><p><button type="button" class="tf-btn tf-danger" data-act="resetrun">Reset to defaults</button></p>';

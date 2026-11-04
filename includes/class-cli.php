@@ -129,11 +129,11 @@ class Cli {
 		if ( '' !== $error ) {
 			\WP_CLI::error( $error );
 		}
-		$parts = Transfer::PARTS;
+		$parts = Transfer::parts();
 		if ( isset( $assoc['parts'] ) ) {
-			$parts = array_values( array_intersect( Transfer::PARTS, array_map( 'trim', explode( ',', (string) $assoc['parts'] ) ) ) );
+			$parts = array_values( array_intersect( Transfer::parts(), array_map( 'trim', explode( ',', (string) $assoc['parts'] ) ) ) );
 			if ( ! $parts ) {
-				\WP_CLI::error( 'No known part in --parts. Choose from: ' . implode( ', ', Transfer::PARTS ) );
+				\WP_CLI::error( 'No known part in --parts. Choose from: ' . implode( ', ', Transfer::parts() ) );
 			}
 		}
 		if ( \WP_CLI\Utils\get_flag_value( $assoc, 'dry-run', false ) ) {

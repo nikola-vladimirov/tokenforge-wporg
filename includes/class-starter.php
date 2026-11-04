@@ -43,6 +43,15 @@ class Starter {
 	const PARTS = array( 'settings', 'tokens', 'fonts' );
 
 	/**
+	 * Parts of a reset, with the add-on parts (tokenforge_starter_parts filter).
+	 *
+	 * @return array
+	 */
+	public static function parts() {
+		return array_values( array_unique( apply_filters( 'tokenforge_starter_parts', self::PARTS ) ) );
+	}
+
+	/**
 	 * Palette settings for a fresh install.
 	 *
 	 * @return array
@@ -119,7 +128,7 @@ class Starter {
 	 * @return array The parts that were reset.
 	 */
 	public static function reset( $parts ) {
-		$parts = array_values( array_intersect( self::PARTS, (array) $parts ) );
+		$parts = array_values( array_intersect( self::parts(), (array) $parts ) );
 		if ( in_array( 'settings', $parts, true ) ) {
 			foreach ( self::SETTING_OPTIONS as $o ) {
 				delete_option( 'tokenforge_' . $o );
@@ -141,6 +150,7 @@ class Starter {
 			$fonts = Modules::raw( array( Fonts::class, 'settings' ) );
 			Fonts::save_settings( array_merge( $fonts, array( 'fonts' => array() ) ) );
 		}
+		do_action( 'tokenforge_starter_reset', $parts );
 		return $parts;
 	}
 }

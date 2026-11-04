@@ -986,7 +986,7 @@ class Rest {
 		if ( '' !== $error ) {
 			return rest_ensure_response( array( 'ok' => false, 'error' => $error ) );
 		}
-		$parts = self::parts( isset( $body['parts'] ) ? $body['parts'] : Transfer::PARTS, Transfer::PARTS );
+		$parts = self::parts( isset( $body['parts'] ) ? $body['parts'] : Transfer::parts(), Transfer::parts() );
 		History::snapshot( 'import' );
 		$done  = Transfer::import( $file, $parts );
 		Css_Generator::get_instance()->rebuild();
@@ -1001,7 +1001,7 @@ class Rest {
 	 */
 	public function reset( $req ) {
 		$body  = $req->get_json_params();
-		$parts = self::parts( isset( $body['parts'] ) ? $body['parts'] : array(), Starter::PARTS );
+		$parts = self::parts( isset( $body['parts'] ) ? $body['parts'] : array(), Starter::parts() );
 		if ( ! $parts ) {
 			return rest_ensure_response( array( 'ok' => false, 'error' => 'Choose what to reset.' ) );
 		}

@@ -2,6 +2,12 @@
 
 All the changes to TokenForge, newest first.
 
+## 0.54.2
+
+Developers can extend Export / Import and the Starter reset. Five hooks: tokenforge_transfer_parts (add parts to an export), tokenforge_transfer_export_data (add data to an export), tokenforge_transfer_imported (runs after an import), tokenforge_starter_parts (add parts to a reset) and tokenforge_starter_reset (runs after a reset).
+
+Nothing changes for sites that do not use these hooks.
+
 ## 0.54.1
 
 Developers can add to the dashboard from a plugin or theme. The dashboard runs five WordPress filters (wp.hooks in the browser): tokenforge.sections (add a section), tokenforge.nav (add a navigation entry), tokenforge.icons (add an icon), tokenforge.render (draw a section's panel) and tokenforge.section_html (add a panel to an existing section).

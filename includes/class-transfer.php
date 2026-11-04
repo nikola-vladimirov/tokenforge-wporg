@@ -25,6 +25,15 @@ class Transfer {
 	const PARTS = array( 'tokens', 'palette', 'settings', 'modules', 'recipes', 'fonts' );
 
 	/**
+	 * Parts of an export, with the add-on parts (tokenforge_transfer_parts filter).
+	 *
+	 * @return array
+	 */
+	public static function parts() {
+		return array_values( array_unique( apply_filters( 'tokenforge_transfer_parts', self::PARTS ) ) );
+	}
+
+	/**
 	 * Settings modules: key in the file => class with settings() / save_settings().
 	 *
 	 * @return array
@@ -65,14 +74,14 @@ class Transfer {
 					'version'  => TOKENFORGE_VERSION,
 					'exported' => gmdate( 'c' ),
 					'site'     => home_url( '/' ),
-					'data'     => array(
+					'data'     => apply_filters( 'tokenforge_transfer_export_data', array(
 						'tokens'   => Settings::get_instance()->get_tokens(),
 						'palette'  => Palette::settings(),
 						'settings' => $settings,
 						'modules'  => Modules::settings(),
 						'recipes'  => Recipes::settings(),
 						'fonts'    => Fonts::settings(),
-					),
+					) ),
 				);
 			}
 		);
@@ -103,7 +112,7 @@ class Transfer {
 	 */
 	public static function import( $file, $parts ) {
 		$data  = $file['data'];
-		$parts = array_values( array_intersect( self::PARTS, (array) $parts ) );
+		$parts = array_values( array_intersect( self::parts(), (array) $parts ) );
 		$done  = array();
 		foreach ( $parts as $part ) {
 			if ( ! isset( $data[ $part ] ) || ! is_array( $data[ $part ] ) ) {
@@ -148,6 +157,7 @@ class Transfer {
 				Settings::get_instance()->save_tokens( $tokens );
 			}
 		}
+		do_action( 'tokenforge_transfer_imported', $done, $data );
 		return $done;
 	}
 }

@@ -4,7 +4,7 @@ Tags: design tokens, css variables, accessibility, woocommerce
 Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.54.1
+Stable tag: 0.54.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -186,6 +186,10 @@ Yes. The dashboard and the builder settings use the `tokenforge` text domain, so
 == Changelog ==
 
 The full history is in CHANGELOG.md, also shown from the Changelog link next to TokenForge on the Plugins screen.
+
+= 0.54.2 =
+* Developers can extend Export / Import and the Starter reset: the hooks tokenforge_transfer_parts, tokenforge_transfer_export_data, tokenforge_transfer_imported, tokenforge_starter_parts and tokenforge_starter_reset.
+* Nothing changes for sites that do not use these hooks.
 
 = 0.54.1 =
 * Developers can add to the dashboard from a plugin or theme: sections, navigation entries, icons and panels through the wp.hooks filters tokenforge.sections, tokenforge.nav, tokenforge.icons, tokenforge.render and tokenforge.section_html.
