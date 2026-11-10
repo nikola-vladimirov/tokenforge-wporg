@@ -415,6 +415,24 @@ class Cheatsheet {
 			),
 			// Grids.
 			array(
+				'/^flex-grid-(\d+)$/',
+				'grid',
+				function ( $m ) {
+										return $m[1] . ' equal-width items per row in a wrapping flex row; a short last row is centred (set --flex-grid-gap to change the gap).'; },
+			),
+			array(
+				'/^flex-grid-(\d+)-at-(xs|s|m|l|xl|xxl)$/',
+				'grid',
+				function ( $m ) {
+										return 'With a flex-grid-* class: ' . $m[1] . ' items per row at the ' . $m[2] . ' breakpoint and below.'; },
+			),
+			array(
+				'/^flex-grid--(start|end|stretch)$/',
+				'grid',
+				function ( $m ) {
+										return 'stretch' === $m[1] ? 'With a flex-grid-* class: items on a short last row grow to fill it.' : 'With a flex-grid-* class: a short last row sits at the ' . $m[1] . ' instead of the centre.'; },
+			),
+			array(
 				'/^grid-(\d+)$/',
 				'grid',
 				function ( $m ) {
@@ -747,6 +765,15 @@ class Cheatsheet {
 			array( '/^sticky$/', 'utilities', 'Sticks to the top while scrolling (below the header when that option is on).' ),
 			array( '/^(hidden|relative|absolute)$/', 'utilities', null ),
 		);
+		// The utility families first: their patterns are exact, the built-in list ends in catch-alls.
+		static $families = null; // built once per request: describe_class() runs for every class.
+		if ( null === $families ) {
+			$families = array();
+			foreach ( array_keys( Util::families() ) as $family ) {
+				$families = array_merge( $families, call_user_func( array( $family, 'cheatsheet' ) ) );
+			}
+		}
+		$rules = array_merge( $families, $rules );
 		foreach ( $rules as $r ) {
 			if ( preg_match( $r[0], $n, $m ) ) {
 				$d = is_callable( $r[2] ) ? call_user_func( $r[2], $m ) : ( null === $r[2] ? '' : $r[2] );

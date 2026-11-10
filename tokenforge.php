@@ -3,7 +3,7 @@
  * Plugin Name:       TokenForge
  * Plugin URI:        https://pristadigital.com
  * Description:       Design tokens, fluid scales and utility classes for any WordPress site, block editor included. With Bricks active it also syncs variables, colours, classes and a theme style both ways, and adds the dashboard inside the builder.
- * Version:           0.54.2
+ * Version:           0.55.0
  * Requires at least: 5.9
  * Requires PHP:      7.4
  * Author:            Prista Digital
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'TOKENFORGE_VERSION', '0.54.2' );
+define( 'TOKENFORGE_VERSION', '0.55.0' );
 define( 'TOKENFORGE_FILE', __FILE__ );
 define( 'TOKENFORGE_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TOKENFORGE_URL', plugin_dir_url( __FILE__ ) );
@@ -26,7 +26,7 @@ define( 'TOKENFORGE_BASENAME', plugin_basename( __FILE__ ) );
 
 // Explicit, reliable class map autoloader for the TokenForge\ namespace.
 spl_autoload_register(
-	function ( $class ) {
+	function ( $class_name ) {
 		$map = array(
 			'TokenForge\\Plugin'                         => 'includes/class-plugin.php',
 			'TokenForge\\Settings'                       => 'includes/class-settings.php',
@@ -37,6 +37,10 @@ spl_autoload_register(
 			'TokenForge\\Tokens'                         => 'includes/class-tokens.php',
 			'TokenForge\\Color_Engine'                   => 'includes/class-color-engine.php',
 			'TokenForge\\Scale_Engine'                   => 'includes/class-scale-engine.php',
+			'TokenForge\\Util'                           => 'includes/class-util.php',
+			'TokenForge\\Util_Grid'                      => 'includes/class-util-grid.php',
+			'TokenForge\\Util_Layout'                    => 'includes/class-util-layout.php',
+			'TokenForge\\Util_Text'                      => 'includes/class-util-text.php',
 			'TokenForge\\Defaults'                       => 'includes/class-defaults.php',
 			'TokenForge\\Components'                     => 'includes/class-components.php',
 			'TokenForge\\Scheme'                         => 'includes/class-scheme.php',
@@ -90,8 +94,8 @@ spl_autoload_register(
 			'TokenForge\\Features\\Attr_Front'           => 'includes/features/class-attr-front.php',
 			'TokenForge\\Cli'                            => 'includes/class-cli.php',
 		);
-		if ( isset( $map[ $class ] ) ) {
-			require_once TOKENFORGE_DIR . $map[ $class ];
+		if ( isset( $map[ $class_name ] ) ) {
+			require_once TOKENFORGE_DIR . $map[ $class_name ];
 		}
 	}
 );

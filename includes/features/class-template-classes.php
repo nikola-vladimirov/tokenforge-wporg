@@ -39,14 +39,18 @@ class Template_Classes {
 			return $data;
 		}
 		$local = array(); // id => name.
+		$ours  = array(); // name => id of the classes TokenForge registered.
 		foreach ( (array) get_option( 'bricks_global_classes', array() ) as $c ) {
 			if ( isset( $c['id'], $c['name'] ) ) {
 				$local[ (string) $c['id'] ] = (string) $c['name'];
+				if ( \TokenForge\Platforms\Bricks::is_ours( $c ) ) {
+					$ours[ (string) $c['name'] ] = (string) $c['id'];
+				}
 			}
 		}
 		foreach ( $data['templates'] as &$template ) {
 			if ( is_array( $template ) ) {
-				$template = self::fix_template( $template, $local );
+				$template = self::fix_template( $template, $local, $ours );
 			}
 		}
 		unset( $template );
@@ -56,11 +60,16 @@ class Template_Classes {
 	/**
 	 * De-conflict one template.
 	 *
+	 * A template class with no styles of its own that has the name of a class
+	 * TokenForge registered takes that class's id, so the builder reuses the
+	 * TokenForge class instead of asking about a conflict or importing a copy.
+	 *
 	 * @param array $template Template data.
 	 * @param array $local    Local classes id => name (extended with new ids).
+	 * @param array $ours     TokenForge classes in the builder, name => id.
 	 * @return array
 	 */
-	public static function fix_template( $template, &$local ) {
+	public static function fix_template( $template, &$local, $ours = array() ) {
 		if ( empty( $template['global_classes'] ) || ! is_array( $template['global_classes'] ) ) {
 			return $template;
 		}
@@ -71,6 +80,17 @@ class Template_Classes {
 			}
 			$id   = (string) $class['id'];
 			$name = (string) $class['name'];
+			if ( isset( $ours[ $name ] ) && empty( $class['settings'] ) ) {
+				if ( $ours[ $name ] !== $id ) {
+					$map[ $id ]  = $ours[ $name ];
+					$class['id'] = $ours[ $name ];
+					if ( isset( $class['_mappedId'] ) ) {
+						$class['_mappedId'] = $ours[ $name ];
+					}
+				}
+				$class['settings'] = array(); // Same as the TokenForge class, so the builder sees no conflict.
+				continue;
+			}
 			if ( ! isset( $local[ $id ] ) || $local[ $id ] === $name ) {
 				continue; // no clash, or the same class, Bricks' reuse is correct.
 			}

@@ -96,7 +96,8 @@ class Extras {
 			'icon_list_icon_size'     => '1em',
 			'boxed_list_icons'        => false,
 			'header_height'           => '0px',   // desktop (or the only value).
-			'header_height_min'       => '',  // mobile, when both are px, the height is fluid
+			'header_height_min'       => '',  // mobile, when both are px, the height is fluid.
+			'header_height_live'      => false, // measure the real header in the browser (assets/front/header-height.js).
 			// Custom box shadows (empty = generated from the shadow colour).
 			'shadow_1'                => '',
 			'shadow_2'                => '',
@@ -286,7 +287,7 @@ class Extras {
 			$vw = Scale_Engine::settings();
 			$add( 'header-height', Scale_Engine::fluid( $hmin, $hmax, (float) $vw['min_vw'], (float) $vw['max_vw'] ), 'other' );
 		} else {
-			$add( 'header-height', $s['header_height'], 'other' );
+			$add( 'header-height', '0' === trim( (string) $s['header_height'] ) ? '0px' : $s['header_height'], 'other' ); // a bare 0 is not a length inside calc().
 		}
 		return $out;
 	}

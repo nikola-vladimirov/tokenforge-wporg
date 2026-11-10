@@ -302,16 +302,16 @@ class Token_Files {
 	 * Shadow layers with a colour variable that is exported: a reference to it.
 	 *
 	 * @param array $value Shadow value (one layer or a list).
-	 * @param array $list  Exported tokens, name => [ group, token ].
+	 * @param array $exported  Exported tokens, name => [ group, token ].
 	 * @return array
 	 */
-	private static function shadow_refs( $value, $list ) {
+	private static function shadow_refs( $value, $exported ) {
 		$one    = isset( $value['color'] );
 		$layers = $one ? array( $value ) : $value;
 		foreach ( $layers as $i => $l ) {
 			if ( isset( $l['color']['ref'] ) ) {
 				$r                     = $l['color']['ref'];
-				$layers[ $i ]['color'] = isset( $list[ $r ] ) && 'color' === $list[ $r ][1]['$type'] ? '{' . self::ref_group( $list[ $r ][0] ) . '.' . $r . '}' : $l['color']['obj'];
+				$layers[ $i ]['color'] = isset( $exported[ $r ] ) && 'color' === $exported[ $r ][1]['$type'] ? '{' . self::ref_group( $exported[ $r ][0] ) . '.' . $r . '}' : $l['color']['obj'];
 			}
 		}
 		return $one ? $layers[0] : $layers;

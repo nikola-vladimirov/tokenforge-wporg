@@ -68,7 +68,7 @@ class Cli {
 	 * @param array $assoc Associative arguments.
 	 * @return void
 	 */
-	public function regenerate( $args, $assoc ) {
+	public function regenerate( $args, $assoc ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- WP-CLI fixes the signature.
 		$d = self::rest()->regenerate()->get_data();
 		if ( empty( $d['ok'] ) ) {
 			\WP_CLI::error( 'The stylesheet could not be written. Check that the uploads folder is writable.' );
@@ -89,7 +89,7 @@ class Cli {
 	 * @param array $assoc Associative arguments.
 	 * @return void
 	 */
-	public function export( $args, $assoc ) {
+	public function export( $args, $assoc ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- WP-CLI fixes the signature.
 		\WP_CLI::line( (string) wp_json_encode( Transfer::export(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 	}
 

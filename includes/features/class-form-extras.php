@@ -448,10 +448,10 @@ class Form_Extras {
 	 *
 	 * @param array  $fields Field settings.
 	 * @param array  $rules  field_rules() or parse_rules().
-	 * @param string $match  all|any.
+	 * @param string $match_mode  all|any.
 	 * @return array
 	 */
-	public static function browser_rules( $fields, $rules, $match ) {
+	public static function browser_rules( $fields, $rules, $match_mode ) {
 		$out = array();
 		foreach ( $rules as $r ) {
 			$target = self::find_field( $fields, $r['ref'] );
@@ -464,7 +464,7 @@ class Form_Extras {
 			}
 		}
 		return array(
-			'match' => $match,
+			'match' => $match_mode,
 			'rules' => $out,
 		);
 	}
@@ -584,13 +584,13 @@ class Form_Extras {
 	 * @param array  $fields    Field settings.
 	 * @param array  $submitted Submitted values.
 	 * @param string $text      Condition lines.
-	 * @param string $match     all|any.
+	 * @param string $match_mode     all|any.
 	 * @return bool
 	 */
-	public static function lines_hold( $fields, $submitted, $text, $match ) {
+	public static function lines_hold( $fields, $submitted, $text, $match_mode ) {
 		$fields = array_values( $fields );
 		$hidden = self::hidden_fields( $fields, $submitted );
-		return self::rules_hold( self::parse_rules( $text ), 'any' === $match ? 'any' : 'all', self::reader( $fields, $submitted, $hidden ) );
+		return self::rules_hold( self::parse_rules( $text ), 'any' === $match_mode ? 'any' : 'all', self::reader( $fields, $submitted, $hidden ) );
 	}
 
 	/**
@@ -621,24 +621,24 @@ class Form_Extras {
 	 * Do a field's conditions hold, given how to read the fields they name?
 	 *
 	 * @param array    $rules     field_rules().
-	 * @param string   $match     all|any.
+	 * @param string   $match_mode     all|any.
 	 * @param callable $values_of ref → submitted values.
 	 * @return bool
 	 */
-	private static function rules_hold( $rules, $match, $values_of ) {
+	private static function rules_hold( $rules, $match_mode, $values_of ) {
 		if ( ! $rules ) {
 			return true;
 		}
 		foreach ( $rules as $r ) {
 			$ok = self::test( $r['op'], $r['v'], $values_of( $r['ref'] ) );
-			if ( 'any' === $match && $ok ) {
+			if ( 'any' === $match_mode && $ok ) {
 				return true;
 			}
-			if ( 'any' !== $match && ! $ok ) {
+			if ( 'any' !== $match_mode && ! $ok ) {
 				return false;
 			}
 		}
-		return 'any' !== $match;
+		return 'any' !== $match_mode;
 	}
 
 	// ------------------------------------------------------------------
@@ -972,8 +972,9 @@ class Form_Extras {
 						$vals[] = 0.0;
 						continue;
 					}
-					if ( isset( $raw[ $ref['id'] ] ) ) {
-						$vals[] = $raw[ $ref['id'] ];
+					if ( isset( $raw[ $ref['id'] ] ) || self::has_calc( $ref ) ) {
+						// A result not worked out yet counts as 0 until the next pass, never as the browser's number.
+						$vals[] = isset( $raw[ $ref['id'] ] ) ? $raw[ $ref['id'] ] : 0.0;
 						continue;
 					}
 					$vals[] = array_sum( array_map( array( __CLASS__, 'to_number' ), self::submitted( $submitted, $ref ) ) );
@@ -1239,7 +1240,8 @@ class Form_Extras {
 		foreach ( array( self::input_name( $field ), 'form-field-' . $field['id'] ) as $name ) {
 			if ( isset( $submitted[ $name ] ) ) {
 				$v = $submitted[ $name ];
-				return is_array( $v ) ? array_map( 'strval', $v ) : array( (string) $v );
+				// A checkbox value sent twice counts once (calculate() adds the values up).
+				return is_array( $v ) ? array_values( array_unique( array_map( 'strval', array_filter( $v, 'is_scalar' ) ) ) ) : array( (string) $v );
 			}
 		}
 		return array();
@@ -1290,12 +1292,12 @@ class Form_Extras {
 	 *
 	 * @param array  $settings Settings.
 	 * @param string $key      Key.
-	 * @param string $default  Default.
+	 * @param string $fallback  Default.
 	 * @return string
 	 */
-	private static function text( $settings, $key, $default ) {
+	private static function text( $settings, $key, $fallback ) {
 		$v = isset( $settings[ $key ] ) ? trim( wp_strip_all_tags( (string) $settings[ $key ] ) ) : '';
-		return '' !== $v ? $v : $default;
+		return '' !== $v ? $v : $fallback;
 	}
 
 	/**
@@ -1304,10 +1306,10 @@ class Form_Extras {
 	 * @param array    $settings Settings.
 	 * @param string   $key      Key.
 	 * @param string[] $allowed  Allowed values.
-	 * @param string   $default  Default.
+	 * @param string   $fallback  Default.
 	 * @return string
 	 */
-	private static function choice( $settings, $key, $allowed, $default ) {
-		return isset( $settings[ $key ] ) && in_array( $settings[ $key ], $allowed, true ) ? $settings[ $key ] : $default;
+	private static function choice( $settings, $key, $allowed, $fallback ) {
+		return isset( $settings[ $key ] ) && in_array( $settings[ $key ], $allowed, true ) ? $settings[ $key ] : $fallback;
 	}
 }

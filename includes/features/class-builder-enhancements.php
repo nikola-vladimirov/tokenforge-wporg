@@ -55,6 +55,8 @@ class Builder_Enhancements {
 			'original_template_classes' => true, // remote templates keep their own classes (only on id/name conflicts).
 			'css_group_top'             => true,  // Style tab: CSS control group first.
 			'css_autocomplete'          => true,  // CSS editor: complete --variables and .classes while typing.
+			'input_helper'              => false, // style inputs: space-m → var(--space-m), maths → calc(), on blur or Enter.
+			'hide_stale_classes'        => false, // class list: hide generated classes TokenForge no longer outputs.
 		);
 	}
 
@@ -108,7 +110,7 @@ class Builder_Enhancements {
 		'builderVariableSelectFirstOnEnter'    => 'Enter picks the exact / first variable suggestion',
 		'builderColorPreviewOnHover'           => 'Color preview on hover',
 		'builderFontFamilyPreviewOnHover'      => 'Font family preview on hover',
-		'builderApplyVariablesAndCalculations' => 'Expand variables and calculations on Enter (e.g. space-m → var(--space-m), maths in inputs)',
+		'builderApplyVariablesAndCalculations' => 'Expand variables and calculations on Enter (e.g. --space-m → var(--space-m), maths in inputs)',
 	);
 
 	/**
@@ -218,12 +220,43 @@ class Builder_Enhancements {
 			);
 		}
 
+		if ( ! empty( $s['input_helper'] ) ) {
+			wp_enqueue_script( 'tokenforge-input', TOKENFORGE_URL . 'assets/builder/input-helper.js', array(), TOKENFORGE_VERSION, true );
+			wp_localize_script( 'tokenforge-input', 'TokenForgeInput', array( 'vars' => array_column( self::menu_variables(), 0 ) ) );
+		}
+		if ( ! empty( $s['hide_stale_classes'] ) ) {
+			$css = self::stale_classes_css();
+			if ( '' !== $css ) {
+				wp_add_inline_style( 'tokenforge-enh', $css );
+			}
+		}
+
 		// Attribute suggestions in the builder's Attributes control, and right-click > Add attribute.
 		if ( ! empty( $s['ctx_vars_menu'] ) || ! empty( $s['ctx_class_menu'] ) || ! empty( $s['css_autocomplete'] ) ) {
 			wp_enqueue_style( 'tokenforge-attrs', TOKENFORGE_URL . 'assets/builder/attr-autocomplete.css', array(), TOKENFORGE_VERSION );
 			wp_enqueue_script( 'tokenforge-attrs', TOKENFORGE_URL . 'assets/builder/attr-autocomplete.js', array(), TOKENFORGE_VERSION, true );
 			wp_localize_script( 'tokenforge-attrs', 'TokenForgeAttrs', self::attrs_data( ! empty( $s['ctx_vars_menu'] ) || ! empty( $s['ctx_class_menu'] ) ) );
 		}
+	}
+
+	/**
+	 * CSS that hides, in the builder's class list, the generated classes TokenForge
+	 * no longer outputs (the ones a sync with "Remove switched-off classes" would
+	 * remove). Nothing is deleted; classes already on an element stay visible there.
+	 *
+	 * @return string
+	 */
+	public static function stale_classes_css() {
+		$fw    = \TokenForge\Framework::settings();
+		$names = ! empty( $fw['register_with_bricks'] ) ? self::menu_classes() : array();
+		$sel   = array();
+		foreach ( Bricks::stale_class_ids( $names ) as $id ) {
+			if ( preg_match( '/^[A-Za-z0-9_-]+$/', $id ) ) {
+				$sel[] = '.css-classes .global-classes li[data-class-id="' . $id . '"]';
+			}
+		}
+		// shortcut: the arrow keys still step over hidden rows (the builder walks every row); filter its class data if that bothers users.
+		return $sel ? implode( ',', $sel ) . '{display:none!important}' : '';
 	}
 
 	/**

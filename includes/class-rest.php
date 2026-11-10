@@ -33,12 +33,23 @@ class Rest {
 	}
 
 	/**
+	 * Permission callback for routes that write free CSS values and selectors:
+	 * on multisite also edit_css, as core asks for Additional CSS.
+	 *
+	 * @return bool
+	 */
+	public function can_write_css() {
+		return current_user_can( 'manage_options' ) && ( ! is_multisite() || current_user_can( 'edit_css' ) );
+	}
+
+	/**
 	 * Register routes.
 	 *
 	 * @return void
 	 */
 	public function routes() {
-		$perm = array( $this, 'can_manage' );
+		$perm     = array( $this, 'can_manage' );
+		$css_perm = array( $this, 'can_write_css' );
 		// Font files land in uploads: also needs the right to upload files.
 		$font_perm = function () {
 			return current_user_can( 'manage_options' ) && current_user_can( 'upload_files' );
@@ -141,7 +152,7 @@ class Rest {
 			'/save',
 			array(
 				'methods'             => 'POST',
-				'permission_callback' => $perm,
+				'permission_callback' => $css_perm,
 				'callback'            => array( $this, 'save' ),
 			)
 		);
@@ -173,7 +184,7 @@ class Rest {
 			'/import',
 			array(
 				'methods'             => 'POST',
-				'permission_callback' => $perm,
+				'permission_callback' => $css_perm,
 				'callback'            => array( $this, 'import_file' ),
 			)
 		);
@@ -193,7 +204,7 @@ class Rest {
 			'/token-files/(?:preview|import)',
 			array(
 				'methods'             => 'POST',
-				'permission_callback' => $perm,
+				'permission_callback' => $css_perm,
 				'callback'            => array( Token_Files::class, 'rest_import' ),
 			)
 		);
@@ -243,7 +254,7 @@ class Rest {
 			'/history/(?P<id>\d+)/restore',
 			array(
 				'methods'             => 'POST',
-				'permission_callback' => $perm,
+				'permission_callback' => $css_perm,
 				'callback'            => array( $this, 'restore' ),
 			)
 		);
@@ -868,11 +879,11 @@ class Rest {
 	/**
 	 * A fingerprint of a token list (same list, same fingerprint).
 	 *
-	 * @param array $list Normalised tokens.
+	 * @param array $items Normalised tokens.
 	 * @return string
 	 */
-	private static function tokens_rev( $list ) {
-		return md5( (string) wp_json_encode( $list ) );
+	private static function tokens_rev( $items ) {
+		return md5( (string) wp_json_encode( $items ) );
 	}
 
 	/**

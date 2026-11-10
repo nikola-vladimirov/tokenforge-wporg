@@ -704,6 +704,8 @@ class Acss_Import {
 			'border_color'          => array( 'border-color-dark', $this->css( 'border-color-dark' ) ),
 			'header_height'         => array( 'header-height-max', null !== $this->num( 'header-height-max' ) ? $this->num( 'header-height-max' ) . 'px' : null ),
 			'header_height_min'     => array( 'header-height-min', null !== $this->num( 'header-height-min' ) ? $this->num( 'header-height-min' ) . 'px' : null ),
+			// The source always measures the real header with a script; the live option does the same here.
+			'header_height_live'    => array( 'header-height-max', null !== $this->num( 'header-height-max' ) ? true : null ),
 			'icon_s'                => array( 'icon-size-s', $this->css( 'icon-size-s' ) ),
 			'icon_m'                => array( 'icon-size-m', $this->css( 'icon-size-m' ) ),
 			'icon_l'                => array( 'icon-size-l', $this->css( 'icon-size-l' ) ),

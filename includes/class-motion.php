@@ -182,7 +182,7 @@ class Motion {
 	 * @return string
 	 */
 	private static function clean( $v ) {
-		return trim( str_replace( array( ';', '{', '}', '<', '>' ), '', sanitize_text_field( (string) $v ) ) );
+		return Tokens::balanced( trim( str_replace( array( ';', '{', '}', '<', '>' ), '', sanitize_text_field( (string) $v ) ) ) );
 	}
 
 	/**
@@ -213,7 +213,7 @@ class Motion {
 				continue;
 			}
 			$name  = trim( preg_replace( '/[^a-z0-9\-]/', '', strtolower( str_replace( ' ', '-', trim( $parts[0] ) ) ) ), '-' );
-			$value = trim( str_replace( array( ';', '{', '}', '<', '>' ), '', $parts[1] ) );
+			$value = Tokens::balanced( trim( str_replace( array( ';', '{', '}', '<', '>' ), '', $parts[1] ) ) );
 			if ( '' !== $name && '' !== $value ) {
 				$out[ $name ] = $value;
 			}

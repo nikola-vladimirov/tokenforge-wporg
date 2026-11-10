@@ -147,7 +147,7 @@ class Content {
 		$bq = array();
 		foreach ( array_keys( self::BLOCKQUOTE ) as $k ) {
 			$key        = 'bq_' . str_replace( '-', '_', $k );
-			$bq[ $key ] = isset( $in[ $key ] ) ? trim( preg_replace( '/[;{}<>]/', '', (string) $in[ $key ] ) ) : $d[ $key ];
+			$bq[ $key ] = isset( $in[ $key ] ) ? Tokens::balanced( trim( preg_replace( '/[;{}<>]/', '', (string) $in[ $key ] ) ) ) : $d[ $key ];
 		}
 		update_option(
 			self::OPTION,
@@ -184,7 +184,7 @@ class Content {
 	private static function clean_flow( $in, $d ) {
 		$out = array();
 		foreach ( self::FLOW_KEYS as $k ) {
-			$out[ $k ] = isset( $in[ $k ] ) ? trim( preg_replace( '/[;{}<>]/', '', (string) $in[ $k ] ) ) : $d[ $k ];
+			$out[ $k ] = isset( $in[ $k ] ) ? Tokens::balanced( trim( preg_replace( '/[;{}<>]/', '', (string) $in[ $k ] ) ) ) : $d[ $k ];
 		}
 		return $out;
 	}
@@ -197,7 +197,7 @@ class Content {
 	 * @return string
 	 */
 	private static function clean_value( $v, $fallback ) {
-		$v = trim( preg_replace( '/[;{}<>]/', '', (string) $v ) );
+		$v = Tokens::balanced( trim( preg_replace( '/[;{}<>]/', '', (string) $v ) ) );
 		return '' === $v ? $fallback : $v;
 	}
 

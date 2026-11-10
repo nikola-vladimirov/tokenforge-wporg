@@ -107,7 +107,38 @@ class Tokens {
 	public static function sanitize_value( $value ) {
 		$value = trim( (string) $value );
 		$value = str_replace( array( '{', '}', ';', '<', '>' ), '', $value );
-		return $value;
+		return self::balanced( $value );
+	}
+
+	/**
+	 * A CSS value that cannot run on into the rules after it: '' when its
+	 * brackets or quotes do not close, it opens a comment, or a backslash
+	 * starts anything but a hex escape (such as \2197).
+	 *
+	 * @param string $value Value already stripped of { } ; < >.
+	 * @return string
+	 */
+	public static function balanced( $value ) {
+		$value = (string) $value;
+		if ( false !== strpos( $value, '/*' ) || preg_match( '/\\\\(?![0-9a-fA-F])/', $value ) ) {
+			return '';
+		}
+		$open  = array();
+		$quote = '';
+		$len   = strlen( $value );
+		for ( $i = 0; $i < $len; $i++ ) {
+			$c = $value[ $i ];
+			if ( '' !== $quote ) {
+				$quote = $c === $quote ? '' : $quote;
+			} elseif ( '"' === $c || "'" === $c ) {
+				$quote = $c;
+			} elseif ( '(' === $c || '[' === $c ) {
+				$open[] = $c;
+			} elseif ( ( ')' === $c && '(' !== array_pop( $open ) ) || ( ']' === $c && '[' !== array_pop( $open ) ) ) {
+				return '';
+			}
+		}
+		return '' === $quote && ! $open ? $value : '';
 	}
 
 	/**
@@ -173,7 +204,7 @@ class Tokens {
 	 */
 	public static function resolve( $v, $vars ) {
 		$v = (string) $v;
-		for ( $i = 0; $i < 12 && false !== strpos( $v, 'var(' ); $i++ ) {
+		for ( $i = 0; $i < 12 && false !== strpos( $v, 'var(' ); $i++ ) { // phpcs:ignore Generic.CodeAnalysis.ForLoopWithTestFunctionCall.NotAllowed -- the tested value changes on each pass.
 			$next = (string) preg_replace_callback(
 				'/var\(\s*--([a-z0-9-]+)\s*(?:,\s*([^()]*))?\)/i',
 				function ( $m ) use ( $vars ) {

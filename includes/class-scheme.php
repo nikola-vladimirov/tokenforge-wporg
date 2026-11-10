@@ -310,11 +310,11 @@ class Scheme {
 	/**
 	 * Markup for a toggle button (used by the shortcode).
 	 *
-	 * @param string $class Extra classes.
+	 * @param string $css_class Extra classes.
 	 * @return string
 	 */
-	public static function toggle_markup( $class = '' ) {
-		$cls = trim( 'scheme-toggle ' . $class );
+	public static function toggle_markup( $css_class = '' ) {
+		$cls = trim( 'scheme-toggle ' . $css_class );
 		return '<button type="button" class="' . esc_attr( $cls ) . '" aria-label="' . esc_attr__( 'Toggle dark mode', 'tokenforge' ) . '">' . self::toggle_icons() . '</button>';
 	}
 

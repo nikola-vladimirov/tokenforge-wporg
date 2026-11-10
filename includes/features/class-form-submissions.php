@@ -114,11 +114,11 @@ class Form_Submissions {
 	 * again waits for a new dry run.
 	 *
 	 * @param mixed $old Old Components settings.
-	 * @param mixed $new New Components settings.
+	 * @param mixed $new_value New Components settings.
 	 * @return void
 	 */
-	public static function settings_saved( $old, $new ) {
-		if ( empty( $new['subs_extend'] ) || empty( $new['subs_cleanup'] ) ) {
+	public static function settings_saved( $old, $new_value ) {
+		if ( empty( $new_value['subs_extend'] ) || empty( $new_value['subs_cleanup'] ) ) {
 			delete_option( self::ACK );
 		}
 	}
@@ -174,7 +174,7 @@ class Form_Submissions {
 		if ( class_exists( '\Bricks\Capabilities' ) && method_exists( '\Bricks\Capabilities', 'current_user_can_form_submission_access' ) ) {
 			return (bool) \Bricks\Capabilities::current_user_can_form_submission_access();
 		}
-		return current_user_can( 'bricks_form_submission_access' );
+		return current_user_can( 'bricks_form_submission_access' ); // phpcs:ignore WordPress.WP.Capabilities.Unknown -- registered by Bricks.
 	}
 
 	/**

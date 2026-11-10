@@ -288,6 +288,39 @@ class Frontend {
 		if ( $this->hot_reload_enabled() ) {
 			$this->enqueue_hot_reload( 'front', array(), $full );
 		}
+
+		$this->live_header_height();
+	}
+
+	/**
+	 * Live header height: a small deferred script measures the header and sets
+	 * --header-height and --admin-bar-height (Extras, Header height). The fixed
+	 * value in the stylesheet stays the fallback until it has measured.
+	 *
+	 * @return void
+	 */
+	private function live_header_height() {
+		$x = Extras::settings();
+		if ( empty( $x['header_height_live'] ) ) {
+			return;
+		}
+		/**
+		 * Header selectors tried in order; the first one found on the page is measured.
+		 *
+		 * @param string[] $selectors CSS selectors.
+		 */
+		$selectors = array_values( array_filter( array_map( 'strval', (array) apply_filters( 'tokenforge_header_selectors', array( '[data-tf-header]', '#brx-header', 'header.wp-block-template-part' ) ) ), 'strlen' ) );
+		wp_enqueue_script(
+			'tokenforge-header-height',
+			TOKENFORGE_URL . 'assets/front/header-height.js',
+			array(),
+			TOKENFORGE_VERSION,
+			array(
+				'in_footer' => false,
+				'strategy'  => 'defer',
+			)
+		);
+		wp_add_inline_script( 'tokenforge-header-height', 'var tokenforgeHeader = ' . wp_json_encode( array( 'selectors' => $selectors ), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT ) . ';', 'before' );
 	}
 
 	/** Handle of the WooCommerce shop pages sheet. */

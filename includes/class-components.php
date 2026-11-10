@@ -278,7 +278,7 @@ class Components {
 	 * @return string
 	 */
 	private static function clean( $v ) {
-		return trim( str_replace( array( ';', '{', '}', '<', '>' ), '', sanitize_text_field( (string) $v ) ) );
+		return Tokens::balanced( trim( str_replace( array( ';', '{', '}', '<', '>' ), '', sanitize_text_field( (string) $v ) ) ) );
 	}
 
 	/**
@@ -302,6 +302,9 @@ class Components {
 			} elseif ( isset( $in[ $k ] ) && in_array( $k, array( 'ext_not', 'card_selectors', 'content_grid_exclusions' ), true ) ) {
 				// Selectors: keep ">" (child combinator).
 				$clean[ $k ] = trim( str_replace( array( ';', '{', '}', '<' ), '', sanitize_text_field( $in[ $k ] ) ) );
+			} elseif ( isset( $in[ $k ] ) && 'ext_label' === $k ) {
+				// Plain text, printed inside quotes with " and \ removed: an apostrophe is fine.
+				$clean[ $k ] = trim( str_replace( array( ';', '{', '}', '<', '>' ), '', sanitize_text_field( $in[ $k ] ) ) );
 			} elseif ( isset( $in[ $k ] ) ) {
 				$clean[ $k ] = self::clean( $in[ $k ] );
 			} else {
@@ -525,8 +528,8 @@ class Components {
 			5 => 's',
 			6 => 'xs',
 		);
-		$use  = function ( $prop, $key, $var ) use ( $s ) {
-			return '' === (string) $s[ $key ] ? '' : "$prop:var($var);";
+		$use  = function ( $prop, $key, $css_var ) use ( $s ) {
+			return '' === (string) $s[ $key ] ? '' : "$prop:var($css_var);";
 		};
 		$out  = $use( 'font-family', 'heading_font_family', '--heading-font-family' )
 			. $use( 'font-weight', 'heading_font_weight', '--heading-font-weight' )
@@ -554,8 +557,8 @@ class Components {
 	public static function text_decls( $sz ) {
 		$s   = self::settings();
 		$sz  = in_array( $sz, Scale_Engine::STEPS, true ) ? $sz : 'm';
-		$use = function ( $prop, $key, $var ) use ( $s ) {
-			return '' === (string) $s[ $key ] ? '' : "$prop:var($var);";
+		$use = function ( $prop, $key, $css_var ) use ( $s ) {
+			return '' === (string) $s[ $key ] ? '' : "$prop:var($css_var);";
 		};
 		$out = $use( 'font-family', 'text_font_family', '--text-font-family' ) . $use( 'font-weight', 'text_font_weight', '--text-font-weight' )
 			. $use( 'line-height', 'text_line_height', '--text-line-height' ) . $use( 'text-wrap', 'text_wrap', '--text-text-wrap' )
@@ -719,8 +722,8 @@ class Components {
 					$root[] = "$n:$v";
 				}
 			}
-			$use   = function ( $prop, $key, $var ) use ( $s ) {
-				return '' === (string) $s[ $key ] ? '' : "$prop:var($var);";
+			$use   = function ( $prop, $key, $css_var ) use ( $s ) {
+				return '' === (string) $s[ $key ] ? '' : "$prop:var($css_var);";
 			};
 			$css[] = ':where(body){font-size:var(--text-m);overflow-x:clip;'
 				. $use( 'font-family', 'text_font_family', '--text-font-family' )

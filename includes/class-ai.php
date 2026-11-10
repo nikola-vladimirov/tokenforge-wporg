@@ -24,6 +24,12 @@ defined( 'ABSPATH' ) || exit;
  */
 class Ai {
 
+	/** Largest css or html input check-css takes, in bytes. */
+	const MAX_INPUT = 204800;
+
+	/** Deepest at-rule nesting check-css follows. */
+	const MAX_DEPTH = 20;
+
 	/**
 	 * Constructor.
 	 */
@@ -582,7 +588,13 @@ class Ai {
 			) : '`btn--primary`' ) . '. Variants: add `-dark` / `-light` to the colour (`btn--primary-dark`), add `btn--outline` for an outline. Sizes: `btn--s` … `btn--xl`. Example: `<a class="btn--primary btn--l" href="…">Get started</a>`.',
 			'- **Cards:** `card` = padded flex column with background, radius, border and shadow. Inside it, elements whose class contains `__media` (images) and `__avatar` are styled; headings use `var(--card-heading-size)`. Example: `<article class="card"><img class="card__media" …><h3>…</h3><p>…</p></article>`.',
 			'- **Icons:** add `data-icon` to an svg or i element; size with `data-icon-size="l"` or `icon--l`; `icon--boxed` for a box.',
-			'- **Grids:** `grid-2` … `grid-12` (equal columns), `grid-1-2`, `grid-2-1` (ratios), or `grid--auto-3` (same as `grid-template-columns: var(--grid-auto-3)`) for columns that wrap on their own.',
+			'- **Grids:** `grid-2` … `grid-12` (equal columns), `grid-1-2`, `grid-2-1` (ratios), or `grid--auto-3` (same as `grid-template-columns: var(--grid-auto-3)`) for columns that wrap on their own. `flex-grid-1` … `flex-grid-12`: equal-width items in a wrapping flex row whose short last row is centred (add `flex-grid--start`, `flex-grid--end` or `flex-grid--stretch` to change that; `flex-grid-2-at-m` sets 2 per row at the m breakpoint and below, also -at-xs, -at-s, -at-l, -at-xl, -at-xxl, when breakpoint variants are on); use it for logo walls and card lists whose count does not fill the last row.',
+			'- **Grid children:** `col-span-2`, `col-span-all`, `col-start-2`, `col-end-last`, `row-span-2`; `grid-alternate` for rows that alternate 1:2 and 2:1; `grid--auto-1-2` for a 1:2 pair that stacks when space runs out; `masonry-3`; `order-first`, `order-last`.',
+			'- **Flex and layout:** `flex-col-reverse`, `items-baseline`, `self-center`, `justify-self-end`, `content-between`, `center-all`, `center-x`, `center-y`, `height-full`, `height-screen`, `aspect-16-9`, `object-top`, `line-clamp-3`, `opacity-50`, `z-10`, `z-top`, `flip-x`, `sticky-top--m`, `columns-2` … `columns-6` with `col-rule`.',
+			'- **Text:** `font-100` … `font-900`, `bold`, `italic`, `uppercase`, `underline--wavy`, `text-balance`, `text-justify`, `list-none` (add role="list"), `focus-parent`, `fade-bottom` (`--fade-amount`), `divider--all`, `border-left`; per colour `link-{color}`, `link-hover-{color}`, `focus-{color}`, `marker-{color}`.',
+			'- **Breakpoints:** when breakpoint variants are on, add `-at-xs`, `-at-s`, `-at-m`, `-at-l`, `-at-xl` or `-at-xxl` to a layout or text class for that value at that width and below: `grid-3 grid-1-at-s`, `flex-row flex-col-at-m`, `hidden-at-s`, `grid-stack-at-m`, `text-center-at-s`.',
+			'- **Header:** `--header-height` follows the real header when Extras, Header height, Measure is on; `--admin-bar-height` is 0px without the admin bar. Mark a custom header with `data-tf-header`.',
+			'- **Builder input helper:** when it is on, typing `space-m` or `--space-m` in a style field becomes `var(--space-m)` on blur or Enter, and `var(--space-m) * 2` becomes `calc(var(--space-m) * 2)`.',
 			'- **Effects:** `on-enter--fade`, `on-enter--float`, `on-enter-all--fade` (children one after another), `on-hover--grow`, `on-hover--shadow`.',
 			'- **Backgrounds with images:** put the image first inside the section with class `is-bg`; add `overlay` to the section for a tint.',
 			'',
@@ -600,11 +612,14 @@ class Ai {
 	 * Execute: check CSS/HTML.
 	 *
 	 * @param array $input Input.
-	 * @return array
+	 * @return array|\WP_Error
 	 */
 	public function check_css( $input = array() ) {
 		$css  = isset( $input['css'] ) ? (string) $input['css'] : '';
 		$html = isset( $input['html'] ) ? (string) $input['html'] : '';
+		if ( strlen( $css ) > self::MAX_INPUT || strlen( $html ) > self::MAX_INPUT ) {
+			return new \WP_Error( 'tokenforge_too_large', 'Send at most 200 KB of CSS and 200 KB of HTML per check.' );
+		}
 		$vars = array();
 		foreach ( Token_Catalog::every_variable() as $t ) {
 			if ( ! empty( $t['enabled'] ) && '' !== (string) $t['value'] ) {
@@ -722,9 +737,10 @@ class Ai {
 	 * @param string $css   CSS.
 	 * @param string $ctx   At-rule context.
 	 * @param array  $rules Out: [ ctx, selector, body ].
+	 * @param int    $level At-rule nesting so far.
 	 * @return void
 	 */
-	private static function rules( $css, $ctx, &$rules ) {
+	private static function rules( $css, $ctx, &$rules, $level = 0 ) {
 		$len = strlen( $css );
 		$i   = 0;
 		while ( $i < $len ) {
@@ -746,7 +762,9 @@ class Ai {
 			$body = substr( $css, $open + 1, $j - $open - 2 );
 			$i    = $j;
 			if ( '' !== $sel && '@' === $sel[0] ) {
-				self::rules( $body, $sel, $rules );
+				if ( $level < self::MAX_DEPTH ) {
+					self::rules( $body, $sel, $rules, $level + 1 );
+				}
 			} elseif ( '' !== $sel ) {
 				// Nested CSS: only the declarations of this level.
 				$rules[] = array( $ctx, $sel, preg_replace( '/[^;{}]*\{[^{}]*\}/', '', $body ) );

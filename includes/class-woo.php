@@ -380,33 +380,33 @@ class Woo {
 	/**
 	 * Prefix selectors that start with "html " with the current prefix.
 	 *
-	 * @param string[] $list Selectors.
+	 * @param string[] $selectors Selectors.
 	 * @return string[]
 	 */
-	private static function pre( $list ) {
+	private static function pre( $selectors ) {
 		return array_map(
 			function ( $x ) {
 				return 0 === strpos( $x, 'html ' ) ? self::$pre . substr( $x, 4 ) : $x;
 			},
-			$list
+			$selectors
 		);
 	}
 
 	/**
 	 * Append a pseudo-class to every selector of a list.
 	 *
-	 * @param string[] $list   Selectors.
+	 * @param string[] $selectors   Selectors.
 	 * @param string   $suffix e.g. ":hover".
 	 * @return string
 	 */
-	private static function each( $list, $suffix ) {
+	private static function each( $selectors, $suffix ) {
 		return implode(
 			',',
 			array_map(
 				function ( $x ) use ( $suffix ) {
 					return $x . $suffix;
 				},
-				$list
+				$selectors
 			)
 		);
 	}

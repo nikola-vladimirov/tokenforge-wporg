@@ -45,7 +45,7 @@ class Defaults {
 			'focus_color'               => 'var(--primary, var(--action, #2563eb))',
 			'focus_width'               => '2px',
 			'focus_offset'              => '2px',
-			'selection_bg'              => '',   // ::selection background (empty = browser default)
+			'selection_bg'              => '',   // Background of selected text (empty = browser default).
 			'selection_text'            => '',
 			'object_fit'                => false, // global img{object-fit:cover} is aggressive; off by default.
 			'sticky'                    => true,
@@ -247,8 +247,8 @@ class Defaults {
 			$classes[] = 'is-bg';
 		}
 		if ( $s['sticky'] ) {
-			$vars['sticky-offset-custom'] = $s['sticky_offset_custom'];
-			$vars['sticky-offset']        = $s['sticky_offset_header'] ? 'var(--header-height, var(--sticky-offset-custom, 0))' : 'var(--sticky-offset-custom, 0)';
+			$vars['sticky-offset-custom'] = '0' === trim( (string) $s['sticky_offset_custom'] ) ? '0px' : $s['sticky_offset_custom']; // a bare 0 is not a length inside calc().
+			$vars['sticky-offset']        = $s['sticky_offset_header'] ? 'var(--header-height, var(--sticky-offset-custom, 0px))' : 'var(--sticky-offset-custom, 0px)';
 			$css[]                        = '.sticky{position:sticky;inset-block-start:var(--sticky-offset, 0)}';
 			$classes[]                    = 'sticky';
 		}
@@ -273,7 +273,7 @@ class Defaults {
 				$vars[ "col-rule-width-$sz" ] = $s[ "col_rule_width_$sz" ];
 			}
 			foreach ( array( 2, 3, 4 ) as $n ) {
-				$css[]     = ".columns-$n{column-count:$n;column-gap:var(--grid-gap)}";
+				$css[]     = ".columns-$n:where(:not(.products)){column-count:$n;column-gap:var(--grid-gap)}"; // WooCommerce puts columns-N on its product list; :where() keeps one class so -at- variants win.
 				$classes[] = "columns-$n";
 			}
 		}

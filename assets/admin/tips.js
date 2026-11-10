@@ -298,6 +298,7 @@
 		'extras.boxed_list_icons': __( 'Icons in icon lists get a box.', 'tokenforge' ),
 		'extras.header_height': __( 'Height of your sticky header on desktop (--header-height). Used to offset anchors and sticky elements.', 'tokenforge' ),
 		'extras.header_height_min': __( 'Header height on mobile; the value is fluid between mobile and desktop.', 'tokenforge' ),
+		'extras.header_height_live': __( 'Loads a tiny script that measures the site header as it really is (wrapped menus, sticky headers that shrink) and keeps --header-height in step, plus --admin-bar-height (0px without the admin bar). The values above stay the fallback until it has measured. Mark a custom header with data-tf-header if it is not found.', 'tokenforge' ),
 
 		// ---- Defaults ----
 		'defaults.root_font_size': __( 'The html font size as a percentage of the browser default. 100% makes 1rem = 16px; 62.5% makes 1rem = 10px. Every px to rem conversion uses it.', 'tokenforge' ),
@@ -466,8 +467,10 @@
 		'enhancements.css_autocomplete': __( 'Suggests TokenForge variables and classes while you type in the CSS editor.', 'tokenforge' ),
 		'enhancements.ctx_vars_menu': __( 'Right-click a builder input to insert a TokenForge variable (Shift + right-click opens the browser menu).', 'tokenforge' ),
 		'enhancements.ctx_class_menu': __( 'Right-click the class field to add or remove TokenForge classes.', 'tokenforge' ),
-		'enhancements.original_template_classes': __( 'Remote templates keep their own classes instead of reusing a local class that happens to have the same id.', 'tokenforge' ),
+		'enhancements.original_template_classes': __( 'Remote templates keep their own classes instead of reusing a local class that happens to have the same id. A template class named like a TokenForge class reuses that class.', 'tokenforge' ),
 		'enhancements.template_gallery': __( 'A tidier remote-template gallery with full thumbnails.', 'tokenforge' ),
+		'enhancements.input_helper': __( 'When you leave a style field or press Enter, a TokenForge variable typed by name (space-m or --space-m) becomes var(--space-m), and maths with a variable such as var(--space-m) * 2 is wrapped in calc(). Names without a dash need the two dashes in front. Anything else stays as typed, and the builder’s undo takes it back.', 'tokenforge' ),
+		'enhancements.hide_stale_classes': __( 'Hides the classes TokenForge has switched off or left out from the builder’s class list right away, without a sync. Nothing is deleted, and a class already on an element stays visible there.', 'tokenforge' ),
 
 		// ---- Settings ----
 		'settings.sync_bricks_vars': __( 'Copies every token into the builder’s global variables, so they appear in its variable picker.', 'tokenforge' ),
@@ -615,6 +618,8 @@
 		'framework.utilities_color': __( 'Generates colour utility classes such as .text--primary and .bg--primary-light.', 'tokenforge' ),
 		'framework.utilities_spacing': __( 'Generates spacing utility classes (padding, margin and gap steps).', 'tokenforge' ),
 		'framework.utilities_typography': __( 'Generates typography utility classes (sizes, weights, alignment).', 'tokenforge' ),
+		'framework.utilities_color_more': __( 'Adds link-{colour}, link-hover-{colour}, focus-{colour}, marker-{colour} and col-rule-{colour} for every colour. Off by default because it adds about 30 KB; with Leave out unused utility classes on, only the ones you use stay.', 'tokenforge' ),
+		'framework.utilities_responsive': __( 'Adds a copy of the layout and text classes for each breakpoint, named {class}-at-{breakpoint} (col-span-1-at-m, flex-col-at-s): the class applies at that width and below. Off by default because it adds a lot of CSS; with Leave out unused utility classes on, only the ones you use stay.', 'tokenforge' ),
 		'framework.utilities_layout': __( 'Generates layout utility classes (grids, flex, alignment, display).', 'tokenforge' ),
 		'framework.register_with_bricks': __( 'Adds the utility classes to the builder’s class list so they autocomplete in the class field.', 'tokenforge' ),
 		'framework.prune_unused': __( 'A smaller stylesheet for visitors: it keeps only the utility classes and data attributes your pages, templates, menus and widgets use. A class or attribute you add later joins when you save. The builder canvas and the block editor always have every class and attribute. Variables and components are never left out.', 'tokenforge' ),

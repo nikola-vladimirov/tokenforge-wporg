@@ -161,6 +161,8 @@ class Modules {
 				'original_template_classes' => false,
 				'css_group_top'             => false,
 				'css_autocomplete'          => false,
+				'input_helper'              => false,
+				'hide_stale_classes'        => false,
 			),
 		),
 	);
@@ -285,14 +287,14 @@ class Modules {
 	/**
 	 * Run a callback that must see the stored settings (dashboard state, export).
 	 *
-	 * @param callable $fn Callback.
+	 * @param callable $callback Callback.
 	 * @return mixed Its return value.
 	 */
-	public static function raw( $fn ) {
+	public static function raw( $callback ) {
 		$was       = self::$raw;
 		self::$raw = true;
 		try {
-			return $fn();
+			return $callback();
 		} finally {
 			self::$raw = $was;
 		}

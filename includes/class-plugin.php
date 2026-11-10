@@ -129,6 +129,11 @@ class Plugin {
 		if ( TOKENFORGE_VERSION === $previous ) {
 			return;
 		}
+		// shortcut: a transient lock, not atomic; two requests in the same instant can still both run (harmless, only slower). Upgrade to a DB lock if that shows up.
+		if ( get_transient( 'tokenforge_upgrading' ) ) {
+			return;
+		}
+		set_transient( 'tokenforge_upgrading', 1, 2 * MINUTE_IN_SECONDS );
 		// < 0.25: "grid visualizer" was mis-mapped from ACSS's grid overlay (which
 		// only toggles Bricks' own overlay) and outlined every container. Reset it.
 		if ( $previous && version_compare( (string) $previous, '0.25.0', '<' ) ) {
@@ -182,5 +187,6 @@ class Plugin {
 		}
 		Css_Generator::get_instance()->rebuild();
 		update_option( 'tokenforge_version', TOKENFORGE_VERSION );
+		delete_transient( 'tokenforge_upgrading' );
 	}
 }

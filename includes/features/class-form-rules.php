@@ -138,7 +138,7 @@ class Form_Rules {
 					'type'        => 'number',
 					'min'         => 1,
 					'placeholder' => esc_html__( 'No limit', 'tokenforge' ),
-					'description' => esc_html__( 'With Save submission among the actions, the saved submissions count (deleting one opens a place again); otherwise TokenForge counts the sends. Show places left with {tf_form_left:form ID}.', 'tokenforge' ),
+					'description' => esc_html__( 'With Save submission among the actions, the saved submissions count (deleting one opens a place again); otherwise TokenForge counts the sends. Show places left with {tf_form_left:form ID}. The limit does not stop one visitor or script from taking every place, and two sends at the same moment can both get the last one: turn on the form\'s CAPTCHA or "Only signed-in visitors can send" for places that matter.', 'tokenforge' ),
 				),
 				'tfClosedText'  => array(
 					'group'       => 'tfLimits',
@@ -249,7 +249,7 @@ class Form_Rules {
 						'anyone'  => esc_html__( 'Anyone (only the post the form is on)', 'tokenforge' ),
 					),
 					'placeholder' => esc_html__( 'Visitors who may edit that post', 'tokenforge' ),
-					'description' => esc_html__( 'Anyone: for counters, votes or sign-up lists on the page itself.', 'tokenforge' ),
+					'description' => esc_html__( 'Anyone: for counters, votes or sign-up lists on the page itself. Values are cut to 1000 characters and list entries to 200; Add and Subtract take only a fixed number or a Number field with both Min and Max.', 'tokenforge' ),
 					'required'    => array( 'tfMetaTarget', '!=', 'user' ),
 				),
 				'tfMetaRows'   => array(
@@ -310,7 +310,7 @@ class Form_Rules {
 					'label'       => esc_html__( 'Price from the calculated field', 'tokenforge' ),
 					'type'        => 'text',
 					'placeholder' => esc_html__( 'Label or ID of a field with Calculate', 'tokenforge' ),
-					'description' => esc_html__( 'The price per item. Worked out again on the server from the answers, so a visitor cannot change it. Empty: the product\'s own price.', 'tokenforge' ),
+					'description' => esc_html__( 'The price per item, worked out again on the server from the answers. So that a visitor cannot change it, its formula may use only select, radio and checkbox fields with options, Number fields with both Min and Max, and other calculated fields; the product must then be a fixed ID, a select or radio field, or the page the form is on. Empty: the product\'s own price.', 'tokenforge' ),
 				),
 				'tfCartAnswers' => array(
 					'group' => 'tfCart',
@@ -574,7 +574,7 @@ class Form_Rules {
 	 * @param string $context Context.
 	 * @return mixed
 	 */
-	public function render_tag( $tag, $post, $context = 'text' ) {
+	public function render_tag( $tag, $post, $context = 'text' ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- same signature as the filter callback.
 		if ( ! is_string( $tag ) || ! preg_match( '/^tf_form_(count|left):([^{}]+)$/', $tag, $m ) ) {
 			return $tag;
 		}
@@ -589,7 +589,7 @@ class Form_Rules {
 	 * @param string $context Context.
 	 * @return string
 	 */
-	public function render_content( $content, $post = null, $context = 'text' ) {
+	public function render_content( $content, $post = null, $context = 'text' ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- same signature as the filter callback.
 		if ( ! is_string( $content ) || false === strpos( $content, '{tf_form_' ) ) {
 			return $content;
 		}
@@ -641,6 +641,7 @@ class Form_Rules {
 		$settings = $form->get_settings();
 		$rows     = isset( $settings['tfMetaRows'] ) && is_array( $settings['tfMetaRows'] ) ? $settings['tfMetaRows'] : array();
 		$user     = isset( $settings['tfMetaTarget'] ) && 'user' === $settings['tfMetaTarget'];
+		$anyone   = ! $user && isset( $settings['tfMetaWho'] ) && 'anyone' === $settings['tfMetaWho'];
 		if ( $user ) {
 			$id = get_current_user_id();
 			if ( ! $id ) {
@@ -664,7 +665,14 @@ class Form_Rules {
 				continue;
 			}
 			$mode = isset( $row['mode'] ) && in_array( $row['mode'], array( 'add', 'subtract', 'append', 'remove' ), true ) ? $row['mode'] : 'replace';
-			$old  = $user ? get_user_meta( $id, $key, true ) : get_post_meta( $id, $key, true );
+			if ( $anyone ) {
+				// Anonymous writes: bounded size, and counters move only by a fixed or bounded amount.
+				if ( in_array( $mode, array( 'add', 'subtract' ), true ) && ! self::anyone_number_ok( $form, isset( $row['value'] ) ? (string) $row['value'] : '' ) ) {
+					continue;
+				}
+				$value = mb_substr( $value, 0, 'append' === $mode ? 200 : 1000 );
+			}
+			$old = $user ? get_user_meta( $id, $key, true ) : get_post_meta( $id, $key, true );
 			self::write_meta( $user ? 'user' : 'post', $id, $key, self::new_value( $mode, $old, $value ) );
 		}
 	}
@@ -735,6 +743,37 @@ class Form_Rules {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * May "Anyone" add or subtract this row's value? Only a fixed number, or a
+	 * Number field with both Min and Max whose answer is within them.
+	 *
+	 * @param object $form The builder's form handler.
+	 * @param string $raw  The row's value as set in the builder.
+	 * @return bool
+	 */
+	private static function anyone_number_ok( $form, $raw ) {
+		$raw = trim( $raw );
+		if ( false === strpos( $raw, '{' ) ) {
+			return true;
+		}
+		if ( ! preg_match( '/^\{\{(\w+)\}\}$/', $raw, $m ) ) {
+			return false;
+		}
+		$settings = $form->get_settings();
+		$field    = Form_Extras::find_field( isset( $settings['fields'] ) && is_array( $settings['fields'] ) ? $settings['fields'] : array(), $m[1] );
+		return self::bounded_number( $field ) && ! Form_Extras::has_calc( $field ) && self::answers_valid( array( $field ), (array) $form->get_fields() );
+	}
+
+	/**
+	 * Is this a Number field with both Min and Max?
+	 *
+	 * @param mixed $field Field settings.
+	 * @return bool
+	 */
+	private static function bounded_number( $field ) {
+		return is_array( $field ) && isset( $field['type'], $field['min'], $field['max'] ) && 'number' === $field['type'] && is_numeric( $field['min'] ) && is_numeric( $field['max'] );
 	}
 
 	/**
@@ -862,17 +901,13 @@ class Form_Rules {
 		$sent     = (array) $form->get_fields();
 		$hidden   = Form_Extras::hidden_fields( $fields, $sent );
 		if ( ! empty( $settings['tfCartPrice'] ) ) {
-			// A form price needs answers the form itself offers: a product picked
-			// from a choice field (not typed), choices from their options, numbers
-			// within their limits. Otherwise any product or price could be posted.
-			if ( preg_match_all( '/\{\{(\w+)\}\}/', isset( $settings['tfCartProduct'] ) ? (string) $settings['tfCartProduct'] : '', $refs ) ) {
-				foreach ( $refs[1] as $ref ) {
-					$pf = Form_Extras::find_field( $fields, $ref );
-					if ( ! $pf || ! in_array( isset( $pf['type'] ) ? $pf['type'] : '', array( 'select', 'radio' ), true ) ) {
-						self::error( $form, 'tf-cart', __( 'With a form price, the product must come from a select or radio field.', 'tokenforge' ) );
-						return;
-					}
-				}
+			// A form price needs answers the form itself offers: a product fixed,
+			// picked from a choice field or the page the form is on, choices from
+			// their options, numbers within their limits. Otherwise any product or
+			// price could be posted.
+			if ( ! self::price_product_ok( $form, $fields, isset( $settings['tfCartProduct'] ) ? (string) $settings['tfCartProduct'] : '', $pid ) ) {
+				self::error( $form, 'tf-cart', __( 'With a form price, the product must be a fixed ID, a select or radio field, or the page the form is on.', 'tokenforge' ) );
+				return;
 			}
 			if ( ! self::answers_valid( $fields, $sent ) ) {
 				self::error( $form, 'tf-cart', __( 'Please check your answers and try again.', 'tokenforge' ) );
@@ -881,6 +916,10 @@ class Form_Rules {
 			$field = Form_Extras::find_field( $fields, (string) $settings['tfCartPrice'] );
 			if ( ! $field || ! Form_Extras::has_calc( $field ) ) {
 				self::error( $form, 'tf-cart', __( 'The price field must be a field with Calculate.', 'tokenforge' ) );
+				return;
+			}
+			if ( ! self::price_formula_ok( $fields, $field ) ) {
+				self::error( $form, 'tf-cart', __( 'The price formula may use only choice fields with options, Number fields with both Min and Max, and other calculated fields.', 'tokenforge' ) );
 				return;
 			}
 			// Worked out again from the answers: the browser's number is never used.
@@ -920,6 +959,56 @@ class Form_Rules {
 				)
 			);
 		}
+	}
+
+	/**
+	 * With a form price, may the product come from this setting? A literal ID,
+	 * a select or radio field with options (answers_valid() checks the pick),
+	 * or else only the post the form verifiably belongs to: dynamic data such as
+	 * {post_id} reads the context the visitor posts.
+	 *
+	 * @param object $form   The builder's form handler.
+	 * @param array  $fields Field settings.
+	 * @param string $set    The product setting.
+	 * @param int    $pid    The product ID it gave.
+	 * @return bool
+	 */
+	private static function price_product_ok( $form, $fields, $set, $pid ) {
+		$set = trim( $set );
+		if ( preg_match( '/^\d+$/', $set ) ) {
+			return true;
+		}
+		if ( preg_match( '/^\{\{(\w+)\}\}$/', $set, $m ) ) {
+			$pf = Form_Extras::find_field( $fields, $m[1] );
+			return $pf && in_array( isset( $pf['type'] ) ? $pf['type'] : '', array( 'select', 'radio' ), true ) && null !== self::allowed_values( $pf );
+		}
+		return $pid && self::own_post( $form ) === $pid;
+	}
+
+	/**
+	 * May a price formula use these fields? Only answers with a closed set of
+	 * values: choice fields with options, Number fields with both Min and Max,
+	 * and other calculated fields that follow the same rule.
+	 *
+	 * @param array $fields Field settings.
+	 * @param array $field  The calculated field.
+	 * @param int   $depth  Nesting (a loop of results is refused).
+	 * @return bool
+	 */
+	private static function price_formula_ok( $fields, $field, $depth = 0 ) {
+		if ( $depth > 5 ) {
+			return false;
+		}
+		list( , $refs ) = Form_Extras::calc_parts( $fields, (string) $field['tfCalc'] );
+		foreach ( $refs as $ref ) {
+			if ( ! $ref ) {
+				continue; // an unknown name counts as 0.
+			}
+			if ( Form_Extras::has_calc( $ref ) ? ! self::price_formula_ok( $fields, $ref, $depth + 1 ) : ( null === self::allowed_values( $ref ) && ! self::bounded_number( $ref ) ) ) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -968,8 +1057,9 @@ class Form_Rules {
 
 	/**
 	 * Are a submission's answers ones the form offers? Choices must be among their
-	 * options, numbers within their min and max. Calculated fields are skipped
-	 * (they are worked out again).
+	 * options, numbers plain decimals within their min and max, several values
+	 * only on checkboxes (and media fields). Calculated fields are skipped (they
+	 * are worked out again).
 	 *
 	 * @param array $fields Field settings.
 	 * @param array $sent   Submitted values.
@@ -980,12 +1070,21 @@ class Form_Rules {
 			if ( empty( $f['id'] ) || Form_Extras::has_calc( $f ) ) {
 				continue;
 			}
+			$type  = isset( $f['type'] ) ? $f['type'] : 'text';
+			$names = array_unique( array( Form_Extras::input_name( $f ), 'form-field-' . $f['id'] ) );
+			// The builder copies the custom name onto form-field-<id>; two different answers are a forgery.
+			if ( 2 === count( $names ) && isset( $sent[ $names[0] ], $sent[ $names[1] ] ) && $sent[ $names[0] ] !== $sent[ $names[1] ] ) {
+				return false;
+			}
 			$v = null;
-			foreach ( array( Form_Extras::input_name( $f ), 'form-field-' . $f['id'] ) as $name ) {
+			foreach ( $names as $name ) {
 				if ( isset( $sent[ $name ] ) ) {
 					$v = $sent[ $name ];
 					break;
 				}
+			}
+			if ( is_array( $v ) && ! in_array( $type, array( 'checkbox', 'image', 'gallery' ), true ) ) {
+				return false;
 			}
 			$list = array_filter(
 				array_map( 'strval', is_array( $v ) ? array_filter( $v, 'is_scalar' ) : ( is_scalar( $v ) ? array( $v ) : array() ) ),
@@ -996,7 +1095,6 @@ class Form_Rules {
 			if ( ! $list ) {
 				continue;
 			}
-			$type    = isset( $f['type'] ) ? $f['type'] : 'text';
 			$allowed = self::allowed_values( $f );
 			if ( null !== $allowed ) {
 				foreach ( $list as $one ) {
@@ -1007,11 +1105,13 @@ class Form_Rules {
 			}
 			if ( 'number' === $type ) {
 				foreach ( $list as $one ) {
-					if ( ! is_numeric( $one ) ) {
+					// Plain decimals only, checked as the price reads them: is_numeric() takes "0.5e1" as 5, to_number() as 0.5.
+					if ( ! preg_match( '/^-?\d+(\.\d+)?$/', trim( $one ) ) ) {
 						return false;
 					}
+					$n   = Form_Extras::to_number( $one );
 					$max = isset( $f['max'] ) && is_numeric( $f['max'] ) ? (float) $f['max'] : ( isset( $f['tfLook'] ) && 'rating' === $f['tfLook'] ? 5.0 : null );
-					if ( ( isset( $f['min'] ) && is_numeric( $f['min'] ) && (float) $one < (float) $f['min'] ) || ( null !== $max && (float) $one > $max ) ) {
+					if ( ( isset( $f['min'] ) && is_numeric( $f['min'] ) && $n < (float) $f['min'] ) || ( null !== $max && $n > $max ) ) {
 						return false;
 					}
 				}
@@ -1146,11 +1246,11 @@ class Form_Rules {
 	 *
 	 * @param array  $settings Settings.
 	 * @param string $key      Key.
-	 * @param string $default  Default.
+	 * @param string $fallback  Default.
 	 * @return string
 	 */
-	private static function text( $settings, $key, $default ) {
+	private static function text( $settings, $key, $fallback ) {
 		$v = isset( $settings[ $key ] ) ? trim( wp_strip_all_tags( (string) $settings[ $key ] ) ) : '';
-		return '' !== $v ? $v : $default;
+		return '' !== $v ? $v : $fallback;
 	}
 }

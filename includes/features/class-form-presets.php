@@ -571,7 +571,7 @@ class Form_Presets {
 	public function routes() {
 		$ns     = 'tokenforge/v1';
 		$edit   = function () {
-			return current_user_can( 'edit_posts' );
+			return current_user_can( 'edit_others_posts' ); // presets hold email recipients, redirects and meta keys: not for Contributors.
 		};
 		$manage = function () {
 			return current_user_can( 'manage_options' ); // a preset can carry HTML fields.

@@ -48,6 +48,8 @@ class Framework {
 			'utilities_spacing'    => true,
 			'utilities_typography' => true,
 			'utilities_layout'     => true,
+			'utilities_color_more' => false, // link-, link-hover-, focus-, marker- and col-rule- per colour (about 30 KB unpruned).
+			'utilities_responsive' => false, // breakpoint variants {class}-at-{bp}; off: they add a lot of CSS when unused classes are kept.
 			'register_with_bricks' => true,
 			'prune_unused'         => false, // leave out utility classes the site does not use (after a scan).
 			'prune_keep'           => '',    // class names (or prefixes ending in *) always kept.
@@ -101,15 +103,20 @@ class Framework {
 				return false;
 			}
 		}
+		// -ref tokens are the palette's reference copies, not colours anyone styles with.
+		if ( '-ref' === substr( $t['name'], -4 ) ) {
+			return false;
+		}
 		$v = trim( $t['value'] );
-		if ( preg_match( '/^#([0-9a-f]{3,8})$/i', $v ) || preg_match( '/^(rgb|hsl)a?\(/i', $v ) ) {
+		// Palette shades are stored as oklch() or light-dark(): those are colours too.
+		if ( preg_match( '/^#([0-9a-f]{3,8})$/i', $v ) || preg_match( '/^((rgb|hsl)a?|oklch|oklab|lab|lch|hwb|color|color-mix|light-dark)\(/i', $v ) ) {
 			return true;
 		}
 		if ( 0 !== strpos( $v, 'var(' ) ) {
 			return false;
 		}
 		// var(--x) alone (a fallback allowed): follow it to its value.
-		for ( $depth = 0; $depth < 6 && preg_match( '/^var\(\s*--([a-z0-9-]+)\s*(?:,[^()]*)?\)$/i', $v, $m ); $depth++ ) {
+		for ( $depth = 0; $depth < 6 && preg_match( '/^var\(\s*--([a-z0-9-]+)\s*(?:,[^()]*)?\)$/i', $v, $m ); $depth++ ) { // phpcs:ignore Generic.CodeAnalysis.ForLoopWithTestFunctionCall.NotAllowed -- the tested value changes on each pass.
 			$name = strtolower( $m[1] );
 			if ( ! isset( $vars[ $name ] ) ) {
 				return true; // set somewhere else (a scheme colour, the theme): keep the class.
@@ -304,6 +311,18 @@ class Framework {
 			}
 		}
 
+		// The utility families (Util::families()), each switched by a framework setting.
+		foreach ( Util::families() as $family => $on ) {
+			if ( empty( $s[ $on ] ) ) {
+				continue;
+			}
+			$u = call_user_func( array( $family, 'build' ), $s );
+			if ( $u['css'] ) {
+				$css[]   = null === $keep ? $u['css'] : self::kept_rules( $u['css'], $keep );
+				$classes = array_merge( $classes, $u['classes'] );
+			}
+		}
+
 		$header = "\n/* --- TokenForge utility framework --- */\n";
 		return array(
 			'css'     => $header . implode( "\n", $css ) . "\n",
@@ -313,7 +332,10 @@ class Framework {
 
 	/**
 	 * One-rule-per-line CSS with only the rules of kept classes (a rule for
-	 * several classes stays when one of them is kept).
+	 * several classes stays when one of them is kept). A rule may sit in a
+	 * one-line @media; each selector counts by its first class (".a:hover",
+	 * ".a>*", ".a.b" count as "a"). A selector that does not start with a
+	 * class, a comment or a blank line is always kept.
 	 *
 	 * @param string $text CSS.
 	 * @param array  $keep Class_Usage::keep_set().
@@ -322,12 +344,13 @@ class Framework {
 	private static function kept_rules( $text, $keep ) {
 		$out = array();
 		foreach ( explode( "\n", $text ) as $line ) {
-			if ( ! preg_match( '/^(\.[A-Za-z0-9_,.-]+)\{/', $line, $m ) ) {
-				$out[] = $line; // comments and blank lines.
+			if ( ! preg_match( '/^(?:@media[^{]*\{)?([^{@]+)\{/', $line, $m ) ) {
+				$out[] = $line;
 				continue;
 			}
 			foreach ( explode( ',', $m[1] ) as $sel ) {
-				if ( Class_Usage::kept( ltrim( $sel, '.' ), $keep ) ) {
+				// ":has(>.x" (a parent rule for a child class) counts as x.
+				if ( ! preg_match( '/^(?::has\(>?)?\.([A-Za-z0-9_-]+)/', trim( $sel ), $c ) || Class_Usage::kept( $c[1], $keep ) ) {
 					$out[] = $line;
 					break;
 				}

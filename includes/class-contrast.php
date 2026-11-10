@@ -474,7 +474,7 @@ class Contrast {
 	 * @return string
 	 */
 	private static function family_of( $v, $vars, $fams ) {
-		for ( $i = 0; $i < 12 && preg_match( '/^var\(\s*--([a-z0-9-]+)\s*(?:,(.*))?\)$/is', trim( (string) $v ), $m ); $i++ ) {
+		for ( $i = 0; $i < 12 && preg_match( '/^var\(\s*--([a-z0-9-]+)\s*(?:,(.*))?\)$/is', trim( (string) $v ), $m ); $i++ ) { // phpcs:ignore Generic.CodeAnalysis.ForLoopWithTestFunctionCall.NotAllowed -- the tested value changes on each pass.
 			foreach ( $fams as $f ) {
 				if ( preg_match( '/^' . preg_quote( $f, '/' ) . '(?:-(?:ultra-light|light|semi-light|semi-dark|dark|ultra-dark|hover))?(?:-ref)?$/', $m[1] ) ) {
 					return $f;

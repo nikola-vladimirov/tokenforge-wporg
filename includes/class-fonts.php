@@ -121,12 +121,12 @@ class Fonts {
 	 * Sanitise the font list (entries without a family or a file are kept, so a
 	 * half-filled row survives a save, but they output nothing).
 	 *
-	 * @param mixed $list Raw list.
+	 * @param mixed $items Raw list.
 	 * @return array
 	 */
-	private static function clean_fonts( $list ) {
+	private static function clean_fonts( $items ) {
 		$out = array();
-		foreach ( array_slice( array_values( (array) $list ), 0, 40 ) as $f ) {
+		foreach ( array_slice( array_values( (array) $items ), 0, 40 ) as $f ) {
 			if ( ! is_array( $f ) ) {
 				continue;
 			}
@@ -141,7 +141,7 @@ class Fonts {
 				'display'   => in_array( $f['display'], array( 'auto', 'block', 'swap', 'fallback', 'optional' ), true ) ? $f['display'] : 'swap',
 				'variable'  => ! empty( $f['variable'] ),
 				'stretch'   => preg_match( '/^[a-z0-9.%\s-]*$/i', (string) $f['stretch'] ) ? trim( (string) $f['stretch'] ) : '',
-				'variation' => trim( str_replace( array( ';', '{', '}', '<', '>', '\\' ), '', (string) $f['variation'] ) ),
+				'variation' => Tokens::balanced( trim( str_replace( array( ';', '{', '}', '<', '>', '\\' ), '', (string) $f['variation'] ) ) ),
 				'preload'   => ! empty( $f['preload'] ),
 				// unicode-range: U+0000-00FF, U+0131 etc.
 				'unicode'   => preg_match( '/^[Uu+0-9A-Fa-f?,\s-]*$/', (string) $f['unicode'] ) ? trim( preg_replace( '/\s+/', ' ', (string) $f['unicode'] ) ) : '',
@@ -392,14 +392,17 @@ class Fonts {
 		}
 		$file['name'] = $name;
 		add_filter( 'upload_dir', array( __CLASS__, 'upload_dir' ) );
-		$done = wp_handle_upload(
-			$file,
-			array(
-				'test_form' => false,
-				'mimes'     => self::upload_mimes(),
-			)
-		);
-		remove_filter( 'upload_dir', array( __CLASS__, 'upload_dir' ) );
+		try {
+			$done = wp_handle_upload(
+				$file,
+				array(
+					'test_form' => false,
+					'mimes'     => self::upload_mimes(),
+				)
+			);
+		} finally {
+			remove_filter( 'upload_dir', array( __CLASS__, 'upload_dir' ) );
+		}
 		if ( empty( $done['file'] ) || empty( $done['url'] ) ) {
 			return array(
 				'ok'    => false,
@@ -533,7 +536,6 @@ class Fonts {
 		$slug = sanitize_title( $family );
 		$out  = array();
 		$fail = 0;
-		add_filter( 'upload_dir', array( __CLASS__, 'upload_dir' ) );
 		foreach ( $faces as $f ) {
 			$tmp = download_url( $f['url'], 20 );
 			if ( is_wp_error( $tmp ) ) {
@@ -552,13 +554,18 @@ class Fonts {
 				'error'    => 0,
 				'size'     => (int) filesize( $tmp ),
 			);
-			$done = wp_handle_sideload(
-				$file,
-				array(
-					'test_form' => false,
-					'mimes'     => self::upload_mimes(),
-				)
-			);
+			add_filter( 'upload_dir', array( __CLASS__, 'upload_dir' ) );
+			try {
+				$done = wp_handle_sideload(
+					$file,
+					array(
+						'test_form' => false,
+						'mimes'     => self::upload_mimes(),
+					)
+				);
+			} finally {
+				remove_filter( 'upload_dir', array( __CLASS__, 'upload_dir' ) );
+			}
 			if ( empty( $done['url'] ) ) {
 				wp_delete_file( $tmp );
 				++$fail;
@@ -575,7 +582,6 @@ class Fonts {
 				)
 			);
 		}
-		remove_filter( 'upload_dir', array( __CLASS__, 'upload_dir' ) );
 		if ( ! $out ) {
 			return array(
 				'ok'    => false,
@@ -637,7 +643,8 @@ class Fonts {
 			if ( 0 === strpos( $url, $b ) ) {
 				$path = realpath( trailingslashit( $up['basedir'] ) . rawurldecode( substr( $url, strlen( $b ) ) ) );
 				$root = realpath( $up['basedir'] );
-				return ( $path && $root && 0 === strpos( $path, $root ) && is_file( $path ) ) ? $path : '';
+				// realpath() gives native separators, so trailingslashit()'s "/" would not match on Windows.
+				return ( $path && $root && 0 === strpos( $path, $root . DIRECTORY_SEPARATOR ) && is_file( $path ) ) ? $path : '';
 			}
 		}
 		return '';

@@ -114,10 +114,10 @@ class Scss {
 		}
 		self::$autoload = true;
 		spl_autoload_register(
-			function ( $class ) {
+			function ( $class_name ) {
 				$prefix = 'TokenForge\\Vendor\\ScssPhp\\ScssPhp\\';
-				if ( 0 === strpos( $class, $prefix ) ) {
-					$file = TOKENFORGE_DIR . 'vendor/scssphp/src/' . str_replace( '\\', '/', substr( $class, strlen( $prefix ) ) ) . '.php';
+				if ( 0 === strpos( $class_name, $prefix ) ) {
+					$file = TOKENFORGE_DIR . 'vendor/scssphp/src/' . str_replace( '\\', '/', substr( $class_name, strlen( $prefix ) ) ) . '.php';
 					if ( file_exists( $file ) ) {
 						require $file;
 					}
@@ -259,7 +259,7 @@ class Scss {
 		}
 		$out[] = "@mixin text-style(\$level: m) {\n\t\$l: \"#{\$level}\";\n\t" . implode( '', $t ) . '} @else { @error "text-style(): use ' . implode( ', ', Scale_Engine::STEPS ) . " (got `#{\$level}`).\"; }\n}";
 
-		// ---- Cards: card($style: null, $output: all).
+		// ---- Cards: the card mixin, with a style and an output choice.
 		$cs    = Components::settings();
 		$rule  = Components::card_rules( $cs, '&', '&' );
 		$main  = array_shift( $rule );

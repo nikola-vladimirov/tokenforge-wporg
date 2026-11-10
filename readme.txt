@@ -4,7 +4,7 @@ Tags: design tokens, css variables, accessibility, woocommerce
 Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.54.2
+Stable tag: 0.55.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,7 +33,7 @@ A new site starts ready: a complete starter design system (every token, colour f
 * Colour families: shades generated from one colour in light and dark mode, with a live preview. Add, remove or edit your own families.
 * Fluid type and spacing scales from one setting each, plus a width scale, a root font size, grids and automatic gaps.
 * Layout, gutters, boxed or full width, borders, radius, shadows, icons, header height and prose styles.
-* Utility classes for spacing, grids, corners and more. Unused classes can be left out of the stylesheet after a site scan, to keep it small.
+* Utility classes for spacing, grids and grid placement, flex grids (equal-width items with a centred or stretched last row), flex and alignment, text styles, corners and more, with optional breakpoint variants ({class}-at-{bp}). Unused classes can be left out of the stylesheet after a site scan, to keep it small.
 * A Tokens screen that lists every variable, the setting that makes it and where it is used. Add your own tokens in a built-in or your own category.
 * Dark mode: assign it by section and add a light or dark switch anywhere, with a shortcode or a block.
 
@@ -158,6 +158,8 @@ Yes, in two places. Add CSS to the builder's own custom CSS box (in Bricks, the 
 
 Deactivating stops the stylesheet from loading; your settings stay. Deleting the plugin removes its settings, the generated stylesheets and the variables, colours and classes it added to Bricks. Font files you uploaded stay in `uploads/tokenforge/fonts/`, because other CSS may still use them. On a multisite network, uninstall cleans every site.
 
+Two Bricks settings are not put back. A Bricks theme style kept in step with TokenForge keeps its var(--...) values, which no longer resolve once the variables are gone: set those fields again or pick another theme style. Bricks settings the setup wizard changed stay as the wizard left them.
+
 = Does TokenForge keep anything about visitors? =
 
 Only what your forms ask for. On your server, a form with a send limit keeps a count of its sends, and a form limited per user keeps the time of each signed-in user's last send in their user data. A form with the Update meta action writes the answers you map to the post or user meta you choose, and the Add to cart action puts the answers you allow on the cart item and the order. Two things stay in the visitor's own browser (local storage): their light or dark choice when you show the dark mode switch, and, only for forms where you turn on Remember answers on this device, what they typed until the form is sent. Passwords, files and hidden fields are never kept, and the saved answers are removed after a successful send. Deleting TokenForge removes its counts and the per-user send times.
@@ -175,6 +177,10 @@ The accessibility checker (axe-core, MPL 2.0) is bundled with the plugin and run
 
 Yes. The dashboard and the builder settings use the `tokenforge` text domain, so translations from translate.wordpress.org are loaded automatically.
 
+= Does "Close after this many sends" stop one visitor from taking every place? =
+
+No. The limit counts sends, not people, so one visitor or a script can send the form until it closes, and two sends at the same moment can both get the last place. For places that matter, such as event seats, also turn on the form's CAPTCHA (reCAPTCHA, hCaptcha or Turnstile) or "Only signed-in visitors can send" with "Sends per user".
+
 == Screenshots ==
 
 1. Home: every section at a glance, with a switch for each module.
@@ -186,6 +192,19 @@ Yes. The dashboard and the builder settings use the `tokenforge` text domain, so
 == Changelog ==
 
 The full history is in CHANGELOG.md, also shown from the Changelog link next to TokenForge on the Plugins screen.
+
+= 0.55.0 =
+* Flex grids: flex-grid-1 to flex-grid-12 with equal-width items and a centred last row, flex-grid--start, flex-grid--end and flex-grid--stretch, and per-breakpoint counts such as flex-grid-2-at-m.
+* Breakpoint variants (off by default): {class}-at-{bp} copies of the layout and text classes, such as col-span-1-at-m.
+* Grid classes: column and row placement, per-breakpoint and stacking grids, grid-alternate, ratio auto grids, masonry and order.
+* Layout classes: more flex and alignment, centring, height, container queries, opacity, z-index, display, flip, sticky offsets, aspect ratio, object position, line clamp and column classes.
+* Text classes: weights, italics, case, underline styles, balanced text, list reset, edge fades, border sides, dividers, and optional link, focus and bullet colours per colour.
+* Optional live header height: --header-height follows the real header, plus --admin-bar-height.
+* Builder: input helper (variable names to var(), maths to calc()), hide switched-off classes in the class list, checkerboard behind transparent swatches, TokenForge classes reused on template import (all optional except the checkerboard).
+* Fixed: oklch() and light-dark() palette colours get their colour classes again; columns-2 to 4 leave WooCommerce product lists alone; Bricks buttons without a btn class keep their border.
+* Hardening: a value with an unclosed bracket, quote or comment is no longer saved, so it cannot blank the rest of the stylesheet; on multisite, saving, importing and restoring settings needs the Additional CSS right (edit_css); damaged font files and oversized AI checks are refused.
+* Security: stricter checks on form cart prices, products, open meta writes and date rules; presets listed to editors only; safer font and AI CSS checks; on multisite, settings need edit_css.
+* Fixed: flex grids lay out in a row on builder blocks; columns breakpoint variants override columns-N; sticky-top with a 0 offset; focus-parent keeps field focus rings.
 
 = 0.54.2 =
 * Developers can extend Export / Import and the Starter reset: the hooks tokenforge_transfer_parts, tokenforge_transfer_export_data, tokenforge_transfer_imported, tokenforge_starter_parts and tokenforge_starter_reset.

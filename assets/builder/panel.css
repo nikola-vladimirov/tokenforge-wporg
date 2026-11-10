@@ -8,6 +8,8 @@
 /* Launcher */
 #tf-dock .tf-dock-toggle { pointer-events: auto; position: fixed; right: 16px; bottom: 16px; display: inline-flex; align-items: center; gap: 7px; background: var(--tfd-head); color: var(--tfd-text); border: 1px solid var(--tfd-line); border-radius: var(--tfd-radius); padding: 8px 14px; font-size: 12px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,.35); }
 #tf-dock .tf-dock-toggle:hover { border-color: var(--tfd-accent); }
+#tf-dock .tf-dock-toggle:focus-visible { outline: 2px solid var(--tfd-accent); outline-offset: 2px; }
+@media print { #tf-dock { display: none !important; } }
 /* Flat look (set in TokenForge, Options, Dashboard look). */
 #tf-dock:has(.tf-app.tf-flat) { --tfd-bg: #141414; --tfd-head: #1c1c1c; --tfd-line: #2e2e2e; --tfd-text: #ededed; --tfd-muted: #a3a3a3; --tfd-accent: #3d7bfd; --tfd-hover: #2a2a2a; --tfd-radius: 2px; }
 /* Light look. */

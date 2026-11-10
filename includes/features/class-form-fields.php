@@ -696,7 +696,7 @@ class Form_Fields {
 		}
 		$format = get_option( 'date_format' ) . ( isset( $field['time'] ) ? ' H:i' : '' );
 		$value  = self::english_names( $value );
-		// ponytail: a date the site's format and language cannot read is let through (the browser still blocked it); a hidden ISO copy from the script if that matters.
+		// shortcut: a date the site's format and language cannot read is refused on a field with date rules (a picker in another language than the site's sends one); a hidden ISO copy from the script if that blocks real visitors.
 		$d = \DateTimeImmutable::createFromFormat( '!' . $format, $value, wp_timezone() );
 		if ( ! $d ) {
 			$t = strtotime( $value );
@@ -782,16 +782,17 @@ class Form_Fields {
 				continue;
 			}
 			$days = self::submitted_days( $submitted, $field );
-			if ( ! $days ) {
+			if ( array() === $days ) {
 				continue;
 			}
-			$ok = true;
-			foreach ( $days as $day ) {
+			$ok = null !== $days;
+			foreach ( (array) $days as $day ) {
 				$ok = $ok && self::day_allowed( $day, $field, $today );
 			}
 			$start = self::start_field( $field, $fields );
 			if ( $ok && $start ) {
 				$from = self::submitted_days( $submitted, $start );
+				$ok   = null !== $from;
 				if ( $from ) {
 					$gap = isset( $field['tfDateGap'] ) && is_numeric( $field['tfDateGap'] ) ? max( 0, (int) $field['tfDateGap'] ) : 0;
 					$ok  = (int) end( $from )->diff( $days[0] )->format( '%r%a' ) >= $gap;
@@ -812,12 +813,15 @@ class Form_Fields {
 	 *
 	 * @param array $submitted Submitted values.
 	 * @param array $field     Field settings.
-	 * @return \DateTimeImmutable[]
+	 * @return \DateTimeImmutable[]|null Null when the value is several values or a date that cannot be read.
 	 */
 	private static function submitted_days( $submitted, $field ) {
 		$raw = '';
 		foreach ( array( Form_Extras::input_name( $field ), 'form-field-' . $field['id'] ) as $name ) {
-			if ( isset( $submitted[ $name ] ) && is_scalar( $submitted[ $name ] ) ) {
+			if ( isset( $submitted[ $name ] ) ) {
+				if ( ! is_scalar( $submitted[ $name ] ) ) {
+					return null;
+				}
 				$raw = (string) $submitted[ $name ];
 				break;
 			}
@@ -825,10 +829,14 @@ class Form_Fields {
 		$out = array();
 		// Only " to " (a range) splits: date formats such as "F j, Y" have commas.
 		foreach ( preg_split( '/\s+to\s+/', $raw ) as $part ) {
-			$d = self::read_date( $part, $field );
-			if ( $d ) {
-				$out[] = $d;
+			if ( '' === trim( $part ) ) {
+				continue;
 			}
+			$d = self::read_date( $part, $field );
+			if ( ! $d ) {
+				return null; // refused, so an unreadable date cannot skip the rules.
+			}
+			$out[] = $d;
 		}
 		return $out;
 	}

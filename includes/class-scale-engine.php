@@ -363,6 +363,47 @@ class Scale_Engine {
 			$classes[] = 'grid--auto-fit';
 			$classes[] = 'grid--auto-rows';
 		}
+		// Flex grids .flex-grid-1 … 12: equal-width items in a wrapping flex row, so a
+		// short last row is centred (default), or start / end / stretch. The basis is
+		// written per class, never read from a variable on the item, so a nested flex
+		// grid keeps its own count. Gap: --flex-grid-gap on the element, else --grid-gap.
+		// .flex-grid-N-at-{bp} (breakpoint variants on) changes the count at and below a
+		// breakpoint (Util::at_breakpoints()). One rule per line for kept_rules().
+		$fg_gap   = 'var(--flex-grid-gap,var(--grid-gap))';
+		$fg_basis = function ( $c ) use ( $fg_gap ) {
+			// .1px slack: browsers that round to app units could otherwise wrap the last item of a full row.
+			return 1 === $c ? '100%' : 'calc((100% - ' . ( $c - 1 ) . " * $fg_gap) / $c - .1px)";
+		};
+		$fg_base  = array();
+		$fg_items = array();
+		for ( $c = 1; $c <= 12; $c++ ) {
+			$fg_base[]  = ".flex-grid-$c";
+			$fg_items[] = ".flex-grid-$c>*";
+			$classes[]  = "flex-grid-$c";
+		}
+		$css[] = implode( ',', $fg_base ) . "{display:flex;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:$fg_gap}"; // row: Bricks blocks default to a column.
+		$css[] = implode( ',', $fg_items ) . '{flex-grow:0;flex-shrink:1;min-width:0;box-sizing:border-box}';
+		for ( $c = 1; $c <= 12; $c++ ) {
+			$css[] = ".flex-grid-$c>*{flex-basis:" . $fg_basis( $c ) . '}';
+		}
+		foreach ( array(
+			'start' => 'justify-content:flex-start',
+			'end'   => 'justify-content:flex-end',
+		) as $name => $body ) {
+			$css[]     = ".flex-grid--$name{" . $body . '}';
+			$classes[] = "flex-grid--$name";
+		}
+		$css[]     = '.flex-grid--stretch>*{flex-grow:1}';
+		$classes[] = 'flex-grid--stretch';
+		if ( Util::responsive( Framework::settings() ) ) {
+			$fg_map = array();
+			for ( $c = 1; $c <= 12; $c++ ) {
+				$fg_map[ "flex-grid-$c" ] = 'flex-basis:' . $fg_basis( $c );
+			}
+			$at      = Util::at_breakpoints( $fg_map, '>*' );
+			$css     = array_merge( $css, $at['lines'] );
+			$classes = array_merge( $classes, $at['classes'] );
+		}
 		// Variable grid: column count driven by a variable you can change per breakpoint.
 		$css[]     = '.variable-grid{display:grid;grid-template-columns:repeat(var(--variable-grid-count,3),minmax(0,1fr));gap:var(--grid-gap)}';
 		$classes[] = 'variable-grid';

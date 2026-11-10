@@ -125,9 +125,28 @@ class Bricks {
 	 * @param array $entry Class/variable entry.
 	 * @return bool
 	 */
-	private static function is_ours( $entry ) {
+	public static function is_ours( $entry ) {
 		return isset( $entry['id'] ) && 0 === strpos( (string) $entry['id'], self::VAR_ID_PREFIX )
 			&& isset( $entry['category'] ) && self::CATEGORY_ID === $entry['category'];
+	}
+
+	/**
+	 * Ids of the generated classes in the builder that TokenForge no longer
+	 * outputs (switched off or left out), unless styled in the builder since.
+	 *
+	 * @param array      $names   Class names TokenForge outputs now.
+	 * @param array|null $classes Builder global classes (null = the stored ones).
+	 * @return string[]
+	 */
+	public static function stale_class_ids( $names, $classes = null ) {
+		$keep = array_flip( $names );
+		$out  = array();
+		foreach ( null === $classes ? (array) get_option( 'bricks_global_classes', array() ) : $classes as $c ) {
+			if ( is_array( $c ) && self::is_ours( $c ) && ! isset( $keep[ (string) ( $c['name'] ?? '' ) ] ) && empty( $c['settings'] ) ) {
+				$out[] = (string) $c['id'];
+			}
+		}
+		return $out;
 	}
 
 	/**
@@ -149,12 +168,12 @@ class Bricks {
 		$locked  = (array) get_option( 'bricks_global_classes_locked', array() );
 
 		if ( $prune ) {
-			$keep    = array_flip( $names );
+			$stale   = array_flip( self::stale_class_ids( $names, $classes ) );
 			$classes = array_values(
 				array_filter(
 					$classes,
-					function ( $c ) use ( $keep ) {
-						return ! self::is_ours( $c ) || isset( $keep[ $c['name'] ] ) || ! empty( $c['settings'] );
+					function ( $c ) use ( $stale ) {
+						return ! is_array( $c ) || ! isset( $stale[ (string) ( $c['id'] ?? '' ) ] );
 					}
 				)
 			);
@@ -171,20 +190,23 @@ class Bricks {
 			}
 		}
 
-		$existing = array_column( $classes, 'name' );
+		// Keyed lookups: thousands of names against thousands of classes.
+		$existing  = array_flip( array_map( 'strval', array_column( $classes, 'name' ) ) );
+		$is_locked = array_flip( array_map( 'strval', $locked ) );
 		foreach ( $names as $name ) {
 			$id = self::VAR_ID_PREFIX . $name;
-			if ( ! in_array( $name, $existing, true ) ) {
-				$classes[]  = array(
+			if ( ! isset( $existing[ (string) $name ] ) ) {
+				$classes[]                  = array(
 					'id'       => $id,
 					'name'     => $name,
 					'settings' => array(),
 					'category' => self::CATEGORY_ID,
 				);
-				$existing[] = $name;
+				$existing[ (string) $name ] = true;
 			}
-			if ( ! in_array( $id, $locked, true ) ) {
-				$locked[] = $id;
+			if ( ! isset( $is_locked[ $id ] ) ) {
+				$locked[]         = $id;
+				$is_locked[ $id ] = true;
 			}
 		}
 

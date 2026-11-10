@@ -75,16 +75,29 @@ class Font_Convert {
 			return null;
 		}
 		$tables = array();
+		$ranges = array();
+		$total  = 0;
 		for ( $i = 0; $i < $num; $i++ ) {
-			$e   = unpack( 'a4tag/Nchecksum/Noffset/Nlength', substr( $bytes, 12 + 16 * $i, 16 ) );
-			$tag = $e['tag'];
-			if ( $e['offset'] + $e['length'] > $len || isset( $tables[ $tag ] ) ) {
+			$e      = unpack( 'a4tag/Nchecksum/Noffset/Nlength', substr( $bytes, 12 + 16 * $i, 16 ) );
+			$tag    = $e['tag'];
+			$total += $e['length'];
+			// Tables longer in sum than the file would copy the same bytes many times over.
+			if ( $e['offset'] + $e['length'] > $len || $total > $len || isset( $tables[ $tag ] ) ) {
 				return null;
+			}
+			if ( $e['length'] > 0 ) {
+				$ranges[] = array( $e['offset'], $e['offset'] + $e['length'] );
 			}
 			$tables[ $tag ] = array(
 				'data'     => substr( $bytes, $e['offset'], $e['length'] ),
 				'checksum' => $e['checksum'],
 			);
+		}
+		sort( $ranges );
+		for ( $i = 1, $n = count( $ranges ); $i < $n; $i++ ) {
+			if ( $ranges[ $i ][0] < $ranges[ $i - 1 ][1] ) {
+				return null; // overlapping tables.
+			}
 		}
 		return array(
 			'flavor' => $flavor,

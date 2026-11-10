@@ -114,3 +114,33 @@ body.tf-enh-tplgallery #bricks-popup.templates .bricks-layout-item-inner :is(.bu
 body.tf-enh-tplgallery #bricks-popup.templates #bricks-popup-inner {
 	max-width: 100% !important;
 }
+
+/* Checkerboard under colour swatches the builder does not flag as transparent itself (values it cannot read,
+   such as var() or oklch with alpha). It sits behind the swatch colour, so opaque colours hide it; each swatch's
+   parent is isolated so the pattern stays above the row background. */
+[data-control=color] .color-palette-list .root-color,
+[data-control=color] .color-palette-list .shades,
+[data-control=color] .color-palette-grid li {
+	isolation: isolate;
+}
+[data-control=color] .color-palette-list .color-swatch:not(.color-palette-transparency-pattern),
+[data-control=color] .color-palette-list .shade-color:not(.color-palette-transparency-pattern):not(.active) {
+	position: relative;
+}
+[data-control=color] .color-palette-list .color-swatch:not(.color-palette-transparency-pattern)::before,
+[data-control=color] .color-palette-list .shade-color:not(.color-palette-transparency-pattern):not(.active)::before,
+[data-control=color] .color-palette-grid li::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	border-radius: inherit;
+	background: repeating-conic-gradient(#c8c8c8 0 25%, #fff 0 50%) 0 0 / 10px 10px;
+}
+/* Grid view: the pattern sits on the cell (a scaled shade button is its own layer), sized like the button. */
+[data-control=color] .color-palette-grid li::before {
+	border-radius: var(--builder-border-radius);
+}
+[data-control=color] .color-palette-grid li.shade::before {
+	inset: 7.5%;
+}

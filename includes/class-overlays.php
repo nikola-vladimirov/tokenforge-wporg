@@ -151,7 +151,7 @@ class Overlays {
 	 * @return string
 	 */
 	private static function clean( $v ) {
-		return trim( str_replace( array( ';', '{', '}', '<', '>' ), '', sanitize_text_field( (string) $v ) ) );
+		return Tokens::balanced( trim( str_replace( array( ';', '{', '}', '<', '>' ), '', sanitize_text_field( (string) $v ) ) ) );
 	}
 
 	/**
@@ -244,7 +244,8 @@ class Overlays {
 			$v = preg_replace( '/\son[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $v );
 			return substr( $v, 0, 50000 );
 		}
-		return trim( str_replace( array( ';', '{', '}', '<', '>' ), '', $v ) );
+		$v = trim( str_replace( array( ';', '{', '}', '<', '>' ), '', $v ) );
+		return preg_match( '#^(https?:)?//|^/#i', $v ) ? $v : Tokens::balanced( $v ); // URLs are quoted on output.
 	}
 
 	/**

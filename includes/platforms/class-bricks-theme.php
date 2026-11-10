@@ -37,7 +37,7 @@ defined( 'ABSPATH' ) || exit;
 class Bricks_Theme {
 
 	const OPTION = 'bricks_theme_styles';
-	const STATE  = 'tokenforge_theme_sync'; // { style, pushed: { path => value }, prev: { path => value } }
+	const STATE  = 'tokenforge_theme_sync'; // Holds the style, the values pushed and the previous values, each keyed by path.
 
 	/** Bricks colour fields => TokenForge colour family. */
 	const COLORS = array(
@@ -387,6 +387,27 @@ class Bricks_Theme {
 	}
 
 	/**
+	 * A button variable's value from a button map, where a value that names
+	 * another button variable (the border colour is var(--btn-background)) also
+	 * carries that variable's value as its fallback: a button without a btn--*
+	 * class defines none of them, and an undefined variable voids the whole
+	 * border declaration (no border at all, outline buttons included).
+	 *
+	 * @param array  $map Button map (Components::btn_var_map()).
+	 * @param string $k   Variable name without the dashes.
+	 * @return string
+	 */
+	public static function btn_value( $map, $k ) {
+		return preg_replace_callback(
+			'/var\(--(btn-[a-z-]+)\)/',
+			function ( $m ) use ( $map ) {
+				return isset( $map[ $m[1] ] ) ? 'var(--' . $m[1] . ', ' . $map[ $m[1] ] . ')' : $m[0];
+			},
+			(string) $map[ $k ]
+		);
+	}
+
+	/**
 	 * Button element: every style (colours, hover colours) and size, the shared
 	 * typography, border and padding, all pointing at the TokenForge button variables.
 	 *
@@ -401,7 +422,7 @@ class Bricks_Theme {
 			$map = $on && ! empty( $fams[ $fv[0] ]['on'] ) ? Components::btn_var_map( $c, $fv[0], $fv[1] ) : array();
 			// The TokenForge button variable first: a btn--* class on the button still decides.
 			$get                             = function ( $k ) use ( $map ) {
-				return isset( $map[ $k ] ) ? array( 'raw' => 'var(--' . $k . ', ' . $map[ $k ] . ')' ) : null;
+				return isset( $map[ $k ] ) ? array( 'raw' => 'var(--' . $k . ', ' . self::btn_value( $map, $k ) . ')' ) : null;
 			};
 			$bg                              = self::key( $prefix, 'Background' );
 			$ty                              = self::key( $prefix, 'Typography' );
@@ -412,6 +433,8 @@ class Bricks_Theme {
 			$out[ "button.$ty:hover.color" ] = $get( 'btn-text-color-hover' );
 			$out[ "button.$bo.color" ]       = $get( 'btn-border-color' );
 			$out[ "button.$bo:hover.color" ] = $get( 'btn-border-color-hover' );
+			// Outline styles carry their own border width (the shared width below is the solid one).
+			$out[ "button.$bo.width" ] = isset( $map['btn-border-width'] ) ? self::sides( $map['btn-border-width'] ) : null;
 		}
 		foreach ( self::BUTTON_TYPE as $prop => $key ) {
 			$out[ "button.typography.$prop" ] = $on && '' !== trim( (string) $c[ $key ] ) ? 'var(--' . str_replace( '_', '-', $key ) . ')' : null;
@@ -472,7 +495,7 @@ class Bricks_Theme {
 		$out['form.submitButtonBorder']           = $btn ? array(
 			'width'  => self::sides( 'var(--btn-border-width)' ),
 			'style'  => 'solid',
-			'color'  => array( 'raw' => $btn['btn-border-color'] ),
+			'color'  => array( 'raw' => self::btn_value( $btn, 'btn-border-color' ) ),
 			'radius' => self::sides( 'var(--btn-border-radius)' ),
 		) : null;
 		$out['form.submitButtonPadding']          = $btn ? array(
@@ -502,7 +525,7 @@ class Bricks_Theme {
 			'woocommerce-button.border'           => $btn ? array(
 				'width'  => self::sides( 'var(--btn-border-width)' ),
 				'style'  => 'solid',
-				'color'  => array( 'raw' => $btn['btn-border-color'] ),
+				'color'  => array( 'raw' => self::btn_value( $btn, 'btn-border-color' ) ),
 				'radius' => self::sides( 'var(--btn-border-radius)' ),
 			) : null,
 			'woocommerce-button.padding'          => $btn ? array(
@@ -831,18 +854,18 @@ class Bricks_Theme {
 	 * Theme style → TokenForge (the builder or Bricks saved the theme styles).
 	 *
 	 * @param mixed $old Old value.
-	 * @param mixed $new New value.
+	 * @param mixed $new_value New value.
 	 * @return void
 	 */
-	public static function on_saved( $old, $new ) {
-		if ( self::$busy || ! self::enabled() || ! is_array( $new ) ) {
+	public static function on_saved( $old, $new_value ) {
+		if ( self::$busy || ! self::enabled() || ! is_array( $new_value ) ) {
 			return;
 		}
-		$id = self::style_id( $new );
+		$id = self::style_id( $new_value );
 		if ( '' === $id ) {
 			return;
 		}
-		$settings = isset( $new[ $id ]['settings'] ) && is_array( $new[ $id ]['settings'] ) ? $new[ $id ]['settings'] : array();
+		$settings = isset( $new_value[ $id ]['settings'] ) && is_array( $new_value[ $id ]['settings'] ) ? $new_value[ $id ]['settings'] : array();
 		$state    = self::state();
 		$changes  = array();
 		$stale    = false;
