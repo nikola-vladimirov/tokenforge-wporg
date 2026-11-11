@@ -473,7 +473,7 @@
 		'enhancements.hide_stale_classes': __( 'Hides the classes TokenForge has switched off or left out from the builder’s class list right away, without a sync. Nothing is deleted, and a class already on an element stays visible there.', 'tokenforge' ),
 
 		// ---- Settings ----
-		'settings.sync_bricks_vars': __( 'Copies every token into the builder’s global variables, so they appear in its variable picker.', 'tokenforge' ),
+		'settings.sync_bricks_vars': __( 'Copies every token into the builder’s global variables, so they appear in its variable picker. The text, heading and space sizes also show as typography and spacing scales in its style manager, with the HTML font size, screen widths and default mode in its settings. A scale or setting you change there comes back into TokenForge.', 'tokenforge' ),
 		'settings.vars_trans': __( 'Sends the transparent steps of every colour (primary-trans-10 … 90, white-trans-50 …) to the builder\x27s variable list. About 400 variables.', 'tokenforge' ),
 		'settings.vars_channels': __( 'Sends the parts colours are built from (primary-hex, primary-rgb, primary-h, primary-s …) to the builder\x27s variable list. You rarely pick these by hand. About 400 variables.', 'tokenforge' ),
 		'settings.vars_alt': __( 'Sends the dark mode value of every colour (primary-alt …) to the builder\x27s variable list. The normal colours already switch in dark mode.', 'tokenforge' ),

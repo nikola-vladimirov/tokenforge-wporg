@@ -18,14 +18,21 @@ defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
  */
 function tokenforge_uninstall_site() {
 	global $wpdb;
+	// 0) The builder's style manager settings go back to what they were before TokenForge.
+	$tf_sm = get_option( 'tokenforge_style_manager_sync' );
+	$bsm   = get_option( 'bricks_style_manager' );
+	if ( is_array( $tf_sm ) && isset( $tf_sm['backup'] ) && is_array( $tf_sm['backup'] ) && empty( $tf_sm['off'] ) && is_array( $bsm ) ) { // With the sync off they are back already.
+		update_option( 'bricks_style_manager', array_merge( array_diff_key( $bsm, array_flip( array( 'htmlFontSize', 'minScreenWidth', 'maxScreenWidth', 'defaultMode' ) ) ), $tf_sm['backup'] ) );
+	}
 	// 1) Delete our own options.
 	delete_option( 'tokenforge_tokens' );
 	delete_option( 'tokenforge_settings' );
 	delete_option( 'tokenforge_css_meta' );
 	delete_option( 'tokenforge_acss_names' );
-	foreach ( array( 'framework', 'scales', 'components', 'scheme', 'extras', 'defaults', 'content', 'width', 'motion', 'overlays', 'enhancements', 'scss', 'scss_build', 'scss_sync', 'recipes', 'palette', 'fonts', 'woo', 'modules', 'theme_sync', 'setup_pending', 'version', 'token_usage', 'class_usage', 'attribute_usage', 'builder_settings_backup', 'setup_wizard', 'history', 'form_sends', 'form_presets', 'subs_db', 'subs_base', 'subs_ack', 'subs_last' ) as $tf_opt ) {
+	foreach ( array( 'framework', 'scales', 'components', 'scheme', 'extras', 'defaults', 'content', 'width', 'motion', 'overlays', 'enhancements', 'scss', 'scss_build', 'scss_sync', 'recipes', 'palette', 'fonts', 'woo', 'modules', 'theme_sync', 'style_manager_sync', 'setup_pending', 'version', 'token_usage', 'class_usage', 'attribute_usage', 'builder_settings_backup', 'setup_wizard', 'history', 'form_sends', 'form_presets', 'subs_db', 'subs_base', 'subs_ack', 'subs_last' ) as $tf_opt ) {
 		delete_option( 'tokenforge_' . $tf_opt );
 	}
+	delete_transient( 'tokenforge_upgrading' ); // The upgrade lock (Plugin::maybe_upgrade), two minutes at most.
 	// Form submissions (Features\Form_Submissions): our status/notes table and auto-delete.
 	// The builder's own submissions table stays.
 	wp_clear_scheduled_hook( 'tokenforge_subs_cleanup' );
@@ -78,7 +85,7 @@ function tokenforge_uninstall_site() {
 			array_filter(
 				$vcats,
 				function ( $c ) {
-					return empty( $c['id'] ) || 'tokenforge' !== $c['id'];
+					return empty( $c['id'] ) || 0 !== strpos( $c['id'], 'tokenforge' ); // Ours and the scale categories (tokenforge_text …).
 				}
 			)
 		);
@@ -123,6 +130,10 @@ function tokenforge_uninstall_site() {
 			)
 		);
 		update_option( 'bricks_global_classes_categories', $ccats );
+	}
+	// The builder's style manager CSS file still holds our scale variables until it is rebuilt.
+	if ( is_callable( array( '\Bricks\Ajax', 'generate_style_manager_css_file' ) ) ) {
+		\Bricks\Ajax::generate_style_manager_css_file();
 	}
 }
 

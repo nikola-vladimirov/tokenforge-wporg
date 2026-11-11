@@ -79,6 +79,24 @@ class Ai {
 		return 'This site is styled with the TokenForge CSS framework. Before creating or styling pages, call the tool tokenforge-get-framework once, then build with its classes and var(--tokens) instead of hard-coded colours, sizes and spacing. Check new CSS with tokenforge-check-css; look things up with tokenforge-search.';
 	}
 
+	/**
+	 * How to name your own classes (BEM).
+	 *
+	 * @return string
+	 */
+	public static function bem_rule() {
+		return 'Name it BEM: `block__element--modifier`, all lowercase Latin letters, digits and hyphens. The block is what the component is (`case-study`, `pricing`, `team`), never a site or project prefix (`pd-`, `site-`) and never a layout word a TokenForge class already covers (`grid`, `row`, `stack`). Elements are one level only (`case-study__title`, not `case-study__header__title`); a variant is a modifier class next to the base class (`case-study case-study--featured`). Layout, spacing, colour and text size come from TokenForge classes on the same element (`case-study grid-2 gap-m`), so a BEM class holds only what is unique to the component.';
+	}
+
+	/**
+	 * How classes reach elements in Bricks.
+	 *
+	 * @return string
+	 */
+	public static function bricks_class_rule() {
+		return 'Every class is a Bricks global class. When you send HTML to the import tools, class names in `class=""` are matched to global classes. When you write element settings yourself, put global class ids in `_cssGlobalClasses` (create new BEM classes first with bricks-batch-create-global-classes, after bricks-list-global-classes, and give them their CSS there), never class names in `_cssClasses` (the "CSS classes" text field) and never component styles in an element\'s own custom CSS (`_cssCustom`, `%root%`).';
+	}
+
 	// ------------------------------------------------------------------
 	// Abilities
 	// ------------------------------------------------------------------
@@ -556,7 +574,7 @@ class Ai {
 			'## Rules',
 			'1. **No hard-coded design values.** Colours, font sizes, spacing, radius, shadows and widths come from tokens: `var(--primary)`, `var(--base-dark)`, `var(--text-l)`, `var(--h2)`, `var(--space-m)`, `var(--section-space-l)`, `var(--radius)`, `var(--shadow-2)`, `var(--content-width)`. Run `tokenforge-check-css` on your CSS to catch misses.',
 			'2. **Use framework classes first.** Buttons `btn--primary`, cards `card`, section spacing `section--l`, backgrounds `bg--dark`, text sizes `text--l`, heading looks `h3`, grids `grid-3`, gaps `gap-m`, padding `pad-m`. Look anything up with `tokenforge-search` (e.g. "outline button").',
-			'3. **Never restyle or redefine a TokenForge class** and never create a class or variable with a TokenForge name. For custom styling add your own BEM class (block__element--modifier) and use tokens inside it.',
+			'3. **Never restyle or redefine a TokenForge class** and never create a class or variable with a TokenForge name. For custom styling add your own BEM class and use tokens inside it. ' . self::bem_rule(),
 			'4. **Let the automatic layout work.** Top-level `<section>` elements already get side gutters (`var(--gutter)`) and vertical padding (`var(--section-space-m)`)' . ( ! empty( $c['auto_container_gap'] ) ? '; their children are spaced by `var(--container-gap)`' : '' ) . ( ! empty( $c['auto_content_gap'] ) ? ', and children of containers/blocks/divs by `var(--content-gap)`' : '' ) . '. Do not add margins between stacked elements or padding to sections unless the design needs a different size: then use `section--{size}` or `section--{a}-to-{b}`.',
 			'5. **Typography is global.** Body text and h1 to h6 already have fonts, fluid sizes, line heights and colours. Do not set font-family, font-size or line-height on headings or paragraphs; to make any element look like a heading use the class `h2`, for bigger body text `text--l`.',
 			'6. **Colour contexts.** On a dark section use `bg--dark` or `bg--ultra-dark`: text, headings, links and buttons inside switch to readable colours automatically. Light: `bg--light`, `bg--ultra-light`.' . ( 'auto' === $sch['dark_mode'] ? ' Dark mode is on: colour tokens have light and dark values (light-dark()), so always use tokens.' : '' ),
@@ -573,7 +591,7 @@ class Ai {
 			'',
 			'## Page structure',
 			$bricks
-				? 'Bricks: `<section>` (full width, gets gutters and padding) → `<div class="brxe-container">` (' . ( ! empty( $c['container_width'] ) ? 'centred at the content width' : 'Bricks container' ) . ') → content. Put TokenForge class names straight into `class=""`: they already exist as Bricks global classes, so do not send CSS rules for them and do not recreate them.'
+				? 'Bricks: `<section>` (full width, gets gutters and padding) → `<div class="brxe-container">` (' . ( ! empty( $c['container_width'] ) ? 'centred at the content width' : 'Bricks container' ) . ') → content. Put TokenForge class names straight into `class=""`: they already exist as Bricks global classes, so do not send CSS rules for them and do not recreate them. ' . self::bricks_class_rule()
 				: 'Use `<section>` for full-width bands (they get gutters and padding) and a `<div class="container">` inside to centre content at the content width.',
 			'Content grid: `content-grid` on a section makes children sit in a centred column; `content--feature`, `content--feature-max`, `content--full` break out wider.',
 			'',
@@ -1072,7 +1090,7 @@ class Ai {
 	 * @return string
 	 */
 	public function bricks_start_here( $text ) {
-		return rtrim( (string) $text ) . "\n\n## TokenForge (this site’s CSS framework)\n\n" . self::pointer() . "\n\n- Put TokenForge class names (btn--primary, card, section--l, bg--dark, grid-3 …) directly in the HTML class attribute; they already exist as global classes, so send no CSS for them and never recreate them.\n- In your own classes use var(--tokens) for every colour, size, spacing, radius and shadow.\n- Sections already get gutters and padding, and stacked children get automatic gaps: do not add margins or section padding unless the design needs a different size.\n- Headings and body text are styled globally: do not set font-family, font-size or line-height on them.\n";
+		return rtrim( (string) $text ) . "\n\n## TokenForge (this site’s CSS framework)\n\n" . self::pointer() . "\n\n- Put TokenForge class names (btn--primary, card, section--l, bg--dark, grid-3 …) directly in the HTML class attribute; they already exist as global classes, so send no CSS for them and never recreate them.\n- " . self::bricks_class_rule() . "\n- Your own classes: " . self::bem_rule() . "\n- In your own classes use var(--tokens) for every colour, size, spacing, radius and shadow.\n- Sections already get gutters and padding, and stacked children get automatic gaps: do not add margins or section padding unless the design needs a different size.\n- Headings and body text are styled globally: do not set font-family, font-size or line-height on them.\n";
 	}
 
 	/**
@@ -1097,6 +1115,8 @@ class Ai {
 				'rules'     => array(
 					'Use TokenForge classes in HTML as they are (btn--primary, card, section--l, bg--dark, grid-3, gap-m, text--l, h2); do not send CSS for them or recreate them.',
 					'Use var(--tokens) for every colour, font size, spacing, radius, shadow and width in custom CSS.',
+					'Your own classes: ' . self::bem_rule(),
+					self::bricks_class_rule(),
 					'Sections get gutters and padding, stacked children get gaps, headings and text are styled globally.',
 				),
 				'colors'    => array_keys( $t['colors'] ),

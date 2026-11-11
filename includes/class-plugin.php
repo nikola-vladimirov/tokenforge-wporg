@@ -78,6 +78,7 @@ class Plugin {
 			new Features\Form_Presets(); // form, field, style and saved presets (when switched on).
 			new Features\Form_Submissions(); // the builder's submissions screen, extended (when switched on).
 			new Platforms\Bricks_Theme(); // TokenForge <-> the site's Bricks theme style.
+			new Platforms\Bricks_Style_Manager(); // TokenForge <-> the Style Manager's scales and settings.
 			new Font_Convert(); // Bricks font manager: TTF/OTF faces get a WOFF2 (or WOFF) file.
 		}
 

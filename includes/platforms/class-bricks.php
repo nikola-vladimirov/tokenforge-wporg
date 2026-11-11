@@ -127,7 +127,7 @@ class Bricks {
 	 */
 	public static function is_ours( $entry ) {
 		return isset( $entry['id'] ) && 0 === strpos( (string) $entry['id'], self::VAR_ID_PREFIX )
-			&& isset( $entry['category'] ) && self::CATEGORY_ID === $entry['category'];
+			&& isset( $entry['category'] ) && ( self::CATEGORY_ID === $entry['category'] || isset( Bricks_Style_Manager::scales()[ $entry['category'] ] ) );
 	}
 
 	/**
@@ -301,7 +301,7 @@ class Bricks {
 	 * @return void
 	 */
 	private function sync_variables( $tokens, $category_name, $prune = false ) {
-		$vars = (array) get_option( 'bricks_global_variables', array() );
+		$vars = Bricks_Style_Manager::adopt( (array) get_option( 'bricks_global_variables', array() ) ); // Rows the builder re-created get our ids back.
 		$cats = (array) get_option( 'bricks_global_variables_categories', array() );
 
 		// Ensure our category exists.
@@ -349,6 +349,15 @@ class Bricks {
 				'value'    => $t['value'],
 				'category' => self::CATEGORY_ID,
 			);
+			// Scale steps sit in the Style Manager's scale categories (Bricks_Style_Manager).
+			$scale = Bricks_Style_Manager::scale_of( $t['name'] );
+			if ( $scale ) {
+				$entry['category'] = $scale[0];
+				$entry['scale']    = array(
+					'scale'     => $scale[1],
+					'scaleName' => $scale[2],
+				);
+			}
 			if ( isset( $by_id[ $id ] ) ) {
 				$vars[ $by_id[ $id ] ] = $entry;
 			} else {
@@ -356,7 +365,40 @@ class Bricks {
 			}
 		}
 
-		update_option( 'bricks_global_variables', array_values( $vars ) );
+		update_option( 'bricks_global_variables', self::scale_order( array_values( $vars ) ) );
+	}
+
+	/**
+	 * Put each scale's variables in step order (small to large) in the slots
+	 * they already take: the builder regenerates a scale by position.
+	 *
+	 * @param array $vars Variables.
+	 * @return array
+	 */
+	public static function scale_order( $vars ) {
+		$slots = array();
+		foreach ( $vars as $i => $v ) {
+			if ( isset( $v['category'], $v['scale']['scale'] ) && isset( Bricks_Style_Manager::scales()[ $v['category'] ] ) ) {
+				$slots[ $v['category'] ][] = $i;
+			}
+		}
+		foreach ( $slots as $idx ) {
+			$rows = array();
+			foreach ( $idx as $i ) {
+				$rows[] = $vars[ $i ];
+			}
+			usort(
+				$rows,
+				function ( $a, $b ) {
+					$d = $a['scale']['scale'] - $b['scale']['scale'];
+					return 0 !== $d ? $d : strcmp( (string) $a['id'], (string) $b['id'] );
+				}
+			);
+			foreach ( $idx as $n => $i ) {
+				$vars[ $i ] = $rows[ $n ];
+			}
+		}
+		return $vars;
 	}
 
 	/**

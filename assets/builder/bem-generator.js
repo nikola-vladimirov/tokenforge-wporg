@@ -26,7 +26,21 @@
 	function unref( v ) { return ( v && v.__v_isRef ) ? v.value : v; }
 	function content( g ) { var s = unref( g.$_state ); return ( s && s.content ) || []; }
 	function classes( g ) { var s = unref( g.$_state ); return unref( g.$_globalClasses ) || ( s && unref( s.globalClasses ) ) || []; } // $_globalClasses and $_state.globalClasses are the same list
-	function kebab( s ) { return ( s || '' ).toString().trim().toLowerCase().replace( /[^a-z0-9]+/g, '-' ).replace( /^-|-$/g, '' ); }
+	// Cyrillic to Latin (Bulgarian streamlined system, plus the other common letters); other accents are stripped.
+	var CYR = { 'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sht', 'ъ': 'a', 'ь': 'y', 'ю': 'yu', 'я': 'ya', 'ё': 'yo', 'ы': 'y', 'э': 'e', 'є': 'ye', 'і': 'i', 'ї': 'yi', 'ґ': 'g', 'ў': 'u', 'ђ': 'dj', 'ј': 'j', 'љ': 'lj', 'њ': 'nj', 'ћ': 'c', 'џ': 'dz', 'ѓ': 'gj', 'ќ': 'kj', 'ѕ': 'dz' };
+	function latin( s ) {
+		s = ( s || '' ).toString().toLowerCase().replace( /[Ѐ-ӿ]/g, function ( c ) { return CYR[ c ] != null ? CYR[ c ] : ''; } );
+		return s.normalize ? s.normalize( 'NFD' ).replace( /[̀-ͯ]/g, '' ) : s;
+	}
+	function kebab( s ) { return latin( s ).trim().replace( /[^a-z0-9]+/g, '-' ).replace( /^-|-$/g, '' ); }
+	// Element part for an element the user has not renamed: its type in English, so a translated builder still gives card__image.
+	var TYPE_PART = { 'text-basic': 'text', 'rich-text': 'text', 'text-link': 'link', 'nav-menu': 'nav', 'nav-nested': 'nav', 'div': 'content', 'block': 'content', 'container': 'content' };
+	function partOf( g, el ) {
+		var named = kebab( el.label );
+		if ( named ) { return named; }
+		var type = kebab( el.name );
+		return TYPE_PART[ type ] || type || kebab( labelOf( g, el ) ) || 'item';
+	}
 	function rid() { var s = ''; while ( s.length < 6 ) { s += Math.random().toString( 36 ).slice( 2 ); } return s.slice( 0, 6 ); }
 	function userId() { try { return ( window.bricksData && bricksData.user && bricksData.user.id ) || 0; } catch ( e ) { return 0; } }
 
@@ -87,7 +101,7 @@
 		if ( ! root ) { return; }
 		closeDialog();
 
-		var block = kebab( labelOf( g, root ) ) || 'block';
+		var block = kebab( root.label ) || 'block'; // an unnamed Div gives "block", selected below for typing
 		var kids = descendants( g, root );
 
 		var overlay = el( 'div', 'tf-bem-overlay' );
@@ -97,7 +111,7 @@
 				'<div class="tf-bem-mbody">' +
 					'<label class="tf-bem-lbl">Block name</label>' +
 					'<input class="tf-bem-block" type="text" value="' + esc( block ) + '">' +
-					'<div class="tf-bem-hint">' + ( kids.length ) + ' descendant element(s). Each gets <code>block__&lt;label&gt;</code>. Edit any class below.</div>' +
+					'<div class="tf-bem-hint">' + ( kids.length ) + ' descendant element(s). Each gets <code>block__element</code> from its label, or its type when it has no label of its own. Edit any class below.</div>' +
 					'<div class="tf-bem-rows"></div>' +
 				'</div>' +
 				'<div class="tf-bem-mfoot"><span class="tf-bem-note"></span><button class="tf-bem-apply">Apply Classes</button></div>' +
@@ -110,12 +124,13 @@
 
 		// row model: {id, label, custom:false, cls}
 		var rows = [ { id: root.id, label: labelOf( g, root ), isRoot: true } ].concat(
-			kids.map( function ( k ) { return { id: k.id, label: labelOf( g, k ), isRoot: false }; } )
+			kids.map( function ( k ) { return { id: k.id, label: labelOf( g, k ), part: partOf( g, k ), isRoot: false }; } )
 		);
 
 		function classFor( r ) {
 			if ( r.custom != null ) { return r.custom; }
-			return r.isRoot ? blockInput.value.trim() : ( blockInput.value.trim() + '__' + kebab( r.label ) );
+			var b = kebab( blockInput.value ) || 'block';
+			return r.isRoot ? b : ( b + '__' + r.part );
 		}
 		function renderRows() {
 			rowsEl.innerHTML = '';

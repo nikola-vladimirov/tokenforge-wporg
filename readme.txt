@@ -4,7 +4,7 @@ Tags: design tokens, css variables, accessibility, woocommerce
 Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.55.0
+Stable tag: 0.56.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -173,6 +173,16 @@ Privacy: https://policies.google.com/privacy
 
 The accessibility checker (axe-core, MPL 2.0) is bundled with the plugin and runs only in the builder when an administrator presses Run check. Nothing else is contacted.
 
+= How do I connect an AI agent (Claude, ChatGPT, Cursor) to TokenForge? =
+
+TokenForge's tools for AI agents are on by default (Options, AI agents). They reach your AI client through the WordPress MCP Adapter, the same connection the builder's own AI tools use:
+
+1. Install and activate the MCP Adapter plugin (https://github.com/WordPress/mcp-adapter). With Bricks 2.4 or later, Bricks > AI installs it for you and walks you through every step.
+2. Create an application password for your user (Users > Profile > Application Passwords).
+3. Add the site to your AI client as an MCP server that runs `npx -y @automattic/mcp-wordpress-remote@latest`, with three environment values: WP_API_URL (your site's `/wp-json/mcp/mcp-adapter-default-server`), WP_API_USERNAME (your user name) and WP_API_PASSWORD (the application password). Bricks > AI shows this setup ready to copy for each client.
+
+The agent then sees `tokenforge-get-framework`, `tokenforge-search`, `tokenforge-check-css` and `tokenforge-get-recipe`. The server instructions and, on Bricks, the builder's own start-here guide tell it to call `tokenforge-get-framework` first. That guide covers the tokens, the classes, BEM naming for its own classes (block__element--modifier, no site prefix) and, on Bricks, how classes are added: as global classes, never typed into an element's CSS classes field.
+
 = Can I translate TokenForge? =
 
 Yes. The dashboard and the builder settings use the `tokenforge` text domain, so translations from translate.wordpress.org are loaded automatically.
@@ -192,6 +202,12 @@ No. The limit counts sends, not people, so one visitor or a script can send the 
 == Changelog ==
 
 The full history is in CHANGELOG.md, also shown from the Changelog link next to TokenForge on the Plugins screen.
+
+= 0.56.0 =
+* Bricks Style Manager: the text, heading and space sizes show as typography and spacing scales, and the HTML font size, screen widths and default mode fill its Settings. Changes made there come back into TokenForge.
+* AI agents: the guide now covers BEM naming for an agent's own classes and, on Bricks, adding classes as global classes. The FAQ explains how to connect an AI client through the MCP Adapter.
+* Fixed: the BEM class generator gave empty names in a builder shown in another alphabet (such as Bulgarian); labels are transliterated and unnamed elements are named by type.
+* Deleting TokenForge also removes its short upgrade lock. The admin bar menu shows the TokenForge icon.
 
 = 0.55.0 =
 * Flex grids: flex-grid-1 to flex-grid-12 with equal-width items and a centred last row, flex-grid--start, flex-grid--end and flex-grid--stretch, and per-breakpoint counts such as flex-grid-2-at-m.
