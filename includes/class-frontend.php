@@ -220,7 +220,7 @@ class Frontend {
 		$bar->add_node(
 			array(
 				'id'    => 'tokenforge',
-				'title' => '<span class="ab-icon dashicons dashicons-art" style="top:2px"></span>' . esc_html__( 'TokenForge', 'tokenforge' ),
+				'title' => '<span class="ab-icon" aria-hidden="true" style="top:2px;width:20px;height:20px;background:url(' . esc_url( TOKENFORGE_URL . 'assets/admin/tokenforge-icon.svg' ) . ') center/20px no-repeat !important"></span>' . esc_html__( 'TokenForge', 'tokenforge' ),
 				'href'  => admin_url( 'admin.php?page=tokenforge' ),
 			)
 		);
