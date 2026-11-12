@@ -1,0 +1,203 @@
+/* TokenForge: block editor interface. Every part sits behind a class that editor.js adds for its switch. */
+
+/* ---- Class field (top of the block sidebar). Light by default, dark with the dark interface. */
+.tf-class-field { --tfb-bg: #fff; --tfb-line: #949494; --tfb-text: #1e1e1e; --tfb-muted: #50575e; --tfb-chip: #f0f0f0; --tfb-accent: var(--wp-admin-theme-color, #3858e9); --tfb-on-accent: #fff;
+	position: relative; padding: 0 16px 12px; color: var(--tfb-text); font-size: 13px; }
+.tf-class-field * { box-sizing: border-box; }
+.tf-class-label { display: block; margin: 0 0 6px; font-size: 11px; font-weight: 500; text-transform: uppercase; }
+.tf-class-box { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; min-height: 32px; padding: 3px; background: var(--tfb-bg); border: 1px solid var(--tfb-line); border-radius: 2px; }
+.tf-class-box:focus-within { border-color: var(--tfb-accent); box-shadow: 0 0 0 1px var(--tfb-accent); }
+.tf-class-chips { display: contents; margin: 0; padding: 0; list-style: none; }
+.tf-class-chip { display: inline-flex; align-items: center; max-width: 100%; margin: 0; padding: 0 0 0 6px; background: var(--tfb-chip); border-radius: 2px; font: 12px/22px Menlo, Consolas, monospace; overflow-wrap: anywhere; }
+.tf-class-chip-x { width: 24px; height: 24px; margin: 0; padding: 0; border: 0; border-radius: 2px; background: transparent; color: var(--tfb-muted); font-size: 15px; line-height: 1; cursor: pointer; }
+.tf-class-chip-x:hover { color: var(--tfb-text); }
+.tf-class-chip-x:focus-visible { outline: 2px solid var(--tfb-accent); outline-offset: -2px; color: var(--tfb-text); }
+.tf-class-field input.tf-class-input { flex: 1 1 80px; min-width: 80px; min-height: 24px; margin: 0; padding: 0 4px; border: 0; border-radius: 0; background: transparent; box-shadow: none; outline: 0; color: inherit; font: 12px/22px Menlo, Consolas, monospace; }
+.tf-class-field input.tf-class-input::placeholder { color: var(--tfb-muted); opacity: 1; }
+.tf-class-list { position: absolute; z-index: 10; left: 16px; right: 16px; max-height: 240px; margin: 2px 0 0; padding: 4px; overflow-y: auto; list-style: none; background: var(--tfb-bg); border: 1px solid var(--tfb-line); border-radius: 2px; box-shadow: 0 4px 12px rgba(0, 0, 0, .2); }
+.tf-class-list[hidden] { display: none; }
+.tf-class-option { margin: 0; padding: 4px 6px; border-radius: 2px; font: 12px/1.4 Menlo, Consolas, monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+.tf-class-preview { color: var(--tfb-muted); }
+.tf-class-option:hover { background: var(--tfb-chip); }
+.tf-class-option[aria-selected="true"] { background: var(--tfb-accent); color: var(--tfb-on-accent); }
+.tf-class-option[aria-selected="true"] .tf-class-preview { color: inherit; }
+
+/* ---- Window button in the editor header */
+.components-button.tf-be-window { margin-right: 4px; font-weight: 600; }
+
+/* ---- Compact interface */
+.tf-be-compact .block-editor-block-card { padding: 10px 12px; }
+.tf-be-compact .components-panel__body.is-opened { padding: 10px 12px; }
+.tf-be-compact .components-panel__body-toggle.components-button { padding: 10px 40px 10px 12px; }
+.tf-be-compact .components-panel__body.is-opened > .components-panel__body-title { margin: -10px -12px 4px; }
+.tf-be-compact .components-tools-panel { padding: 10px 12px; row-gap: 10px; }
+.tf-be-compact .components-panel__row { margin-top: 4px; min-height: 30px; }
+.tf-be-compact .components-base-control { margin-bottom: 0; }
+.tf-be-compact .components-panel__body .components-base-control:not(:last-child) { margin-bottom: 10px; }
+.tf-be-compact .tf-class-field { padding: 0 12px 8px; }
+.tf-be-compact .tf-class-list { left: 12px; right: 12px; }
+.tf-be-compact .block-editor-list-view-leaf .block-editor-list-view-block-contents { height: 28px; }
+.tf-be-compact .block-editor-inserter__panel-header { padding: 10px 12px 0; }
+.tf-be-compact .block-editor-inserter__panel-content { padding: 8px 12px; }
+
+/* Compact block settings, laid out like the builder's panels: one setting per row, the name on the left,
+   30px controls, names in normal case. Fields that need the width (padding, margin, radius) keep the name above. */
+.tf-be-compact .interface-interface-skeleton__sidebar .components-tools-panel { padding: 8px 12px 10px; row-gap: 6px; column-gap: 8px; }
+.tf-be-compact .interface-interface-skeleton__sidebar .components-tools-panel h2.components-heading { font-size: 12px; font-weight: 600; }
+.tf-be-compact .interface-interface-skeleton__sidebar .components-tools-panel .components-dropdown-menu__toggle.is-small { height: 24px; min-width: 24px; }
+.tf-be-compact .interface-interface-skeleton__sidebar .components-tools-panel .components-tools-panel-item.single-column { grid-column: 1 / -1; }
+.tf-be-compact .interface-interface-skeleton__sidebar :is(.components-base-control__label, .components-input-control__label, legend.components-base-control__label, .spacing-sizes-control__label) { font-size: 12px !important; font-weight: 400 !important; text-transform: none !important; line-height: 1.3 !important; }
+.tf-be-compact .interface-interface-skeleton__sidebar .block-editor-panel-color-gradient-settings__dropdown.components-button { height: 30px; min-height: 30px; padding: 0 8px; }
+.tf-be-compact .interface-interface-skeleton__sidebar .block-editor-tools-panel-color-gradient-settings__item { min-height: 30px; }
+.tf-be-compact .interface-interface-skeleton__sidebar :is(.components-input-control__container, .components-select-control__input, .components-input-control__input, .components-custom-select-control button, .components-toggle-group-control, .components-unit-control-wrapper input, .components-button.is-next-40px-default-size:not(.block-editor-panel-color-gradient-settings__dropdown)) { min-height: 30px !important; height: 30px !important; }
+.tf-be-compact .interface-interface-skeleton__sidebar .components-input-control__input { padding-top: 0 !important; padding-bottom: 0 !important; font-size: 12px !important; }
+.tf-be-compact .interface-interface-skeleton__sidebar .components-custom-select-control button { font-size: 12px; padding-top: 0; padding-bottom: 0; }
+.tf-be-compact .interface-interface-skeleton__sidebar .components-toggle-group-control-option-base { height: 26px; min-height: 26px; }
+.tf-be-compact .interface-interface-skeleton__sidebar .preset-input-control__wrapper { min-height: 30px; gap: 6px; }
+.tf-be-compact .interface-interface-skeleton__sidebar :is(.spacing-sizes-control__header, .components-border-radius-control__header) { margin-bottom: 4px; }
+/* Styles tab in the builder's order: block style variants, then spacing and size, text, background,
+   border and shadow, effects, and anything else (an add-on's panels) last. */
+.tf-be-compact .block-editor-block-inspector__tabs > :not([hidden]):has(> .components-tools-panel) { display: flex; flex-direction: column; }
+.tf-be-compact .block-editor-block-inspector__tabs > :not([hidden]):has(> .components-tools-panel) > * { order: 20; }
+.tf-be-compact .block-editor-block-inspector__tabs > :not([hidden]):has(> .components-tools-panel) > :has(.block-editor-block-styles) { order: 0; }
+.tf-be-compact .block-editor-block-inspector__tabs > :not([hidden]):has(> .components-tools-panel) > .dimensions-block-support-panel { order: 1; }
+.tf-be-compact .block-editor-block-inspector__tabs > :not([hidden]):has(> .components-tools-panel) > .typography-block-support-panel { order: 2; }
+.tf-be-compact .block-editor-block-inspector__tabs > :not([hidden]):has(> .components-tools-panel) > .color-block-support-panel { order: 3; }
+.tf-be-compact .block-editor-block-inspector__tabs > :not([hidden]):has(> .components-tools-panel) > .background-block-support-panel { order: 4; }
+.tf-be-compact .block-editor-block-inspector__tabs > :not([hidden]):has(> .components-tools-panel) > .border-block-support-panel { order: 5; }
+.tf-be-compact .block-editor-block-inspector__tabs > :not([hidden]):has(> .components-tools-panel) > .shadow-block-support-panel { order: 6; }
+.tf-be-compact .block-editor-block-inspector__tabs > :not([hidden]):has(> .components-tools-panel) > .filters-block-support-panel { order: 7; }
+/* Name left, control right: font size, number and unit fields, selects and button groups. */
+.tf-be-compact .interface-interface-skeleton__sidebar .components-tools-panel-item:has(> .components-font-size-picker) { display: grid; grid-template-columns: minmax(0, 42%) minmax(0, 1fr); align-items: center; column-gap: 8px; }
+.tf-be-compact .interface-interface-skeleton__sidebar .components-tools-panel-item:has(> .components-font-size-picker) > .components-font-size-picker > .components-spacer { margin-bottom: 0 !important; }
+.tf-be-compact .interface-interface-skeleton__sidebar .components-tools-panel-item > .components-input-control .components-input-base { flex-direction: row; align-items: center; gap: 8px; }
+.tf-be-compact .interface-interface-skeleton__sidebar .components-tools-panel-item > .components-input-control .components-input-base > .components-flex-item:first-child { flex: 0 0 calc(42% - 4px); margin: 0; }
+.tf-be-compact .interface-interface-skeleton__sidebar .components-tools-panel-item > .components-input-control .components-input-base > .components-input-control__container { flex: 1 1 auto; width: 100%; min-width: 0; }
+.tf-be-compact .interface-interface-skeleton__sidebar .components-tools-panel-item > .components-base-control > .components-base-control__field:has(> .components-base-control__label) { display: grid; grid-template-columns: minmax(0, 42%) minmax(0, 1fr); align-items: center; column-gap: 8px; }
+.tf-be-compact .interface-interface-skeleton__sidebar .components-tools-panel-item > .components-base-control > .components-base-control__field > .components-base-control__label { margin: 0; }
+
+/* ---- Sidebars swapped (block settings left, List View and inserter right) and resizable. Wide screens only:
+   below 782px WordPress shows each sidebar over the canvas. */
+@media (min-width: 782px) {
+	.tf-be-swap .interface-interface-skeleton__sidebar { order: -1; box-shadow: 1px 0 0 0 rgba(0, 0, 0, .133); }
+	.tf-be-swap .interface-interface-skeleton__secondary-sidebar { order: 2; box-shadow: -1px 0 0 0 rgba(0, 0, 0, .133); }
+	.tf-be-sized-side .interface-interface-skeleton__sidebar :is(.interface-complementary-area__fill, .interface-complementary-area) { width: var(--tf-be-side-w) !important; }
+	.tf-be-sized-list .interface-interface-skeleton__secondary-sidebar :is(.editor-list-view-sidebar, .editor-inserter-sidebar) { width: var(--tf-be-list-w) !important; }
+	.tf-be-resize :is(.interface-interface-skeleton__sidebar, .interface-interface-skeleton__secondary-sidebar) { position: relative; }
+	.tf-be-resizer { position: absolute; z-index: 30; top: 0; bottom: 0; width: 6px; cursor: col-resize; touch-action: none; }
+	/* The handle sits on the edge next to the canvas (logical sides, so right-to-left screens work too), in a 6px strip
+	   of its own so it never covers the sidebar's scroll bar. */
+	.interface-interface-skeleton__sidebar > .tf-be-resizer, .tf-be-swap .interface-interface-skeleton__secondary-sidebar > .tf-be-resizer { inset-inline-start: 0; inset-inline-end: auto; }
+	.interface-interface-skeleton__secondary-sidebar > .tf-be-resizer, .tf-be-swap .interface-interface-skeleton__sidebar > .tf-be-resizer { inset-inline-end: 0; inset-inline-start: auto; }
+	.tf-be-resize:not(.tf-be-swap) .interface-interface-skeleton__sidebar:has(> .tf-be-resizer), .tf-be-swap .interface-interface-skeleton__secondary-sidebar:has(> .tf-be-resizer) { padding-inline-start: 6px; }
+	.tf-be-resize:not(.tf-be-swap) .interface-interface-skeleton__secondary-sidebar:has(> .tf-be-resizer), .tf-be-swap .interface-interface-skeleton__sidebar:has(> .tf-be-resizer) { padding-inline-end: 6px; }
+	.tf-be-resizer:hover, .tf-be-resizer:focus-visible, .tf-be-resizing .tf-be-resizer { background: var(--wp-admin-theme-color, #3858e9); outline: 0; }
+	.tf-be-resizing, .tf-be-resizing * { cursor: col-resize !important; user-select: none; }
+	.tf-be-resizing iframe { pointer-events: none; }
+}
+@media (max-width: 781px) {
+	.tf-be-resizer { display: none; }
+}
+
+/* ---- Inserter as a list, one block per row */
+.tf-be-inserter-list .block-editor-block-types-list > [role="presentation"] { display: block; }
+.tf-be-inserter-list .block-editor-block-types-list__list-item { width: 100%; }
+.tf-be-inserter-list .components-button.block-editor-block-types-list__item { flex-direction: row; align-items: center; justify-content: flex-start; gap: 8px; padding: 2px 8px; }
+.tf-be-inserter-list .block-editor-block-types-list__item-icon { padding: 4px; }
+.tf-be-inserter-list .block-editor-block-types-list__item-title { padding: 0; font-size: 13px; text-align: left; }
+
+/* ---- Dark interface (the TokenForge window look): header, sidebars, inserter, List View, popovers.
+   The surfaces get the editor's own colour tokens in dark; the rules below fix the colours WordPress writes as fixed values. */
+.tf-be-dark :is(.interface-interface-skeleton__header, .interface-interface-skeleton__sidebar, .interface-interface-skeleton__secondary-sidebar, .interface-interface-skeleton__footer, .interface-interface-skeleton__actions, .components-popover__content) {
+	--tfd-bg: #161a1d; --tfd-panel: #23292f; --tfd-hover: #2b333a; --tfd-line: #343d46; --tfd-control: #6c7f93; --tfd-text: #e2e6e9; --tfd-muted: #8a99a8; --tfd-accent: #ffd54d; --tfd-ink: #1e2124;
+	color-scheme: dark; background-color: var(--tfd-panel); color: var(--tfd-text);
+	--wp-admin-theme-color: var(--tfd-accent); --wp-admin-theme-color--rgb: 255, 213, 77;
+	--wp-admin-theme-color-darker-10: #f2c63a; --wp-admin-theme-color-darker-10--rgb: 242, 198, 58;
+	--wp-admin-theme-color-darker-20: #e0b528; --wp-admin-theme-color-darker-20--rgb: 224, 181, 40;
+	--wp-components-color-accent: var(--tfd-accent); --wp-components-color-accent-darker-10: #f2c63a; --wp-components-color-accent-darker-20: #e0b528; --wp-components-color-accent-inverted: var(--tfd-ink);
+	--wp-components-color-background: var(--tfd-panel); --wp-components-color-foreground: var(--tfd-text); --wp-components-color-foreground-inverted: var(--tfd-ink);
+	--wp-components-color-gray-100: var(--tfd-hover); --wp-components-color-gray-200: var(--tfd-line); --wp-components-color-gray-300: var(--tfd-line); --wp-components-color-gray-400: var(--tfd-line);
+	--wp-components-color-gray-600: var(--tfd-control); --wp-components-color-gray-700: var(--tfd-muted); --wp-components-color-gray-800: #c5ccd3; --wp-components-color-gray-900: var(--tfd-text);
+	--wpds-color-foreground-content-neutral: var(--tfd-text); --wpds-color-foreground-content-neutral-weak: var(--tfd-muted);
+	--wpds-color-foreground-interactive-neutral: var(--tfd-text); --wpds-color-foreground-interactive-neutral-active: var(--tfd-text); --wpds-color-foreground-interactive-neutral-strong: var(--tfd-ink);
+	--wpds-color-foreground-interactive-neutral-weak: var(--tfd-muted); --wpds-color-foreground-interactive-neutral-weak-active: var(--tfd-text);
+	--wpds-color-foreground-interactive-brand: var(--tfd-accent); --wpds-color-foreground-interactive-brand-active: var(--tfd-accent); --wpds-color-foreground-interactive-brand-strong: var(--tfd-ink); --wpds-color-foreground-interactive-brand-strong-active: var(--tfd-ink);
+	--wpds-color-background-surface-neutral: var(--tfd-panel); --wpds-color-background-surface-neutral-strong: var(--tfd-panel); --wpds-color-background-surface-neutral-weak: var(--tfd-bg);
+	--wpds-color-background-interactive-neutral-weak: transparent; --wpds-color-background-interactive-neutral-weak-active: var(--tfd-hover); --wpds-color-background-interactive-neutral-strong-active: var(--tfd-text);
+	--wpds-color-background-interactive-brand-weak: transparent; --wpds-color-background-interactive-brand-weak-active: var(--tfd-hover);
+	--wpds-color-background-interactive-brand-strong: var(--tfd-accent); --wpds-color-background-interactive-brand-strong-active: #f2c63a;
+	--wpds-color-stroke-surface-neutral: var(--tfd-line); --wpds-color-stroke-surface-neutral-weak: var(--tfd-line); --wpds-color-stroke-surface-brand: var(--tfd-accent);
+	--wpds-color-stroke-interactive-neutral: var(--tfd-control); --wpds-color-stroke-interactive-neutral-active: var(--tfd-text); --wpds-color-stroke-interactive-neutral-strong: var(--tfd-text);
+	--wpds-color-stroke-interactive-brand: var(--tfd-accent); --wpds-color-stroke-interactive-brand-active: var(--tfd-accent); --wpds-color-stroke-focus: var(--tfd-accent);
+}
+.tf-be-dark .components-popover__content { box-shadow: 0 0 0 1px var(--tfd-line), 0 8px 24px rgba(0, 0, 0, .45); }
+.tf-be-dark .interface-interface-skeleton__header { box-shadow: 0 1px 0 0 var(--tfd-line); }
+
+/* The class field inside the dark sidebar. */
+.tf-be-dark .tf-class-field { --tfb-bg: var(--tfd-bg); --tfb-line: var(--tfd-control); --tfb-text: var(--tfd-text); --tfb-muted: var(--tfd-muted); --tfb-chip: var(--tfd-line); --tfb-accent: var(--tfd-accent); --tfb-on-accent: var(--tfd-ink); }
+
+/* Surfaces WordPress paints white. */
+.tf-be-dark :is(.interface-interface-skeleton__header, .interface-interface-skeleton__sidebar, .interface-interface-skeleton__secondary-sidebar, .interface-interface-skeleton__footer, .interface-interface-skeleton__actions, .components-popover__content) :is(
+	.editor-header, .editor-document-bar, .components-panel, .interface-complementary-area, .interface-complementary-area-header, .block-editor-tabbed-sidebar, .block-editor-tabbed-sidebar__close-button,
+	.block-editor-inserter__search, .block-editor-inserter__category-panel, .components-popover__header, .block-editor-block-inspector__no-blocks, .block-editor-block-inspector__no-block-tools,
+	.block-editor-block-contextual-toolbar, .components-accessible-toolbar, .block-editor-block-breadcrumb, .block-editor-url-input__suggestion, .block-editor-link-control__search-item[aria-selected],
+	.editor-post-publish-panel, .editor-post-publish-panel__header, .entities-saved-states__panel-header, .editor-list-view-sidebar, .editor-inserter-sidebar,
+	.components-form-toggle .components-form-toggle__track, .components-checkbox-control__input[type="checkbox"]:not(:checked)
+) { background-color: var(--tfd-panel); }
+.tf-be-dark :is(.interface-interface-skeleton__header, .interface-interface-skeleton__sidebar, .interface-interface-skeleton__secondary-sidebar, .interface-interface-skeleton__footer, .interface-interface-skeleton__actions, .components-popover__content) :is(
+	.components-panel__body > .components-panel__body-title:hover, .block-editor-tools-panel-color-gradient-settings__dropdown > button.is-open,
+	.block-editor-global-styles-filters-panel__dropdown-toggle.is-open, .block-editor-global-styles__shadow-dropdown-toggle.is-open, .components-menu-item__button:hover
+) { background-color: var(--tfd-hover); }
+
+/* Text WordPress paints near black. */
+.tf-be-dark :is(.interface-interface-skeleton__header, .interface-interface-skeleton__sidebar, .interface-interface-skeleton__secondary-sidebar, .interface-interface-skeleton__footer, .interface-interface-skeleton__actions, .components-popover__content) :is(
+	h2, h3, label, legend, .components-panel__body-toggle.components-button, .components-panel__arrow, .block-editor-block-card, .block-editor-block-card__title,
+	.components-button.block-editor-block-types-list__item, .block-editor-block-types-list__item-icon, .interface-complementary-area, .editor-document-bar__title,
+	.block-editor-block-breadcrumb__button.block-editor-block-breadcrumb__button, .block-editor-block-breadcrumb__current, .components-button-group .components-button,
+	.block-editor-block-styles__variants button.components-button.block-editor-block-styles__item, .link-preview-button__title, .link-preview-button__icon, .document-outline__button,
+	.components-form-token-field__token, .components-menu-item__button, .block-editor-list-view-leaf:not(.is-selected) .block-editor-list-view-block-contents
+) { color: var(--tfd-text); }
+.tf-be-dark :is(.interface-interface-skeleton__header, .interface-interface-skeleton__sidebar, .interface-interface-skeleton__secondary-sidebar, .interface-interface-skeleton__footer, .interface-interface-skeleton__actions, .components-popover__content) :is(
+	.components-base-control__help, .block-editor-block-card__description, .editor-document-bar__post-type-label, .components-menu-item__info, .components-menu-item__shortcut, .block-editor-inserter__no-results
+) { color: var(--tfd-muted); }
+
+/* Lines. */
+.tf-be-dark :is(.interface-interface-skeleton__header, .interface-interface-skeleton__sidebar, .interface-interface-skeleton__secondary-sidebar, .interface-interface-skeleton__footer, .interface-interface-skeleton__actions, .components-popover__content),
+.tf-be-dark :is(.interface-interface-skeleton__header, .interface-interface-skeleton__sidebar, .interface-interface-skeleton__secondary-sidebar, .interface-interface-skeleton__footer, .interface-interface-skeleton__actions, .components-popover__content) :is(
+	.components-panel, .components-panel__body, .components-panel__header, .interface-complementary-area-header, .interface-complementary-area hr, .block-editor-tabbed-sidebar__tablist-and-close-button,
+	.block-editor-inserter__search.is-scrolled, .block-editor-inserter__category-panel, .block-editor-inserter__tips, .block-editor-inserter__quick-inserter-separator,
+	.block-editor-block-inspector__no-block-tools, .block-editor-color-gradient-item, .block-editor-block-toolbar .components-toolbar-group, .block-editor-block-toolbar .components-toolbar, .components-accessible-toolbar,
+	.components-dropdown__content .components-menu-group + .components-menu-group, .editor-post-publish-panel, .editor-post-publish-panel__header, .entities-saved-states__panel-header,
+	.editor-list-view-sidebar__outline, .block-editor-block-styles__variants button.components-button.block-editor-block-styles__item
+) { border-color: var(--tfd-line); }
+
+/* Controls: darker field, a border that reads on the panel (3:1 or more). */
+.tf-be-dark :is(.interface-interface-skeleton__header, .interface-interface-skeleton__sidebar, .interface-interface-skeleton__secondary-sidebar, .interface-interface-skeleton__footer, .interface-interface-skeleton__actions, .components-popover__content) :is(
+	input[type="text"], input[type="number"], input[type="search"], input[type="url"], input[type="email"], input[type="password"], textarea, select,
+	.components-text-control__input, .components-textarea-control__input, .components-select-control__input, .components-input-control__input, .components-search-control__input,
+	.components-form-token-field__input-container, .components-combobox-control__suggestions-container, .components-input-control__container
+) { background-color: var(--tfd-bg); color: var(--tfd-text); border-color: var(--tfd-control); }
+.tf-be-dark :is(.interface-interface-skeleton__header, .interface-interface-skeleton__sidebar, .interface-interface-skeleton__secondary-sidebar, .interface-interface-skeleton__footer, .interface-interface-skeleton__actions, .components-popover__content) :is(
+	.components-input-control__backdrop, .components-form-toggle .components-form-toggle__track, .components-checkbox-control__input[type="checkbox"]:not(:checked)
+) { border-color: var(--tfd-control); }
+.tf-be-dark :is(.interface-interface-skeleton__header, .interface-interface-skeleton__sidebar, .interface-interface-skeleton__secondary-sidebar, .interface-interface-skeleton__footer, .interface-interface-skeleton__actions, .components-popover__content) :is(input, textarea)::placeholder { color: var(--tfd-muted); opacity: 1; }
+
+/* Marks on the accent: WordPress draws them white, which does not read on the yellow accent.
+   Scoped like the rest: outside the dark surfaces (dialogs) the accent stays the WordPress one. */
+.tf-be-dark :is(.interface-interface-skeleton__header, .interface-interface-skeleton__sidebar, .interface-interface-skeleton__secondary-sidebar, .interface-interface-skeleton__footer, .interface-interface-skeleton__actions, .components-popover__content) .components-form-toggle:not(.is-checked) .components-form-toggle__thumb { background-color: var(--tfd-text); }
+.tf-be-dark :is(.interface-interface-skeleton__header, .interface-interface-skeleton__sidebar, .interface-interface-skeleton__secondary-sidebar, .interface-interface-skeleton__footer, .interface-interface-skeleton__actions, .components-popover__content) :is(
+	.components-form-toggle.is-checked .components-form-toggle__thumb
+) { background-color: var(--tfd-ink); }
+.tf-be-dark :is(.interface-interface-skeleton__header, .interface-interface-skeleton__sidebar, .interface-interface-skeleton__secondary-sidebar, .interface-interface-skeleton__footer, .interface-interface-skeleton__actions, .components-popover__content) :is(
+	svg.components-checkbox-control__checked, svg.components-checkbox-control__indeterminate
+) { fill: var(--tfd-ink); }
+.tf-be-dark :is(.interface-interface-skeleton__header, .interface-interface-skeleton__sidebar, .interface-interface-skeleton__secondary-sidebar, .interface-interface-skeleton__footer, .interface-interface-skeleton__actions, .components-popover__content) .components-checkbox-control__input[type="checkbox"]:checked::before { color: var(--tfd-ink); }
+.tf-be-dark :is(.interface-interface-skeleton__header, .interface-interface-skeleton__sidebar, .interface-interface-skeleton__secondary-sidebar, .interface-interface-skeleton__footer, .interface-interface-skeleton__actions, .components-popover__content) :is(
+	.block-editor-list-view-leaf.is-selected .block-editor-list-view-block-contents, .block-editor-list-view-leaf.is-selected .components-button.has-icon
+) { color: var(--tfd-ink); }
+.tf-be-dark :is(.interface-interface-skeleton__header, .interface-interface-skeleton__sidebar, .interface-interface-skeleton__secondary-sidebar, .interface-interface-skeleton__footer, .interface-interface-skeleton__actions, .components-popover__content) .block-editor-list-view-leaf.is-selected .block-editor-list-view-block-contents:focus::after { box-shadow: inset 0 0 0 2px var(--tfd-ink), 0 0 0 2px var(--tfd-accent); }
+.tf-be-dark .components-button.block-editor-block-types-list__item:not(:disabled, [aria-disabled="true"]):hover .block-editor-block-types-list__item-title { filter: none; }
+
+/* Focus: one visible ring everywhere in the dark interface. */
+.tf-be-dark :is(.interface-interface-skeleton__header, .interface-interface-skeleton__sidebar, .interface-interface-skeleton__secondary-sidebar, .interface-interface-skeleton__footer, .interface-interface-skeleton__actions, .components-popover__content) :is(a, button, input, select, textarea, [tabindex], [role="tab"], [role="option"], [role="menuitem"]):focus-visible { outline: 2px solid var(--tfd-accent); outline-offset: -2px; }
+.tf-be-dark .tf-class-field input.tf-class-input:focus-visible { outline: 0; }

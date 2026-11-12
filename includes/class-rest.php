@@ -869,6 +869,7 @@ class Rest {
 			'bricks'               => Platforms\Bricks::is_active(),
 			'platforms'            => $platforms, // builders on the site (Builder screen / Builder integrations).
 			'caps'                 => Platforms\Platforms::caps( $platforms ), // what the active one supports (dashboard needs: '<cap>').
+			'caps_by'              => Platforms\Platforms::caps_by( $platforms ), // the same per active builder: id => caps.
 			'modules'              => Modules::settings(),
 			'theme'                => self::theme_info(),
 			'history'              => History::items(),

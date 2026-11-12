@@ -23,6 +23,8 @@ class Platforms {
 	 */
 	const CAPS = array(
 		'bricks' => array( 'tokens_native', 'canvas_css', 'class_complete', 'class_sync', 'theme_style', 'hide_elements', 'canvas_tools', 'context_menus', 'templates', 'editor_tweaks', 'form_extras' ),
+		// The block editor: presets, the class field, canvas outlines, hidden blocks, interface switches, patterns.
+		'blocks' => array( 'tokens_native', 'canvas_css', 'class_complete', 'hide_elements', 'canvas_tools', 'editor_tweaks', 'templates' ),
 	);
 
 	/**
@@ -89,5 +91,21 @@ class Platforms {
 	public static function caps( $detected = null ) {
 		$p = self::active( $detected );
 		return $p ? self::CAPS[ $p['id'] ] : array();
+	}
+
+	/**
+	 * Capabilities of every active, supported integration (one screen per builder).
+	 *
+	 * @param array[]|null $detected From detected().
+	 * @return array id => string[]
+	 */
+	public static function caps_by( $detected = null ) {
+		$out = array();
+		foreach ( null === $detected ? self::detected() : $detected as $p ) {
+			if ( $p['active'] && $p['supported'] ) {
+				$out[ $p['id'] ] = self::CAPS[ $p['id'] ];
+			}
+		}
+		return $out;
 	}
 }

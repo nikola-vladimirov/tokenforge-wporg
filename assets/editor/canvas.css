@@ -1,0 +1,18 @@
+/* TokenForge: canvas tools of the block editor. Loaded into the editor canvas only;
+   editor.js sets the classes on the canvas html and body (or on the wrapper when the canvas has no iframe). */
+
+/* Dark canvas: every light-dark() token takes its dark value. */
+html.tf-dark-canvas,
+.editor-styles-wrapper.tf-dark-canvas { color-scheme: dark; }
+
+/* Container outlines: group, columns and cover. Outlines take no space, so the layout does not move. */
+.tf-outlines .wp-block-group,
+.tf-outlines .wp-block-columns,
+.tf-outlines .wp-block-column,
+.tf-outlines .wp-block-cover { outline: 1px dashed rgba(81, 166, 251, .8); outline-offset: -1px; }
+
+/* Grid and flex outlines.
+   shortcut: CSS cannot ask for the computed display, so this matches the layout classes of WordPress and of TokenForge; a container laid out by custom CSS alone is missed. Upgrade to a script that marks containers by computed style if that is needed. */
+.tf-grid-outlines :is(.is-layout-grid, .wp-block-post-template.is-layout-grid, [class*="grid-"], [class*="grid--"]) { outline: 1px dashed rgba(255, 149, 0, .9); outline-offset: -2px; }
+.tf-grid-outlines :is(.is-layout-flex, .wp-block-columns, .wp-block-buttons, .wp-block-navigation__container, [class*="flex-"], [class*="flex--"]) { outline: 1px dotted rgba(44, 175, 132, .95); outline-offset: -2px; }
+.tf-grid-outlines :is(.is-layout-grid, .is-layout-flex, .wp-block-columns) > * { outline: 1px dotted rgba(138, 153, 168, .7); outline-offset: -1px; }

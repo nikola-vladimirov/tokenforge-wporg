@@ -290,7 +290,7 @@
 			P( __( 'Prose', 'tokenforge' ), 'content', [ B( 'prose_auto', __( 'Also style post content automatically', 'tokenforge' ) ), B( 'rich_text', __( 'Also style Rich Text elements', 'tokenforge' ) ), T( 'prose_spacing', __( 'Block spacing', 'tokenforge' ) ), T( 'prose_heading_spacing', __( 'Space above headings', 'tokenforge' ) ), T( 'prose_width', __( 'Max text width (e.g. 70ch)', 'tokenforge' ) ), C( 'prose_accent', __( 'Accent (markers)', 'tokenforge' ) ) ], { on: 'prose', d: __( '<code>.prose</code>: long-form styling for lists, figures, code, tables and rules, all zero-specificity.', 'tokenforge' ) } )
 		] },
 		{ id: 'recipes', title: __( 'Recipes', 'tokenforge' ), panels: [
-			P( __( 'Recipes', 'tokenforge' ), 'recipes', [ B( 'inputs', __( 'Also in builder fields: <code>?primary-clr;</code> in style fields, <code>?ipsum-short;</code> in text fields, rich text and text edited in the canvas', 'tokenforge' ), { needs: 'editor_tweaks' } ) ], { on: 'enabled', d: __( 'Type <code>?name</code> in the builder’s CSS editor and pick it from the list (or finish with <code>;</code>): it expands into ready-made CSS. <code>%root%</code> is the element’s selector (in SCSS: <code>&amp;</code>).', 'tokenforge' ) } ),
+			P( __( 'Recipes', 'tokenforge' ), 'recipes', [ B( 'inputs', __( 'Also in builder fields: <code>?primary-clr;</code> in style fields, <code>?ipsum-short;</code> in text fields, rich text and text edited in the canvas, also in the block editor canvas', 'tokenforge' ), { needs: 'editor_tweaks' } ) ], { on: 'enabled', d: __( 'Type <code>?name</code> in the builder’s CSS editor and pick it from the list (or finish with <code>;</code>): it expands into ready-made CSS. <code>%root%</code> is the element’s selector (in SCSS: <code>&amp;</code>).', 'tokenforge' ) } ),
 			P( __( 'Built-in recipes', 'tokenforge' ), null, null, { custom: 'recipeList' } )
 		] },
 		{ id: 'tokens', title: __( 'Tokens', 'tokenforge' ), render: 'tokens' },
@@ -306,10 +306,17 @@
 			P( __( 'Theme style', 'tokenforge' ), 'settings', [ B( 'bricks_theme_sync', __( 'Keep a theme style in step with TokenForge', 'tokenforge' ) ) ], { custom: 'themeSync', needs: 'theme_style', d: __( 'One theme style (named after the site, for the entire website) follows TokenForge: its fields point at TokenForge variables such as <code>var(--content-width)</code>, <code>var(--text-m)</code> and <code>var(--link-color)</code>. Change a field in the theme style and the matching TokenForge setting follows.', 'tokenforge' ) } ),
 			P( __( 'Builder built-in', 'tokenforge' ), null, null, { custom: 'native', needs: 'editor_tweaks', d: __( 'The builder has these built in; the switches change its own settings. Reload the builder after saving.', 'tokenforge' ) } )
 		] },
+		// The block editor's own screen (shown when the block editor is in use: state.capsBy.blocks).
+		{ id: 'blocks', title: __( 'Block editor', 'tokenforge' ), panels: [
+			P( __( 'Presets', 'tokenforge' ), 'settings', [ S( 'gutenberg_palette', __( 'TokenForge presets', 'tokenforge' ), [ [ 'replace', __( 'Replace the theme presets', 'tokenforge' ) ], [ 'add', __( 'Beside the theme presets', 'tokenforge' ) ], [ 'off', __( 'Off', 'tokenforge' ) ] ] ), B( 'block_map_legacy', __( 'Map the theme’s old preset names to the nearest tokens', 'tokenforge' ) ) ], { d: __( 'Your colours, font sizes, spacing, font families and shadows as the presets the block editor offers. Styles you saved yourself in the Site Editor are never changed: a preset list you saved there still shows first in its picker.', 'tokenforge' ) } ),
+			P( __( 'Editor interface', 'tokenforge' ), 'settings', [ B( 'block_class_field', __( 'Class field on top of the block sidebar', 'tokenforge' ) ), B( 'block_compact', __( 'Compact, builder-style block settings', 'tokenforge' ) ), B( 'block_swap_panels', __( 'Block settings on the left, List View on the right', 'tokenforge' ) ), B( 'block_resize_panels', __( 'Drag the sidebars wider or narrower', 'tokenforge' ) ), B( 'block_open_panels', __( 'Open every settings panel', 'tokenforge' ) ), B( 'block_styles_first', __( 'Styles tab first', 'tokenforge' ) ), B( 'block_list_view', __( 'List View open', 'tokenforge' ) ), B( 'block_inserter_list', __( 'Inserter as a list, one block per row', 'tokenforge' ) ), B( 'block_dark_ui', __( 'Dark editor interface', 'tokenforge' ) ), B( 'block_dark_canvas', __( 'Dark canvas (the site’s dark scheme while editing)', 'tokenforge' ) ) ], { d: __( 'How the editor looks and opens for you. Nothing here reaches your pages. Reload the editor after saving.', 'tokenforge' ) } ),
+			P( __( 'Canvas', 'tokenforge' ), 'settings', [ B( 'block_outlines', __( 'Outline containers', 'tokenforge' ) ), B( 'block_grid_outlines', __( 'Outline every grid / flex container (debug)', 'tokenforge' ) ) ], { d: __( 'Outlines in the editor canvas that only you see.', 'tokenforge' ) } ),
+			P( __( 'Content', 'tokenforge' ), 'settings', [ B( 'block_patterns', __( 'TokenForge patterns', 'tokenforge' ) ), B( 'block_button_styles', __( 'Button styles from your button families', 'tokenforge' ) ), T( 'block_hide', __( 'Hide blocks from the inserter (names, comma separated)', 'tokenforge' ), { w: 1, h: __( 'e.g. <code>core/verse, core/pullquote</code>', 'tokenforge' ) } ) ] ),
+			P( __( 'TokenForge window', 'tokenforge' ), 'settings', [ B( 'block_window', __( 'TokenForge button in the editor header', 'tokenforge' ) ) ], { d: __( 'This dashboard as a window inside the block editor, for administrators.', 'tokenforge' ) } )
+		] },
 		{ id: 'options', title: __( 'Options', 'tokenforge' ), panels: [
 			P( __( 'Dashboard look', 'tokenforge' ), 'settings', [ S( 'ui_theme', __( 'Look', 'tokenforge' ), [ [ 'bricks', __( 'Builder panels (default)', 'tokenforge' ) ], [ 'flat', __( 'Flat', 'tokenforge' ) ], [ 'light', __( 'Light', 'tokenforge' ) ] ] ) ], { d: __( 'How this dashboard looks, in wp-admin, the builder and on the front end. Save to apply.', 'tokenforge' ) } ),
 			P( __( 'Builder sync', 'tokenforge' ), 'settings', [ B( 'sync_bricks_vars', __( 'Tokens → builder global variables', 'tokenforge' ) ), B( 'vars_trans', __( 'Variables: transparent steps (-trans-10 … -90)', 'tokenforge' ) ), B( 'vars_channels', __( 'Variables: colour channel values (-hex, -rgb, -h …)', 'tokenforge' ) ), B( 'vars_alt', __( 'Variables: dark mode values (-alt)', 'tokenforge' ) ), B( 'vars_parts', __( 'Variables: buttons, cards, blockquotes and shop', 'tokenforge' ) ), B( 'sync_bricks_colors', __( 'Colours → the builder colour palette (families with their shades)', 'tokenforge' ) ), B( 'enqueue_in_builder', __( 'Load the stylesheet in the builder canvas', 'tokenforge' ) ), T( 'category_name', __( 'Category / palette name', 'tokenforge' ) ), B( 'prune_classes', __( 'Remove switched-off classes from the builder', 'tokenforge' ) ), B( 'prune_variables', __( 'Remove stale variables / colours from the builder', 'tokenforge' ) ) ], { needs: 'tokens_native' } ),
-			P( __( 'Block editor', 'tokenforge' ), 'settings', [ S( 'gutenberg_palette', __( 'Colour palette', 'tokenforge' ), [ [ 'off', __( 'Theme palette', 'tokenforge' ) ], [ 'add', __( 'Add TokenForge colours', 'tokenforge' ) ], [ 'replace', __( 'Replace with TokenForge colours', 'tokenforge' ) ] ] ) ] ),
 			P( __( 'TokenForge window', 'tokenforge' ), 'settings', [ K( 'panel_shortcut', __( 'Open / close shortcut', 'tokenforge' ), { h: __( 'Click the field, then press the keys (e.g. Alt+Shift+T). Works in the builder (also with the canvas focused) and on the site\u2019s pages.', 'tokenforge' ) } ), B( 'canvas_panel', __( 'Show in builder canvas while editing', 'tokenforge' ), { needs: 'canvas_tools' } ), B( 'frontend_panel', __( 'On the site\u2019s pages (administrators only)', 'tokenforge' ) ), B( 'frontend_launcher', __( 'Floating TokenForge button on the site\u2019s pages', 'tokenforge' ) ) ], { d: __( 'The dashboard as a dockable window. In the builder it opens with the shortcut or the TokenForge button; on the site\u2019s pages with the shortcut or the admin-bar TokenForge link (Ctrl/Cmd-click goes to wp-admin).', 'tokenforge' ) } ),
 			P( __( 'AI agents', 'tokenforge' ), 'settings', [ B( 'ai_abilities', __( 'TokenForge abilities for AI agents (MCP tools)', 'tokenforge' ) ), B( 'ai_guidance', __( 'Tell AI agents to build with TokenForge', 'tokenforge' ) ) ], { d: __( 'When an AI builds this site through the WordPress MCP Adapter or the builder’s AI abilities, it gets the tools <code>tokenforge-get-framework</code>, <code>tokenforge-search</code>, <code>tokenforge-check-css</code>, and <code>tokenforge-get-recipe</code>, and is told to use TokenForge classes and variables instead of hard-coded CSS, and to name its own classes in BEM. To connect an AI client: install the MCP Adapter plugin (the builder’s AI screen can do it for you), create an application password under Users, Profile, and add the site to the client as an MCP server. The readme FAQ has the steps.', 'tokenforge' ) } ),
 			P( __( 'Performance', 'tokenforge' ), 'settings', [ B( 'inline_css', __( 'Inline the stylesheet', 'tokenforge' ) ), B( 'hot_reload', __( 'Hot-reload CSS in open tabs after Save', 'tokenforge' ) ), B( 'admin_bar_link', __( 'Admin bar link', 'tokenforge' ) ) ] ),
@@ -334,8 +341,9 @@
 		[ __( 'Start', 'tokenforge' ), [ { id: 'home' }, { id: 'cheatsheet' }, { id: 'check', from: [ 'colors:Palette contrast', 'additional:Automatic accessibility attributes', 'additional:Focus', 'additional:Reduced motion', 'buttons:External-link indicator', 'builder:Canvas badges' ] }, { id: 'recipes' } ] ],
 		[ __( 'Setup', 'tokenforge' ), [
 			{ id: 'wizard' },
-			{ id: 'options', title: __( 'Options', 'tokenforge' ), from: [ 'options:Dashboard look', 'options:TokenForge window', 'options:AI agents', 'options:Builder sync', 'options:Block editor', 'options:Performance', 'options:Breakpoints', 'options:Cascade layers', 'options:Utility framework' ] },
+			{ id: 'options', title: __( 'Options', 'tokenforge' ), from: [ 'options:Dashboard look', 'options:TokenForge window', 'options:AI agents', 'options:Builder sync', 'options:Performance', 'options:Breakpoints', 'options:Cascade layers', 'options:Utility framework' ] },
 			{ id: 'builder' },
+			{ id: 'blocks' },
 			{ id: 'transfer' }
 		] ],
 		[ __( 'Foundations', 'tokenforge' ), [
@@ -388,6 +396,7 @@
 		transfer: __( 'Move settings to another site, back up, start over', 'tokenforge' ),
 		tokens: __( 'Every CSS variable, edit by hand', 'tokenforge' ),
 		attributes: __( 'Where your site uses each data attribute', 'tokenforge' ),
+		blocks: __( 'Presets, editor interface, canvas, patterns and button styles', 'tokenforge' ),
 		builder: __( 'The page builders TokenForge works with', 'tokenforge' ) // the Builder integrations view
 	};
 	// Add-ons (TokenForge Crucible) add their sections and nav entries through wp.hooks.
@@ -457,6 +466,7 @@
 		cheatsheet: '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11M9 8h6M9 11h4"/>',
 		recipes: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 12h7M9 16h5"/>',
 		builder: '<path d="M14.5 6.5l3 3M4 20l2.5-.6L17 8.9 15.1 7 4.6 17.5 4 20z"/>',
+		blocks: '<rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><path d="M16.5 14v5M14 16.5h5"/>',
 		wizard: '<path d="M4 20 15 9M14 4v2M19 9h2M17.5 6.5 19 5M10 6.5 8.5 5M17.5 11.5 19 13"/>',
 		options: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/>'
 	};
@@ -465,10 +475,12 @@
 	// Sections that only make sense with a plugin active.
 	function shown( sec ) {
 		if ( 'wizard' === sec.id ) { return !! ( state.setup && state.setup.available ); }
+		if ( 'blocks' === sec.id ) { return !! ( state.capsBy || {} ).blocks; }
 		return 'woo' !== sec.id || !! ( state.wooInfo || {} ).active;
 	}
-	// A panel or field marked needs: '<cap>' shows only when the active builder integration
-	// has that capability (Platforms::CAPS). Hiding is display only: stored values stay.
+	// A panel or field marked needs: '<cap>' shows only when the active page builder integration
+	// has that capability (Platforms::CAPS; state.caps never holds the block editor's list, which
+	// has its own screen). Hiding is display only: stored values stay.
 	function has( x ) { return ! x.needs || ( state.caps || [] ).indexOf( x.needs ) > -1; }
 	function section( id ) { for ( var i = 0; i < SECTIONS.length; i++ ) { if ( SECTIONS[ i ].id === id ) { return SECTIONS[ i ]; } } return SECTIONS[ 0 ]; }
 
@@ -489,24 +501,27 @@
 			return '<label class="tf-field"><span class="tf-flabel">' + f.l + tip + '</span><span class="tf-keyfield"><input type="text" readonly class="tf-keyrec"' + attr + ' value="' + esc( keyLabel( v ) ) + '" placeholder="Click, then press keys"><button type="button" class="tf-btn tf-small" data-act="keyclear"' + attr + ' title="No shortcut">✕</button></span>' + help + '</label>';
 		}
 		var shown = v == null ? '' : String( v );
+		var rt    = esc( __( 'Reset to %s', 'tokenforge' ).replace( '%s', def === '' ? __( '(empty)', 'tokenforge' ) : def ) );
 		var reset = ( def !== undefined && typeof def !== 'boolean' && typeof def !== 'object' && shown !== String( def ) )
-			? '<button type="button" class="tf-reset" data-act="reset"' + attr + ' title="Reset to ' + esc( def === '' ? '(empty)' : def ) + '">↺</button>' : '';
+			? '<button type="button" class="tf-reset" data-act="reset"' + attr + ' title="' + rt + '" aria-label="' + rt + '">↺</button>' : '';
+		var id    = esc( 'tf-f-' + mod + '-' + f.k ); // label for= the control, else the reset button inside the label takes its name
+		var cattr = attr + ' id="' + id + '" aria-labelledby="' + id + '-l"'; // named by the label text only, not the tooltip or reset button also inside the label
 		var ph   = ( def !== undefined && def !== '' && typeof def !== 'boolean' && typeof def !== 'object' ) ? ' placeholder="' + esc( def ) + '"' : '';
 		var ctl;
 		if ( f.t === 's' ) {
-			ctl = '<select' + attr + '>' + f.o.map( function ( o ) {
+			ctl = '<select' + cattr + '>' + f.o.map( function ( o ) {
 				var val = Array.isArray( o ) ? o[0] : o, lab = Array.isArray( o ) ? o[1] : o;
 				return '<option value="' + esc( val ) + '"' + ( String( val ) === shown ? ' selected' : '' ) + '>' + esc( lab ) + '</option>';
 			} ).join( '' ) + '</select>';
 		} else if ( f.t === 'a' ) {
-			ctl = '<textarea rows="' + ( f.rows || 3 ) + '"' + attr + ph + '>' + esc( shown ) + '</textarea>';
+			ctl = '<textarea rows="' + ( f.rows || 3 ) + '"' + cattr + ph + '>' + esc( shown ) + '</textarea>';
 		} else if ( f.t === 'n' ) {
-			ctl = '<input type="number" step="' + ( f.step || 'any' ) + '"' + attr + ' value="' + esc( shown ) + '"' + ph + '>';
+			ctl = '<input type="number" step="' + ( f.step || 'any' ) + '"' + cattr + ' value="' + esc( shown ) + '"' + ph + '>';
 		} else {
-			ctl = '<input type="text"' + attr + ' value="' + esc( shown ) + '"' + ph + ( /font_family$/.test( f.k ) ? ' list="tf-font-families"' : '' ) + ' spellcheck="false">';
+			ctl = '<input type="text"' + cattr + ' value="' + esc( shown ) + '"' + ph + ( /font_family$/.test( f.k ) ? ' list="tf-font-families"' : '' ) + ' spellcheck="false">';
 		}
 		if ( f.t === 'c' ) { ctl = '<span class="tf-colorfield">' + swatch( shown || def ) + ctl + '</span>'; }
-		return '<label class="tf-field' + ( f.w || f.t === 'a' ? ' tf-wide' : '' ) + '"><span class="tf-flabel">' + f.l + tip + reset + '</span>' + ctl + help + '</label>';
+		return '<label for="' + id + '" class="tf-field' + ( f.w || f.t === 'a' ? ' tf-wide' : '' ) + '"><span class="tf-flabel"><span id="' + id + '-l">' + f.l + '</span>' + tip + reset + '</span>' + ctl + help + '</label>';
 	}
 	function fieldsHtml( mod, fields ) { fields = ( fields || [] ).filter( has ); return fields.length ? '<div class="tf-fields">' + fields.map( function ( f ) { return fieldHtml( mod, f ); } ).join( '' ) + '</div>' : ''; }
 	// A bare input for tables (no label, placeholder = default).
@@ -750,7 +765,7 @@
 				if ( q && r.n.indexOf( q ) === -1 && r.c.toLowerCase().indexOf( q ) === -1 ) { return; }
 				( groups[ r.c ] = groups[ r.c ] || [] ).push( r );
 			} );
-			var html = '<input type="search" class="tf-search tf-recipe-q" placeholder="Filter recipes…" value="' + esc( state.recipeQ || '' ) + '">';
+			var html = '<input type="search" class="tf-search tf-recipe-q" placeholder="' + esc( __( 'Filter recipes…', 'tokenforge' ) ) + '" aria-label="' + esc( __( 'Filter recipes', 'tokenforge' ) ) + '" value="' + esc( state.recipeQ || '' ) + '">';
 			Object.keys( groups ).forEach( function ( g ) {
 				html += '<h4 class="tf-recipe-group">' + esc( g ) + ' <span class="tf-count">' + groups[ g ].length + '</span></h4><div class="tf-recipes">';
 				groups[ g ].forEach( function ( r ) {
@@ -775,8 +790,8 @@
 					+ '<span class="tf-switch" title="' + esc( tipRaw( 'palette.fam_on' ) ) + '"><input type="checkbox" data-pf="on"' + ( f.on ? ' checked' : '' ) + ' aria-label="' + esc( k ) + ' on/off"><i></i></span>'
 					+ '<strong class="tf-fam-name">' + esc( k ) + '</strong>'
 					+ '<div class="tf-shades">' + shadeStrips( k, has, pending, pv, order ) + '</div>'
-					+ '<label class="tf-fam-col"><span class="tf-flabel">Base' + tipIcon( tipRaw( 'palette.fam_hex' ) ) + '</span><span class="tf-colorfield">' + pick( 'hex', cur && isHex( cur ) ? cur : '#888888' ) + '<input type="text" data-pf="hex" value="' + esc( f.hex ) + '" placeholder="#rrggbb" spellcheck="false"></span></label>'
-					+ '<label class="tf-fam-col"><span class="tf-flabel">Dark mode' + tipIcon( tipRaw( 'palette.fam_alt' ) ) + '</span><span class="tf-colorfield">' + pick( 'alt', f.hex || '#888888' ) + '<input type="text" data-pf="alt" value="' + esc( f.alt ) + '" placeholder="same" spellcheck="false"></span></label>'
+					+ '<label class="tf-fam-col"><span class="tf-flabel">Base' + tipIcon( tipRaw( 'palette.fam_hex' ) ) + '</span><span class="tf-colorfield">' + pick( 'hex', cur && isHex( cur ) ? cur : '#888888' ) + '<input type="text" data-pf="hex" aria-label="' + esc( k + ' hex value' ) + '" value="' + esc( f.hex ) + '" placeholder="#rrggbb" spellcheck="false"></span></label>'
+					+ '<label class="tf-fam-col"><span class="tf-flabel">Dark mode' + tipIcon( tipRaw( 'palette.fam_alt' ) ) + '</span><span class="tf-colorfield">' + pick( 'alt', f.hex || '#888888' ) + '<input type="text" data-pf="alt" aria-label="' + esc( k + ' alt value' ) + '" value="' + esc( f.alt ) + '" placeholder="same" spellcheck="false"></span></label>'
 					+ '<details class="tf-fam-more"' + ( [ 'alt_l', 'alt_c', 'hover_l', 'hover_c' ].some( function ( x ) { return '' !== String( f[ x ] || '' ); } ) ? ' open' : '' ) + '><summary>Dark mode fine tuning' + tipIcon( tipRaw( 'palette.fam_tune' ) ) + '</summary><div class="tf-fields">'
 						+ [ [ 'alt_l', 'Main: lightness', '0 to 1' ], [ 'alt_c', 'Main: chroma', '0 to 0.4' ], [ 'hover_l', 'Hover: lightness', '0 to 1' ], [ 'hover_c', 'Hover: chroma', '0 to 0.4' ] ].map( function ( x ) { return '<label class="tf-field"><span class="tf-flabel">' + x[1] + '</span><input type="text" data-pt="' + x[0] + '" value="' + esc( f[ x[0] ] || '' ) + '" placeholder="' + x[2] + '" spellcheck="false"></label>'; } ).join( '' )
 						+ '</div></details>'
@@ -820,7 +835,7 @@
 		newFamily: function () {
 			var html = '<h4>Add a family</h4>';
 			html += '<div class="tf-fields"><label class="tf-field"><span class="tf-flabel">Name</span><input type="text" class="tf-color-name" placeholder="e.g. brand"></label>';
-			html += '<label class="tf-field"><span class="tf-flabel">Base colour</span><span class="tf-colorfield"><input type="color" class="tf-color-pick" value="#3267c1"><input type="text" class="tf-color-hex" value="#3267c1"></span></label></div>';
+			html += '<label class="tf-field"><span class="tf-flabel">Base colour</span><span class="tf-colorfield"><input type="color" class="tf-color-pick" value="#3267c1"><input type="text" class="tf-color-hex" value="#3267c1" aria-label="' + esc( __( 'Base colour (hex)', 'tokenforge' ) ) + '"></span></label></div>';
 			html += '<p><button type="button" class="tf-btn tf-primary" data-act="gencolor">Add family</button></p>';
 			return html;
 		},
@@ -871,7 +886,7 @@
 					var k = 'ctx_' + ctx.replace( '-', '_' ) + '_' + c[0];
 					if ( c[0] === 'icon' ) {
 						var v = state.scheme[ k ] || '';
-						return '<td><select data-mod="scheme" data-k="' + k + '">' + [ [ '', __( 'default', 'tokenforge' ) ], [ 'light', __( 'light', 'tokenforge' ) ], [ 'dark', __( 'dark', 'tokenforge' ) ] ].map( function ( o ) { return '<option value="' + o[0] + '"' + ( v === o[0] ? ' selected' : '' ) + '>' + o[1] + '</option>'; } ).join( '' ) + '</select></td>';
+						return '<td><select data-mod="scheme" data-k="' + k + '" aria-label="' + esc( '.bg--' + ctx + ' ' + c[1] ) + '">' + [ [ '', __( 'default', 'tokenforge' ) ], [ 'light', __( 'light', 'tokenforge' ) ], [ 'dark', __( 'dark', 'tokenforge' ) ] ].map( function ( o ) { return '<option value="' + o[0] + '"' + ( v === o[0] ? ' selected' : '' ) + '>' + esc( o[1] ) + '</option>'; } ).join( '' ) + '</select></td>';
 					}
 					return '<td>' + cell( 'scheme', k ) + '</td>';
 				} ).join( '' ) + '</tr>';
@@ -1391,7 +1406,7 @@
 		var h = '<tr class="tf-tokrow is-' + r.type + ( on ? '' : ' tf-row-disabled' ) + '"' + ( t ? ' data-i="' + r.i + '"' : ' data-cat="' + esc( c.name ) + '"' ) + '>';
 		h += '<td><input type="checkbox" data-field="enabled"' + ( on ? ' checked' : '' ) + ( canToggle( r ) ? '' : ' disabled' ) + ' aria-label="' + esc( __( 'On', 'tokenforge' ) + ': --' + name ) + '"></td>';
 		h += '<td class="tf-name-cell"><span class="tf-prefix">--</span>' + ( editable
-			? '<input type="text" data-field="name" value="' + esc( name ) + '" spellcheck="false">'
+			? '<input type="text" data-field="name" value="' + esc( name ) + '" aria-label="' + esc( __( 'Name', 'tokenforge' ) + ': --' + name ) + '" spellcheck="false">'
 			: '<code class="tf-tokname">' + esc( name ) + '</code>' ) + '</td>';
 		var note = '';
 		if ( t && ! t.enabled && 'repeat' === r.type ) { note = esc( __( 'Switched off: this variable is left out of the stylesheet. Switch it on to use what %s makes.', 'tokenforge' ).replace( '%s', sectionTitle( c.source ) ) ); }
@@ -1404,7 +1419,7 @@
 		var used = ( state.usage || {} )[ name ] || 0;
 		var warn = ! on && used ? esc( __( 'Used in the stylesheet (%d places): they get no value while it is off.', 'tokenforge' ).replace( '%d', used ) ) : '';
 		h += '<td><span class="tf-colorfield">' + ( isColor ? swatch( value ) : '' ) + ( editable
-			? '<input type="text" data-field="value" value="' + esc( value ) + '" spellcheck="false">'
+			? '<input type="text" data-field="value" value="' + esc( value ) + '" aria-label="' + esc( __( 'Value', 'tokenforge' ) + ': --' + name ) + '" spellcheck="false">'
 			: '<span class="tf-tokval" title="' + esc( value ) + '">' + esc( value ) + '</span>' ) + '</span>'
 			+ ( note ? '<div class="tf-toknote">' + note + '</div>' : '' ) + ( warn ? '<div class="tf-toknote tf-tokwarn">' + warn + '</div>' : '' ) + '</td>';
 		// Where it comes from, or its category.
@@ -1533,7 +1548,7 @@
 		var rows = ( state.platforms || [] ).map( function ( p ) {
 			var st = p.supported ? ( p.active ? __( 'Active', 'tokenforge' ) : __( 'Supported, not active', 'tokenforge' ) )
 				: __( 'Coming soon', 'tokenforge' ) + ( p.active ? ' (' + __( 'active on this site', 'tokenforge' ) + ')' : p.installed ? ' (' + __( 'installed, not active', 'tokenforge' ) + ')' : '' );
-			var note = 'blocks' === p.id && p.active ? '<br><span class="tf-muted">' + esc( __( 'Works today: TokenForge CSS inside the editor, TokenForge colours in the palette (Options > Block editor), your self-hosted fonts in the font picker, global styles with block themes, and the colour scheme toggle block.', 'tokenforge' ) ) + '</span>' : '';
+			var note = 'blocks' === p.id && p.active ? '<br><span class="tf-muted">' + esc( __( 'Works today: TokenForge CSS inside the editor, TokenForge presets, patterns and editor tools (the Block editor screen), your self-hosted fonts in the font picker, global styles with block themes, and the colour scheme toggle block.', 'tokenforge' ) ) + '</span>' : '';
 			return '<tr><th scope="row">' + esc( p.label ) + '</th><td>' + esc( p.active ? p.version : '' ) + '</td><td>' + esc( st ) + note + '</td></tr>';
 		} ).join( '' );
 		return '<section class="tf-panel"><div class="tf-panel-body"><p class="tf-muted tf-desc">' + esc( __( 'No page builder that TokenForge has settings for is active on this site, so there are no builder settings to show. Everything else in TokenForge works on any site.', 'tokenforge' ) ) + '</p>'
@@ -1607,6 +1622,7 @@
 		bar += '<span class="tf-grow"></span><button type="button" class="tf-btn tf-small" data-act="expandall">Open all</button><button type="button" class="tf-btn tf-small" data-act="collapseall">Close all</button>' + ( panels.some( function ( p ) { return p.mod && ( p.fields || p.on ); } ) ? '<button type="button" class="tf-btn tf-small" data-act="resetsec" title="Put every field of this section back to its default">Reset section</button>' : '' ) + '</div>';
 		if ( mod && ! on ) { bar += '<p class="tf-notice">This module is off: TokenForge adds nothing from this section. Your settings here are kept.</p>'; }
 		if ( 'check' === sec.id ) { bar += hubTop(); }
+		if ( 'blocks' === sec.id ) { bar += '<p class="tf-muted">' + esc( __( 'Presets, patterns, button styles and the editor tools work with any theme. The Site Editor parts (templates and global styles) need a block theme.', 'tokenforge' ) ) + '</p>'; }
 		if ( 'colors' === sec.id ) { bar += '<p class="tf-muted">' + esc( __( 'Contrast checks for your palette are in Accessibility.', 'tokenforge' ) ) + ' <button type="button" class="tf-btn tf-small" data-act="goto" data-go="check">' + esc( __( 'Open Accessibility', 'tokenforge' ) ) + '</button></p>'; }
 		var body = bar + '<div class="' + ( on ? '' : 'tf-mod-off' ) + '">' + panels.map( function ( p, i ) { return panelHtml( sec, p, i ); } ).join( '' ) + '</div>';
 			return window.wp && wp.hooks ? wp.hooks.applyFilters( 'tokenforge.section_html', body, sec.id ) : body;
@@ -2711,9 +2727,11 @@
 			state.nativeLabels = s.bricks_native_labels || {};
 			state.bricks = !! s.bricks;
 			state.platforms = s.platforms || [];
-			state.caps = s.caps || [];
-			// The Builder screen is named after the active builder; with none, it lists them all.
-			var bsec = section( 'builder' ), bact = state.platforms.filter( function ( p ) { return p.active && p.supported; } )[0];
+			state.capsBy = s.caps_by || {};
+			// The Builder screen is named after the active page builder; with none, it lists them all.
+			// The block editor has its own screen, so it never names this one or lends it capabilities.
+			var bsec = section( 'builder' ), bact = state.platforms.filter( function ( p ) { return p.active && p.supported && 'blocks' !== p.id; } )[0];
+			state.caps = s.caps_by ? ( bact && s.caps_by[ bact.id ] || [] ) : ( s.caps || [] );
 			bsec.title = bact ? bact.label : __( 'Builder integrations', 'tokenforge' );
 			bsec.render = bact ? null : 'integrations';
 			state.utilCount = s.util_count || 0;

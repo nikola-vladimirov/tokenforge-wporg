@@ -17,7 +17,7 @@
         "layer_cards": false,
         "layer_icons": false,
         "hot_reload": true,
-        "gutenberg_palette": "off",
+        "gutenberg_palette": "replace",
         "category_name": "TokenForge",
         "panel_shortcut": "alt+shift+t",
         "frontend_panel": true,

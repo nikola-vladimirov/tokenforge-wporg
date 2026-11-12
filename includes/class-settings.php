@@ -52,34 +52,51 @@ class Settings {
 	 */
 	public function builtin_settings() {
 		return array(
-			'sync_bricks_vars'   => true,
-			'vars_trans'         => true,  // builder variables: transparent steps (-trans-10 … -90).
-			'vars_channels'      => false, // builder variables: colour channel values (-hex, -rgb, -h …, -ref).
-			'vars_alt'           => false, // builder variables: dark mode values (-alt).
-			'vars_parts'         => false, // builder variables: buttons, cards, blockquotes, shop.
-			'bricks_theme_sync'  => true,  // keep a Bricks theme style in step with TokenForge (both ways).
-			'ui_theme'           => 'bricks', // dashboard look: bricks | flat | light.
-			'sync_bricks_colors' => true,
-			'category_name'      => 'TokenForge',
-			'enqueue_in_builder' => true,
-			'admin_bar_link'     => true,
-			'prune_classes'      => true,  // drop generated Bricks classes that are no longer output.
-			'prune_variables'    => true,  // drop synced Bricks variables/colors for removed tokens.
-			'inline_css'         => false, // print the stylesheet inline instead of linking the file.
-			'layer_defaults'     => false, // @layer the reset/defaults
-			'layer_base'         => false, // @layer the base element styles
-			'layer_content'      => false, // @layer the prose styles
-			'layer_buttons'      => false, // @layer buttons + the external-link indicator
-			'layer_cards'        => false, // @layer cards
-			'layer_icons'        => false, // @layer the icon system
-			'hot_reload'         => true,  // live-update the CSS in open tabs (admins only).
-			'gutenberg_palette'  => 'off', // 'off' | 'add' (to the theme palette) | 'replace'
-			'panel_shortcut'     => 'alt+shift+t', // opens/closes the TokenForge window (builder + front end).
-			'frontend_panel'     => true,  // the window on the site's pages too (administrators only; never in the builder).
-			'frontend_launcher'  => false, // a floating TokenForge button on the front end.
-			'canvas_panel'       => true,  // a TokenForge button in the builder canvas while editing (opens the window).
-			'ai_abilities'       => true,  // tokenforge/* abilities (MCP tools) for AI agents.
-			'ai_guidance'        => true,  // tell agents to use TokenForge (MCP instructions, Bricks orientation + design context).
+			'sync_bricks_vars'    => true,
+			'vars_trans'          => true,  // builder variables: transparent steps (-trans-10 … -90).
+			'vars_channels'       => false, // builder variables: colour channel values (-hex, -rgb, -h …, -ref).
+			'vars_alt'            => false, // builder variables: dark mode values (-alt).
+			'vars_parts'          => false, // builder variables: buttons, cards, blockquotes, shop.
+			'bricks_theme_sync'   => true,  // keep a Bricks theme style in step with TokenForge (both ways).
+			'ui_theme'            => 'bricks', // dashboard look: bricks | flat | light.
+			'sync_bricks_colors'  => true,
+			'category_name'       => 'TokenForge',
+			'enqueue_in_builder'  => true,
+			'admin_bar_link'      => true,
+			'prune_classes'       => true,  // drop generated Bricks classes that are no longer output.
+			'prune_variables'     => true,  // drop synced Bricks variables/colors for removed tokens.
+			'inline_css'          => false, // print the stylesheet inline instead of linking the file.
+			'layer_defaults'      => false, // @layer the reset/defaults
+			'layer_base'          => false, // @layer the base element styles
+			'layer_content'       => false, // @layer the prose styles
+			'layer_buttons'       => false, // @layer buttons + the external-link indicator
+			'layer_cards'         => false, // @layer cards
+			'layer_icons'         => false, // @layer the icon system
+			'hot_reload'          => true,  // live-update the CSS in open tabs (admins only).
+			'gutenberg_palette'   => 'replace', // block editor presets (colours, sizes, spacing, fonts, shadows): 'off' | 'add' (beside the theme's, tf- names) | 'replace'
+			'block_map_legacy'    => true,  // the theme's own preset names point at the nearest TokenForge token (replace mode).
+			'block_class_field'   => true,  // class field on top of the block sidebar.
+			'block_compact'       => false, // denser block editor interface.
+			'block_swap_panels'   => false, // block settings on the left, List View and inserter on the right.
+			'block_resize_panels' => true, // drag the sidebars wider or narrower (widths kept per browser).
+			'block_open_panels'   => false, // every block settings panel starts open.
+			'block_styles_first'  => false, // the block sidebar opens on the Styles tab.
+			'block_list_view'     => false, // List View open when the editor loads.
+			'block_inserter_list' => false, // the inserter as a one-per-row list.
+			'block_dark_ui'       => false, // dark block editor interface.
+			'block_dark_canvas'   => false, // the canvas shows the dark scheme while editing.
+			'block_outlines'      => false, // outline containers in the canvas.
+			'block_grid_outlines' => false, // outline every grid / flex container in the canvas.
+			'block_window'        => true,  // TokenForge window button in the editor header (administrators).
+			'block_patterns'      => true,  // TokenForge block patterns.
+			'block_button_styles' => true, // button block styles from the button families.
+			'block_hide'          => '',    // block names hidden from the inserter, comma separated.
+			'panel_shortcut'      => 'alt+shift+t', // opens/closes the TokenForge window (builder + front end).
+			'frontend_panel'      => true,  // the window on the site's pages too (administrators only; never in the builder).
+			'frontend_launcher'   => false, // a floating TokenForge button on the front end.
+			'canvas_panel'        => true,  // a TokenForge button in the builder canvas while editing (opens the window).
+			'ai_abilities'        => true,  // tokenforge/* abilities (MCP tools) for AI agents.
+			'ai_guidance'         => true,  // tell agents to use TokenForge (MCP instructions, Bricks orientation + design context).
 		) + Features\A11y_Auto::defaults(); // automatic accessibility attributes, all off.
 	}
 
@@ -122,7 +139,8 @@ class Settings {
 			'layer_cards'        => ! empty( $settings['layer_cards'] ),
 			'layer_icons'        => ! empty( $settings['layer_icons'] ),
 			'hot_reload'         => ! empty( $settings['hot_reload'] ),
-			'gutenberg_palette'  => ( isset( $settings['gutenberg_palette'] ) && in_array( $settings['gutenberg_palette'], array( 'add', 'replace' ), true ) ) ? $settings['gutenberg_palette'] : 'off',
+			'gutenberg_palette'  => ( isset( $settings['gutenberg_palette'] ) && in_array( $settings['gutenberg_palette'], array( 'off', 'add', 'replace' ), true ) ) ? $settings['gutenberg_palette'] : $defaults['gutenberg_palette'],
+			'block_hide'         => isset( $settings['block_hide'] ) ? self::block_names( $settings['block_hide'] ) : $defaults['block_hide'],
 			'category_name'      => isset( $settings['category_name'] ) ? sanitize_text_field( $settings['category_name'] ) : $defaults['category_name'],
 			'panel_shortcut'     => self::shortcut( isset( $settings['panel_shortcut'] ) ? $settings['panel_shortcut'] : $defaults['panel_shortcut'] ),
 			'frontend_panel'     => ! empty( $settings['frontend_panel'] ),
@@ -131,7 +149,24 @@ class Settings {
 			'ai_abilities'       => ! empty( $settings['ai_abilities'] ),
 			'ai_guidance'        => ! empty( $settings['ai_guidance'] ),
 		) + Features\A11y_Auto::clean( $settings );
+		// Block editor switches: a file or save without the key keeps the default (several default on).
+		foreach ( array_keys( $defaults ) as $k ) {
+			if ( 0 === strpos( $k, 'block_' ) && is_bool( $defaults[ $k ] ) ) {
+				$clean[ $k ] = isset( $settings[ $k ] ) ? ! empty( $settings[ $k ] ) : $defaults[ $k ];
+			}
+		}
 		update_option( self::OPTION_SETTINGS, $clean );
+	}
+
+	/**
+	 * Block names ("core/verse, my-plugin/box"), comma separated; anything else is dropped.
+	 *
+	 * @param mixed $value Raw value.
+	 * @return string
+	 */
+	public static function block_names( $value ) {
+		preg_match_all( '#[a-z0-9-]+/[a-z0-9-]+#', strtolower( (string) $value ), $m );
+		return implode( ', ', array_unique( $m[0] ) );
 	}
 
 	/**

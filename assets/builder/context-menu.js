@@ -590,6 +590,8 @@
 		ac.el.querySelector( '.tf-ctx-list' ).innerHTML = html;
 		var wasOpen = ac.el.classList.contains( 'is-open' );
 		ac.el.classList.add( 'is-open' );
+		// Bricks 2.4.5+ has its own CSS hint list in the same editor: one list at a time.
+		if ( cm.state.completionActive ) { cm.state.completionActive.close(); }
 		var c = cm.cursorCoords( { line: cur.line, ch: ac.from }, 'window' ), r = ac.el.getBoundingClientRect();
 		ac.el.style.left = Math.max( 8, Math.min( c.left - 8, window.innerWidth - r.width - 8 ) ) + 'px';
 		ac.el.style.top = ( c.bottom + 4 + r.height > window.innerHeight ? Math.max( 8, c.top - r.height - 4 ) : c.bottom + 4 ) + 'px';
@@ -673,6 +675,14 @@
 		mode = 'string' === typeof mode ? mode : ( mode && mode.name ) || '';
 		if ( ! /css/i.test( mode ) ) { return; }
 		cm.__tfAc = true;
+		// While our list is open, the builder's own hint list (CodeMirror show-hint) stays shut.
+		var showHint = cm.showHint;
+		if ( 'function' === typeof showHint ) {
+			cm.showHint = function () {
+				if ( ac.cm === cm && ac.el && ac.el.classList.contains( 'is-open' ) ) { return; }
+				return showHint.apply( this, arguments );
+			};
+		}
 		cm.on( 'inputRead', function ( c, change ) {
 			if ( RECIPES.length && change && /;$/.test( change.text.join( '' ) ) && expandRecipe( c ) ) { closeAc(); return; }
 			if ( change && '+input' === change.origin ) { setTimeout( function () { acSuggest( c ); }, 0 ); }

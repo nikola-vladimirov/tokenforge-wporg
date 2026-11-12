@@ -218,6 +218,30 @@ class Cheatsheet {
 				'css'  => '',
 			);
 		}
+		// ---- Block editor: button styles and patterns (same switches as Blocks registers them by) ----
+		$bs = Settings::get_instance()->get_settings();
+		if ( ! empty( $bs['block_button_styles'] ) ) {
+			foreach ( Components::btn_families( Components::settings() ) as $f ) {
+				$items['buttons'][] = array(
+					'n'    => '.is-style-tf-' . $f,
+					'k'    => 'class',
+					'copy' => 'is-style-tf-' . $f,
+					'd'    => 'Block editor: the ' . $f . ' style of the Button block. Pick it under Styles in the block sidebar; the class goes on the Button block. It never changes a button you already styled.',
+					'css'  => '',
+				);
+			}
+		}
+		if ( ! empty( $bs['block_patterns'] ) ) {
+			foreach ( array( 'hero', 'cards', 'pricing', 'faq', 'contact' ) as $name ) {
+				$items['utilities'][] = array(
+					'n'    => 'Pattern tokenforge/' . $name . ' (block editor)',
+					'k'    => 'tip',
+					'copy' => 'tokenforge/' . $name,
+					'd'    => 'A ready pattern built with TokenForge classes. In the block editor open the inserter, Patterns, TokenForge. It adds blocks you can edit and never changes existing content.',
+					'css'  => '',
+				);
+			}
+		}
 		foreach ( Features\A11y_Auto::cheatsheet() as $g => $list ) {
 			$items[ $g ] = array_merge( $items[ $g ], $list );
 		}

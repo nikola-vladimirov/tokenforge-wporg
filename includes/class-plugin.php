@@ -58,6 +58,7 @@ class Plugin {
 		// ANY WordPress site.
 		new Frontend();
 		new Blocks(); // Gutenberg blocks (all sites).
+		new Features\Block_Editor(); // block editor: class field, interface switches, canvas tools, hidden blocks.
 		new Features\A11y_Auto(); // missing accessibility attributes on the front end (every switch off by default).
 		new Features\Attr_Front(); // data-tf-copy, -tooltip and -filter: the small script and the filter rules, only on pages that use them.
 		Class_Usage::init(); // new utility classes in saved content join the stylesheet (when unused ones are left out).
@@ -185,6 +186,16 @@ class Plugin {
 		// adopts the style's typography first, so nothing on the site changes).
 		if ( $previous && version_compare( (string) $previous, '0.30.0', '<' ) ) {
 			update_option( 'tokenforge_setup_pending', 1, false );
+		}
+		// 0.57: the block editor uses TokenForge presets on every site (user decision),
+		// with the theme's old preset names mapped so existing posts keep their look.
+		if ( $previous && version_compare( (string) $previous, '0.57.0', '<' ) ) {
+			$stored = get_option( Settings::OPTION_SETTINGS, array() );
+			if ( is_array( $stored ) ) {
+				$stored['gutenberg_palette'] = 'replace';
+				$stored['block_map_legacy']  = true;
+				update_option( Settings::OPTION_SETTINGS, $stored );
+			}
 		}
 		Css_Generator::get_instance()->rebuild();
 		update_option( 'tokenforge_version', TOKENFORGE_VERSION );

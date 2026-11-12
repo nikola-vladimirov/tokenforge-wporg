@@ -285,6 +285,15 @@ class Frontend {
 			}
 		}
 
+		// Old block editor preset names (Block_Legacy), right after the stylesheet. Own handle:
+		// #tokenforge-inline-css is the stylesheet itself to hot reload, the dock and the context menu.
+		$legacy = self::legacy_css();
+		if ( '' !== $legacy ) {
+			wp_register_style( 'tokenforge-legacy', false, array( Css_Generator::HANDLE ), $css->version() );
+			wp_enqueue_style( 'tokenforge-legacy' );
+			wp_add_inline_style( 'tokenforge-legacy', str_ireplace( '</style', '<\/style', $legacy ) );
+		}
+
 		if ( $this->hot_reload_enabled() ) {
 			$this->enqueue_hot_reload( 'front', array(), $full );
 		}
@@ -378,6 +387,41 @@ class Frontend {
 	}
 
 	/**
+	 * Block_Legacy::css(), kept between requests: building it compares every theme
+	 * preset with every token. Rebuilt when the stylesheet, the theme's presets or
+	 * the two switches change.
+	 *
+	 * @return string
+	 */
+	private static function legacy_css() {
+		$s       = Settings::get_instance()->get_settings();
+		$version = Css_Generator::get_instance()->version();
+		if ( TOKENFORGE_VERSION === $version ) {
+			return Block_Legacy::css(); // no stylesheet yet: nothing tells a token change apart.
+		}
+		// The theme's presets by file times, not contents: no theme.json decode per page view.
+		$theme = array( get_stylesheet(), get_template(), get_theme_support( 'editor-color-palette' ), get_theme_support( 'editor-font-sizes' ) );
+		foreach ( array_unique( array( get_stylesheet_directory(), get_template_directory() ) ) as $dir ) {
+			$theme[] = is_readable( $dir . '/theme.json' ) ? filemtime( $dir . '/theme.json' ) : 0;
+		}
+		$sig = md5( (string) wp_json_encode( array( TOKENFORGE_VERSION, $version, $s['gutenberg_palette'], ! empty( $s['block_map_legacy'] ), $theme ) ) );
+		$hit = get_transient( 'tokenforge_block_legacy' );
+		if ( is_array( $hit ) && isset( $hit['sig'], $hit['css'] ) && $sig === $hit['sig'] ) {
+			return (string) $hit['css'];
+		}
+		$css = Block_Legacy::css();
+		set_transient(
+			'tokenforge_block_legacy',
+			array(
+				'sig' => $sig,
+				'css' => $css,
+			),
+			WEEK_IN_SECONDS
+		);
+		return $css;
+	}
+
+	/**
 	 * Add the generated stylesheet to the block editor's CONTENT styles. WordPress
 	 * scopes these to the editor content area (and injects them into the editor
 	 * iframe), so tokens/utilities/base styles preview on the content without
@@ -387,6 +431,12 @@ class Frontend {
 	 * @return array
 	 */
 	public function editor_styles( $settings ) {
+		// The old preset names (the theme's, the earlier tf- ones) keep their look while editing too.
+		$legacy = self::legacy_css();
+		if ( '' !== $legacy ) {
+			$settings['styles']   = isset( $settings['styles'] ) && is_array( $settings['styles'] ) ? $settings['styles'] : array();
+			$settings['styles'][] = array( 'css' => $legacy );
+		}
 		$css = Css_Generator::get_instance();
 		if ( ! file_exists( $css->css_path() ) ) {
 			return $settings;

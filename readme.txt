@@ -4,7 +4,7 @@ Tags: design tokens, css variables, accessibility, woocommerce
 Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.56.0
+Stable tag: 0.57.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,6 +18,7 @@ TokenForge is a design system you set up once and use everywhere. Colours, type 
 
 * One place to set your whole design: colours, type, spacing, layout and components.
 * Works with the block editor, Bricks, Etch, Oxygen, Breakdance, Divi and Elementor. Bricks has the deepest support today.
+* Block editor: your colours, font sizes, spacing, font families and shadows are the presets the editor offers. It also gets ready patterns, a Button style for each button family, a class field with suggestions on top of the block sidebar, and optional editor tools (a compact, builder-style block sidebar, swapped and resizable sidebars, a dark interface, outlines in the canvas, the TokenForge window). Placeholder text recipes (?ipsum-short, ?ipsum, ?ipsum-long) work in the editor canvas too. All of it is set on the Block editor screen.
 * Bricks: your tokens stay in step with Bricks variables, colours, global classes and the theme style. The dashboard and a design check also open inside the builder.
 * Moving from another utility framework? Press Import from Automatic.css under Import, export & reset. You confirm before it runs, and the settings history can undo it. Custom CSS does not come across, so move it into your builder's own CSS box.
 * One stylesheet, built when you save, not on every page load. Unused classes can be left out after a site scan.
@@ -120,6 +121,14 @@ TokenForge is developed by Prista Digital. Website: https://pristadigital.com
 
 No. TokenForge works on any WordPress site: the stylesheet loads on the front end and in the block editor. The builder tools switch on only when the Bricks theme or plugin is active.
 
+= What does TokenForge add to the block editor? =
+
+Your tokens become the editor's presets: colours, font sizes, spacing, font families and shadows. By default they replace the theme's presets, and the theme's old preset names are pointed at the nearest token, so existing posts and the theme's own styles keep their look. On the Block editor screen you can show them beside the theme's presets instead, or switch them off.
+
+The same screen has the rest, each with its own switch: a class field with suggestions on top of the block sidebar, TokenForge patterns (hero, cards, pricing, questions and answers, contact), a Button style for each button family, a list of blocks to hide from the inserter, a compact editor interface with the block settings laid out like the builder (one setting per row, the Styles tab in the builder order), the sidebars swapped and drag handles to make them wider or narrower, a dark editor interface, a dark canvas, outlines in the canvas, and a TokenForge button in the editor header that opens the dashboard as a window.
+
+Presets, patterns and button styles work with any theme. The Site Editor parts need a block theme. TokenForge never changes the styles you saved in the Site Editor: a preset list you saved there still shows first in its picker.
+
 = Will it slow my site down? =
 
 TokenForge writes one static stylesheet, so no CSS is built while a page loads. You can print it inline (no extra request) under Options, Performance, and switch off any section you do not use. Under Options, Utility framework, you can leave out the utility classes your site does not use. With WooCommerce, the shop styles are in a second file that loads only on pages that show the shop.
@@ -202,6 +211,12 @@ No. The limit counts sends, not people, so one visitor or a script can send the 
 == Changelog ==
 
 The full history is in CHANGELOG.md, also shown from the Changelog link next to TokenForge on the Plugins screen.
+
+= 0.57.0 =
+* Block editor: a new Block editor screen holds every block editor setting. Your colours, font sizes, spacing, font families and shadows become the editor presets (replace the theme's presets, sit beside them, or off), and the theme's old preset names point at the nearest token so existing posts keep their look.
+* Block editor tools, each with its own switch: a class field with suggestions, TokenForge patterns, a Button style for each button family, blocks hidden from the inserter, a compact sidebar laid out like the builder, swapped sidebars, drag handles to resize the sidebars, a dark interface and canvas, canvas outlines and the TokenForge window.
+* Recipes: ?ipsum (a medium paragraph) and ?ipsum-long join ?ipsum-short, and all three also work in the block editor canvas (type the name, then a space or a semicolon).
+* Fixed: dashboard fields lost their name for screen readers when changed from the default, and two suggestion lists could open on top of each other in the builder's CSS box.
 
 = 0.56.0 =
 * Bricks Style Manager: the text, heading and space sizes show as typography and spacing scales, and the HTML font size, screen widths and default mode fill its Settings. Changes made there come back into TokenForge.

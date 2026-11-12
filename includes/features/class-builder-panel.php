@@ -30,12 +30,36 @@ class Builder_Panel {
 	 */
 	public function __construct() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue' ), 12 );
+		add_action( 'tokenforge_block_editor_enqueue', array( $this, 'enqueue_blocks' ) );
+	}
+
+	/**
+	 * The window in the block editor (administrators, switch "TokenForge window
+	 * button"). It mounts into the editor page like in the builder: admin.css and
+	 * panel.css only style #tokenforge-app, #tf-dock and .tf-* names, so the
+	 * editor itself keeps its look. The editor's header button opens it.
+	 *
+	 * @return void
+	 */
+	public function enqueue_blocks() {
+		$s = Settings::get_instance()->get_settings();
+		if ( empty( $s['block_window'] ) || ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+		wp_enqueue_style( 'tokenforge-admin', TOKENFORGE_URL . 'assets/admin/admin.css', array(), TOKENFORGE_VERSION );
+		wp_enqueue_style( 'tokenforge-panel', TOKENFORGE_URL . 'assets/builder/panel.css', array( 'tokenforge-admin' ), TOKENFORGE_VERSION );
+		wp_enqueue_script( 'tokenforge-tips', TOKENFORGE_URL . 'assets/admin/tips.js', array( 'wp-i18n' ), TOKENFORGE_VERSION, true );
+		wp_enqueue_script( 'tokenforge-dashboard', TOKENFORGE_URL . 'assets/admin/admin.js', array( 'wp-i18n', 'tokenforge-tips' ), TOKENFORGE_VERSION, true );
+		wp_set_script_translations( 'tokenforge-tips', 'tokenforge' );
+		wp_set_script_translations( 'tokenforge-dashboard', 'tokenforge' );
+		wp_enqueue_script( 'tokenforge-panel', TOKENFORGE_URL . 'assets/builder/panel.js', array( 'tokenforge-dashboard' ), TOKENFORGE_VERSION, true );
+		wp_localize_script( 'tokenforge-panel', 'TokenForgePanel', $this->config( 'blocks' ) );
 	}
 
 	/**
 	 * Common window config.
 	 *
-	 * @param string $context builder | front.
+	 * @param string $context builder | front | blocks.
 	 * @return array
 	 */
 	private function config( $context ) {
@@ -51,7 +75,8 @@ class Builder_Panel {
 			'axeVersion' => A11y::axe_version(),
 			'darkMode'   => 'auto' === Scheme::settings()['dark_mode'], // the contrast fix says one colour serves both modes
 			// Builder: its own corner button, unless the canvas shows one (Show in builder canvas while editing).
-			'launcher'   => 'builder' === $context ? empty( $s['canvas_panel'] ) : ! empty( $s['frontend_launcher'] ),
+			// Block editor: no corner button, the editor header has one.
+			'launcher'   => 'blocks' !== $context && ( 'builder' === $context ? empty( $s['canvas_panel'] ) : ! empty( $s['frontend_launcher'] ) ),
 		);
 	}
 

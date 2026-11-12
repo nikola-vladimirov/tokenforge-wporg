@@ -3,7 +3,7 @@
  * Plugin Name:       TokenForge
  * Plugin URI:        https://pristadigital.com
  * Description:       Design tokens, fluid scales and utility classes for any WordPress site, block editor included. With Bricks active it also syncs variables, colours, classes and a theme style both ways, and adds the dashboard inside the builder.
- * Version:           0.56.0
+ * Version:           0.57.0
  * Requires at least: 5.9
  * Requires PHP:      7.4
  * Author:            Prista Digital
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'TOKENFORGE_VERSION', '0.56.0' );
+define( 'TOKENFORGE_VERSION', '0.57.0' );
 define( 'TOKENFORGE_FILE', __FILE__ );
 define( 'TOKENFORGE_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TOKENFORGE_URL', plugin_dir_url( __FILE__ ) );
@@ -51,6 +51,7 @@ spl_autoload_register(
 			'TokenForge\\Overlays'                        => 'includes/class-overlays.php',
 			'TokenForge\\Attributes'                      => 'includes/class-attributes.php',
 			'TokenForge\\Blocks'                          => 'includes/class-blocks.php',
+			'TokenForge\\Block_Legacy'                    => 'includes/class-block-legacy.php',
 			'TokenForge\\Acss_Import'                     => 'includes/class-acss-import.php',
 			'TokenForge\\Framework'                       => 'includes/class-framework.php',
 			'TokenForge\\Scss'                            => 'includes/class-scss.php',
@@ -80,6 +81,7 @@ spl_autoload_register(
 			'TokenForge\\Platforms\\Platforms'            => 'includes/platforms/class-platforms.php',
 			'TokenForge\\Features\\Bem_Generator'         => 'includes/features/class-bem-generator.php',
 			'TokenForge\\Features\\Builder_Panel'         => 'includes/features/class-builder-panel.php',
+			'TokenForge\\Features\\Block_Editor'          => 'includes/features/class-block-editor.php',
 			'TokenForge\\Features\\A11y'                  => 'includes/features/class-a11y.php',
 			'TokenForge\\Features\\Check'                 => 'includes/features/class-check.php',
 			'TokenForge\\Features\\Builder_Enhancements'  => 'includes/features/class-builder-enhancements.php',

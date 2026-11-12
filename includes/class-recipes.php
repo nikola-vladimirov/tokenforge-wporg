@@ -126,6 +126,8 @@ class Recipes {
 
 		// ---- Text.
 		$r['ipsum-short'] = array( 'Text', 'Placeholder copy: this paragraph stands in for the real text while the design takes shape. It is long enough to show how a few lines wrap, and it will be replaced once the final wording is ready.', null, true );
+		$r['ipsum']       = array( 'Text', 'Placeholder copy: this paragraph holds the place of the real text while the page is being designed. It runs a little longer than the short version, so you can see how a normal paragraph sits next to headings, images and buttons. Swap it for the final words once they are written, and check that the layout still breathes with the real length.', null, true );
+		$r['ipsum-long']  = array( 'Text', 'Placeholder copy: this long paragraph stands in for a full block of real text while the design takes shape. Use it where an article, an about section or a detailed description will go, so you can judge line length, spacing and rhythm before the final wording exists. Long paragraphs show problems that short ones hide: lines that run too wide to read comfortably, gaps that feel too tight between paragraphs, and images that drift away from the words they belong to. Read it through once at each screen size, adjust the content width or the text size where it feels heavy, and then replace it with the real copy. When the final text arrives, keep an eye on headings and lists too, since real content is rarely as even as this.', null, true );
 		$r['script']      = array( 'Code', "<script type=\"module\">\n\t{{cursor}}\n</script>", null, false );
 
 		// ---- Breakpoints and container queries.
@@ -185,7 +187,7 @@ class Recipes {
 	 */
 	public static function all() {
 		$out  = array();
-		$text = array( 'ipsum-short', 'script', 'query-children' );
+		$text = array( 'ipsum-short', 'ipsum', 'ipsum-long', 'script', 'query-children' );
 		foreach ( self::builtin() as $name => $r ) {
 			$kind         = in_array( $name, $text, true ) ? 'text' : ( $r[3] ? 'value' : 'block' );
 			$out[ $name ] = array(

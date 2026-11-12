@@ -33,6 +33,8 @@ function tokenforge_uninstall_site() {
 		delete_option( 'tokenforge_' . $tf_opt );
 	}
 	delete_transient( 'tokenforge_upgrading' ); // The upgrade lock (Plugin::maybe_upgrade), two minutes at most.
+	delete_transient( 'tokenforge_block_legacy' ); // Cached block editor preset mapping CSS (Frontend::legacy_css).
+	delete_transient( 'tokenforge_block_previews' ); // Cached class previews for the block editor class field (Block_Editor::previews).
 	// Form submissions (Features\Form_Submissions): our status/notes table and auto-delete.
 	// The builder's own submissions table stays.
 	wp_clear_scheduled_hook( 'tokenforge_subs_cleanup' );
