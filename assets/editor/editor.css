@@ -132,6 +132,8 @@
 }
 .tf-be-dark .components-popover__content { box-shadow: 0 0 0 1px var(--tfd-line), 0 8px 24px rgba(0, 0, 0, .45); }
 .tf-be-dark .interface-interface-skeleton__header { box-shadow: 0 1px 0 0 var(--tfd-line); }
+/* WordPress gives the Appearance list options a fixed dark text colour (#1e1e1e). */
+.tf-be-dark .components-custom-select-control [role="option"] { color: inherit; }
 
 /* The class field inside the dark sidebar. */
 .tf-be-dark .tf-class-field { --tfb-bg: var(--tfd-bg); --tfb-line: var(--tfd-control); --tfb-text: var(--tfd-text); --tfb-muted: var(--tfd-muted); --tfb-chip: var(--tfd-line); --tfb-accent: var(--tfd-accent); --tfb-on-accent: var(--tfd-ink); }

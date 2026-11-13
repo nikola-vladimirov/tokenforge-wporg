@@ -18,6 +18,11 @@ class Settings {
 	const OPTION_SETTINGS = 'tokenforge_settings';
 
 	/**
+	 * Units the block editor offers (wp.components allUnits), for the default unit setting.
+	 */
+	const UNITS = array( 'px', '%', 'em', 'rem', 'vw', 'vh', 'vmin', 'vmax', 'ch', 'ex', 'cm', 'mm', 'in', 'pc', 'pt', 'svw', 'svh', 'svi', 'svb', 'svmin', 'svmax', 'lvw', 'lvh', 'lvi', 'lvb', 'lvmin', 'lvmax', 'dvw', 'dvh', 'dvi', 'dvb', 'dvmin', 'dvmax' );
+
+	/**
 	 * Singleton instance.
 	 *
 	 * @var Settings|null
@@ -73,12 +78,13 @@ class Settings {
 			'layer_cards'         => false, // @layer cards
 			'layer_icons'         => false, // @layer the icon system
 			'hot_reload'          => true,  // live-update the CSS in open tabs (admins only).
-			'gutenberg_palette'   => 'replace', // block editor presets (colours, sizes, spacing, fonts, shadows): 'off' | 'add' (beside the theme's, tf- names) | 'replace'
+			'gutenberg_palette'   => 'replace', // block editor presets (colours, sizes, spacing, fonts, shadows): 'off' | 'add' (beside the theme's, tf- names) | 'replace'.
 			'block_map_legacy'    => true,  // the theme's own preset names point at the nearest TokenForge token (replace mode).
 			'block_class_field'   => true,  // class field on top of the block sidebar.
 			'block_compact'       => false, // denser block editor interface.
 			'block_swap_panels'   => false, // block settings on the left, List View and inserter on the right.
 			'block_resize_panels' => true, // drag the sidebars wider or narrower (widths kept per browser).
+			'block_unit'          => 'rem', // default unit of empty size fields, one of self::UNITS ('px' = WordPress as is).
 			'block_open_panels'   => false, // every block settings panel starts open.
 			'block_styles_first'  => false, // the block sidebar opens on the Styles tab.
 			'block_list_view'     => false, // List View open when the editor loads.
@@ -140,6 +146,7 @@ class Settings {
 			'layer_icons'        => ! empty( $settings['layer_icons'] ),
 			'hot_reload'         => ! empty( $settings['hot_reload'] ),
 			'gutenberg_palette'  => ( isset( $settings['gutenberg_palette'] ) && in_array( $settings['gutenberg_palette'], array( 'off', 'add', 'replace' ), true ) ) ? $settings['gutenberg_palette'] : $defaults['gutenberg_palette'],
+			'block_unit'         => ( isset( $settings['block_unit'] ) && in_array( $settings['block_unit'], self::UNITS, true ) ) ? $settings['block_unit'] : $defaults['block_unit'],
 			'block_hide'         => isset( $settings['block_hide'] ) ? self::block_names( $settings['block_hide'] ) : $defaults['block_hide'],
 			'category_name'      => isset( $settings['category_name'] ) ? sanitize_text_field( $settings['category_name'] ) : $defaults['category_name'],
 			'panel_shortcut'     => self::shortcut( isset( $settings['panel_shortcut'] ) ? $settings['panel_shortcut'] : $defaults['panel_shortcut'] ),

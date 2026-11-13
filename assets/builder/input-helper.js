@@ -50,6 +50,7 @@
 	// The builder's own rule: a control takes variables when it says so, or when it writes CSS.
 	function isStyleInput( input ) {
 		if ( ! input || 'INPUT' !== input.tagName || ( input.type && 'text' !== input.type ) ) { return false; }
+		if ( window.TokenForgeBuilder ) { return !! window.TokenForgeBuilder.isControlInput( input ); } // other builders
 		var ctl = input.closest( '#bricks-panel [data-control], .bricks-control-popup [data-control], .bricks-popup [data-control]' );
 		if ( ! ctl || input.closest( '#bricks-panel-header, #bricks-panel-element-classes' ) ) { return false; }
 		var ck = input.closest( '[data-controlkey]' ), key = ck && ck.getAttribute( 'data-controlkey' );
@@ -59,10 +60,13 @@
 		return STYLE_TYPES.indexOf( ctl.getAttribute( 'data-control' ) ) > -1;
 	}
 
-	function apply( input ) {
-		var ck = input.closest( '[data-controlkey]' );
-		var next = normalize( input.value, ck && ck.getAttribute( 'data-controlkey' ) );
+	function apply( input, ready ) {
+		var B = window.TokenForgeBuilder, ck = input.closest( '[data-controlkey]' );
+		var next = 'string' === typeof ready ? ready : normalize( input.value, B ? B.controlKey( input ) : ck && ck.getAttribute( 'data-controlkey' ) );
 		if ( next === input.value ) { return; }
+		// Some builders need the field set up first (a unit field switched to its custom unit). The value is worked
+		// out now: the switch may redraw the field from the store and drop what was typed. No field back: no write.
+		if ( ! ready && B && B.prepare ) { B.prepare( input, function ( el ) { if ( el ) { apply( el, next ); } } ); return; }
 		Object.getOwnPropertyDescriptor( window.HTMLInputElement.prototype, 'value' ).set.call( input, next );
 		input.dispatchEvent( new Event( 'input', { bubbles: true } ) );
 		input.dispatchEvent( new Event( 'change', { bubbles: true } ) );

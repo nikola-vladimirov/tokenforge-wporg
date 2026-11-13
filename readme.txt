@@ -4,7 +4,7 @@ Tags: design tokens, css variables, accessibility, woocommerce
 Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.57.0
+Stable tag: 0.58.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,6 +18,7 @@ TokenForge is a design system you set up once and use everywhere. Colours, type 
 
 * One place to set your whole design: colours, type, spacing, layout and components.
 * Works with the block editor, Bricks, Etch, Oxygen, Breakdance, Divi and Elementor. Bricks has the deepest support today.
+* Etch, Oxygen, Breakdance, Elementor and Divi: the TokenForge window inside the editor, TokenForge variables by right-click in style fields, TokenForge classes by right-click in the class field (Divi: its Attributes list), the input helper (space-m becomes var(--space-m)), variable, class and recipe suggestions in the custom CSS box, placeholder text recipes in text fields and the TokenForge stylesheet in the canvas. The builder's own Save keeps every change.
 * Block editor: your colours, font sizes, spacing, font families and shadows are the presets the editor offers. It also gets ready patterns, a Button style for each button family, a class field with suggestions on top of the block sidebar, and optional editor tools (a compact, builder-style block sidebar, swapped and resizable sidebars, a dark interface, outlines in the canvas, the TokenForge window). Placeholder text recipes (?ipsum-short, ?ipsum, ?ipsum-long) work in the editor canvas too. All of it is set on the Block editor screen.
 * Bricks: your tokens stay in step with Bricks variables, colours, global classes and the theme style. The dashboard and a design check also open inside the builder.
 * Moving from another utility framework? Press Import from Automatic.css under Import, export & reset. You confirm before it runs, and the settings history can undo it. Custom CSS does not come across, so move it into your builder's own CSS box.
@@ -97,11 +98,12 @@ A developer can add SCSS from code. The filter `tokenforge_global_scss` receives
 
 This is code, not a setting. Put it in a child theme's functions.php or in a mu-plugin, never in TokenForge's own files, so an update does not remove it.
 
+An add-on can load its scripts and styles in the editor of every supported page builder. The action `tokenforge_builder_enqueue` passes the builder (bricks, etch, oxygen, breakdance, elementor or divi). It fires in the editor page for users who can edit posts, after TokenForge's own assets (the window, handle tokenforge-panel, for administrators; the tools, handle tokenforge-builder, outside Bricks). Call wp_enqueue_script and wp_enqueue_style as usual; where the builder's editor skips the WordPress queue (Oxygen, Breakdance), TokenForge prints them. In Divi it fires in the top window, where the settings panels are; the canvas is the same-origin frame #et-vb-app-frame. The block editor has its own action, `tokenforge_block_editor_enqueue`, which passes the editor switches.
+
 **Roadmap**
 
 Planned, with no dates yet:
 
-* Etch, Oxygen, Breakdance, Divi and Elementor: the same kind of builder support Bricks has, with variables, classes and the dashboard inside the builder.
 * Block editor: panels for block styles and the global styles.
 * More accessibility checks, with clearer fixes.
 
@@ -119,7 +121,7 @@ TokenForge is developed by Prista Digital. Website: https://pristadigital.com
 
 = Do I need a page builder? =
 
-No. TokenForge works on any WordPress site: the stylesheet loads on the front end and in the block editor. The builder tools switch on only when the Bricks theme or plugin is active.
+No. TokenForge works on any WordPress site: the stylesheet loads on the front end and in the block editor. The builder tools switch on only when a supported builder is active: Bricks, Etch, Oxygen, Breakdance, Elementor or Divi 5.
 
 = What does TokenForge add to the block editor? =
 
@@ -211,6 +213,13 @@ No. The limit counts sends, not people, so one visitor or a script can send the 
 == Changelog ==
 
 The full history is in CHANGELOG.md, also shown from the Changelog link next to TokenForge on the Plugins screen.
+
+= 0.58.0 =
+* Page builders: Etch, Oxygen 6, Breakdance, Elementor (classic widgets and containers) and Divi 5 now get the TokenForge window, variables and classes by right-click, the input helper, suggestions and recipes in custom CSS, and the TokenForge stylesheet in the canvas while editing.
+* Recipes: placeholder text recipes (?ipsum-short, ?ipsum, ?ipsum-long and your own Text recipes) work in every supported builder and in the block editor sidebar.
+* Block editor: a new setting picks the default unit for empty size fields (rem by default, px keeps WordPress as it is).
+* Developers: the new action tokenforge_builder_enqueue loads an add-on's scripts and styles in every supported builder.
+* Fixed: dark text on the dark Appearance list in the dark editor interface, and Divi's settings panels getting the front-end styles.
 
 = 0.57.0 =
 * Block editor: a new Block editor screen holds every block editor setting. Your colours, font sizes, spacing, font families and shadows become the editor presets (replace the theme's presets, sit beside them, or off), and the theme's old preset names point at the nearest token so existing posts keep their look.

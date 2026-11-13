@@ -22,9 +22,17 @@ class Platforms {
 	 * only shows when the active integration lists that key.
 	 */
 	const CAPS = array(
-		'bricks' => array( 'tokens_native', 'canvas_css', 'class_complete', 'class_sync', 'theme_style', 'hide_elements', 'canvas_tools', 'context_menus', 'templates', 'editor_tweaks', 'form_extras' ),
+		'bricks'     => array( 'tokens_native', 'canvas_css', 'class_complete', 'class_sync', 'theme_style', 'hide_elements', 'canvas_tools', 'context_menus', 'templates', 'editor_tweaks', 'form_extras', 'vars_menu', 'class_menu', 'css_complete', 'field_tools' ),
+		// Etch has no style fields: the class menu and the CSS editor only.
+		'etch'       => array( 'canvas_css', 'context_menus', 'class_menu', 'css_complete' ),
+		// Oxygen 6 and Breakdance 3 share one code base: style fields, the class field and Custom CSS.
+		'oxygen'     => array( 'canvas_css', 'context_menus', 'vars_menu', 'class_menu', 'css_complete', 'field_tools' ),
+		'breakdance' => array( 'canvas_css', 'context_menus', 'vars_menu', 'class_menu', 'css_complete', 'field_tools' ),
+		// Elementor (classic widgets and containers; Custom CSS needs Elementor Pro) and Divi 5: the same six.
+		'elementor'  => array( 'canvas_css', 'context_menus', 'vars_menu', 'class_menu', 'css_complete', 'field_tools' ),
+		'divi'       => array( 'canvas_css', 'context_menus', 'vars_menu', 'class_menu', 'css_complete', 'field_tools' ),
 		// The block editor: presets, the class field, canvas outlines, hidden blocks, interface switches, patterns.
-		'blocks' => array( 'tokens_native', 'canvas_css', 'class_complete', 'hide_elements', 'canvas_tools', 'editor_tweaks', 'templates' ),
+		'blocks'     => array( 'tokens_native', 'canvas_css', 'class_complete', 'hide_elements', 'canvas_tools', 'editor_tweaks', 'templates' ),
 	);
 
 	/**
@@ -67,7 +75,8 @@ class Platforms {
 	}
 
 	/**
-	 * The integration that drives the Builder screen: the first active, supported one.
+	 * The integration that drives the Builder screen: the first active, supported page builder.
+	 * Never the block editor: it has its own screen (the dashboard skips it the same way).
 	 * ponytail: one screen; a screen per builder once a second integration exists.
 	 *
 	 * @param array[]|null $detected From detected().
@@ -75,7 +84,7 @@ class Platforms {
 	 */
 	public static function active( $detected = null ) {
 		foreach ( null === $detected ? self::detected() : $detected as $p ) {
-			if ( $p['active'] && $p['supported'] ) {
+			if ( $p['active'] && $p['supported'] && 'blocks' !== $p['id'] ) {
 				return $p;
 			}
 		}

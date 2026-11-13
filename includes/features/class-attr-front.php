@@ -60,7 +60,8 @@ class Attr_Front {
 			|| ( defined( 'SHOW_CT_BUILDER' ) && SHOW_CT_BUILDER ) || null !== filter_input( INPUT_GET, 'ct_builder' )
 			|| null !== filter_input( INPUT_GET, 'breakdance' ) || null !== filter_input( INPUT_GET, 'breakdance_iframe' )
 			|| 'magic' === filter_input( INPUT_GET, 'etch' )
-			|| null !== filter_input( INPUT_GET, 'fl_builder' ) || null !== filter_input( INPUT_GET, 'elementor-preview' );
+			|| null !== filter_input( INPUT_GET, 'fl_builder' ) || null !== filter_input( INPUT_GET, 'elementor-preview' )
+			|| null !== Builders::divi_app();
 	}
 
 	/**

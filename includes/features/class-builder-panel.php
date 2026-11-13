@@ -46,6 +46,17 @@ class Builder_Panel {
 		if ( empty( $s['block_window'] ) || ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
+		self::window( 'blocks' );
+	}
+
+	/**
+	 * Loads the window into an editor page: the dashboard app and its styles (shared with wp-admin), plus the window shell.
+	 *
+	 * @param string $context  builder | blocks.
+	 * @param string $platform The page builder, when it is not Bricks: etch, oxygen, breakdance, elementor or divi.
+	 * @return void
+	 */
+	public static function window( $context, $platform = '' ) {
 		wp_enqueue_style( 'tokenforge-admin', TOKENFORGE_URL . 'assets/admin/admin.css', array(), TOKENFORGE_VERSION );
 		wp_enqueue_style( 'tokenforge-panel', TOKENFORGE_URL . 'assets/builder/panel.css', array( 'tokenforge-admin' ), TOKENFORGE_VERSION );
 		wp_enqueue_script( 'tokenforge-tips', TOKENFORGE_URL . 'assets/admin/tips.js', array( 'wp-i18n' ), TOKENFORGE_VERSION, true );
@@ -53,18 +64,20 @@ class Builder_Panel {
 		wp_set_script_translations( 'tokenforge-tips', 'tokenforge' );
 		wp_set_script_translations( 'tokenforge-dashboard', 'tokenforge' );
 		wp_enqueue_script( 'tokenforge-panel', TOKENFORGE_URL . 'assets/builder/panel.js', array( 'tokenforge-dashboard' ), TOKENFORGE_VERSION, true );
-		wp_localize_script( 'tokenforge-panel', 'TokenForgePanel', $this->config( 'blocks' ) );
+		wp_localize_script( 'tokenforge-panel', 'TokenForgePanel', self::config( $context, $platform ) );
 	}
 
 	/**
 	 * Common window config.
 	 *
-	 * @param string $context builder | front | blocks.
+	 * @param string $context  builder | front | blocks.
+	 * @param string $platform See window().
 	 * @return array
 	 */
-	private function config( $context ) {
+	private static function config( $context, $platform = '' ) {
 		$s = Settings::get_instance()->get_settings();
 		return array(
+			'platform'   => $platform,
 			'restUrl'    => esc_url_raw( rest_url( \TokenForge\Rest::NS ) ),
 			'nonce'      => wp_create_nonce( 'wp_rest' ),
 			'groups'     => Tokens::GROUPS,
@@ -76,7 +89,8 @@ class Builder_Panel {
 			'darkMode'   => 'auto' === Scheme::settings()['dark_mode'], // the contrast fix says one colour serves both modes
 			// Builder: its own corner button, unless the canvas shows one (Show in builder canvas while editing).
 			// Block editor: no corner button, the editor header has one.
-			'launcher'   => 'blocks' !== $context && ( 'builder' === $context ? empty( $s['canvas_panel'] ) : ! empty( $s['frontend_launcher'] ) ),
+			// The other builders: always the corner button (no canvas button there).
+			'launcher'   => '' !== $platform || ( 'blocks' !== $context && ( 'builder' === $context ? empty( $s['canvas_panel'] ) : ! empty( $s['frontend_launcher'] ) ) ),
 		);
 	}
 
@@ -115,15 +129,7 @@ class Builder_Panel {
 			if ( ! current_user_can( 'manage_options' ) ) {
 				return;
 			}
-			// The dashboard app + its styles (shared with wp-admin), plus the window shell.
-			wp_enqueue_style( 'tokenforge-admin', TOKENFORGE_URL . 'assets/admin/admin.css', array(), TOKENFORGE_VERSION );
-			wp_enqueue_style( 'tokenforge-panel', TOKENFORGE_URL . 'assets/builder/panel.css', array( 'tokenforge-admin' ), TOKENFORGE_VERSION );
-			wp_enqueue_script( 'tokenforge-tips', TOKENFORGE_URL . 'assets/admin/tips.js', array( 'wp-i18n' ), TOKENFORGE_VERSION, true );
-			wp_enqueue_script( 'tokenforge-dashboard', TOKENFORGE_URL . 'assets/admin/admin.js', array( 'wp-i18n', 'tokenforge-tips' ), TOKENFORGE_VERSION, true );
-			wp_set_script_translations( 'tokenforge-tips', 'tokenforge' );
-			wp_set_script_translations( 'tokenforge-dashboard', 'tokenforge' );
-			wp_enqueue_script( 'tokenforge-panel', TOKENFORGE_URL . 'assets/builder/panel.js', array( 'tokenforge-dashboard' ), TOKENFORGE_VERSION, true );
-			wp_localize_script( 'tokenforge-panel', 'TokenForgePanel', $this->config( 'builder' ) );
+			self::window( 'builder' );
 			// The Check tab (UI for the page-check engine, which class-check.php enqueues in this same context).
 			wp_enqueue_script( 'tokenforge-check-panel', TOKENFORGE_URL . 'assets/builder/check-panel.js', array( 'wp-i18n', 'tokenforge-dashboard', 'tokenforge-check-engine' ), TOKENFORGE_VERSION, true );
 			wp_set_script_translations( 'tokenforge-check-panel', 'tokenforge' );
@@ -155,7 +161,7 @@ class Builder_Panel {
 		wp_set_script_translations( 'tokenforge-tips', 'tokenforge' );
 		wp_set_script_translations( 'tokenforge-dashboard', 'tokenforge' );
 		wp_enqueue_script( 'tokenforge-panel', TOKENFORGE_URL . 'assets/builder/panel.js', array( 'tokenforge-dashboard' ), TOKENFORGE_VERSION, true );
-		$cfg        = $this->config( 'front' );
+		$cfg        = self::config( 'front' );
 		$cfg['css'] = array(
 			add_query_arg( 'ver', TOKENFORGE_VERSION, TOKENFORGE_URL . 'assets/admin/admin.css' ),
 			add_query_arg( 'ver', TOKENFORGE_VERSION, TOKENFORGE_URL . 'assets/builder/panel.css' ),

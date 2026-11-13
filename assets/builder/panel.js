@@ -55,11 +55,16 @@
 	function isShortcut( e ) {
 		return !! SC && e.ctrlKey === SC.ctrl && e.altKey === SC.alt && e.shiftKey === SC.shift && e.metaKey === SC.meta && codeKey( e ) === SC.key;
 	}
+	var lastKey = 0;
 	function onKey( e ) {
 		if ( e.repeat || ! isShortcut( e ) ) { return; }
 		var t = e.composedPath ? e.composedPath()[0] : e.target;
 		if ( t && t.classList && t.classList.contains( 'tf-keyrec' ) ) { return; } // recording a new shortcut
 		e.preventDefault(); e.stopPropagation();
+		// Some builders mirror key presses between the canvas and the editor window: one press, one toggle.
+		var now = Date.now();
+		if ( now - lastKey < 150 ) { return; }
+		lastKey = now;
 		toggle();
 	}
 	window.addEventListener( 'keydown', onKey, true );
@@ -91,7 +96,9 @@
 
 	// Keep the Bricks toolbar (with its own Save button) / the WP admin bar uncovered.
 	function topOffset() {
-		var tb = document.getElementById( 'bricks-toolbar-top' ) || document.getElementById( 'bricks-toolbar' ) || document.getElementById( 'wpadminbar' );
+		var B = window.TokenForgeBuilder, tb = null;
+		try { tb = B && B.toolbar(); } catch ( e ) {}
+		tb = tb || document.getElementById( 'bricks-toolbar-top' ) || document.getElementById( 'bricks-toolbar' ) || document.getElementById( 'wpadminbar' );
 		return tb ? Math.max( 0, Math.round( tb.getBoundingClientRect().bottom ) ) : 0;
 	}
 
@@ -101,6 +108,7 @@
 		dock.classList.toggle( 'is-open', !! state.open );
 		dock.classList.toggle( 'is-min', !! state.min && 'float' === state.mode );
 		dock.classList.toggle( 'no-launcher', ! cfg.launcher );
+		if ( cfg.platform ) { dock.classList.add( 'tf-b-' + cfg.platform ); } // the launcher spot per builder (panel.css)
 		dock.className = dock.className.replace( /\bmode-\w+/g, '' ).trim() + ' mode-' + state.mode;
 		var s = panel.style;
 		if ( 'float' === state.mode ) {

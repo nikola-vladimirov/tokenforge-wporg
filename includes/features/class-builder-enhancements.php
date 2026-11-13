@@ -13,6 +13,7 @@
 namespace TokenForge\Features;
 
 use TokenForge\Platforms\Bricks;
+use TokenForge\Platforms\Platforms;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -200,30 +201,7 @@ class Builder_Enhancements {
 			wp_add_inline_style( 'tokenforge-enh', implode( ',', $sel ) . '{display:none!important}' );
 		}
 
-		$recipes = \TokenForge\Recipes::for_editor();
-		if ( ! empty( $s['ctx_vars_menu'] ) || ! empty( $s['ctx_class_menu'] ) || ! empty( $s['css_autocomplete'] ) || $recipes ) {
-			wp_enqueue_style( 'tokenforge-ctx', TOKENFORGE_URL . 'assets/builder/context-menu.css', array(), TOKENFORGE_VERSION );
-			wp_enqueue_script( 'tokenforge-ctx', TOKENFORGE_URL . 'assets/builder/context-menu.js', array(), TOKENFORGE_VERSION, true );
-			wp_localize_script(
-				'tokenforge-ctx',
-				'TokenForgeCtx',
-				array(
-					'vars_menu'  => ! empty( $s['ctx_vars_menu'] ),
-					'class_menu' => ! empty( $s['ctx_class_menu'] ),
-					'css_ac'     => ! empty( $s['css_autocomplete'] ),
-					'recipes'    => $recipes, // null = off.
-					'vars'       => self::menu_variables(),
-					'classes'    => self::menu_classes(),
-					'restUrl'    => esc_url_raw( rest_url( \TokenForge\Rest::NS ) ),
-					'nonce'      => wp_create_nonce( 'wp_rest' ),
-				)
-			);
-		}
-
-		if ( ! empty( $s['input_helper'] ) ) {
-			wp_enqueue_script( 'tokenforge-input', TOKENFORGE_URL . 'assets/builder/input-helper.js', array(), TOKENFORGE_VERSION, true );
-			wp_localize_script( 'tokenforge-input', 'TokenForgeInput', array( 'vars' => array_column( self::menu_variables(), 0 ) ) );
-		}
+		self::menus( $s, array(), Platforms::CAPS['bricks'] );
 		if ( ! empty( $s['hide_stale_classes'] ) ) {
 			$css = self::stale_classes_css();
 			if ( '' !== $css ) {
@@ -236,6 +214,65 @@ class Builder_Enhancements {
 			wp_enqueue_style( 'tokenforge-attrs', TOKENFORGE_URL . 'assets/builder/attr-autocomplete.css', array(), TOKENFORGE_VERSION );
 			wp_enqueue_script( 'tokenforge-attrs', TOKENFORGE_URL . 'assets/builder/attr-autocomplete.js', array(), TOKENFORGE_VERSION, true );
 			wp_localize_script( 'tokenforge-attrs', 'TokenForgeAttrs', self::attrs_data( ! empty( $s['ctx_vars_menu'] ) || ! empty( $s['ctx_class_menu'] ) ) );
+		}
+	}
+
+	/**
+	 * The right-click menus, the CSS editor suggestions with recipes, and the input helper:
+	 * each one only where its switch is on and the builder supports it.
+	 *
+	 * @param array    $s    Settings.
+	 * @param string[] $deps Script handles to load first (the adapter, outside Bricks).
+	 * @param string[] $caps The builder's Platforms::CAPS entry.
+	 * @return void
+	 */
+	private static function menus( $s, $deps, $caps ) {
+		$on      = function ( $key, $cap ) use ( $s, $caps ) {
+			return ! empty( $s[ $key ] ) && in_array( $cap, $caps, true );
+		};
+		$vars    = $on( 'ctx_vars_menu', 'vars_menu' );
+		$classes = $on( 'ctx_class_menu', 'class_menu' );
+		$css_ac  = $on( 'css_autocomplete', 'css_complete' );
+		// Recipes expand in the CSS editor and in style fields: off where the builder has neither.
+		$recipes = array_intersect( array( 'css_complete', 'field_tools' ), $caps ) ? \TokenForge\Recipes::for_editor() : null;
+		if ( $vars || $classes || $css_ac || $recipes ) {
+			wp_enqueue_style( 'tokenforge-ctx', TOKENFORGE_URL . 'assets/builder/context-menu.css', array(), TOKENFORGE_VERSION );
+			wp_enqueue_script( 'tokenforge-ctx', TOKENFORGE_URL . 'assets/builder/context-menu.js', $deps, TOKENFORGE_VERSION, true );
+			wp_localize_script(
+				'tokenforge-ctx',
+				'TokenForgeCtx',
+				array(
+					'vars_menu'  => $vars,
+					'class_menu' => $classes,
+					'css_ac'     => $css_ac,
+					'recipes'    => $recipes, // null = off.
+					'vars'       => self::menu_variables(),
+					'classes'    => self::menu_classes(),
+					'restUrl'    => esc_url_raw( rest_url( \TokenForge\Rest::NS ) ),
+					'nonce'      => wp_create_nonce( 'wp_rest' ),
+				)
+			);
+		}
+
+		if ( $on( 'input_helper', 'field_tools' ) ) {
+			wp_enqueue_script( 'tokenforge-input', TOKENFORGE_URL . 'assets/builder/input-helper.js', $deps, TOKENFORGE_VERSION, true );
+			wp_localize_script( 'tokenforge-input', 'TokenForgeInput', array( 'vars' => array_column( self::menu_variables(), 0 ) ) );
+		}
+	}
+
+	/**
+	 * The tools in another builder's editor: the adapter (window.TokenForgeBuilder) that tells the
+	 * shared scripts where that builder keeps its fields, classes and canvas, then the menus.
+	 *
+	 * @param string $platform etch | oxygen | breakdance | elementor | divi.
+	 * @param bool   $menus    False: the adapter alone.
+	 * @return void
+	 */
+	public static function tools( $platform, $menus = true ) {
+		wp_enqueue_script( 'tokenforge-builder', TOKENFORGE_URL . 'assets/builder/builder-adapter.js', array(), TOKENFORGE_VERSION, true );
+		wp_localize_script( 'tokenforge-builder', 'TokenForgeBuilderCfg', array( 'platform' => $platform ) );
+		if ( $menus ) {
+			self::menus( self::settings(), array( 'tokenforge-builder' ), Platforms::CAPS[ $platform ] ?? array() );
 		}
 	}
 

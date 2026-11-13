@@ -59,6 +59,8 @@ class Plugin {
 		new Frontend();
 		new Blocks(); // Gutenberg blocks (all sites).
 		new Features\Block_Editor(); // block editor: class field, interface switches, canvas tools, hidden blocks.
+		new Features\Builders(); // every page builder's editor: the window, the tools and the add-on action.
+		new Features\Text_Recipes(); // ?ipsum and the other text recipes in Etch, Breakdance, Oxygen, Elementor and Divi.
 		new Features\A11y_Auto(); // missing accessibility attributes on the front end (every switch off by default).
 		new Features\Attr_Front(); // data-tf-copy, -tooltip and -filter: the small script and the filter rules, only on pages that use them.
 		Class_Usage::init(); // new utility classes in saved content join the stylesheet (when unused ones are left out).

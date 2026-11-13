@@ -67,7 +67,9 @@
 .tf-snap-hint.is-left { display: block; left: 0; }
 .tf-snap-hint.is-right { display: block; right: 0; }
 
-/* No launcher button (front end default): open with the shortcut or the admin bar */
+/* Launcher spot per builder: clear of the builder's own Save button */
+#tf-dock.tf-b-etch .tf-dock-toggle { right: 140px; bottom: 6px; }
+#tf-dock.tf-b-oxygen .tf-dock-toggle { right: auto; left: 16px; } /* Oxygen's panel is on the right (Breakdance's on the left) *//* No launcher button (front end default): open with the shortcut or the admin bar */
 #tf-dock.no-launcher .tf-dock-toggle { display: none; }
 .tf-dock-title .tf-kbd { margin-left: 4px; padding: 1px 5px; border: 1px solid var(--tfd-line); border-radius: var(--tfd-radius); background: var(--tfd-bg); color: var(--tfd-muted); font: 600 10px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: 0; }
 @media (max-width: 520px) { .tf-dock-title .tf-kbd { display: none; } }

@@ -16,6 +16,7 @@
  * Shift + right-click always opens the browser's own menu.
  *
  * Uses the Bricks 2.x Vue store (see bem-generator.js for the same API).
+ * In other builders window.TokenForgeBuilder (builder-adapter.js) answers instead.
  */
 ( function () {
 	'use strict';
@@ -29,6 +30,7 @@
 	var RECIPE = {};
 	RECIPES.forEach( function ( r ) { RECIPE[ r.n ] = r; } );
 	var MAX = 250;
+	var B = window.TokenForgeBuilder || null; // other builders; null in Bricks
 
 	var GROUP_LABEL = { space: 'Spacing', width: 'Width', typography: 'Typography', color: 'Colors', radius: 'Radius', shadow: 'Shadows', breakpoint: 'Breakpoints', other: 'Other' };
 	var GROUP_ORDER = [ 'space', 'width', 'typography', 'color', 'radius', 'shadow', 'other', 'breakpoint' ];
@@ -70,12 +72,15 @@
 		try { localStorage.setItem( 'tf-recent-' + kind, JSON.stringify( list.slice( 0, 8 ) ) ); } catch ( e ) {}
 	}
 
+	function canvasDoc() {
+		try { return B ? B.canvasDoc() : document.getElementById( 'bricks-builder-iframe' ).contentDocument; } catch ( e ) { return null; }
+	}
+
 	// ---- Class CSS preview (read from the canvas stylesheet) ----
 	var classCss = null;
 	function readClassCss() {
 		classCss = {};
-		var ifr = document.getElementById( 'bricks-builder-iframe' ), doc;
-		try { doc = ifr && ifr.contentDocument; } catch ( e ) { doc = null; }
+		var doc = canvasDoc();
 		if ( ! doc ) { return; }
 		var node = doc.getElementById( 'tokenforge-inline-css' ) || doc.getElementById( 'tokenforge-css' );
 		var sheet = node && node.sheet;
@@ -116,7 +121,7 @@
 	function suggested( input ) {
 		var ck = input.closest( '[data-controlkey]' );
 		var label = ck && ck.querySelector( 'label' );
-		var hint = [ input.id, input.placeholder, ck ? ck.getAttribute( 'data-controlkey' ) : '', label ? label.textContent : '' ].join( ' ' ).toLowerCase();
+		var hint = [ input.id, input.placeholder, B ? B.controlKey( input ) : ( ck ? ck.getAttribute( 'data-controlkey' ) : '' ), label ? label.textContent : '' ].join( ' ' ).toLowerCase();
 		if ( /colou?r|fill|stroke/.test( hint ) ) { return 'color'; }
 		if ( /radius/.test( hint ) ) { return 'radius'; }
 		if ( /shadow/.test( hint ) ) { return 'shadow'; }
@@ -183,7 +188,7 @@
 			if ( 'ArrowDown' === e.key ) { e.preventDefault(); move( 1 ); }
 			else if ( 'ArrowUp' === e.key ) { e.preventDefault(); move( -1 ); }
 			else if ( 'Enter' === e.key ) { e.preventDefault(); pick( items[ sel ] ); }
-			else if ( 'Escape' === e.key ) { e.preventDefault(); hide( true ); }
+			else if ( 'Escape' === e.key ) { e.preventDefault(); e.stopPropagation(); hide( true ); } // the builder's own Escape would close its panel
 			else if ( 'Tab' === e.key && 'vars' === mode ) { e.preventDefault(); cycleChip( e.shiftKey ? -1 : 1 ); }
 		} );
 		chips.addEventListener( 'click', function ( e ) {
@@ -307,9 +312,20 @@
 	}
 
 	// ---- Actions ----
-	function insertVar( name ) {
+	function insertVar( name, ready ) {
 		var input = target;
 		if ( ! input || ! document.contains( input ) ) { return; }
+		// Some builders need the field set up first (a unit field switched to its custom unit).
+		if ( ! ready && window.TokenForgeBuilder && window.TokenForgeBuilder.prepare ) {
+			var before = input.value;
+			window.TokenForgeBuilder.prepare( input, function ( el ) {
+				if ( ! el ) { return; } // the switch did not take, or another element is selected now: no write
+				if ( el !== input || el.value !== before ) { savedRange = null; } // the saved selection points into the old text
+				target = el;
+				insertVar( name, true );
+			} );
+			return;
+		}
 		var token = 'var(--' + name + ')';
 		var v = input.value || '';
 		var a = savedRange ? savedRange[0] : null, b = savedRange ? savedRange[1] : null;
@@ -319,7 +335,8 @@
 		setter.call( input, next );
 		input.dispatchEvent( new Event( 'input', { bubbles: true } ) );
 		input.dispatchEvent( new Event( 'change', { bubbles: true } ) );
-		var caret = ( a !== null && b > a ) ? a + token.length : next.length;
+		if ( window.TokenForgeBuilder && window.TokenForgeBuilder.commit ) { window.TokenForgeBuilder.commit( input ); }
+		var caret =( a !== null && b > a ) ? a + token.length : next.length;
 		try { input.setSelectionRange( caret, caret ); } catch ( e ) {}
 		remember( 'vars', name );
 		// Bricks opens its own variable picker when an input gains 'var(--'.
@@ -346,6 +363,7 @@
 	}
 
 	function appliedNames() {
+		if ( B ) { return B.classes() || []; }
 		var g = gp(); if ( ! g ) { return []; }
 		var el = activeEl( g ); if ( ! el || ! el.settings || ! Array.isArray( el.settings._cssGlobalClasses ) ) { return []; }
 		var gc = globalClasses( g ), out = [];
@@ -354,6 +372,11 @@
 	}
 
 	function toggleClass( name ) {
+		if ( B ) {
+			if ( B.toggleClass( name ) ) { remember( 'classes', name ); }
+			renderList(); search.focus();
+			return;
+		}
 		var g = gp(); if ( ! g ) { return; }
 		var el = activeEl( g ); if ( ! el ) { return; }
 		var gc = globalClasses( g );
@@ -386,6 +409,7 @@
 
 	// ---- Triggers ----
 	function isControlInput( el ) {
+		if ( B ) { return !! ( el && B.isControlInput( el ) ); }
 		return el && el.tagName === 'INPUT' && ( ! el.type || el.type === 'text' ) &&
 			el.closest( '#bricks-panel [data-control], .bricks-control-popup [data-control], .bricks-popup [data-control]' ) &&
 			! el.closest( '#bricks-panel-header, #bricks-panel-element-classes' );
@@ -399,7 +423,7 @@
 			show( e.clientX, e.clientY, 'vars', t );
 			return;
 		}
-		if ( cfg.class_menu && CLASSES.length && t.closest && t.closest( '#bricks-panel-element-classes' ) && gp() && activeEl( gp() ) ) {
+		if ( cfg.class_menu && CLASSES.length && t.closest && ( B ? B.isClassField( t ) && B.selected() : t.closest( '#bricks-panel-element-classes' ) && gp() && activeEl( gp() ) ) ) {
 			e.preventDefault();
 			show( e.clientX, e.clientY, 'classes', t );
 		}
@@ -445,8 +469,7 @@
 		} );
 	}
 	function hookCanvas() {
-		var f = document.getElementById( 'bricks-builder-iframe' ), doc = null;
-		try { doc = f && f.contentDocument; } catch ( e ) {}
+		var doc = canvasDoc();
 		if ( ! doc || doc.__tfRecipes ) { return; }
 		doc.__tfRecipes = true;
 		doc.addEventListener( 'input', function ( e ) {
@@ -464,12 +487,13 @@
 	if ( RECIPES.length && cfg.recipes.inputs ) {
 		document.addEventListener( 'input', function ( e ) {
 			var t = e.target;
-			if ( ! e.isTrusted || ! isTextField( t ) ) { return; }
+			if ( ! e.isTrusted || ! ( B ? isControlInput( t ) : isTextField( t ) ) ) { return; }
 			var pos = null == t.selectionStart ? t.value.length : t.selectionStart, before = t.value.slice( 0, pos );
 			var m = /\?([a-z0-9-]+)(;|[ \u00a0])$/.exec( before );
 			if ( ! m ) { return; }
 			// "?name;": value and text recipes; "?name " (a space): text recipes only, the space stays.
-			var code = recipeText( m[1], ';' === m[2] ? [ 'value', 'text' ] : [ 'text' ] );
+			// Other builders: text recipes belong to text-recipes.js, only value recipes here.
+			var code = recipeText( m[1], B ? ( ';' === m[2] ? [ 'value' ] : [] ) : ( ';' === m[2] ? [ 'value', 'text' ] : [ 'text' ] ) );
 			if ( null === code ) { return; }
 			code += ';' === m[2] ? '' : ' ';
 			var start = pos - m[0].length, typed = m[0];
@@ -487,7 +511,7 @@
 			}, 0 );
 		}, true );
 		// The rich text editor (TinyMCE) and the canvas come and go: hook them when they appear.
-		setInterval( function () {
+		if ( ! B ) { setInterval( function () {
 			hookCanvas();
 			var mce = window.tinymce;
 			if ( mce && ! mce.__tfRecipes ) {
@@ -495,7 +519,7 @@
 				if ( mce.on ) { mce.on( 'AddEditor', function ( ev ) { hookEditor( ev.editor ); } ); }
 			}
 			if ( mce && mce.editors ) { [].forEach.call( mce.editors, hookEditor ); }
-		}, 1500 );
+		}, 1500 ); }
 	}
 
 	// =====================================================================
@@ -566,7 +590,7 @@
 			// Only what fits here: values inside "prop: |"; elsewhere rules and
 			// declarations first, then values (they expand to "color: …;").
 			var spot = recipeSpot( cm, { line: cur.line, ch: ac.from } );
-			RECIPES.filter( function ( r ) { var k = recipeKind( r ); return ( 'value' === spot ? 'value' === k : 'text' !== k ) && ( ! q || r.n.indexOf( q ) > -1 || r.c.toLowerCase().indexOf( q ) > -1 ); } )
+			RECIPES.filter( function ( r ) { var k = recipeKind( r ); return fits( r, cm ) && ( 'value' === spot ? 'value' === k : 'text' !== k ) && ( ! q || r.n.indexOf( q ) > -1 || r.c.toLowerCase().indexOf( q ) > -1 ); } )
 				.sort( function ( a, b ) { return ( 'block' === spot ? ( 'value' === recipeKind( a ) ? 1 : 0 ) - ( 'value' === recipeKind( b ) ? 1 : 0 ) : 0 ) || ( 0 === a.n.indexOf( q ) ? 0 : 1 ) - ( 0 === b.n.indexOf( q ) ? 0 : 1 ) || a.n.localeCompare( b.n ); } )
 				.slice( 0, 80 ).forEach( function ( r ) {
 					var asDecl = 'block' === spot && 'value' === recipeKind( r );
@@ -642,10 +666,12 @@
 	}
 	// 'value' (a colour …), 'block' (declarations / rules), 'text' (not CSS: never in the CSS editor).
 	function recipeKind( r ) { return r.kind || ( r.inline ? 'value' : 'block' ); }
+	// cm.tfRoot (set by the adapter) is the builder's word for the element; '' = it has none, so no %root% recipes.
+	function fits( r, cm ) { return '' !== cm.tfRoot || String( r.code ).indexOf( '%root%' ) < 0; }
 	function expandRecipe( cm ) {
 		var cur = cm.getCursor(), line = cm.getLine( cur.line ), before = line.slice( 0, cur.ch );
 		var m = /\?([a-z0-9-]+)(;?)$/.exec( before ), r = m && RECIPE[ m[1] ];
-		if ( ! r ) { return false; }
+		if ( ! r || ! fits( r, cm ) ) { return false; }
 		var from = { line: cur.line, ch: cur.ch - m[0].length }, kind = recipeKind( r ), spot = recipeSpot( cm, from ), text, at = -1, sel = 0;
 		if ( 'text' === kind || ( 'value' === spot && 'value' !== kind ) ) { return false; }
 		if ( 'value' === kind ) {
@@ -659,6 +685,7 @@
 			}
 		} else {
 			text = String( r.code ).replace( /\n/g, '\n' + /^\s*/.exec( line )[0] );
+			if ( cm.tfRoot ) { text = text.split( '%root%' ).join( cm.tfRoot ); }
 			at = text.indexOf( '{{cursor}}' );
 			text = text.replace( '{{cursor}}', '' );
 		}
@@ -691,12 +718,20 @@
 			if ( ac.el && ac.el.classList.contains( 'is-open' ) && ac.cm === c ) { setTimeout( function () { acSuggest( c ); }, 0 ); }
 		} );
 		cm.on( 'blur', function () { setTimeout( closeAc, 120 ); } );
+		// CodeMirror 5 handles Esc but lets the key go on up the page, where a builder may close its panel too.
+		var wrap = cm.getWrapperElement && cm.getWrapperElement();
+		if ( wrap ) {
+			wrap.addEventListener( 'keydown', function ( e ) {
+				if ( 'Escape' === e.key && ac.cm === cm && ac.el && ac.el.classList.contains( 'is-open' ) ) { e.preventDefault(); e.stopPropagation(); closeAc(); }
+			}, true );
+		}
 	}
 
 	if ( cfg.css_ac || RECIPES.length ) {
 		document.addEventListener( 'focusin', function ( e ) {
-			var w = e.target && e.target.closest && e.target.closest( '.CodeMirror' );
+			var w = ! B && e.target && e.target.closest && e.target.closest( '.CodeMirror' ); // with an adapter, it names the CSS editors
 			if ( w && w.CodeMirror ) { attach( w.CodeMirror ); }
+			else if ( B && e.target && e.target.closest ) { attach( B.editorFrom( e.target ) ); }
 		}, true );
 	}
 } )();

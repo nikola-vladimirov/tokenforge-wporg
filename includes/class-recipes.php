@@ -218,4 +218,45 @@ class Recipes {
 			'recipes' => self::all(),
 		);
 	}
+
+	/**
+	 * Text recipes typed in text (?ipsum; or "?ipsum "): name => text. Empty when recipes or recipes in fields are off.
+	 * Only the Text category (placeholder copy): the Code recipes are snippets for builder fields.
+	 *
+	 * @return array<string,string>
+	 */
+	public static function text_map() {
+		$text = array();
+		$rec  = self::for_editor();
+		if ( $rec && ! empty( $rec['inputs'] ) ) {
+			foreach ( $rec['recipes'] as $r ) {
+				if ( is_array( $r ) && isset( $r['n'], $r['code'], $r['kind'], $r['c'] ) && 'text' === $r['kind'] && 'Text' === $r['c'] ) {
+					$text[ (string) $r['n'] ] = str_replace( '{{cursor}}', '', (string) $r['code'] );
+				}
+			}
+		}
+		return $text;
+	}
+
+	/**
+	 * Loads the text recipes script on a builder's editor page (nothing when there are no text recipes).
+	 *
+	 * @param bool $editable Also text edited in place (false where the builder's own script handles it).
+	 * @return void
+	 */
+	public static function enqueue_text( $editable = true ) {
+		$text = self::text_map();
+		if ( ! $text || wp_script_is( 'tokenforge-text-recipes', 'enqueued' ) ) {
+			return;
+		}
+		wp_enqueue_script( 'tokenforge-text-recipes', TOKENFORGE_URL . 'assets/builder/text-recipes.js', array(), TOKENFORGE_VERSION, true );
+		wp_localize_script(
+			'tokenforge-text-recipes',
+			'TokenForgeText',
+			array(
+				'text'     => (object) $text,
+				'editable' => (bool) $editable,
+			)
+		);
+	}
 }

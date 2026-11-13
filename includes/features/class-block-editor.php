@@ -105,17 +105,8 @@ class Block_Editor {
 		 */
 		$rows = apply_filters( 'tokenforge_editor_classes', $rows );
 
-		// Text recipes typed in the canvas (?ipsum; or "?ipsum "): name => text. Empty when recipes or recipes in fields are off.
-		$text = array();
-		$rec  = \TokenForge\Recipes::for_editor();
-		if ( $rec && ! empty( $rec['inputs'] ) ) {
-			foreach ( $rec['recipes'] as $r ) {
-				// Only the Text category (placeholder copy): the Code recipes are snippets for builder fields.
-				if ( is_array( $r ) && isset( $r['n'], $r['code'], $r['kind'], $r['c'] ) && 'text' === $r['kind'] && 'Text' === $r['c'] ) {
-					$text[ (string) $r['n'] ] = str_replace( '{{cursor}}', '', (string) $r['code'] );
-				}
-			}
-		}
+		// Text recipes typed in the canvas (?ipsum; or "?ipsum "): name => text.
+		$text = \TokenForge\Recipes::text_map();
 
 		return array(
 			'opts'     => $opts,
@@ -140,12 +131,24 @@ class Block_Editor {
 			return;
 		}
 		// The handle always exists, so add-ons can depend on it; the file may be missing in a broken copy.
+		$unit = Settings::get_instance()->get_settings()['block_unit'] ?? 'px';
+		if ( 'px' !== $unit && file_exists( TOKENFORGE_DIR . 'assets/editor/units.js' ) && ! wp_script_is( 'wp-block-editor', 'done' ) ) {
+			wp_register_script( 'tokenforge-units', TOKENFORGE_URL . 'assets/editor/units.js', array( 'wp-components' ), TOKENFORGE_VERSION, true ); // Footer by default; it follows wp-block-editor wherever that prints, never pulls it up.
+			wp_localize_script( 'tokenforge-units', 'TokenForgeUnits', array( 'unit' => $unit ) );
+			// Must run before wp-block-editor reads wp.components, so the editor package waits for it.
+			$be = wp_scripts()->query( 'wp-block-editor' );
+			if ( $be && ! in_array( 'tokenforge-units', $be->deps, true ) ) {
+				$be->deps[] = 'tokenforge-units';
+			}
+		}
 		$has = file_exists( TOKENFORGE_DIR . 'assets/editor/editor.js' );
 		wp_register_script( 'tokenforge-editor', $has ? TOKENFORGE_URL . 'assets/editor/editor.js' : false, array( 'wp-data', 'wp-hooks', 'wp-element', 'wp-components', 'wp-blocks', 'wp-i18n', 'wp-dom-ready' ), TOKENFORGE_VERSION, true );
 		wp_enqueue_script( 'tokenforge-editor' );
 		wp_set_script_translations( 'tokenforge-editor', 'tokenforge' );
 		$config = self::config();
 		wp_localize_script( 'tokenforge-editor', 'TokenForgeEditor', $config );
+		// Text recipes in the sidebar's text fields too; editor.js handles the canvas text (with undo).
+		\TokenForge\Recipes::enqueue_text( false );
 		if ( file_exists( TOKENFORGE_DIR . 'assets/editor/editor.css' ) ) {
 			wp_enqueue_style( 'tokenforge-editor', TOKENFORGE_URL . 'assets/editor/editor.css', array(), TOKENFORGE_VERSION );
 		}

@@ -135,7 +135,7 @@ class Frontend {
 	 * @return bool
 	 */
 	private function motion_enabled() {
-		if ( is_admin() || ! Motion::needs_script() || $this->is_builder_ui() || ! file_exists( Css_Generator::get_instance()->css_path() ) ) {
+		if ( is_admin() || ! Motion::needs_script() || $this->is_builder_ui() || Features\Builders::is_canvas() || ! file_exists( Css_Generator::get_instance()->css_path() ) ) {
 			return false;
 		}
 		if ( Platforms\Bricks::is_active() && Platforms\Bricks::is_preview_context() ) {
@@ -268,7 +268,7 @@ class Frontend {
 
 		// Unused utility classes left out: the builder canvas and the Customizer
 		// preview get every class (a class you add shows at once), as a file.
-		$full = ( ( $bricks && Platforms\Bricks::is_preview_context() ) || is_customize_preview() )
+		$full = ( ( $bricks && Platforms\Bricks::is_preview_context() ) || is_customize_preview() || Features\Builders::is_canvas() )
 			&& Class_Usage::active() && file_exists( $css->full_css_path() );
 
 		// Inline mode: no extra request / render-blocking file.
@@ -371,16 +371,20 @@ class Frontend {
 		if ( ( defined( 'SHOW_CT_BUILDER' ) && SHOW_CT_BUILDER ) || null !== filter_input( INPUT_GET, 'ct_builder' ) ) {
 			return true;
 		}
-		// Breakdance builder.
-		if ( null !== filter_input( INPUT_GET, 'breakdance' ) || null !== filter_input( INPUT_GET, 'breakdance_iframe' ) ) {
+		// Breakdance builder (its canvas, breakdance_iframe, is a front-end render and gets the stylesheet).
+		if ( null !== filter_input( INPUT_GET, 'breakdance' ) ) {
 			return true;
 		}
 		// Etch builder: ?etch=magic on the front page (its editor runs in the page itself).
 		if ( 'magic' === filter_input( INPUT_GET, 'etch' ) ) {
 			return true;
 		}
-		// Beaver Builder editor / Elementor preview.
-		if ( null !== filter_input( INPUT_GET, 'fl_builder' ) || null !== filter_input( INPUT_GET, 'elementor-preview' ) ) {
+		// Divi's top window (its settings panels); the app frame is the canvas and keeps the stylesheet.
+		if ( false === Features\Builders::divi_app() ) {
+			return true;
+		}
+		// Beaver Builder editor (the Elementor preview is a canvas and gets the stylesheet).
+		if ( null !== filter_input( INPUT_GET, 'fl_builder' ) ) {
 			return true;
 		}
 		return false;

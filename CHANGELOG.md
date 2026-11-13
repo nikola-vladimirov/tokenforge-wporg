@@ -2,6 +2,30 @@
 
 All the changes to TokenForge, newest first.
 
+## 0.58.0
+
+Recipes: text recipes (?ipsum-short, ?ipsum, ?ipsum-long and your own Text recipes) now work in every supported builder, not only Bricks and the block editor canvas: Etch, Breakdance, Oxygen, Elementor and Divi, in their text fields, text areas and text edited in place on the canvas, and in the block editor's sidebar text fields. Type the name followed by a space or ";". Code editors are left alone.
+
+Block editor: new setting "Default unit for sizes" (Block editor screen, Editor interface), rem by default. Empty size fields in the block sidebar (letter spacing, border, radius, padding, width and the rest) start with that unit instead of px. Every unit WordPress knows can be picked, from rem and em to vw, ch and the dynamic viewport units; px keeps WordPress as it is. Values already set keep their unit.
+
+Etch: TokenForge now works in the Etch editor: the TokenForge window, right-click the class area of the CSS panel to add or remove TokenForge classes on the selected element (Etch's own Save keeps them), variable and class suggestions and CSS recipes while you type in the CSS editor, and the TokenForge stylesheet in the canvas.
+
+Oxygen 6: TokenForge now works in the Oxygen builder: the TokenForge window, right-click a style field to insert a TokenForge variable, right-click the class field to add or remove TokenForge classes (a new one joins Oxygen's class list; Oxygen's own Save keeps them), the input helper (space-m becomes var(--space-m)), and variable, class and recipe suggestions in Custom CSS.
+
+Breakdance: the same as Oxygen: the TokenForge window, variables by right-click in style fields, TokenForge classes by right-click in the Classes field (Breakdance's own Save keeps them), the input helper, and suggestions and recipes in Custom CSS.
+
+Elementor: TokenForge now works in the Elementor editor for classic widgets and containers: the TokenForge window, variables by right-click in size fields (the field switches to its custom unit by itself), TokenForge classes by right-click in CSS Classes (Elementor's Update keeps them), the input helper in fields with the custom unit, and suggestions and recipes in Custom CSS (Elementor Pro). Elementor's new atomic elements are not covered yet.
+
+Divi 5: TokenForge now works in the Divi visual builder: the TokenForge window, variables by right-click in size fields, the input helper, and suggestions and recipes in Free-Form CSS. Divi has no class field, so TokenForge classes go through its Attributes list (Advanced tab): right-click the list to add or remove classes on the selected module; they are kept as a "class" attribute and Divi's own Save keeps them.
+
+Developers: add-ons can load their scripts and styles in the editor of every supported page builder with the new action tokenforge_builder_enqueue, which passes the builder (bricks, etch, oxygen, breakdance, elementor or divi). Use wp_enqueue_script and wp_enqueue_style as usual; where a builder's editor skips the WordPress queue (Oxygen, Breakdance), TokenForge prints them.
+
+Fixed: in the dark editor interface, the Appearance list (font weights) showed dark text on the dark background.
+
+Fixed: the TokenForge stylesheet was missing from the Oxygen and Breakdance canvas and the Elementor preview while editing. It loads there now, with every utility class, so a class you add shows at once.
+
+Fixed: Divi's settings panels no longer get the TokenForge front-end styles and scripts; its canvas keeps the stylesheet.
+
 ## 0.57.0
 
 Recipes: ?ipsum gives a medium placeholder paragraph and ?ipsum-long a long one, next to ?ipsum-short. In the block editor, text recipes now expand in the canvas as well: type the name followed by a space (the space stays) or a semicolon. In the builder they already worked in text fields and in text edited on the canvas.
