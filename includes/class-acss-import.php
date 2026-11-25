@@ -576,6 +576,24 @@ class Acss_Import {
 		Components::save_settings( $s );
 	}
 
+	/**
+	 * Card concentric radius. 4.x is a select: "reverse" (inner radius = card radius minus padding) is
+	 * TokenForge's mode; "standard" (outer radius grows by the padding) has none, so it is reported and skipped.
+	 *
+	 * @return bool|null
+	 */
+	private function concentric() {
+		$v = strtolower( $this->raw( 'option-card-concentric-radius' ) );
+		if ( 'reverse' === $v ) {
+			return true;
+		}
+		if ( 'standard' === $v ) {
+			$this->report['Cards'][] = 'option-card-concentric-radius = standard: no TokenForge equivalent, skipped';
+			return null;
+		}
+		return $this->on( 'option-card-concentric-radius' );
+	}
+
 	/** Cards. */
 	private function cards() {
 		$s   = Components::settings();
@@ -583,7 +601,7 @@ class Acss_Import {
 			'card_selectors'        => array( 'card-selectors', $this->selector( 'card-selectors' ) ),
 			'card_scheme'           => array( '(imported cards are light)', null !== $this->on( 'option-cards' ) ? 'light' : null ),
 			'card_boxed_icons'      => array( 'option-card-boxed-icons', $this->on( 'option-card-boxed-icons' ) ),
-			'card_concentric'       => array( 'option-card-concentric-radius', $this->on( 'option-card-concentric-radius' ) ),
+			'card_concentric'       => array( 'option-card-concentric-radius', $this->concentric() ),
 			'card_min_radius'       => array( 'card-min-radius', $this->px( 'card-min-radius' ) ),
 			'card_button_family'    => array( 'card-button-style', '' !== $this->raw( 'card-button-style' ) ? preg_replace( '/[^a-z0-9\-]/', '', strtolower( $this->raw( 'card-button-style' ) ) ) : null ),
 			'card_link_color_hover' => array( 'card-link-hover-color', $this->css( 'card-link-hover-color' ) ),
@@ -738,7 +756,13 @@ class Acss_Import {
 		foreach ( array( 'bg-ultra-light', 'bg-light', 'bg-dark', 'bg-ultra-dark', 'text-dark', 'text-dark-muted', 'text-light', 'text-light-muted' ) as $k ) {
 			$map[ str_replace( '-', '_', $k ) ] = array( $k, $this->css( $k ) );
 		}
+		// 4.x stores the color-scheme value itself ("light only", "dark only", "light dark", "normal"); older files light/dark/auto.
 		$ws                    = strtolower( $this->raw( 'website-color-scheme' ) );
+		$ws                    = array(
+			'light only' => 'light',
+			'dark only'  => 'dark',
+			'light dark' => 'auto',
+		)[ $ws ] ?? $ws;
 		$map['default_scheme'] = array( 'website-color-scheme', in_array( $ws, array( 'light', 'dark', 'auto' ), true ) ? $ws : null );
 		// What each .bg--* sets inside it.
 		foreach ( Scheme::CONTEXTS as $ctx ) {

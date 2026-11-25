@@ -4,7 +4,7 @@ Tags: design tokens, css variables, accessibility, woocommerce
 Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.58.0
+Stable tag: 0.58.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -213,6 +213,10 @@ No. The limit counts sends, not people, so one visitor or a script can send the 
 == Changelog ==
 
 The full history is in CHANGELOG.md, also shown from the Changelog link next to TokenForge on the Plugins screen.
+
+= 0.58.1 =
+* Effects: entrance effects on elements already on screen when the page opens (a hero, for example) now play as the page loads. Before, they waited for a scroll that never came.
+* Importing another framework's settings now brings over its site colour scheme and card inner radius from its newer version.
 
 = 0.58.0 =
 * Page builders: Etch, Oxygen 6, Breakdance, Elementor (classic widgets and containers) and Divi 5 now get the TokenForge window, variables and classes by right-click, the input helper, suggestions and recipes in custom CSS, and the TokenForge stylesheet in the canvas while editing.

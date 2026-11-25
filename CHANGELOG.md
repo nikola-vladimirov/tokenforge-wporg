@@ -2,6 +2,11 @@
 
 All the changes to TokenForge, newest first.
 
+## 0.58.1
+
+- Effects: entrance effects (`on-enter--*`, `on-enter-all--*`) on elements that are already on screen when the page opens, such as a hero, now play once as the page loads. Before, they only followed the scroll, and since a hero is already past that point, nothing moved. Elements further down still play as you scroll to them.
+- Importing another framework's settings from its newer version now brings over the site colour scheme ("light only", "dark only" and "light dark" become Light, Dark and Follow the visitor) and the card inner radius ("reverse" turns on the inner radius that follows the card padding). Before, both were skipped. Its "standard" card radius has no match in TokenForge and is named in the import report.
+
 ## 0.58.0
 
 Recipes: text recipes (?ipsum-short, ?ipsum, ?ipsum-long and your own Text recipes) now work in every supported builder, not only Bricks and the block editor canvas: Etch, Breakdance, Oxygen, Elementor and Divi, in their text fields, text areas and text edited in place on the canvas, and in the block editor's sidebar text fields. Type the name followed by a space or ";". Code editors are left alone.

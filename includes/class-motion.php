@@ -532,6 +532,21 @@ class Motion {
 				// Both on one element: run the two animations side by side.
 				$scroll[] = ':is(' . $enter . '):is(' . $exit . '){animation-name:tf-enter,tf-exit;animation-fill-mode:both,forwards;animation-range:' . $e_range . ',' . $x_range . '}';
 			}
+			if ( $s['enter'] ) {
+				// Already in view at page load (a hero): its scroll range is behind it, so the script adds
+				// .tf-now (to the element, or to each child in view for -all) and the entrance plays once on a
+				// timer instead (the fallback's duration and timing). Its own keyframes name, so it starts at 0:
+				// the same name would keep the scroll progress (finished) when the timeline changes.
+				$now      = ':is(' . str_replace( array( '.on-enter--', '>*' ), array( '.tf-now.on-enter--', '>.tf-now' ), $enter ) . ')';
+				$timed    = 'var(--scroll-animation-duration, .6s)';
+				$ease     = 'var(--scroll-animation-timing, ease-out)';
+				$wait     = 'calc(var(--scroll-animation-delay, 0s) + var(--tf-i, 0) * var(--visible-stagger-interval, .1s))';
+				$scroll[] = '@keyframes tf-enter-now{from{' . $frame( '--tf-e' ) . '}}';
+				$scroll[] = $now . "{animation-name:tf-enter-now;animation-fill-mode:both;animation-timeline:auto;animation-range:normal;animation-duration:$timed;animation-timing-function:$ease;animation-delay:$wait}";
+				if ( $s['exit'] ) {
+					$scroll[] = $now . ':is(' . $exit . "){animation-name:tf-enter-now,tf-exit;animation-fill-mode:both,forwards;animation-timeline:auto,view();animation-range:normal,$x_range;animation-duration:$timed,auto;animation-timing-function:$ease,linear;animation-delay:$wait,0s}";
+				}
+			}
 			$css[] = '@supports (animation-timeline:view()){' . implode( '', $scroll ) . '}';
 			if ( $s['enter'] ) {
 				// No scroll timelines: the script adds .tf-motion-fallback and plays
@@ -740,12 +755,14 @@ JS;
 	 * @return string
 	 */
 	public static function script() {
+		// shortcut: a hero painted before this footer script runs shows once, then plays from the start (.tf-now); hide entrance elements from the head script if that flash shows on real sites.
 		$s  = self::settings();
 		$t  = (float) $s['visible_threshold'];
 		$t  = ( $t > 0 && $t <= 1 ) ? $t : 0.2;
 		$js = <<<'JS'
 (function(){var d=document,R=d.documentElement,W=window;W.tfMotionReady=1;
 d.querySelectorAll(".on-enter--stagger,.on-exit--stagger,.on-visible--stagger").forEach(function(p){for(var i=0;i<p.children.length;i++){p.children[i].style.setProperty("--tf-i",i)}});
+if(W.CSS&&CSS.supports&&CSS.supports("animation-timeline: view()")){var tn=[];d.querySelectorAll('[class*="on-enter"]').forEach(function(e){var c=e.getAttribute("class")||"";if(!has(c,"enter","stagger|parallax")||/(^|\s)on-enter--parallax(\s|$)/.test(c)){return}[].forEach.call(/(^|\s)on-enter-all--/.test(c)?e.children:[e],function(x){var r=x.getBoundingClientRect();if(r.top<W.innerHeight&&r.bottom>0&&r.left<W.innerWidth&&r.right>0){tn.push(x)}})});tn.forEach(function(x){x.classList.add("tf-now")})}
 var RV='[data-tf-reveal="fade"],[data-tf-reveal="up"]',V=R.classList.contains("tf-motion"),F=R.classList.contains("tf-motion-fallback"),io;
 var T=%T%,th=[0];for(var x=.05;x<T;x+=.05){th.push(x)}th.push(T);
 function secs(v){return Math.max.apply(null,String(v).split(",").map(function(p){p=p.trim();return p.slice(-2)==="ms"?parseFloat(p)/1000:(parseFloat(p)||0)}))}
