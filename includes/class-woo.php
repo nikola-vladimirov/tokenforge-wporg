@@ -841,6 +841,10 @@ class Woo {
 			// The cart counts painted var(--white) on the text colour: the builder's cart, the order summary.
 			$tail[] = ':where(' . strtr( '{LINES} {ROW} > :first-child > .brxe-text-basic', self::placeholders() ) . ( $blocks ? ',.wc-block-components-order-summary .wc-block-components-order-summary-item__quantity' : '' ) . '){' . self::white_dark() . '}';
 		}
+		if ( '' !== self::white_dark() && Scheme::switches( self::val( $s, 'accent' ), Scheme::dark_context() ) ) {
+			// The current page number: var(--white) on the accent, which turns light in dark mode.
+			$tail[] = ':where(.bricks-pagination li>.page-numbers.current){' . self::white_dark() . '}';
+		}
 
 		$split = self::split();
 		if ( ! $split ) {

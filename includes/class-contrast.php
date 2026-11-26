@@ -281,6 +281,9 @@ class Contrast {
 			$add( ".bg--$c", __( 'Muted text', 'tokenforge' ), "var(--text-$tone-muted)", $bg, self::TEXT, array( 'scheme', "text_{$tone}_muted" ) );
 			if ( $links || '' !== $sch[ $k . 'link' ] ) {
 				$add( ".bg--$c", __( 'Links', 'tokenforge' ), '' !== $sch[ $k . 'link' ] ? $sch[ $k . 'link' ] : 'var(--link-color)', $bg, self::TEXT, array( 'scheme', $k . 'link' ) );
+				if ( '' === $sch[ $k . 'link' ] && 'light' === $tone ) {
+					$out[ count( $out ) - 1 ]['fg_light'] = true; // Scheme::light_side_links(): the light side of the colour in every mode.
+				}
 			}
 			if ( $focus || '' !== $sch[ $k . 'focus' ] ) {
 				$add( ".bg--$c", __( 'Focus ring', 'tokenforge' ), '' !== $sch[ $k . 'focus' ] ? $sch[ $k . 'focus' ] : 'var(--focus-color)', $bg, self::UI, array( 'scheme', $k . 'focus' ) );
@@ -332,12 +335,13 @@ class Contrast {
 	 * @param string $bg    Background.
 	 * @param array  $vars  Variables.
 	 * @param array  $modes [ false ] or [ false, true ] (dark).
+	 * @param bool   $light The text takes the light side of light-dark() in every mode.
 	 * @return array|null
 	 */
-	private static function measure( $fg, $bg, $vars, $modes ) {
+	private static function measure( $fg, $bg, $vars, $modes, $light = false ) {
 		$out = array();
 		foreach ( $modes as $dark ) {
-			$f = self::parse( $fg, $vars, $dark, 0, true );
+			$f = self::parse( $fg, $vars, $dark && ! $light, 0, true );
 			$b = self::parse( $bg, $vars, $dark, 0, true );
 			if ( null === $f || null === $b ) {
 				return null;
@@ -418,7 +422,7 @@ class Contrast {
 			}
 		}
 		foreach ( $pairs as $p ) {
-			$m = self::measure( $p['fg'], $p['bg'], $vars, $modes );
+			$m = self::measure( $p['fg'], $p['bg'], $vars, $modes, ! empty( $p['fg_light'] ) );
 			if ( null === $m ) {
 				$skipped[] = $p['where'] . ' ' . $p['what'];
 				continue;
@@ -526,7 +530,7 @@ class Contrast {
 			}
 		}
 		$names = array_merge( $names, array( 'text-dark', 'text-light', 'white', 'black' ) );
-		$cur   = self::measure( $p['fg'], $p['bg'], $vars, $modes );
+		$cur   = self::measure( $p['fg'], $p['bg'], $vars, $modes, ! empty( $p['fg_light'] ) );
 		if ( null === $cur ) {
 			return null;
 		}
@@ -536,12 +540,12 @@ class Contrast {
 			if ( ! isset( $vars[ $n ] ) || $v === $p['fg'] ) {
 				continue;
 			}
-			$m = self::measure( $v, $p['bg'], $vars, $modes );
+			$m = self::measure( $v, $p['bg'], $vars, $modes, ! empty( $p['fg_light'] ) );
 			if ( null === $m || ! self::passes( $m, $p['min'] ) ) {
 				continue;
 			}
 			foreach ( $same as $q ) {
-				$qm = self::measure( $v, $q['bg'], $vars, $modes );
+				$qm = self::measure( $v, $q['bg'], $vars, $modes, ! empty( $q['fg_light'] ) );
 				if ( null === $qm || ! self::passes( $qm, $q['min'] ) ) {
 					continue 2;
 				}

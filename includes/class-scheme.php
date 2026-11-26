@@ -300,6 +300,9 @@ class Scheme {
 				$classes[] = "bg--$surface";
 			}
 			$css[] = ':root{' . implode( ';', $rel ) . '}';
+			if ( $dark ) {
+				$css[] = ':where(' . implode( ',', self::light_side_links( $s ) ) . '):where(:not(:has(:is(div,p,h1,h2,h3,h4,h5,h6,ul,ol,figure,section,article)),.bg--dark :is(.bg--light,.bg--ultra-light) *,.bg--ultra-dark :is(.bg--light,.bg--ultra-light) *)){color-scheme:light}';
+			}
 
 			// Text assignments.
 			foreach ( array( 'light', 'dark', 'light-muted', 'dark-muted' ) as $t ) {
@@ -312,6 +315,31 @@ class Scheme {
 			'css'     => "\n/* --- TokenForge color scheme + assignments --- */\n" . implode( "\n", $css ) . "\n",
 			'classes' => $classes,
 		);
+	}
+
+	/**
+	 * Dark mode turns .bg--dark and .bg--ultra-dark light, but a link or outline
+	 * button in them would still take the dark side of its colour (made for a dark
+	 * page): a light primary on a light surface. These read the light side instead,
+	 * as on any light surface; in light mode they already do. A solid button brings
+	 * its own background, so it keeps the page's side. A link or button holding
+	 * blocks (a card) keeps the section's scheme for its content, and so does a
+	 * light context inside the dark one. A link colour set for that surface is
+	 * the person's choice and is left alone.
+	 * shortcut: a dark context inside a light one inside a dark one is skipped too; handle it if a site nests that deep.
+	 *
+	 * @param array $s Scheme settings.
+	 * @return string[] Selectors.
+	 */
+	public static function light_side_links( $s ) {
+		$out = array();
+		foreach ( array( 'dark', 'ultra-dark' ) as $surface ) {
+			$out[] = ".bg--$surface :is(.btn--outline,[class*=\"btn--\"][class*=\"--outline\"],.bricks-button.outline)";
+			if ( '' === $s[ 'ctx_' . str_replace( '-', '_', $surface ) . '_link' ] ) {
+				$out[] = ".bg--$surface a:not([class*=\"btn--\"],.btn,.bricks-button)"; // Links as the link rule picks them.
+			}
+		}
+		return $out;
 	}
 
 	/**
