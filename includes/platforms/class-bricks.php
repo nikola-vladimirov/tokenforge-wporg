@@ -104,6 +104,7 @@ class Bricks {
 		$fw    = \TokenForge\Framework::settings();
 		$names = array();
 		if ( ! empty( $fw['register_with_bricks'] ) ) {
+			// Not build( true ): the builder lists every global class, so the other framework's spellings would double it.
 			$built      = \TokenForge\Framework::build();
 			$components = \TokenForge\Components::build();
 			$scheme     = \TokenForge\Scheme::build();

@@ -45,23 +45,25 @@ class Contrast {
 	 * @param array  $vars  Variables, name => value.
 	 * @param bool   $dark  Take the dark side of light-dark().
 	 * @param int    $depth Recursion guard.
+	 * @param bool   $mix   Also read color-mix(in srgb, X N%, transparent), for measuring only: the
+	 *                      token files keep it out, so an import never flattens such a reference.
 	 * @return array|null
 	 */
-	public static function parse( $v, $vars, $dark = false, $depth = 0 ) {
+	public static function parse( $v, $vars, $dark = false, $depth = 0, $mix = false ) {
 		$v = trim( (string) $v );
 		if ( '' === $v || $depth > 12 ) {
 			return null;
 		}
 		$ld = Ai::light_dark( $v );
 		if ( $ld ) {
-			return self::parse( $ld[ $dark ? 1 : 0 ], $vars, $dark, $depth + 1 );
+			return self::parse( $ld[ $dark ? 1 : 0 ], $vars, $dark, $depth + 1, $mix );
 		}
 		if ( preg_match( '/^var\(\s*--([a-z0-9-]+)\s*(?:,(.*))?\)$/is', $v, $m ) ) {
 			$n = strtolower( $m[1] );
 			if ( isset( $vars[ $n ] ) && '' !== trim( (string) $vars[ $n ] ) ) {
-				return self::parse( $vars[ $n ], $vars, $dark, $depth + 1 );
+				return self::parse( $vars[ $n ], $vars, $dark, $depth + 1, $mix );
 			}
-			return isset( $m[2] ) ? self::parse( $m[2], $vars, $dark, $depth + 1 ) : null;
+			return isset( $m[2] ) ? self::parse( $m[2], $vars, $dark, $depth + 1, $mix ) : null;
 		}
 		if ( preg_match( '/^#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i', $v, $m ) ) {
 			$h = strlen( $m[1] ) <= 4 ? preg_replace( '/(.)/', '$1$1', $m[1] ) : $m[1];
@@ -75,6 +77,14 @@ class Contrast {
 		);
 		if ( isset( $named[ strtolower( $v ) ] ) ) {
 			return $named[ strtolower( $v ) ];
+		}
+		// color-mix(in srgb|oklch|oklab, X N%, transparent) is X at N% of its alpha (how imported muted text and ?transparency are written).
+		if ( $mix && preg_match( '/^color-mix\(\s*in\s+(?:srgb|oklch|oklab)\s*,\s*(.+?)\s+(\d*\.?\d+)%\s*,\s*transparent\s*\)$/i', $v, $m ) ) {
+			$c = self::parse( $m[1], $vars, $dark, $depth + 1, $mix );
+			if ( null !== $c ) {
+				$c[3] *= min( 100, (float) $m[2] ) / 100;
+			}
+			return $c;
 		}
 		if ( ! preg_match( '/^(rgba?|hsla?|oklch)\(\s*([^()]*)\)$/i', $v, $m ) ) {
 			return null;
@@ -327,14 +337,15 @@ class Contrast {
 	private static function measure( $fg, $bg, $vars, $modes ) {
 		$out = array();
 		foreach ( $modes as $dark ) {
-			$f = self::parse( $fg, $vars, $dark );
-			$b = self::parse( $bg, $vars, $dark );
+			$f = self::parse( $fg, $vars, $dark, 0, true );
+			$b = self::parse( $bg, $vars, $dark, 0, true );
 			if ( null === $f || null === $b ) {
 				return null;
 			}
 			$white = array( 1.0, 1.0, 1.0, 1.0 );
-			$page  = self::parse( self::PAGE, $vars, $dark );
-			$b     = self::over( $b, null === $page ? $white : self::over( $page, $white ) );
+			$page  = self::parse( self::PAGE, $vars, $dark, 0, true );
+			// The page sits on the white canvas, anything else on the page (a translucent page is not drawn twice).
+			$b     = self::over( $b, null === $page || self::PAGE === $bg ? $white : self::over( $page, $white ) );
 			$f     = self::over( $f, $b );
 			$out[] = array(
 				'fg'    => self::hex( $f ),

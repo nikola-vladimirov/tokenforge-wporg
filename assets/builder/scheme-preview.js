@@ -39,6 +39,8 @@
 		de.classList.toggle( 'scheme--dark', 'dark' === forced );
 		de.classList.toggle( 'scheme--light', 'light' === forced );
 		de.setAttribute( 'data-scheme', forced );
+		// Etch pins the canvas color-scheme to its own switch (html{color-scheme:var(--etch-iframe-color-scheme,light)!important}).
+		if ( doc.getElementById( 'etch-default-iframe-styles' ) ) { de.style.setProperty( '--etch-iframe-color-scheme', forced ); }
 	}
 
 	// Beside TokenForge's button (the launcher in this window, or the button in the canvas), else in the canvas corner.

@@ -742,10 +742,11 @@ class Motion {
 				}
 			}
 		}
-		// Buttons animate the default effects: their transition comes from --btn-transition (Components).
-		// shortcut: a custom button transition (Buttons screen) is left as set, so the effect may jump; add the properties there.
-		if ( $btn_tr && '' === (string) ( Components::settings()['btn_transition'] ?? '' ) ) {
-			$css[] = self::btn_sel() . '{--btn-transition:var(--transition, background-color .15s, color .15s, border-color .15s),' . implode( ',', $btn_tr ) . '}';
+		// Buttons animate the default effects: their transition comes from --btn-transition (Components), extended here.
+		// A custom one (Buttons screen) is kept; "none" or a CSS-wide keyword stays as set (a list after it is invalid), "all" already covers the effect.
+		$bt = self::clean( Components::settings()['btn_transition'] ?? '' );
+		if ( $btn_tr && ! preg_match( '/^(none|inherit|initial|unset|revert(-layer)?)$/i', $bt ) && ! preg_match( '/(?:^|,)\s*all(?![\w-])/i', $bt ) ) {
+			$css[] = self::btn_sel() . '{--btn-transition:' . ( '' === $bt ? 'var(--transition, background-color .15s, color .15s, border-color .15s)' : $bt ) . ',' . implode( ',', $btn_tr ) . '}';
 		}
 
 		// Reduced motion: scroll effects off (visible never hides, see script).
@@ -838,7 +839,7 @@ function secs(v){return Math.max.apply(null,String(v).split(",").map(function(p)
 function done(el){var c=/(^|\s)on-visible-all--/.test(el.getAttribute("class")||"")?(el.lastElementChild||el):el,cs=getComputedStyle(c);setTimeout(function(){el.classList.add("tf-done")},(secs(cs.transitionDuration)+secs(cs.transitionDelay))*1000+60)}
 function has(c,fam,skip){return new RegExp("(^|\\s)on-"+fam+"(-all)?--(?!("+skip+")(\\s|$))").test(c)}
 function obs(e){io=io||new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting&&(e.intersectionRatio>=T||e.intersectionRect.height>=W.innerHeight*T)){e.target.classList.add("tf-in");if(e.target.tfV){done(e.target)}io.unobserve(e.target)}})},{threshold:th});io.observe(e)}
-function scan(r){var l=[].slice.call(r.querySelectorAll('[class*="on-visible"],[class*="on-enter"],[class*="on-exit"],[data-tf-reveal]')),a=0,b=0;if(r.nodeType===1){l.unshift(r)}l.forEach(function(e){var c=e.getAttribute("class")||"";if(/(^|s)on-(enter|exit|visible)--stagger(s|$)/.test(c)){for(var i=0;i<e.children.length;i++){e.children[i].style.setProperty("--tf-i",i)}}if(V&&!e.tfV&&(e.matches(RV)||has(c,"visible","stagger"))){e.tfV=1;a++;obs(e)}if(F&&!e.tfE&&has(c,"enter","stagger|parallax")){e.tfE=1;b++;obs(e)}});return[a,b]}
+function scan(r){var l=[].slice.call(r.querySelectorAll('[class*="on-visible"],[class*="on-enter"],[class*="on-exit"],[data-tf-reveal]')),a=0,b=0;if(r.nodeType===1){l.unshift(r)}l.forEach(function(e){var c=e.getAttribute("class")||"";if(/(^|\s)on-(enter|exit|visible)--stagger(\s|$)/.test(c)){for(var i=0;i<e.children.length;i++){e.children[i].style.setProperty("--tf-i",i)}}if(V&&!e.tfV&&(e.matches(RV)||has(c,"visible","stagger"))){e.tfV=1;a++;obs(e)}if(F&&!e.tfE&&has(c,"enter","stagger|parallax")){e.tfE=1;b++;obs(e)}});return[a,b]}
 var n=scan(d),mo;
 function cut(){if(!n[0]){V=0;R.classList.remove("tf-motion")}if(!n[1]){F=0;R.classList.remove("tf-motion-fallback")}if(!(V||F)&&mo){mo.disconnect()}}
 if(!(V||F)){return}

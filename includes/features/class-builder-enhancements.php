@@ -363,13 +363,14 @@ class Builder_Enhancements {
 	}
 
 	/**
-	 * Every utility/component class TokenForge generates (for the class menu).
+	 * Every utility/component class TokenForge generates (for the class menu),
+	 * with the other framework's spellings (grid--3), so their users find them.
 	 *
 	 * @return string[]
 	 */
 	public static function menu_classes() {
-		$names = array();
-		foreach ( array( '\TokenForge\Framework', '\TokenForge\Components', '\TokenForge\Scheme', '\TokenForge\Extras', '\TokenForge\Defaults', '\TokenForge\Content', '\TokenForge\Width', '\TokenForge\Overlays', '\TokenForge\Motion' ) as $cls ) {
+		$names = \TokenForge\Framework::build( true )['classes']; // true: with the aliases.
+		foreach ( array( '\TokenForge\Components', '\TokenForge\Scheme', '\TokenForge\Extras', '\TokenForge\Defaults', '\TokenForge\Content', '\TokenForge\Width', '\TokenForge\Overlays', '\TokenForge\Motion' ) as $cls ) {
 			$b     = call_user_func( array( $cls, 'build' ) );
 			$names = array_merge( $names, $b['classes'] );
 		}

@@ -68,12 +68,16 @@ class Cheatsheet {
 		}
 
 		// ---- Classes ----
-		$css = self::class_css();
+		$css  = self::class_css();
+		$same = array_flip( Framework::build( true )['aliases'] ); // the other framework's name => TokenForge's.
 		foreach ( Features\Builder_Enhancements::menu_classes() as $name ) {
-			list( $group, $desc ) = self::describe_class( $name );
+			list( $group, $desc ) = self::describe_class( isset( $same[ $name ] ) ? $same[ $name ] : $name );
 			$applied              = isset( $css[ $name ] ) ? self::short( $css[ $name ] ) : '';
 			if ( '' === $desc ) {
 				$desc = '' !== $applied ? 'Applies ' . rtrim( self::short( $applied, 110 ), ';' ) . '.' : 'Utility class ' . $name . '.';
+			}
+			if ( isset( $same[ $name ] ) ) {
+				$desc = 'Same as .' . $same[ $name ] . '. ' . $desc;
 			}
 			$items[ $group ][] = array(
 				'n'    => '.' . $name,

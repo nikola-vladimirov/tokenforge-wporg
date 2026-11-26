@@ -243,11 +243,11 @@ class Framework {
 	 * utility classes" on, the CSS has only the classes the site uses; the
 	 * names list is always complete (the builder's class list shows them all).
 	 * The other spellings (ALIASES) ride on the rule of their TokenForge class
-	 * and are listed only with $full: the class scan reads that list, while the
-	 * builder's class list and the Bricks sync should not offer them.
+	 * and are listed only with $full: the class scan and the class menus read that
+	 * list, while the Bricks sync does not register them (its picker shows them all).
 	 *
 	 * @param bool $full Every class, whatever the site uses (builder canvas, block editor).
-	 * @return array [ 'css' => string, 'classes' => string[] ]
+	 * @return array [ 'css' => string, 'classes' => string[], 'aliases' => TokenForge name => alias ]
 	 */
 	public static function build( $full = false ) {
 		$s       = self::settings();
@@ -395,6 +395,7 @@ class Framework {
 		return array(
 			'css'     => $header . ( null === $keep ? $text : self::kept_rules( $text, $keep ) ) . "\n",
 			'classes' => array_values( array_unique( $full ? array_merge( $classes, array_values( $aliases ) ) : $classes ) ),
+			'aliases' => $aliases,
 		);
 	}
 

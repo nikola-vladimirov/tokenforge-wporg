@@ -1050,6 +1050,7 @@ class Acss_Import {
 		$util     = $this->any_on( array( 'option-layer-defaults', 'option-layer-utilities' ) );
 		$gen      = $this->on( 'option-gutenberg-color-palette-generate' );
 		$rep      = $this->on( 'option-gutenberg-color-palette-replace' );
+		$launcher = ! empty( $s['frontend_launcher'] );
 		$this->apply(
 			'Settings',
 			$s,
@@ -1068,6 +1069,10 @@ class Acss_Import {
 				'frontend_launcher' => array( 'option-acss-dashboard-icon-display', $this->on( 'option-acss-dashboard-icon-display' ) ),
 			)
 		);
+		// That icon shows by default there, so switching the launcher on is said in plain words (same row, same count).
+		if ( ! $launcher && ! empty( $s['frontend_launcher'] ) ) {
+			$this->report['Settings'] = preg_replace( '/^frontend_launcher ← .*/u', 'Front-end launcher switched on (the other framework showed its dashboard icon)', $this->report['Settings'] );
+		}
 		$settings->save_settings( $s );
 	}
 

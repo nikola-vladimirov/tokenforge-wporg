@@ -27,7 +27,7 @@
 <p>Everything runs on your own site. There is no account and no licence key. TokenForge is free under the GPLv2 or later. The only outside service is Google Fonts, and only when you ask for it (see <a href="#privacy">Privacy and external services</a>).</p>
 <h3>Requirements</h3>
 <ul>
-<li>WordPress 5.9 or newer. The plugin is tested up to WordPress 7.2.</li>
+<li>WordPress 5.9 or newer. The plugin is tested up to WordPress 7.1.</li>
 <li>PHP 7.4 or newer.</li>
 <li>An administrator account. The TokenForge menu is for users who can manage options.</li>
 <li>Optional: WooCommerce, for the shop styles. A supported page builder, for the builder tools (the <a href="#builders">Builders</a> section lists them).</li>
@@ -73,7 +73,7 @@
 <li>Open <strong>TokenForge</strong> in the admin menu, change what you like and save.</li>
 </ol>
 <h3>First steps</h3>
-<p>The Home screen has a Getting started list. These are its six steps, in order:</p>
+<p>The Home screen has a Getting started list. These are its six steps, in order (Connect the builder shows only when a supported builder is active):</p>
 <ol>
 <li><strong>Pick your colours.</strong> Set the base colour of each family on the Colors screen. The shades and the dark mode values are made for you.</li>
 <li><strong>Set your fonts.</strong> On Typography, upload your font files or copy a Google font to your site, then choose the body and heading fonts.</li>
@@ -95,19 +95,19 @@
 <h3>Where things are</h3>
 <ul>
 <li><strong>The sidebar</strong> groups the screens: Start, Setup, Foundations, Components, and Content &amp; Effects. Its search box, "Search settings", finds single settings on every screen.</li>
-<li><strong>The TokenForge window</strong> is the same dashboard as a dockable window. Press the shortcut (the starter value is <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>T</kbd>) in the builder or on your site's pages while you are signed in as an administrator. You can also use the TokenForge link in the admin bar. <kbd>Ctrl</kbd> or <kbd>Cmd</kbd> + click on that link goes to wp-admin instead. The settings are under Options &gt; TokenForge window.</li>
+<li><strong>The TokenForge window</strong> is the same dashboard as a dockable window. Press the shortcut (the starter value is <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>T</kbd>) in the builder or on your site's pages while you are signed in as an administrator. You can also use the TokenForge link in the admin bar. <kbd>Ctrl</kbd>, <kbd>Cmd</kbd> or <kbd>Shift</kbd> + click on that link goes to wp-admin instead. The settings are under Options &gt; TokenForge window.</li>
 <li><strong>The Manual</strong> is this page, TokenForge &gt; Manual.</li>
-<li><strong>The changelog</strong> opens from the Changelog link next to TokenForge on the Plugins screen.</li>
+<li><strong>The changelog</strong> opens from the Changelog link in the TokenForge row on the Plugins screen.</li>
 </ul>
 </section>
 
 <section id="screens">
 <h2>The dashboard screens</h2>
 <p>The sidebar shows the screens in five groups, in this order. Some screens only show when they apply: the Setup wizard, the Block editor (while the block editor is in use) and WooCommerce (while WooCommerce is active). The Builder screen always shows. Without a supported builder it lists the builders TokenForge knows instead of switches.</p>
-<p>Fields work the same everywhere. A field shows its default as grey placeholder text. When you change it, a small button next to its name resets it ("Reset to" and the default). A question mark next to a name opens a short explanation. Most panels have a switch in their header that turns that part on or off.</p>
+<p>Fields work the same everywhere. A field shows its default as grey placeholder text. When you change it, a small button next to its name resets it ("Reset to" and the default). A question mark next to a name opens a short explanation. Most panels have a switch in their header that turns that part on or off. The top bar of a screen has Open all and Close all for its panels, and, on a screen that is a module, a Module on switch.</p>
 <h3>Start</h3>
 <h4>Home</h4>
-<p>Every screen as a row, with a short description. Screens that are modules have a switch: switch one off and its classes and variables leave the stylesheet, while its settings stay saved. The modules are Colors, Typography, Spacing, Layout, Borders, Buttons, Cards, Icons, Forms, WooCommerce, Content, Overlays, Effects, Base, Recipes and Builder. Above the list you may see the setup wizard card, the Getting started list (hide it with Hide, bring it back with "Show getting started") and a warning with a Check contrast button when some colour pairs are below the minimum.</p>
+<p>Every screen as a row, with a short description. Screens that are modules have a switch: switch one off and its classes and styles leave the stylesheet, while its settings stay saved. The colour, size and space variables stay, because other parts use them. The modules are Colors, Typography, Spacing, Layout, Borders, Buttons, Cards, Icons, Forms, WooCommerce, Content, Overlays, Effects, Base, Recipes and Builder. Above the list you may see the setup wizard card, the Getting started list (hide it with Hide, bring it back with "Show getting started") and a warning with a Check contrast button when some colour pairs are below the minimum.</p>
 <h4>Cheatsheet</h4>
 <p>Every class, variable and recipe, one click to copy. See <a href="#utilities">Utility classes and the cheat sheet</a>.</p>
 <h4>Accessibility</h4>
@@ -120,7 +120,7 @@
 <h4>Options</h4>
 <p>How the dashboard looks, the TokenForge window, AI agents, builder sync, performance, breakpoints, cascade layers and the utility framework.</p>
 <h4>Builder</h4>
-<p>The tools for the page builder in use: canvas aids, right-click menus, the input helper and more. Which panels show depends on the builder. See <a href="#builders">Builders</a>.</p>
+<p>The tools for the page builder in use: canvas aids, the dark mode preview of the canvas, right-click menus, the input helper and more. Which panels show depends on the builder. See <a href="#builders">Builders</a>.</p>
 <h4>Block editor</h4>
 <p>Presets, editor interface, canvas, patterns and button styles for the block editor. See <a href="#block-editor">The block editor</a>.</p>
 <h4>Import, export &amp; reset</h4>
@@ -157,7 +157,7 @@
 <h4>Surfaces &amp; Overlays</h4>
 <p>The <code>.overlay</code> tint, custom overlays (<code>.overlay-1</code> and so on) and background textures (<code>.surface-1</code> and so on).</p>
 <h4>Effects</h4>
-<p>Transitions and easing, and the scroll, visible and hover effects. See <a href="#effects">Effects</a>.</p>
+<p>Transitions and easing, the scroll, visible and hover effects, and the default button effects. See <a href="#effects">Effects</a>.</p>
 <h4>Base</h4>
 <p>A light reset and helper classes: object fit, background layers, screen-reader text and CSS columns.</p>
 </section>
@@ -177,7 +177,7 @@
 </ul>
 <h3>Colour families</h3>
 <p>The starter design system has eleven families: primary, secondary, tertiary, accent, base, neutral, action, success, danger, warning and info. Each one is made from a single base colour. TokenForge makes the base colour, a hover step and six shades (ultra-light, light, semi-light, semi-dark, dark and ultra-dark) in OKLCH.</p>
-<p>The variables follow the family name: <code>--primary</code>, <code>--primary-hover</code>, <code>--primary-light</code>, <code>--primary-ultra-dark</code> and so on. A family also gets <code>-ref</code> and colour channel variables (<code>--primary-hex</code>, <code>--primary-rgb</code>, <code>--primary-h</code>, <code>--primary-s</code>) and transparent steps from <code>--primary-trans-10</code> to <code>--primary-trans-90</code>.</p>
+<p>The variables follow the family name: <code>--primary</code>, <code>--primary-hover</code>, <code>--primary-light</code>, <code>--primary-ultra-dark</code> and so on. A family also gets <code>-ref</code> and colour channel variables (<code>--primary-hex</code>, <code>--primary-rgb</code>, <code>--primary-hsl</code>, <code>--primary-h</code>, <code>--primary-s</code>, <code>--primary-l</code>, <code>--primary-r</code>, <code>--primary-g</code> and <code>--primary-b</code>) and transparent steps from <code>--primary-trans-10</code> to <code>--primary-trans-90</code>.</p>
 <ul>
 <li><strong>Change a colour</strong> on the Colors screen, then Save. The family is regenerated.</li>
 <li><strong>Dark mode colour.</strong> Each family has an optional dark mode colour for its base and hover. Empty means the same as light mode. The shades always swap: ultra-light becomes ultra-dark. "Dark mode fine tuning" sets the lightness (0 to 1) and chroma (0 to 0.4) of the main colour and its hover.</li>
@@ -188,9 +188,9 @@
 <h3>Dark mode</h3>
 <p>Dark mode is set on the Colors screen, in the Dark mode panel.</p>
 <ul>
-<li><strong>Dark values</strong> is Off (light only) or On. When it is on, every colour token also gets a dark value, written with <code>light-dark()</code>.</li>
-<li><strong>Site default</strong> is Follow the visitor’s OS, Light or Dark.</li>
-<li><strong>Visitor light/dark switcher</strong> lets visitors choose. Add the switch anywhere with the shortcode <code>[tokenforge_scheme_toggle]</code> (it takes a <code>class</code> attribute), with the Light/Dark Toggle element or block, or with the class <code>scheme-toggle</code> or the attribute <code>data-scheme-toggle</code> on any button. The choice stays in the visitor's own browser.</li>
+<li><strong>Dark values</strong> is "Off (light only)" or "On (light-dark())". When it is on, every colour token also gets a dark value, written with <code>light-dark()</code>. A new site starts with it on.</li>
+<li><strong>Site default</strong> is "Follow the visitor’s OS", "Light" or "Dark". A new site starts with Light.</li>
+<li><strong>Visitor light/dark switcher</strong> lets visitors choose. It is off on a new site. Add the switch anywhere with the shortcode <code>[tokenforge_scheme_toggle]</code> (it takes a <code>class</code> attribute), with the Light/Dark Toggle element or block, or with the class <code>scheme-toggle</code> or the attribute <code>data-scheme-toggle</code> on any button. The choice stays in the visitor's own browser.</li>
 <li><strong>Always dark (selectors)</strong> and <strong>Always light (selectors)</strong> keep their scheme whatever the site does, for example a footer.</li>
 <li>The classes <code>.scheme--light</code> and <code>.scheme--dark</code>, and the attribute <code>data-scheme="dark"</code>, force a scheme on any element and everything inside it.</li>
 </ul>
@@ -241,26 +241,27 @@
 <li><strong>Typography utilities</strong> make text size, text style and alignment classes.</li>
 <li><strong>Layout utilities</strong> make grid, flex grid, flex, alignment, display and sizing classes.</li>
 </ul>
-<p>Two more switches add optional sets. "Link, focus, bullet and column rule colour classes" adds <code>link-{colour}</code>, <code>link-hover-{colour}</code>, <code>focus-{colour}</code>, <code>marker-{colour}</code> and <code>col-rule-{colour}</code> for every colour. It adds about 30 KB, so it is off by default. "Breakpoint variants" is described below.</p>
+<p>Three more switches add optional sets, all off by default. "Link, focus, bullet and column rule colour classes" adds <code>link-{colour}</code>, <code>link-hover-{colour}</code>, <code>focus-{colour}</code>, <code>marker-{colour}</code> and <code>col-rule-{colour}</code> for every colour. It adds about 30 KB. "Colour classes with double dashes too (bg--primary)" also writes the double-dash spelling of the colour classes, such as <code>bg--primary</code> and <code>link-hover--primary</code>, for pages moved from another utility framework. It adds about 10 KB. "Breakpoint variants (-at-xs to -at-xxl)" is described below.</p>
+<p>Where the builder supports it, the switch "Register classes with the builder" (on by default) adds the utility classes to the builder's class list, so they autocomplete in its class field.</p>
 <h3>Class names at a glance</h3>
 <div class="tf-man-table">
 <table>
 <thead><tr><th>Group</th><th>Examples</th></tr></thead>
 <tbody>
-<tr><td>Sections and widths</td><td><code>section--m</code>, <code>section--l-to-m</code>, <code>section--none</code>, <code>header--m</code>, <code>content-width</code>, <code>content-grid</code>, <code>content--feature</code>, <code>content--feature-max</code>, <code>content--full</code></td></tr>
+<tr><td>Sections and widths</td><td><code>section--m</code>, <code>section--l-to-m</code>, <code>section--none</code>, <code>header--m</code>, <code>content-width</code>, <code>content-grid</code> (switch on Layout &gt; Content grid first), <code>content--feature</code>, <code>content--feature-max</code>, <code>content--full</code>. On a new site every top-level section is already a content grid.</td></tr>
 <tr><td>Spacing</td><td><code>pad-m</code>, <code>pad-block-m</code>, <code>pad-inline-m</code>, <code>mar-m</code>, <code>mar-block-m</code>, <code>mar-inline-m</code>, <code>gap-m</code>. A size can shrink on small screens: <code>pad-l-to-m</code>. Block is top and bottom, inline is left and right.</td></tr>
 <tr><td>Automatic gaps</td><td><code>container-gap</code>, <code>content-gap</code>, <code>grid-gap</code>, <code>gap--none</code></td></tr>
 <tr><td>Typography</td><td><code>h1</code> to <code>h6</code>, <code>text--xs</code> to <code>text--xxl</code>, <code>text-center</code></td></tr>
 <tr><td>Colour</td><td><code>bg--light</code>, <code>bg--dark</code>, <code>text--dark</code>, <code>text-primary</code>, <code>bg-primary</code>, <code>border-primary</code></td></tr>
 <tr><td>Buttons</td><td><code>btn--primary</code>, <code>btn--primary-dark</code>, <code>btn--primary-light</code>, <code>btn--outline</code>, <code>btn--s</code>, <code>btn--none</code></td></tr>
-<tr><td>Cards and icons</td><td><code>card</code>, <code>card--light</code>, <code>card--dark</code>, <code>is-clickable</code>, <code>icon--m</code></td></tr>
+<tr><td>Cards and icons</td><td><code>card</code>, <code>is-clickable</code>, <code>is-above</code>, <code>icon--m</code>, <code>icon--boxed</code>, <code>icon--plain</code></td></tr>
 <tr><td>Borders and shadows</td><td><code>border</code>, <code>border--light</code>, <code>divider</code>, <code>radius-m</code>, <code>shadow-1</code> to <code>shadow-5</code>, <code>text-shadow--1</code>, <code>drop-shadow--1</code></td></tr>
 <tr><td>Overlays and surfaces</td><td><code>overlay</code>, <code>overlay-1</code>, <code>surface-1</code>, <code>ribbon</code>, <code>ribbon--top-right</code></td></tr>
 </tbody>
 </table>
 </div>
 <p>The Cheatsheet lists the exact name of every class your site has, so use it as the source of truth.</p>
-<p>Coming from another utility framework? Its class names work where the result is the same, for example <code>grid--3</code> works like <code>grid-3</code> and <code>flex-grid--3</code> like <code>flex-grid-3</code>.</p>
+<p>Coming from another utility framework? Its class names work where the result is the same, for example <code>grid--3</code> works like <code>grid-3</code>, <code>flex-grid--3</code> like <code>flex-grid-3</code> and <code>text--center</code> like <code>text-center</code>. Its breakpoint names are matched by width, so with the starter breakpoints <code>grid--m-2</code> works like <code>grid-2-at-s</code> (this needs Breakpoint variants). Its colour names with two dashes, such as <code>bg--primary</code>, need the switch "Colour classes with double dashes too (bg--primary)". Names whose result would differ are not copied: use the TokenForge name for those.</p>
 <h3>Grids</h3>
 <ul>
 <li><code>grid-1</code> to <code>grid-12</code> make equal columns. <code>grid-1-2</code>, <code>grid-2-1</code>, <code>grid-1-3</code>, <code>grid-3-1</code>, <code>grid-2-3</code> and <code>grid-3-2</code> make ratio columns. The gap is <code>--grid-gap</code>.</li>
@@ -307,7 +308,7 @@
 <li>The scan reads your pages, templates, menus, widgets and the builder's components. <strong>Scan now</strong> runs it by hand. A save that switches the setting on runs it too. So does switching on a setting that adds classes (a utility family or the breakpoint variants), so classes your pages already use are kept.</li>
 <li>A class or attribute you add later joins the stylesheet when you save.</li>
 <li>The builder canvas and the block editor always have every class and attribute. Variables and components are never left out.</li>
-<li><strong>Always keep these classes</strong> lists names the scan cannot see, because theme files, shortcodes, scripts or another plugin add them. Separate names by new lines or spaces. End a name with <code>*</code> to keep every class that starts with it, for example <code>bg-primary*</code>, or use <code>data-tf-*</code> to keep all the data attributes.</li>
+<li><strong>Always keep these classes</strong> lists names the scan cannot see, because theme files, shortcodes, scripts or another plugin add them. Separate names by new lines, spaces or commas. End a name with <code>*</code> to keep every class that starts with it, for example <code>bg-primary*</code>, or use <code>data-tf-*</code> to keep all the data attributes.</li>
 <li>After a scan the panel shows how many classes your site uses, and the size of the utility part of the stylesheet with and without the unused classes. If the site has more content than one scan reads, every class stays in.</li>
 </ul>
 <h3>The Cheatsheet</h3>
@@ -322,7 +323,7 @@
 
 <section id="effects">
 <h2>Effects</h2>
-<p>The Effects screen has one panel for transitions and one for each kind of effect. The whole module starts switched off on a new site. Switch it on at Home.</p>
+<p>The Effects screen has one panel for transitions, one for each kind of effect and one for the default button effects. The whole module starts switched off on a new site. Switch it on at Home.</p>
 <h3>Transitions and easing</h3>
 <ul>
 <li><strong>Transition variables</strong> make <code>--transition</code>, <code>--transition-duration</code>, <code>--transition-timing</code> and <code>--transition-delay</code>. You set the default duration, timing and delay. A separate switch adds a <code>.transition</code> class.</li>
@@ -338,14 +339,14 @@
 <li><strong>Elements that are already on screen when the page opens play their entrance once as the page loads.</strong> A hero is a typical case. Before version 0.58.1 such elements waited for a scroll that never came. Elements further down the page still play as you scroll to them.</li>
 </ul>
 <h3>Exit (scroll)</h3>
-<p><code>.on-exit--*</code> and <code>.on-exit-all--*</code> use the same set of effects while an element scrolls out of view. Their settings mirror the entrance ones.</p>
+<p><code>.on-exit--*</code> and <code>.on-exit-all--*</code> use the same effects as the entrance ones, except parallax, while an element scrolls out of view. <code>.on-exit--stagger</code> works like the entrance one. Their settings mirror the entrance ones; the amounts are named "Fade: end opacity", "Grow: end scale" and "Shrink: end scale".</p>
 <h3>Visible (once)</h3>
-<p><code>.on-visible--*</code> effects play once when an element becomes visible. The Threshold (0 to 1) says how much of the element must show first: 0.2 means 20 percent. Without JavaScript the content simply shows. The attribute <code>data-tf-reveal</code> uses these effects too, so the Effects module and the Visible (once) panel must be on for it. <code>data-tf-reveal="fade"</code> fades the element in, and <code>data-tf-reveal="up"</code> fades it in and slides it up into place.</p>
+<p><code>.on-visible--*</code> effects play once when an element becomes visible. <code>.on-visible-all--*</code> on a parent does it for every child, and <code>.on-visible--stagger</code> delays each child a little more than the one before. The Threshold (0 to 1) says how much of the element must show first: 0.2 means 20 percent. Without JavaScript the content simply shows. The attribute <code>data-tf-reveal</code> uses these effects too, so the Effects module and the Visible (once) panel must be on for it. <code>data-tf-reveal="fade"</code> fades the element in, and <code>data-tf-reveal="up"</code> fades it in and slides it up into place.</p>
 <h3>Hover and hover borders</h3>
 <ul>
 <li><strong>Hover:</strong> <code>.on-hover--grow</code>, <code>--shrink</code>, <code>--float</code>, <code>--sink</code>, <code>--slide-right</code>, <code>--slide-left</code>, <code>--shadow</code>, <code>--glow</code>, <code>--fade</code> and <code>--brighten</code>.</li>
 <li><strong>Hover borders:</strong> <code>.on-hover--ripple-out</code>, <code>--ripple-in</code>, <code>--outline-out</code>, <code>--outline-in</code>, <code>--underline-left</code>, <code>--underline-center</code> and <code>--underline-right</code>.</li>
-<li><strong>Default button effects:</strong> pick one hover, one entrance and one hover border effect, and every TokenForge button (<code>.btn</code> and <code>btn--*</code>) gets them without a class. With Buttons, "Restyle every button" on, the builder, block and plain buttons get them too.</li>
+<li><strong>Button effects:</strong> this panel has three lists, Hover, "Entrance (scroll)" and "Hover border". Pick one effect in each, and every TokenForge button (<code>.btn</code> and <code>btn--*</code>, but not <code>btn--none</code>) gets it without a class. All three start on None. Each one only works while its own group above (Hover, Entrance (scroll) or Hover borders) is switched on. With Buttons, "Restyle every button (builder, block editor, plain HTML)" on, the builder, block and plain buttons get them too.</li>
 </ul>
 <h3>Reduced motion and the builders</h3>
 <ul>
@@ -360,7 +361,7 @@
 <h3>Where recipes work</h3>
 <ul>
 <li><strong>The custom CSS box.</strong> In every supported builder, TokenForge suggests recipes, variables and classes while you type there. (In one builder the custom CSS box needs the paid version of that builder. The Builders section says which.)</li>
-<li><strong>Value recipes in style fields.</strong> The colour recipes, such as <code>?primary-clr</code>, expand to a colour with an alpha you can edit. Finish with a semicolon. This needs a builder with style fields and the second switch on the Recipes screen, "Also in builder fields".</li>
+<li><strong>Value recipes in style fields.</strong> The colour recipes, such as <code>?primary-clr</code>, expand to a colour with an alpha you can edit. <code>?color-mix</code>, <code>?transparency</code> and the six plain gradients (<code>?linear-gradient</code>, <code>?gradient-radial</code>, <code>?gradient-conic</code>, <code>?gradient-sharp</code>, <code>?gradient-fade</code> and <code>?gradient-vignette</code>) work the same way. Finish with a semicolon. This needs a builder with style fields and the second switch on the Recipes screen, "Also in builder fields".</li>
 <li><strong>Text recipes</strong> give placeholder copy: <code>?ipsum-short</code>, <code>?ipsum</code> (a medium paragraph) and <code>?ipsum-long</code>. Type the name followed by a space or a semicolon. They work in the builder's text fields, text areas, rich text and text edited on the canvas, in the block editor canvas and in the block editor's sidebar text fields. Code editors are left alone.</li>
 </ul>
 <h3>The built-in recipes</h3>
@@ -369,8 +370,8 @@
 <thead><tr><th>Category</th><th>Recipes</th></tr></thead>
 <tbody>
 <tr><td>Color</td><td><code>?primary-clr</code>, <code>?primary-light-clr</code>, <code>?primary-hover-clr</code> and the same for every family and shade, plus <code>?color-mix</code> and <code>?transparency</code></td></tr>
-<tr><td>Gradients</td><td><code>?linear-gradient</code>, <code>?gradient-radial</code>, <code>?gradient-conic</code>, <code>?gradient-text</code>, <code>?gradient-border</code> and more</td></tr>
-<tr><td>Pseudo</td><td><code>?before</code>, <code>?after</code>, <code>?hover</code>, <code>?focus-visible</code>, <code>?hover-focus</code> and more</td></tr>
+<tr><td>Gradients</td><td><code>?linear-gradient</code>, <code>?gradient-radial</code>, <code>?gradient-conic</code>, <code>?gradient-sharp</code>, <code>?gradient-fade</code>, <code>?gradient-vignette</code>, <code>?gradient-text</code>, <code>?gradient-border</code></td></tr>
+<tr><td>Pseudo</td><td><code>?before</code>, <code>?after</code>, <code>?before-after</code>, <code>?hover</code>, <code>?focus-visible</code>, <code>?hover-focus</code>, <code>?hover-exclude-touch</code></td></tr>
 <tr><td>Grid</td><td><code>?auto-grid</code>, <code>?variable-grid</code>, <code>?grid-1</code> to <code>?grid-12</code>, <code>?grid-1-2</code> and the other ratios, <code>?flex-row</code>, <code>?flex-column</code>, <code>?flex-grid</code>, <code>?masonry</code>, <code>?content-grid</code></td></tr>
 <tr><td>Text</td><td><code>?ipsum-short</code>, <code>?ipsum</code>, <code>?ipsum-long</code></td></tr>
 <tr><td>Media queries</td><td><code>?breakpoint-xs</code> to <code>?breakpoint-xxl</code>, <code>?breakpoint-up-xs</code> to <code>?breakpoint-up-xxl</code>, <code>?card-container</code>, <code>?container</code></td></tr>
@@ -399,6 +400,7 @@
 <tr><td>Input helper</td><td>Yes</td><td>No</td><td>Yes</td><td>Yes</td><td>Yes (fields with the custom unit)</td><td>Yes</td></tr>
 <tr><td>Variable, class and recipe suggestions in the custom CSS box</td><td>Yes</td><td>Yes (the CSS editor)</td><td>Yes</td><td>Yes</td><td>Yes (Custom CSS needs Elementor Pro)</td><td>Yes (Free-Form CSS)</td></tr>
 <tr><td>Placeholder text recipes in text fields</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>Light and dark preview of the canvas (moon button, while dark mode is on)</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
 <tr><td>Sync of variables, colours and classes, theme style, Style Manager</td><td>Yes</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
 <tr><td>Page check, Design check, BEM class generator</td><td>Yes</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
 <tr><td>Canvas tools, Add Elements panel tools, template tweaks, setup wizard</td><td>Yes</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
@@ -424,7 +426,7 @@
 <li><strong>Theme style.</strong> One theme style for the entire website follows TokenForge: its fonts, sizes, colours, container width and section padding point at TokenForge variables. A change you make in the theme style comes back into TokenForge. The switch is "Keep a theme style in step with TokenForge".</li>
 <li><strong>Style Manager.</strong> The text, heading and space sizes show as typography and spacing scales, and the HTML font size, screen widths and default mode fill its Settings. A change made there comes back into TokenForge. Only administrators change TokenForge from there.</li>
 <li><strong>Page check and Design check</strong> (Accessibility &gt; This page). Nothing runs until you press Run check (or Run design check). The page check lists accessibility problems on the page you are editing, worst first. Show selects the element. Where it is safe, Fix changes it. A fix changes only the open page in the builder, nothing is saved until you save, and the builder's Undo takes it back. The Design check lists colours and font sizes typed by hand where a token is close, contrast in light and dark mode, and sizes off the type scale. The check uses the open source axe-core engine, bundled with the plugin.</li>
-<li><strong>BEM class generator.</strong> Hover a row in the Structure panel and press BEM. A dialog reads that element and everything inside it, names the classes in the <code>block__element</code> pattern from each element's label, and applies them as global classes when you press Apply.</li>
+<li><strong>BEM class generator.</strong> Hover a row in the Structure panel and press its code brackets icon ("Generate BEM classes"). A dialog reads that element and everything inside it, names the classes in the <code>block__element</code> pattern from each element's label, and applies them as global classes when you press Apply Classes.</li>
 <li><strong>Canvas and Add Elements tools:</strong> outlines for containers, grids and overflowing elements; heading level and focus order badges; one element per row, a denser Add Elements panel and a list of elements to hide.</li>
 <li><strong>Style tab and templates:</strong> the CSS group first, a taller code editor, remote templates that keep their own classes and a tidier template gallery. The panel "Builder built-in" changes the builder's own settings, so reload the builder after saving.</li>
 <li><strong>Forms and the setup wizard</strong> (see <a href="#features">Forms, WooCommerce and other features</a> and <a href="#start">Install and first steps</a>).</li>
@@ -504,7 +506,7 @@
 <ul>
 <li><strong>Palette contrast.</strong> Checks text, links, focus rings and buttons against their backgrounds, in light and dark mode. The WCAG 2 ratio decides: at least 4.5:1 for text and links, and 3:1 for focus rings (level AA). The APCA value (Lc) is shown beside it for information only. Each failing pair has a "Use" button with the name of the nearest colour token that passes. <strong>Another colour</strong> lets you pick a token or any colour and see the ratio first. A fix changes only that pair's colour setting, never the token. Save keeps it and History can undo it.</li>
 <li><strong>Automatic accessibility attributes.</strong> Seven switches, all off. Each adds an attribute on the page only where it is missing: hide icons in links and buttons that have text, alt text from the media library on images with no alt, the menu name as the label of unlabelled menus, mark the menu link to the current page, announce links that open a new tab, and two guesses (the placeholder as the label of a field, and a label for a link with only an icon) that you should check. Anything you set yourself, even an empty <code>alt=""</code>, is never changed, and nothing is saved in your pages. Put <code>data-tf-a11y="off"</code> on an element to leave it and everything inside it alone. This needs WordPress 6.2 or newer. Hiding icons and the icon-link guess need 6.5.</li>
-<li><strong>Focus</strong> gives a visible keyboard focus ring and a skip link styled as a button. <strong>Reduced motion</strong> respects the visitor's device setting. The <strong>External-link indicator</strong> adds a small glyph to links that open in a new tab, read to screen readers as a label. <strong>Canvas badges</strong> show heading levels and the Tab order in the builder canvas, for you only.</li>
+<li><strong>Focus</strong> gives a visible keyboard focus ring and a skip link styled as a button. <strong>Reduced motion</strong> respects the visitor's device setting. The <strong>External-link indicator</strong> adds a small glyph to links that open in a new tab, read to screen readers as a label. <strong>Canvas badges</strong> has two switches, "Heading levels" and "Focus order". They show a badge on every heading and number the links, buttons and fields in the order the Tab key visits them, in the builder canvas, for you only. Both are off on a new site.</li>
 </ul>
 <h3>Data attributes</h3>
 <p>These attributes work on any element. The Data attributes screen lists each one, scans your site to show where it is used, flags unused ones and warns about misspelt <code>data-tf-</code> names, with a suggestion. Hover or focus the question mark for what each does.</p>
@@ -518,8 +520,8 @@
 <tr><td><code>data-tf-reveal</code></td><td>Shows the element on scroll, once. Values: fade, up.</td></tr>
 <tr><td><code>data-tf-clamp</code></td><td>Cuts text after 1 to 6 lines with an ellipsis.</td></tr>
 <tr><td><code>data-tf-ratio</code></td><td>A fixed shape: 1/1, 4/3, 3/2, 16/9, 21/9, 3/4, 2/3 or 9/16.</td></tr>
-<tr><td><code>data-tf-copy</code></td><td>A button or link that copies a value on the page.</td></tr>
-<tr><td><code>data-tf-tooltip</code></td><td>A tooltip that stays on screen, also on a phone.</td></tr>
+<tr><td><code>data-tf-copy</code></td><td>Makes a button or link copy text when clicked: the value you type, or the element's own text when the value is empty.</td></tr>
+<tr><td><code>data-tf-tooltip</code></td><td>Shows its text in a small bubble above the element on hover and on keyboard focus. Near the edge of a small screen the bubble moves sideways to stay in view.</td></tr>
 <tr><td><code>data-tf-filter-group</code>, <code>data-tf-filter</code>, <code>data-tf-term</code></td><td>A list filter with no code.</td></tr>
 <tr><td><code>data-tf-decorative</code></td><td>Marks decoration: <code>aria-hidden</code> on it and an empty alt on images.</td></tr>
 <tr><td><code>data-tf-state</code></td><td>Marks an element as open, active or disabled so your CSS can style that state. Disabled also dims the element and blocks mouse clicks, but the keyboard can still reach it.</td></tr>
@@ -540,7 +542,7 @@
 <p>The form controls in the builder set the form attributes for you, so you rarely type them. The icon, ribbon and inverted radius attributes (<code>data-icon</code>, <code>data-icon-size</code>, <code>data-icon-style</code>, <code>data-icon-list</code>, <code>data-icon-hover</code>, <code>data-ribbon-position</code>, <code>data-inverted-radius-1-position</code>) are listed on the Cheatsheet.</p>
 <h3>Other components</h3>
 <ul>
-<li><strong>Buttons.</strong> Any <code>btn--*</code> class makes a button. "Families (comma separated)" picks the colour families that get a class, with optional dark and light variants and outline variants. "Restyle every button" makes every button on the site a TokenForge button, even without a class.</li>
+<li><strong>Buttons.</strong> Any <code>btn--*</code> class makes a button. "Families (comma separated)" picks the colour families that get a class, with optional dark and light variants and outline variants. "Restyle every button (builder, block editor, plain HTML)" makes every button on the site a TokenForge button, even without a class. It is off on a new site, so only elements with a <code>.btn</code> or <code>btn--*</code> class become buttons.</li>
 <li><strong>Cards.</strong> <code>.card</code> is a padded flex column. <code>.is-clickable</code> makes the link in its heading cover the whole card while a screen reader still hears one link. <code>.is-above</code> on a second link or button inside the card keeps it clickable.</li>
 <li><strong>Icons, ribbons, overlays, surfaces, prose and blockquotes</strong> have their own panels. See the <a href="#settings">Settings reference</a>.</li>
 <li><strong>Design token files.</strong> See <a href="#transfer">Import, export and reset</a>.</li>
@@ -605,7 +607,7 @@
 <tr><td>Recipes</td><td>Recipes, Built-in recipes</td></tr>
 <tr><td>Setup wizard</td><td>Step 1: builder settings, Step 2: connect TokenForge and the builder</td></tr>
 <tr><td>Options</td><td>Dashboard look, TokenForge window, AI agents, Builder sync, Performance, Breakpoints, Cascade layers, Utility framework</td></tr>
-<tr><td>Builder</td><td>Add Elements panel, Canvas, Style tab &amp; code, Contextual menus, Inputs &amp; class list, Templates, Theme style, Builder built-in (which ones show depends on the builder)</td></tr>
+<tr><td>Builder</td><td>Add Elements panel, Canvas, Dark mode preview, Style tab &amp; code, Contextual menus, Inputs &amp; class list, Templates, Theme style, Builder built-in (which ones show depends on the builder)</td></tr>
 <tr><td>Block editor</td><td>Presets, Editor interface, Canvas, Content, TokenForge window</td></tr>
 <tr><td>Import, export &amp; reset</td><td>Export, Import, Design token files, Reset to defaults, History, Settings importer</td></tr>
 <tr><td>Colors</td><td>Color families, Shade generation, Dark mode, Color assignments, Background relationships, Selection</td></tr>
@@ -622,17 +624,17 @@
 <tr><td>WooCommerce</td><td>WooCommerce, Shop pages, Buttons, Prices, Sale badge, Ratings, Look and spacing, Notices, Fields, Product grid, Product filters, Tables, tabs &amp; pagination, Blocks</td></tr>
 <tr><td>Content</td><td>Flow spacing, Prose, Blockquotes</td></tr>
 <tr><td>Surfaces &amp; Overlays</td><td>Basic overlay, Custom overlays, Surfaces</td></tr>
-<tr><td>Effects</td><td>Transitions &amp; easing, Entrance (scroll), Exit (scroll), Visible (once), Hover, Hover borders, Builders &amp; accessibility</td></tr>
+<tr><td>Effects</td><td>Transitions &amp; easing, Entrance (scroll), Exit (scroll), Visible (once), Hover, Hover borders, Button effects, Builders &amp; accessibility</td></tr>
 <tr><td>Base</td><td>Reset, Utilities</td></tr>
 </tbody>
 </table>
 </div>
 <h3>Options worth knowing</h3>
 <ul>
-<li><strong>Inline the stylesheet</strong> (Performance) prints the CSS in the page, so there is no extra request.</li>
+<li><strong>Inline the stylesheet</strong> (Performance) prints the CSS in the page, so there is no extra request, but the browser cannot cache it on its own. A new site starts with it on. Switch it off to link the stylesheet file instead.</li>
 <li><strong>Hot-reload CSS in open tabs after Save</strong> (Performance) updates other open tabs of your site without a reload.</li>
 <li><strong>Cascade layers</strong> put parts of the stylesheet in CSS layers, so your own CSS wins without extra specificity.</li>
-<li><strong>Dashboard look</strong> sets the look of the dashboard and the TokenForge window.</li>
+<li><strong>Dashboard look</strong> (the setting is called "Look") sets how the dashboard and the TokenForge window look: "Builder panels (default)", "Flat" or "Light". Save to apply it.</li>
 </ul>
 </section>
 
@@ -646,11 +648,11 @@
 <tr><td><code>wp tokenforge regenerate</code></td><td>Rebuilds the stylesheets.</td></tr>
 <tr><td><code>wp tokenforge export &gt; tokenforge-export.json</code></td><td>Prints every setting, token, colour family and font as JSON. Redirect it to keep it in a file.</td></tr>
 <tr><td><code>wp tokenforge import &lt;file&gt;</code></td><td>Imports an export file (2 MB at most). <code>--parts=tokens,palette</code> picks parts from tokens, palette, settings, modules, recipes and fonts. <code>--dry-run</code> shows what would change and writes nothing.</td></tr>
-<tr><td><code>wp tokenforge snapshot</code></td><td>Takes a history copy now. <code>--note=before-release</code> adds a short label.</td></tr>
+<tr><td><code>wp tokenforge snapshot</code></td><td>Takes a history copy now, unless nothing changed since the last one. <code>--note=before-release</code> adds a short label (letters, digits and dashes).</td></tr>
 <tr><td><code>wp tokenforge history</code></td><td>Lists the history copies, newest first. <code>--format</code> is table, json, csv, yaml or count.</td></tr>
 <tr><td><code>wp tokenforge restore &lt;id&gt;</code></td><td>Puts a history copy back. <code>--yes</code> skips the question.</td></tr>
-<tr><td><code>wp tokenforge status</code></td><td>Shows the version, the stylesheet files and the detected builders. Writes nothing.</td></tr>
-<tr><td><code>wp tokenforge contrast</code></td><td>Checks text contrast. It exits with code 1 when a pair fails, so it can stop a release. <code>--all</code> lists passing pairs too.</td></tr>
+<tr><td><code>wp tokenforge status</code></td><td>Shows the version, the stylesheet files, the active builders and the number of history copies. Writes nothing. <code>--format</code> is table, json, csv or yaml.</td></tr>
+<tr><td><code>wp tokenforge contrast</code></td><td>Checks text contrast. It exits with code 1 when a pair fails, so it can stop a release. <code>--all</code> lists passing pairs too. <code>--format</code> is table, json, csv or yaml.</td></tr>
 </tbody>
 </table>
 </div>
@@ -685,7 +687,7 @@ function my_pricing_scss( $scss ) {
 <li><code>tokenforge_starter_reset</code>: runs after a reset.</li>
 </ul>
 <h3>Dashboard filters (JavaScript)</h3>
-<p>The dashboard runs these filters through <code>wp.hooks</code> in the browser: <code>tokenforge.sections</code> (add a section), <code>tokenforge.nav</code> (add a sidebar entry), <code>tokenforge.icons</code> (add an icon), <code>tokenforge.render</code> (draw a section's panel) and <code>tokenforge.section_html</code> (add a panel to a section).</p>
+<p>The dashboard runs these filters through <code>wp.hooks</code> in the browser: <code>tokenforge.sections</code> (add a section), <code>tokenforge.nav</code> (add a sidebar entry), <code>tokenforge.icons</code> (add an icon), <code>tokenforge.render</code> (draw a section that has its own render type), <code>tokenforge.section_html</code> (add a panel to a section), <code>tokenforge.import_labels</code> (name the parts an add-on adds to the import list) and <code>tokenforge.reset_parts</code> (add a part to the Reset to defaults list).</p>
 </section>
 
 <section id="faq">
@@ -693,13 +695,13 @@ function my_pricing_scss( $scss ) {
 <h3>Do I need a page builder?</h3>
 <p>No. The stylesheet loads on the front end and in the block editor on any WordPress site. The builder tools switch on only when a supported builder is active.</p>
 <h3>Will it slow my site down?</h3>
-<p>No CSS is built while a page loads: TokenForge writes one static stylesheet when you save. You can inline it (Options &gt; Performance), switch off any module you do not use at Home, and leave out the utility classes your site does not use. The shop styles are in a second file that loads only where the shop shows.</p>
+<p>No CSS is built while a page loads: TokenForge writes one static stylesheet when you save. A new site prints it inline (Options &gt; Performance, Inline the stylesheet). You can switch off any module you do not use at Home, and leave out the utility classes your site does not use. The shop styles are in a second file that loads only where the shop shows.</p>
 <h3>Can I add my own CSS?</h3>
 <p>Yes. Use the builder's own custom CSS box (or the CSS of the builder's theme style), or your theme's Additional CSS in the Customizer. Developers can add SCSS from code (see <a href="#developers">For developers</a>).</p>
 <h3>What happens when I deactivate or delete TokenForge?</h3>
 <ul>
 <li><strong>Deactivate:</strong> the stylesheet stops loading. Your settings stay.</li>
-<li><strong>Delete:</strong> its settings, the generated stylesheets and the variables, colours and classes it added to the builder are removed. On a multisite network every site is cleaned. Font files you uploaded stay in <code>uploads/tokenforge/fonts/</code>, because other CSS may still use them.</li>
+<li><strong>Delete:</strong> its settings, its history copies, the generated stylesheets, the notes and statuses it kept for form submissions (the builder's own saved submissions stay) and the variables, colours and classes it added to the builder are removed. On a multisite network every site is cleaned. Font files you uploaded stay in <code>uploads/tokenforge/fonts/</code>, because other CSS may still use them.</li>
 <li>Two builder settings are not put back. A theme style kept in step with TokenForge keeps its <code>var(--...)</code> values, which no longer work once the variables are gone, so set those fields again or pick another theme style. Builder settings the setup wizard changed stay as the wizard left them.</li>
 </ul>
 <h3>Does "Close after this many sends" stop one visitor from taking every place?</h3>
