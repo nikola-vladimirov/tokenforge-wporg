@@ -429,6 +429,71 @@ class Components {
 	}
 
 	/**
+	 * Dark mode: outline buttons in .bg--dark and .bg--ultra-dark (light there)
+	 * take the light side of their text and border colour, like links. Solid
+	 * buttons bring their own background and -light shades were picked for a dark
+	 * surface, so both keep the page's side; areas with their own scheme inside
+	 * the dark context (Scheme::dark_islands()) are left alone.
+	 *
+	 * @param array $s Settings.
+	 * @return string[] Rules.
+	 */
+	private static function dark_context_outlines( $s ) {
+		$sch = Scheme::settings();
+		if ( empty( $s['btn_outline'] ) || empty( $sch['assignments'] ) || ! Scheme::dark_context() ) {
+			return array();
+		}
+		$not = ':not(:where(.bg--dark,.bg--ultra-dark) :where(' . implode( ',', Scheme::dark_islands( $sch ) ) . ') *)';
+		$out = array();
+		foreach ( self::btn_families( $s ) as $fam ) {
+			$rows = array( 'outline' => array( ".btn--$fam.btn--outline", ".btn--$fam--outline" ) );
+			if ( ! empty( $s['bricks_button_styles'] ) ) {
+				$rows['outline'][] = ".bricks-color-$fam:where(.brxe-button.bricks-button.outline)";
+			}
+			if ( ! empty( $s['btn_shades'] ) ) {
+				$rows['outline-dark'] = array( ".btn--$fam-dark.btn--outline" );
+			}
+			foreach ( $rows as $variant => $sels ) {
+				$d = self::light_side_vars( $s, $fam, $variant );
+				if ( '' !== $d ) {
+					$list = array();
+					foreach ( $sels as $sel ) {
+						$list[] = ':where(.bg--dark,.bg--ultra-dark) ' . $sel . $not;
+					}
+					$out[] = implode( ',', $list ) . '{' . $d . '}';
+				}
+			}
+		}
+		return $out;
+	}
+
+	/**
+	 * A button variant's text and border colour as light-dark( value, its light
+	 * side ): the value in light mode, the light side in dark mode. '' when
+	 * neither can be read as one opaque colour, and for a -light family.
+	 *
+	 * @param array  $s       Settings.
+	 * @param string $f       Family.
+	 * @param string $variant Variant.
+	 * @return string Declarations.
+	 */
+	private static function light_side_vars( $s, $f, $variant ) {
+		if ( false !== strpos( $f, '-light' ) ) {
+			return '';
+		}
+		$m   = self::btn_var_map( $s, $f, $variant );
+		$ctx = Scheme::dark_context();
+		$out = array();
+		foreach ( array( 'btn-text-color', 'btn-border-color' ) as $n ) {
+			$hex = Scheme::light_hex( $m[ $n ], $ctx );
+			if ( '' !== $hex ) {
+				$out[] = "--$n:light-dark(" . $m[ $n ] . ", $hex)";
+			}
+		}
+		return implode( ';', $out );
+	}
+
+	/**
 	 * Custom properties for a button variant (defaults + overrides).
 	 *
 	 * @param array  $s       Settings.
@@ -960,6 +1025,7 @@ class Components {
 					}
 				}
 			}
+			$btn = array_merge( $btn, self::dark_context_outlines( $s ) );
 			// A bare .btn--outline (family outline rules above are more specific).
 			$btn[] = '.btn--outline{--btn-background:transparent;--btn-text-color:currentColor;--btn-border-color:currentColor;--btn-border-width:2px}';
 			$btn[] = '.btn--none{background:none;border:none}';
@@ -972,6 +1038,10 @@ class Components {
 					if ( '' !== $fam ) {
 						$btn[] = ".bg--$ctx [class*=\"btn--\"]:not(.unrelate){" . self::btn_vars( $s, $fam, 'solid' ) . '}';
 						$btn[] = ".bg--$ctx [class*=\"btn--\"]:not(.unrelate).btn--outline{" . self::btn_vars( $s, $fam, 'outline' ) . '}';
+						$lsd   = in_array( $ctx, array( 'dark', 'ultra-dark' ), true ) && Scheme::dark_context() ? self::light_side_vars( $s, $fam, 'outline' ) : '';
+						if ( '' !== $lsd ) {
+							$btn[] = ".bg--$ctx [class*=\"btn--\"]:not(.unrelate).btn--outline:not(.bg--$ctx :where(" . implode( ',', Scheme::dark_islands( $sch ) ) . ') *){' . $lsd . '}';
+						}
 					}
 				}
 			}

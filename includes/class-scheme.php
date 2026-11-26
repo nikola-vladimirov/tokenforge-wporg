@@ -273,7 +273,8 @@ class Scheme {
 		if ( ! empty( $s['assignments'] ) ) {
 			// Background assignments, set the surface + readable text, headings,
 			// icons, links and focus colour inside it (all overridable variables).
-			$rel = array();
+			$rel   = array();
+			$links = $dark ? self::dark_context_links( $ctx ) : array();
 			foreach ( self::CONTEXTS as $surface ) {
 				$key   = 'ctx_' . str_replace( '-', '_', $surface ) . '_';
 				$light = in_array( $surface, array( 'ultra-light', 'light' ), true );
@@ -282,6 +283,7 @@ class Scheme {
 				$muted = $light ? 'var(--text-dark-muted)' : 'var(--text-light-muted)';
 				$rel[] = "--bg-$surface-text:$text;--bg-$surface-heading:$head" . ( '' !== $s[ $key . 'button' ] ? ";--bg-$surface-button:" . $s[ $key . 'button' ] : '' ) . ( '' !== $s[ $key . 'icon' ] ? ";--bg-$surface-icon:" . $s[ $key . 'icon' ] : '' );
 				$extra = '';
+				$reset = array();
 				if ( '' !== $s[ $key . 'icon' ] ) {
 					$extra .= ';--icon-scheme:var(--bg-' . $surface . '-icon)';
 				}
@@ -292,7 +294,15 @@ class Scheme {
 				) as $p => $var ) {
 					if ( '' !== $s[ $key . $p ] ) {
 						$extra .= ";$var:" . $s[ $key . $p ];
+					} elseif ( isset( $links[ $p ] ) && ! $light ) {
+						// Light in dark mode: a link takes the light side of the site colour (light mode reads the site value).
+						$extra  .= ";$var:" . $links[ $p ][1];
+						$reset[] = $var . ':' . $links[ $p ][0];
 					}
+				}
+				if ( $reset ) {
+					// Areas inside it with a scheme of their own get the site link colour back.
+					$css[] = ':where(.bg--' . $surface . ') :where(' . implode( ',', self::dark_islands( $s ) ) . '){' . implode( ';', $reset ) . '}';
 				}
 				$css[]     = ".bg--$surface{background-color:var(--bg-$surface);--bg:var(--bg-$surface);--text:var(--bg-$surface-text);--text-muted:$muted;--relative-heading-color:var(--bg-$surface-heading)$extra}";
 				$css[]     = ":where(.bg--$surface){--relative-text-color:var(--bg-$surface-text);color:var(--relative-text-color, inherit)}";
@@ -300,9 +310,6 @@ class Scheme {
 				$classes[] = "bg--$surface";
 			}
 			$css[] = ':root{' . implode( ';', $rel ) . '}';
-			if ( $dark ) {
-				$css[] = ':where(' . implode( ',', self::light_side_links( $s ) ) . '):where(:not(:has(:is(div,p,h1,h2,h3,h4,h5,h6,ul,ol,figure,section,article)),.bg--dark :is(.bg--light,.bg--ultra-light) *,.bg--ultra-dark :is(.bg--light,.bg--ultra-light) *)){color-scheme:light}';
-			}
 
 			// Text assignments.
 			foreach ( array( 'light', 'dark', 'light-muted', 'dark-muted' ) as $t ) {
@@ -318,25 +325,61 @@ class Scheme {
 	}
 
 	/**
-	 * Dark mode turns .bg--dark and .bg--ultra-dark light, but a link or outline
-	 * button in them would still take the dark side of its colour (made for a dark
-	 * page): a light primary on a light surface. These read the light side instead,
-	 * as on any light surface; in light mode they already do. A solid button brings
-	 * its own background, so it keeps the page's side. A link or button holding
-	 * blocks (a card) keeps the section's scheme for its content, and so does a
-	 * light context inside the dark one. A link colour set for that surface is
-	 * the person's choice and is left alone.
-	 * shortcut: a dark context inside a light one inside a dark one is skipped too; handle it if a site nests that deep.
+	 * Parts inside a dark context (.bg--dark, .bg--ultra-dark) that keep their own
+	 * scheme: a light context, a dark scheme area, a dark form or card, the Always
+	 * dark selectors. In dark mode the dark context turns light and its links and
+	 * outline buttons take the light side of their colour; inside these they keep
+	 * the side their own scheme gives, as before.
+	 * shortcut: card_selectors added in the settings are not listed (only .card); add them if a site uses dark cards that way.
 	 *
 	 * @param array $s Scheme settings.
 	 * @return string[] Selectors.
 	 */
-	public static function light_side_links( $s ) {
+	public static function dark_islands( $s ) {
+		$out = array( '.bg--light', '.bg--ultra-light', '.scheme--dark', '.form--dark', '.card[class*="--dark"]:not(.bg--dark,.bg--ultra-dark)' );
+		if ( 'dark' === Components::settings()['card_scheme'] ) {
+			$out[] = '.card';
+		}
+		$always = array_filter( array_map( 'trim', preg_split( '/[\r\n]+|,(?![^(]*\))/', str_replace( '"', '', (string) $s['force_dark'] ) ) ) );
+		return array_merge( $out, $always );
+	}
+
+	/**
+	 * A colour's light side written out as #rrggbb, '' when it is not one plain,
+	 * opaque colour (light-dark() values give their light side).
+	 *
+	 * @param string     $v   Colour.
+	 * @param array|null $ctx dark_context().
+	 * @return string
+	 */
+	public static function light_hex( $v, $ctx ) {
+		$v   = (string) $v;
+		$rgb = $ctx && '' !== $v && false === strpbrk( $v, ';{}<>' ) ? Contrast::parse( $v, $ctx['vars'], false, 0, true ) : null;
+		return $rgb && $rgb[3] >= 1 ? sprintf( '#%02x%02x%02x', round( $rgb[0] * 255 ), round( $rgb[1] * 255 ), round( $rgb[2] * 255 ) ) : '';
+	}
+
+	/**
+	 * The site link colours for the dark contexts in dark mode: [ site value,
+	 * light-dark( site value, its light side ) ] per setting, so light mode reads
+	 * the site value as before. Empty when TokenForge does not colour links or a
+	 * colour is not one plain opaque colour.
+	 *
+	 * @param array|null $ctx dark_context().
+	 * @return array link|link_hover => [ site, dark context ]
+	 */
+	public static function dark_context_links( $ctx ) {
+		$c = Components::settings();
+		if ( ! $ctx || empty( $c['base_links'] ) ) {
+			return array();
+		}
 		$out = array();
-		foreach ( array( 'dark', 'ultra-dark' ) as $surface ) {
-			$out[] = ".bg--$surface :is(.btn--outline,[class*=\"btn--\"][class*=\"--outline\"],.bricks-button.outline)";
-			if ( '' === $s[ 'ctx_' . str_replace( '-', '_', $surface ) . '_link' ] ) {
-				$out[] = ".bg--$surface a:not([class*=\"btn--\"],.btn,.bricks-button)"; // Links as the link rule picks them.
+		foreach ( array(
+			'link'       => 'link_color',
+			'link_hover' => 'link_color_hover',
+		) as $k => $setting ) {
+			$hex = self::light_hex( $c[ $setting ], $ctx );
+			if ( '' !== $hex ) {
+				$out[ $k ] = array( $c[ $setting ], 'light-dark(' . $c[ $setting ] . ', ' . $hex . ')' );
 			}
 		}
 		return $out;

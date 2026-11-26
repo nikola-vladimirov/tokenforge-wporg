@@ -821,6 +821,9 @@ class Woo {
 			$shop_s[] = $p . ' li{border:0;float:none;overflow:visible}';
 			$shop_s[] = $p . ' li :is(a,span){display:block;min-inline-size:2.5em;padding:.5em .8em;border:1px solid var(--woo-line-strong);border-radius:var(--radius);color:var(--woo-text);line-height:1;text-align:center;text-decoration:none}';
 			$shop_s[] = $p . ' li span.current{background:var(--primary);border-color:var(--primary);color:var(--white, #fff)}';
+			if ( '' !== self::white_dark() && Scheme::switches( 'var(--primary)', Scheme::dark_context() ) ) {
+				$shop_s[] = ':where(' . $p . ' li span.current){' . self::white_dark() . '}'; // var(--white) on the primary, light in dark mode.
+			}
 			$shop_s[] = '@media (hover:hover) and (pointer:fine){' . $p . ' li a:hover{background:var(--woo-surface);color:var(--woo-text)}}';
 			$shop_s[] = $p . ' li a:focus-visible{outline:var(--focus-width, 2px) solid var(--focus-color);outline-offset:2px}';
 		}
@@ -843,7 +846,7 @@ class Woo {
 		}
 		if ( '' !== self::white_dark() && Scheme::switches( self::val( $s, 'accent' ), Scheme::dark_context() ) ) {
 			// The current page number: var(--white) on the accent, which turns light in dark mode.
-			$tail[] = ':where(.bricks-pagination li>.page-numbers.current){' . self::white_dark() . '}';
+			$tail[] = ':where(body:is(.woocommerce,.woocommerce-page) .bricks-pagination li>.page-numbers.current){' . self::white_dark() . '}';
 		}
 
 		$split = self::split();

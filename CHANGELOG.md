@@ -4,7 +4,7 @@ All the changes to TokenForge, newest first.
 
 ## 0.58.4
 
-- Dark mode: links and outline buttons in dark sections (`.bg--dark`, `.bg--ultra-dark`), which turn light in dark mode, now use the colour they have on a light surface instead of their dark-mode colour, so a light link no longer sits on a light section. Solid buttons keep their colours. A link colour you set for that section is left as it is.
+- Dark mode: links and outline buttons in dark sections (`.bg--dark`, `.bg--ultra-dark`), which turn light in dark mode, now use the colour they have on a light surface instead of their dark-mode colour, so a light link no longer sits on a light section. Solid buttons keep their colours. A link colour you set for that section is left as it is. With dark mode on, a link colour set on a wrapper around a dark section (a `link-*` class, say) no longer reaches the links inside it; set it on the links or on the section instead.
 - Dark mode: the shop's current page number keeps readable text when its background turns light in dark mode.
 - Contrast checker: measures those links the way the page now draws them.
 

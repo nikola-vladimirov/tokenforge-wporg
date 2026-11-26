@@ -281,8 +281,8 @@ class Contrast {
 			$add( ".bg--$c", __( 'Muted text', 'tokenforge' ), "var(--text-$tone-muted)", $bg, self::TEXT, array( 'scheme', "text_{$tone}_muted" ) );
 			if ( $links || '' !== $sch[ $k . 'link' ] ) {
 				$add( ".bg--$c", __( 'Links', 'tokenforge' ), '' !== $sch[ $k . 'link' ] ? $sch[ $k . 'link' ] : 'var(--link-color)', $bg, self::TEXT, array( 'scheme', $k . 'link' ) );
-				if ( '' === $sch[ $k . 'link' ] && 'light' === $tone ) {
-					$out[ count( $out ) - 1 ]['fg_light'] = true; // Scheme::light_side_links(): the light side of the colour in every mode.
+				if ( '' === $sch[ $k . 'link' ] && 'light' === $tone && ! empty( $sch['assignments'] ) && isset( Scheme::dark_context_links( Scheme::dark_context() )['link'] ) ) {
+					$out[ count( $out ) - 1 ]['fg_light'] = true; // Scheme::dark_context_links(): the light side of the colour in every mode.
 				}
 			}
 			if ( $focus || '' !== $sch[ $k . 'focus' ] ) {
@@ -540,12 +540,12 @@ class Contrast {
 			if ( ! isset( $vars[ $n ] ) || $v === $p['fg'] ) {
 				continue;
 			}
-			$m = self::measure( $v, $p['bg'], $vars, $modes, ! empty( $p['fg_light'] ) );
+			$m = self::measure( $v, $p['bg'], $vars, $modes ); // A fix is a colour set for that surface, drawn as it is.
 			if ( null === $m || ! self::passes( $m, $p['min'] ) ) {
 				continue;
 			}
 			foreach ( $same as $q ) {
-				$qm = self::measure( $v, $q['bg'], $vars, $modes, ! empty( $q['fg_light'] ) );
+				$qm = self::measure( $v, $q['bg'], $vars, $modes );
 				if ( null === $qm || ! self::passes( $qm, $q['min'] ) ) {
 					continue 2;
 				}
