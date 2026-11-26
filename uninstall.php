@@ -29,7 +29,7 @@ function tokenforge_uninstall_site() {
 	delete_option( 'tokenforge_settings' );
 	delete_option( 'tokenforge_css_meta' );
 	delete_option( 'tokenforge_acss_names' );
-	foreach ( array( 'framework', 'scales', 'components', 'scheme', 'extras', 'defaults', 'content', 'width', 'motion', 'overlays', 'enhancements', 'scss', 'scss_build', 'scss_sync', 'recipes', 'palette', 'fonts', 'woo', 'modules', 'theme_sync', 'style_manager_sync', 'setup_pending', 'version', 'token_usage', 'class_usage', 'attribute_usage', 'builder_settings_backup', 'setup_wizard', 'history', 'form_sends', 'form_presets', 'subs_db', 'subs_base', 'subs_ack', 'subs_last' ) as $tf_opt ) {
+	foreach ( array( 'framework', 'scales', 'components', 'scheme', 'extras', 'defaults', 'content', 'width', 'motion', 'overlays', 'enhancements', 'scss', 'scss_build', 'scss_sync', 'recipes', 'palette', 'fonts', 'woo', 'modules', 'theme_sync', 'style_manager_sync', 'setup_pending', 'version', 'token_usage', 'class_usage', 'fixed_bg', 'attribute_usage', 'builder_settings_backup', 'setup_wizard', 'history', 'form_sends', 'form_presets', 'subs_db', 'subs_base', 'subs_ack', 'subs_last' ) as $tf_opt ) {
 		delete_option( 'tokenforge_' . $tf_opt );
 	}
 	delete_transient( 'tokenforge_upgrading' ); // The upgrade lock (Plugin::maybe_upgrade), two minutes at most.

@@ -606,6 +606,10 @@ class Components {
 		$classes = array();
 		$sec     = self::SECTION;
 		$root    = array();
+		// Dark mode: a fixed page, device or card background gets a dark side when that makes the colours on it more readable (Scheme::page_bg()).
+		$dctx  = Scheme::dark_context();
+		$links = ! empty( $s['base_links'] );
+		$page  = array_merge( array( $s['text_color'], $s['heading_color'] ), $links ? array( $s['link_color'], $s['link_color_hover'] ) : array(), Woo::active() ? array( Woo::settings()['text_color'] ) : array() );
 
 		// ---- Layout ----
 		if ( ! empty( $s['base_layout'] ) ) {
@@ -658,7 +662,7 @@ class Components {
 			if ( 'boxed' === $s['layout_type'] && ! $for_editor ) {
 				$bw     = round( ( (float) $s['boxed_width'] ) / Defaults::root_px(), 4 );
 				$root[] = '--boxed-width:' . $bw . 'rem;--body-max-width:var(--boxed-width)';
-				$css[]  = 'html{background-color:var(--device-bg-color, ' . $s['device_bg'] . ')}';
+				$css[]  = 'html{background-color:var(--device-bg-color, ' . Scheme::page_bg( $s['device_bg'], $page, 'var(--bg-light)', $dctx ) . ')}';
 				$css[]  = 'body{inline-size:100%;max-inline-size:var(--body-max-width);margin-inline:auto!important;margin-block-start:' . ( '' !== $s['body_margin_top'] ? $s['body_margin_top'] : '0' ) . '!important;'
 					. self::decl( 'box-shadow', $s['body_shadow'] ) . self::decl( 'border-width', $s['body_border_width'] ) . self::decl( 'border-style', $s['body_border_style'] )
 					. self::decl( 'border-color', $s['body_border_color'] ) . self::decl( 'border-radius', $s['body_border_radius'] ) . '}';
@@ -710,7 +714,7 @@ class Components {
 				'--text-color'          => $s['text_color'],
 				'--text-line-height'    => $s['text_line_height'],
 				'--text-text-wrap'      => $s['text_wrap'],
-				'--body-bg-color'       => $s['body_bg'],
+				'--body-bg-color'       => Scheme::page_bg( $s['body_bg'], $page, 'var(--bg-ultra-light)', $dctx ),
 				'--heading-font-family' => $s['heading_font_family'],
 				'--heading-font-weight' => $s['heading_font_weight'],
 				'--heading-line-height' => $s['heading_line_height'],
@@ -1159,7 +1163,17 @@ class Components {
 		// ---- Cards ----
 		if ( ! empty( $s['base_cards'] ) ) {
 			$cv = array(
-				'--card-background'          => $s['card_background'],
+				'--card-background'          => Scheme::page_bg(
+					$s['card_background'],
+					array_merge(
+						array( '' !== (string) $s['card_text_color'] ? $s['card_text_color'] : $s['text_color'], $s['card_heading_color'] ),
+						$links ? array( '' !== (string) $s['card_link_color'] ? $s['card_link_color'] : 'var(--primary)', '' !== (string) $s['card_link_color_hover'] ? $s['card_link_color_hover'] : 'var(--primary-hover)' ) : array()
+					),
+					// Inherited text follows the surface the card sits on (a light .bg--dark in dark mode
+					// included), so the card shows that surface; text of its own needs the page's dark.
+					'' === (string) $s['card_text_color'] ? 'transparent' : 'var(--bg-ultra-light)',
+					$dctx
+				),
 				'--card-text-color'          => $s['card_text_color'],
 				'--card-text-size'           => $s['card_text_size'],
 				'--card-line-height'         => $s['card_line_height'],

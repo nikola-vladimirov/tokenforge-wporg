@@ -63,6 +63,7 @@ spl_autoload_register(
 			'TokenForge\\Token_Catalog'                   => 'includes/class-token-catalog.php',
 			'TokenForge\\Token_Usage'                     => 'includes/class-token-usage.php',
 			'TokenForge\\Class_Usage'                     => 'includes/class-class-usage.php',
+			'TokenForge\\Fixed_Bg'                        => 'includes/class-fixed-bg.php',
 			'TokenForge\\Attribute_Usage'                 => 'includes/class-attribute-usage.php',
 			'TokenForge\\Setup_Wizard'                    => 'includes/class-setup-wizard.php',
 			'TokenForge\\Starter'                         => 'includes/class-starter.php',

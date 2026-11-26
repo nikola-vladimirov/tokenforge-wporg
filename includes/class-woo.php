@@ -428,6 +428,26 @@ class Woo {
 
 
 	/**
+	 * Dark mode: --white for the parts that paint var(--white) text on a surface
+	 * made from the text colour (the New badge, the order summary count). That
+	 * surface turns light in dark mode; when --white stays fixed, their text
+	 * takes the dark text colour there. The light side is --white's own value.
+	 * '' with dark mode off, when --white switches already, or when the dark
+	 * text colour is not one plain colour.
+	 *
+	 * @return string A declaration.
+	 */
+	private static function white_dark() {
+		$ctx = Scheme::dark_context();
+		if ( ! $ctx || Scheme::switches( 'var(--white)', $ctx ) ) {
+			return '';
+		}
+		// The dark text colour's light side, written out: a text colour that switches on its own would be light here.
+		$c = Contrast::parse( Scheme::settings()['text_dark'], $ctx['vars'], false, 0, true );
+		return $c && $c[3] >= 1 ? '--white:light-dark(' . ( isset( $ctx['vars']['white'] ) ? $ctx['vars']['white'] : '#fff' ) . ', ' . sprintf( '#%02x%02x%02x', round( $c[0] * 255 ), round( $c[1] * 255 ), round( $c[2] * 255 ) ) . ')' : '';
+	}
+
+	/**
 	 * Selectors of the shop stylesheet's placeholders (assets/css/woo-shop.css).
 	 *
 	 * @return array placeholder => selector
@@ -653,6 +673,9 @@ class Woo {
 			}
 			$shop_s[] = implode( ',', $badge ) . '{background:var(--woo-badge-background);color:var(--woo-badge-color);border:0;border-radius:var(--woo-badge-radius);min-width:0;min-height:0;'
 				. 'padding:.35em .75em;font-size:max(var(--text-xs, .75rem), .75rem);font-weight:600;line-height:1.2;letter-spacing:.04em;text-transform:uppercase}';
+			if ( '' !== self::white_dark() && Scheme::switches( $s['new_badge_background'], Scheme::dark_context() ) ) {
+				$shop_s[] = ':where(' . strtr( '{CARD} .badge:not(.onsale)', self::placeholders() ) . '){' . self::white_dark() . '}'; // The New badge; Sale has its own colours.
+			}
 		}
 
 		// ---- Ratings ----
@@ -813,6 +836,10 @@ class Woo {
 			// The count on an order summary picture: a dark pill with light text, like the builder's cart.
 			$tail[] = 'html .wc-block-components-order-summary .wc-block-components-order-summary-item__quantity{background-color:var(--woo-text);border-color:var(--woo-text);box-shadow:0 0 0 2px var(--woo-surface);color:var(--white, #fff);font-weight:700}';
 			$tail[] = 'html .wc-block-components-order-summary .wc-block-components-order-summary-item__quantity span{color:var(--white, #fff)}';
+		}
+		if ( '' !== self::white_dark() && Scheme::switches( $s['text_color'], Scheme::dark_context() ) ) {
+			// The cart counts painted var(--white) on the text colour: the builder's cart, the order summary.
+			$tail[] = ':where(' . strtr( '{LINES} {ROW} > :first-child > .brxe-text-basic', self::placeholders() ) . ( $blocks ? ',.wc-block-components-order-summary .wc-block-components-order-summary-item__quantity' : '' ) . '){' . self::white_dark() . '}';
 		}
 
 		$split = self::split();

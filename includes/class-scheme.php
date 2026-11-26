@@ -93,6 +93,18 @@ class Scheme {
 	 */
 	const VALUE_KEYS = array( 'bg_ultra_light', 'bg_light', 'bg_dark', 'bg_ultra_dark', 'text_dark', 'text_dark_muted', 'text_light', 'text_light_muted', 'force_dark', 'force_light' );
 
+	/** Each context variable and the one it turns into in dark mode. */
+	const PAIRS = array(
+		'bg-ultra-light'   => 'bg-ultra-dark',
+		'bg-light'         => 'bg-dark',
+		'bg-dark'          => 'bg-light',
+		'bg-ultra-dark'    => 'bg-ultra-light',
+		'text-dark'        => 'text-light',
+		'text-dark-muted'  => 'text-light-muted',
+		'text-light'       => 'text-dark',
+		'text-light-muted' => 'text-dark-muted',
+	);
+
 	/** Background contexts (.bg--*) → the default readable text. */
 	const CONTEXTS = array( 'ultra-light', 'light', 'dark', 'ultra-dark' );
 
@@ -183,12 +195,10 @@ class Scheme {
 		$css     = array();
 		$classes = array();
 
-		// Helper: a value that flips between light + dark when dark mode is on -
-		// unless the palette already flips itself (light-dark() colour tokens, e.g.
-		// imported from ACSS): wrapping again would flip twice and cancel out.
-		$flip = $dark && ! self::palette_flips();
-		$ld   = function ( $light, $darkval ) use ( $flip ) {
-			return $flip ? "light-dark($light, $darkval)" : $light;
+		// Helper: a value that flips between light + dark when dark mode is on (wrap()).
+		$ctx = self::dark_context();
+		$ld  = function ( $light, $darkval ) use ( $ctx ) {
+			return self::wrap( $light, $darkval, $ctx );
 		};
 
 		// Forced schemes for specific selectors.
@@ -221,6 +231,27 @@ class Scheme {
 				$css[]     = ':root[data-scheme="dark"] .scheme-toggle .tf-sun{display:block}:root[data-scheme="dark"] .scheme-toggle .tf-moon{display:none}';
 				$css[]     = '@media (prefers-color-scheme:dark){:root:not([data-scheme="light"]) .scheme-toggle .tf-sun{display:block}:root:not([data-scheme="light"]) .scheme-toggle .tf-moon{display:none}}';
 				$classes[] = 'scheme-toggle';
+			}
+
+			// Builder backgrounds that stay the same (a header set to var(--white)): the element keeps its
+			// light colours. Text it inherits was already switched by its parent, so while the page is dark
+			// it is read again there. No specificity: the builder's own text colour wins.
+			$pins = Fixed_Bg::selectors( $ctx );
+			if ( $pins ) {
+				$is    = ':is(' . implode( ',', $pins ) . ')';
+				$text  = '{color:var(--text-color, CanvasText)}';
+				$css[] = ':where(' . implode( ',', $pins ) . '){color-scheme:light}';
+				if ( ! empty( $s['switcher'] ) ) {
+					$css[] = ':where(:root[data-scheme="dark"] ' . $is . ')' . $text;
+				}
+				if ( 'dark' === $s['default_scheme'] ) {
+					$css[] = ':where(:root:not([data-scheme="light"]) ' . $is . ')' . $text;
+				} elseif ( 'auto' === $s['default_scheme'] ) {
+					$css[] = '@media (prefers-color-scheme:dark){:where(:root:not([data-scheme="light"]) ' . $is . ')' . $text . '}';
+				}
+				// Inside a part that is always dark (.scheme--dark, the Always dark selectors), on any page.
+				$always = array_filter( array_map( 'trim', preg_split( '/[\r\n]+|,(?![^(]*\))/', str_replace( '"', '', (string) $s['force_dark'] ) ) ) );
+				$css[]  = ':where(:is(' . implode( ',', array_merge( array( '.scheme--dark' ), $always ) ) . ') ' . $is . ')' . $text;
 			}
 		}
 
@@ -284,13 +315,183 @@ class Scheme {
 	}
 
 	/**
-	 * Do the colour tokens switch with the scheme on their own (light-dark())?
+	 * What the dark mode checks read: the switched-on tokens (name => value) and
+	 * whether any colour token switches on its own (light-dark()). Null with dark
+	 * mode off. Read once per build and passed on.
 	 *
+	 * @return array|null { vars: array, flips: bool }
+	 */
+	public static function dark_context() {
+		static $memo = array( '', null );
+		if ( 'auto' !== self::settings()['dark_mode'] ) {
+			return null;
+		}
+		// Read once per request while the tokens stay the same (the editor, REST and the builder sync build live).
+		$key = md5( (string) wp_json_encode( array( get_option( Settings::OPTION_TOKENS ), get_option( Palette::OPTION ) ) ) );
+		if ( $key === $memo[0] ) {
+			return $memo[1];
+		}
+		$ctx = array(
+			'vars'  => array(),
+			'flips' => false,
+		);
+		foreach ( Settings::get_instance()->all_variables() as $t ) {
+			if ( ! empty( $t['enabled'] ) ) {
+				$ctx['vars'][ $t['name'] ] = (string) $t['value'];
+				$ctx['flips']              = $ctx['flips'] || ( 'color' === $t['group'] && false !== strpos( $t['value'], 'light-dark(' ) );
+			}
+		}
+		$memo = array( $key, $ctx );
+		return $ctx;
+	}
+
+	/**
+	 * Is a background one solid colour that stays the same in dark mode (a
+	 * builder's header set to var(--white))? Its text has to stay light-side.
+	 * See-through colours (transparent, alpha, a mix with transparent) and
+	 * variables the tokens do not hold are not: what is behind them shows.
+	 *
+	 * @param string $v   CSS value (!important allowed).
+	 * @param array  $ctx dark_context().
 	 * @return bool
 	 */
-	public static function palette_flips() {
-		foreach ( Settings::get_instance()->all_variables() as $t ) {
-			if ( ! empty( $t['enabled'] ) && 'color' === $t['group'] && false !== strpos( $t['value'], 'light-dark(' ) ) {
+	public static function fixed_fill( $v, $ctx ) {
+		$v = trim( (string) preg_replace( '/!\s*important\s*$/i', '', (string) $v ) );
+		if ( ! $ctx || '' === $v || ! self::is_color( $v, $ctx, false ) || self::switches( $v, $ctx ) ) {
+			return false;
+		}
+		// A colour the contrast engine can read (var() chains followed), with nothing behind it showing.
+		$c = Contrast::parse( $v, $ctx['vars'], false, 0, true );
+		return $c && $c[3] >= 1;
+	}
+
+	/**
+	 * A scheme colour for dark mode: light-dark( value, its pair ), unless it
+	 * switches on its own (its var() chain reaches a light-dark() colour
+	 * token): wrapping again would flip twice and cancel out. Decided per value,
+	 * so a fixed text colour still flips beside a switching palette. Only two
+	 * plain colours are wrapped: light-dark() takes nothing else.
+	 *
+	 * @param string     $light   Light side (the setting).
+	 * @param string     $darkval Dark side (its paired setting).
+	 * @param array|null $ctx     dark_context().
+	 * @return string
+	 */
+	private static function wrap( $light, $darkval, $ctx ) {
+		return $ctx && ! self::switches( $light, $ctx ) && self::is_color( $light, $ctx, true ) && self::is_color( $darkval, $ctx, true ) ? "light-dark($light, $darkval)" : $light;
+	}
+
+	/**
+	 * A page background (body, a boxed page's device, cards) for dark mode: a
+	 * fixed plain colour gets a dark side when that makes the least readable
+	 * colour on it (its text, headings, links) more readable in dark mode,
+	 * measured as build() writes the colours. Light mode is the setting as it
+	 * is. One that already switches is left alone; when a colour cannot be
+	 * measured, it flips only if every colour on it switches.
+	 *
+	 * @param string     $v       Background ('' = not set).
+	 * @param string[]   $on      The colours drawn on it, text first ('' = not set: the
+	 *                            browser's text, which switches; an unset heading or link follows the text).
+	 * @param string     $darkval Its dark side (transparent: the page surface shows).
+	 * @param array|null $ctx     dark_context().
+	 * @return string
+	 */
+	public static function page_bg( $v, $on, $darkval, $ctx ) {
+		if ( ! $ctx || '' === (string) $v || self::switches( $v, $ctx ) || ! self::is_color( $v, $ctx, false ) ) {
+			return $v;
+		}
+		$s    = self::settings();
+		$vars = $ctx['vars'];
+		foreach ( self::PAIRS as $n => $opp ) {
+			$vars[ $n ] = self::wrap( $s[ str_replace( '-', '_', $n ) ], $s[ str_replace( '-', '_', $opp ) ], $ctx );
+		}
+		$vars += array(
+			'bg'   => 'var(--bg-ultra-light)',
+			'text' => 'var(--text-dark)',
+		);
+		$bg    = array( Contrast::parse( $v, $vars, true, 0, true ), Contrast::parse( 'transparent' === $darkval ? 'var(--bg-ultra-light)' : $darkval, $vars, true, 0, true ) );
+		$low   = $bg[0] && $bg[1] ? array( 21, 21 ) : null;
+		foreach ( null === $low ? array() : array_values( $on ) as $i => $c ) {
+			$c = '' === (string) $c ? ( 0 === $i ? 'light-dark(#000, #fff)' : '' ) : $c;
+			if ( '' === $c ) {
+				continue;
+			}
+			$fg = Contrast::parse( $c, $vars, true, 0, true );
+			if ( ! $fg ) {
+				$low = null;
+				break;
+			}
+			$low = array( min( $low[0], Contrast::ratio( $fg, $bg[0] ) ), min( $low[1], Contrast::ratio( $fg, $bg[1] ) ) );
+		}
+		if ( null === $low || $low[0] === $low[1] ) {
+			// Not measurable, or nothing to tell them apart: flip when every colour on it switches.
+			foreach ( $on as $c ) {
+				if ( '' !== (string) $c && ! self::switches( $c, $ctx ) ) {
+					return $v;
+				}
+			}
+			return "light-dark($v, $darkval)";
+		}
+		return $low[1] > $low[0] ? "light-dark($v, $darkval)" : $v;
+	}
+
+	/**
+	 * Is a value one plain colour (all light-dark() takes)? var() is followed
+	 * through the tokens; one they do not hold gives its fallback, else $unknown.
+	 * Gradients, images, keywords such as inherit, and !important are not.
+	 *
+	 * @param string $v       CSS value.
+	 * @param array  $ctx     dark_context().
+	 * @param bool   $unknown Answer for a variable the tokens do not hold.
+	 * @param int    $depth   Recursion guard.
+	 * @return bool
+	 */
+	private static function is_color( $v, $ctx, $unknown, $depth = 0 ) {
+		$v = trim( (string) $v );
+		if ( $depth > 12 || false !== strpos( $v, '!' ) ) {
+			return false;
+		}
+		if ( preg_match( '/^var\(\s*--([a-z0-9-]+)\s*(?:,(.*))?\)$/is', $v, $m ) ) {
+			$n = strtolower( $m[1] );
+			if ( isset( $ctx['vars'][ $n ] ) ) {
+				return self::is_color( $ctx['vars'][ $n ], $ctx, $unknown, $depth + 1 );
+			}
+			return isset( $m[2] ) ? self::is_color( $m[2], $ctx, $unknown, $depth + 1 ) : $unknown;
+		}
+		// A hex colour, one colour function (balanced brackets, nothing after it) or a colour name.
+		return (bool) preg_match( '/^(?:#[0-9a-f]{3,8}|(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix|light-dark)(\((?:[^()]++|(?1))*\))|(?!(?:none|auto|inherit|initial|unset|revert|transparent|currentcolor)$)[a-z]+)$/i', $v );
+	}
+
+	/**
+	 * Does a value switch with the scheme on its own: a light-dark() in it or in a
+	 * token it reads through var()? The context variables count as switching:
+	 * with dark mode on build() makes every one of them switch. A variable the
+	 * tokens do not hold (a builder global, an SCSS override) switches when the
+	 * palette does, as the old palette-wide rule had it.
+	 *
+	 * Shortcut: a var() fallback is read even when its variable is set, so a set
+	 * fixed variable with a light-dark() fallback counts as switching (left as
+	 * before); parse fallbacks if a site ever needs that.
+	 *
+	 * @param string $v    CSS value.
+	 * @param array  $ctx  dark_context().
+	 * @param array  $seen Names already followed (each is read once, loops end).
+	 * @return bool
+	 */
+	public static function switches( $v, $ctx, &$seen = array() ) {
+		if ( false !== stripos( $v, 'light-dark(' ) ) {
+			return true;
+		}
+		if ( ! preg_match_all( '/var\(\s*--([a-z0-9-]+)/i', $v, $m ) ) {
+			return false;
+		}
+		foreach ( $m[1] as $n ) {
+			$n = strtolower( $n );
+			if ( isset( $seen[ $n ] ) ) {
+				continue;
+			}
+			$seen[ $n ] = true;
+			if ( preg_match( '/^(?:bg|text|bg-(?:ultra-)?(?:light|dark)|text-(?:light|dark)(?:-muted)?)$/', $n ) || ( isset( $ctx['vars'][ $n ] ) ? self::switches( $ctx['vars'][ $n ], $ctx, $seen ) : $ctx['flips'] ) ) {
 				return true;
 			}
 		}

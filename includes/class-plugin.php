@@ -64,6 +64,7 @@ class Plugin {
 		new Features\A11y_Auto(); // missing accessibility attributes on the front end (every switch off by default).
 		new Features\Attr_Front(); // data-tf-copy, -tooltip and -filter: the small script and the filter rules, only on pages that use them.
 		Class_Usage::init(); // new utility classes in saved content join the stylesheet (when unused ones are left out).
+		Fixed_Bg::init(); // builder backgrounds that stay the same in dark mode keep their light colours.
 		new Features\Builder_Panel(); // the TokenForge window: Bricks builder + front end (admins).
 		new Features\A11y(); // axe-core test engine: the builder loads it on demand, never a visitor page.
 		new Features\Check(); // page check engine in the builder + its read-only /check lookups.

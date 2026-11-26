@@ -2,6 +2,14 @@
 
 All the changes to TokenForge, newest first.
 
+## Unreleased
+
+- Dark mode: a text colour set to a fixed colour (such as black from an imported setup) now switches to its light pair in dark mode, also when the colour palette switches on its own, so text in sections that turn dark stays readable.
+- Dark mode: a fixed page, card or boxed-page background now turns dark with the page when that makes the text, headings and links on it more readable. In light mode it stays exactly as set.
+- Dark mode: elements whose background you set in the builder to a colour that does not change (a header with a white background, say) keep their light colours in dark mode, so their text never turns light on light. TokenForge finds them in the builder's classes, elements and custom CSS, and follows your saves.
+- Dark mode: the shop's New badge and the cart item counts (the builder's cart and the order summary) keep readable text when their background turns light in dark mode.
+- With dark mode off nothing changes: the stylesheet is the same as before.
+
 ## 0.58.2
 
 - New: TokenForge, Manual. An English user manual in the admin, with a contents list, from setup to the developer hooks.
