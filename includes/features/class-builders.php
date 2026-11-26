@@ -117,6 +117,11 @@ class Builders {
 				wp_add_inline_style( 'tokenforge-ctx', '#tf-ctx,#tf-ac{z-index:10000000}' );
 			}
 		}
+		// The canvas light/dark preview button, only while dark mode is on (a preview: nothing is saved).
+		if ( 'auto' === \TokenForge\Scheme::settings()['dark_mode'] && ! empty( \TokenForge\Settings::get_instance()->get_settings()['scheme_preview'] ) ) {
+			wp_enqueue_script( 'tokenforge-scheme-preview', TOKENFORGE_URL . 'assets/builder/scheme-preview.js', array( 'wp-i18n' ), TOKENFORGE_VERSION, true );
+			wp_set_script_translations( 'tokenforge-scheme-preview', 'tokenforge' );
+		}
 		/**
 		 * Fires in the editor page of every supported page builder, for users who can edit posts,
 		 * after TokenForge's own assets (the window, tokenforge-panel, for administrators; the tools, tokenforge-builder, outside Bricks).

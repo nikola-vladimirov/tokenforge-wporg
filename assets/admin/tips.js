@@ -413,6 +413,9 @@
 		'motion.underline_color': __( 'Colour of .on-hover--underline-left, --underline-center and --underline-right.', 'tokenforge' ),
 		'motion.underline_width': __( 'Thickness of the animated underline.', 'tokenforge' ),
 		'motion.underline_duration': __( 'Length of the underline animation.', 'tokenforge' ),
+		'motion.btn_hover_fx': __( 'A hover effect every TokenForge button gets, as if it had that .on-hover-- class. Needs Hover switched on.', 'tokenforge' ),
+		'motion.btn_enter_fx': __( 'An entrance effect every TokenForge button plays as it scrolls into view, in browsers with scroll-driven animations. Needs Entrance switched on.', 'tokenforge' ),
+		'motion.btn_border_fx': __( 'A hover border effect every TokenForge button gets. Needs Hover borders switched on.', 'tokenforge' ),
 		'motion.disable_in_builder': __( 'Keeps scroll and visible effects still while you edit in the builder canvas or the block editor, so content is not hidden.', 'tokenforge' ),
 
 		'fonts.enabled': __( 'Adds an @font-face rule for every font below to the stylesheet, so the fonts load from this site. Off: the rules are left out (the settings stay).', 'tokenforge' ),
@@ -474,6 +477,8 @@
 
 		// ---- Settings ----
 		'settings.sync_bricks_vars': __( 'Copies every token into the builder’s global variables, so they appear in its variable picker. The text, heading and space sizes also show as typography and spacing scales in its style manager, with the HTML font size, screen widths and default mode in its settings. A scale or setting you change there comes back into TokenForge.', 'tokenforge' ),
+		'settings.scheme_preview': __( 'Shows a small moon button beside the TokenForge button in the builder. It switches only the canvas between light and dark, for you. Nothing is saved into the page.', 'tokenforge' ),
+		'framework.utilities_color_aliases': __( 'Also writes the colour classes with a double dash (bg--primary, link-hover--primary), the names another utility framework uses, so pages moved from it keep their colours. Adds about 10 KB unless unused classes are left out.', 'tokenforge' ),
 		'settings.vars_trans': __( 'Sends the transparent steps of every colour (primary-trans-10 … 90, white-trans-50 …) to the builder\x27s variable list. About 400 variables.', 'tokenforge' ),
 		'settings.vars_channels': __( 'Sends the parts colours are built from (primary-hex, primary-rgb, primary-h, primary-s …) to the builder\x27s variable list. You rarely pick these by hand. About 400 variables.', 'tokenforge' ),
 		'settings.vars_alt': __( 'Sends the dark mode value of every colour (primary-alt …) to the builder\x27s variable list. The normal colours already switch in dark mode.', 'tokenforge' ),

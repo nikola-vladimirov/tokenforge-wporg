@@ -13,3 +13,5 @@ slash between literal numbers (`aspect-ratio: 16/9`, `grid-column: 1 / -1`,
 divided. Division still happens in parentheses or with variables/functions.
 
 Removed: `src/Exception/ServerException.php` (deprecated upstream, unused here; it was the only file that ran code when opened on its own).
+
+`composer.json` is the upstream file of scssphp 1.12.1, unchanged (it still names the original namespace; TokenForge loads the library with its own autoloader, not Composer).

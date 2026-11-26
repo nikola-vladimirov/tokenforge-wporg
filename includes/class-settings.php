@@ -101,6 +101,7 @@ class Settings {
 			'frontend_panel'      => true,  // the window on the site's pages too (administrators only; never in the builder).
 			'frontend_launcher'   => false, // a floating TokenForge button on the front end.
 			'canvas_panel'        => true,  // a TokenForge button in the builder canvas while editing (opens the window).
+			'scheme_preview'      => true,  // a light/dark preview button for the builder canvas (shown only while dark mode is on).
 			'ai_abilities'        => true,  // tokenforge/* abilities (MCP tools) for AI agents.
 			'ai_guidance'         => true,  // tell agents to use TokenForge (MCP instructions, Bricks orientation + design context).
 		) + Features\A11y_Auto::defaults(); // automatic accessibility attributes, all off.
@@ -153,6 +154,7 @@ class Settings {
 			'frontend_panel'     => ! empty( $settings['frontend_panel'] ),
 			'frontend_launcher'  => ! empty( $settings['frontend_launcher'] ),
 			'canvas_panel'       => ! empty( $settings['canvas_panel'] ),
+			'scheme_preview'     => ! empty( $settings['scheme_preview'] ),
 			'ai_abilities'       => ! empty( $settings['ai_abilities'] ),
 			'ai_guidance'        => ! empty( $settings['ai_guidance'] ),
 		) + Features\A11y_Auto::clean( $settings );

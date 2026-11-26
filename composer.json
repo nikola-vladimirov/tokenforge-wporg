@@ -1,0 +1,14 @@
+{
+    "name": "pristadigital/tokenforge",
+    "description": "Design tokens, fluid scales, utility classes and accessibility checks for WordPress.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": ">=7.4"
+    },
+    "extra": {
+        "bundled": {
+            "vendor/scssphp": "scssphp/scssphp 1.12.1 (MIT), namespace renamed (see NOTICE), see vendor/scssphp/NOTICE.md and vendor/scssphp/composer.json"
+        }
+    }
+}

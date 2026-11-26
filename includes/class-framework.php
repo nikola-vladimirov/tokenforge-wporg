@@ -29,6 +29,70 @@ class Framework {
 	const CHANNEL_SUFFIXES = array( '-hex', '-hsl', '-rgb', '-h', '-s', '-l', '-r', '-g', '-b' );
 
 	/**
+	 * Other spellings of utility classes, kept by sites that move from another framework:
+	 * a TokenForge class pattern => the other name. "{bp-}" or "{-bp}" marks where that
+	 * framework puts a breakpoint ("m-" before the value, "-m" after); a pattern without
+	 * one gets no alias on the -at-{bp} variants. Only classes whose CSS gives the same
+	 * result as the other framework's own rule (its 3.3 output; tf-class-aliases.php).
+	 * Left out because the CSS differs: grid--1 and ratio grids, col-span--all, span
+	 * breakpoints, height, masonry, column counts, centring, flip, aspect, flex--col/row,
+	 * flex--grow, text decorations and wrapping, text-, link- and focus- colours.
+	 */
+	const ALIASES = array(
+		'/^grid-([2-9]|1[0-2])$/'                          => 'grid--{bp-}$1',
+		'/^grid-stack$/'                                   => 'grid--{bp-}1',
+		'/^flex-grid-([1-6])$/'                            => 'flex-grid--{bp-}$1',
+		'/^(col-start|row-start|row-end)-([1-9]|1[0-2])$/' => '$1--{bp-}$2',
+		'/^col-end-([1-9]|1[0-2]|last)$/'                  => 'col-end--{bp-}$1',
+		'/^(col-span|row-span)-([1-9]|1[0-2])$/'           => '$1--$2',
+		'/^justify-(start|end|center|between|around)$/'    => 'justify-content--$1{-bp}',
+		'/^items-(start|end|center|baseline|stretch)$/'    => 'align-items--$1{-bp}',
+		'/^content-(center|stretch)$/'                     => 'align-content--$1{-bp}',
+		'/^self-(center|stretch)$/'                        => 'self--$1{-bp}',
+		'/^justify-items-(start|end|center|stretch)$/'     => 'justify-items--$1{-bp}',
+		'/^order-(first|last)$/'                           => 'order--$1{-bp}',
+		'/^hidden$/'                                       => 'display--{bp-}none',
+		'/^block$/'                                        => 'display--{bp-}block',
+		'/^(inline-block|inline-flex)$/'                   => 'display--$1',
+		'/^display-(contents|inline|list-item)$/'          => 'display--$1',
+		'/^flex-wrap$/'                                    => 'flex--wrap',
+		'/^text-(center|left|right|justify)$/'             => 'text--$1',
+		'/^font-([1-9]00)$/'                               => 'text--$1',
+		'/^(bold|italic|uppercase|lowercase|capitalize)$/' => 'text--$1',
+		'/^normal-case$/'                                  => 'text--transform-none',
+		'/^(z|opacity)-(\d+|top|bottom)$/'                 => '$1--$2',
+		'/^fade-(top|bottom|left|right|block|inline)$/'    => 'fade--$1',
+		'/^line-clamp-([1-5])$/'                           => 'line-clamp--$1',
+		'/^isolate$/'                                      => 'isolation--isolate',
+		'/^invisible$/'                                    => 'visibility--hidden',
+		'/^visible$/'                                      => 'visibility--visible',
+	);
+
+	/**
+	 * Colour aliases, one per colour token and shade: only with "utilities_color_aliases"
+	 * (about 10 KB unpruned for the default palette, the rest of ALIASES about 2.5 KB).
+	 */
+	const ALIAS_COLORS = array(
+		'/^(bg|link-hover|marker|col-rule)-([a-z][a-z0-9-]*)$/' => '$1--$2',
+	);
+
+	/**
+	 * The other framework's default breakpoints (px, at and below) that had class variants.
+	 * A TokenForge breakpoint within 2px of one gets its aliases (defaults: xs, s, m, l).
+	 */
+	const ALIAS_BREAKPOINTS = array(
+		's'  => 480,
+		'm'  => 768,
+		'l'  => 992,
+		'xl' => 1280,
+	);
+
+	/**
+	 * Class names other modules make that an alias could spell (a colour token named "dark").
+	 */
+	const ALIAS_RESERVED = array( 'bg--light', 'bg--dark', 'bg--ultra-light', 'bg--ultra-dark' );
+
+	/**
 	 * Default framework toggles.
 	 *
 	 * @return array
@@ -44,15 +108,16 @@ class Framework {
 	 */
 	public static function builtin_defaults() {
 		return array(
-			'utilities_color'      => true,
-			'utilities_spacing'    => true,
-			'utilities_typography' => true,
-			'utilities_layout'     => true,
-			'utilities_color_more' => false, // link-, link-hover-, focus-, marker- and col-rule- per colour (about 30 KB unpruned).
-			'utilities_responsive' => false, // breakpoint variants {class}-at-{bp}; off: they add a lot of CSS when unused classes are kept.
-			'register_with_bricks' => true,
-			'prune_unused'         => false, // leave out utility classes the site does not use (after a scan).
-			'prune_keep'           => '',    // class names (or prefixes ending in *) always kept.
+			'utilities_color'         => true,
+			'utilities_spacing'       => true,
+			'utilities_typography'    => true,
+			'utilities_layout'        => true,
+			'utilities_color_more'    => false, // link-, link-hover-, focus-, marker- and col-rule- per colour (about 30 KB unpruned).
+			'utilities_responsive'    => false, // breakpoint variants {class}-at-{bp}; off: they add a lot of CSS when unused classes are kept.
+			'utilities_color_aliases' => false, // bg--{colour} names (ALIAS_COLORS) for sites moving from another framework.
+			'register_with_bricks'    => true,
+			'prune_unused'            => false, // leave out utility classes the site does not use (after a scan).
+			'prune_keep'              => '',    // class names (or prefixes ending in *) always kept.
 		);
 	}
 
@@ -177,6 +242,9 @@ class Framework {
 	 * Build the utility CSS and collect class names. With "Leave out unused
 	 * utility classes" on, the CSS has only the classes the site uses; the
 	 * names list is always complete (the builder's class list shows them all).
+	 * The other spellings (ALIASES) ride on the rule of their TokenForge class
+	 * and are listed only with $full: the class scan reads that list, while the
+	 * builder's class list and the Bricks sync should not offer them.
 	 *
 	 * @param bool $full Every class, whatever the site uses (builder canvas, block editor).
 	 * @return array [ 'css' => string, 'classes' => string[] ]
@@ -187,12 +255,9 @@ class Framework {
 		$css     = array();
 		$classes = array();
 		$keep    = $full ? null : Class_Usage::keep_set();
-		$emit    = function ( $selector, $body ) use ( &$css, &$classes, $keep ) {
-			$name      = ltrim( $selector, '.' );
-			$classes[] = $name;
-			if ( null === $keep || Class_Usage::kept( $name, $keep ) ) {
-				$css[] = $selector . '{' . $body . '}';
-			}
+		$emit    = function ( $selector, $body ) use ( &$css, &$classes ) {
+			$classes[] = ltrim( $selector, '.' );
+			$css[]     = $selector . '{' . $body . '}';
 		};
 
 		$vars = array();
@@ -306,7 +371,7 @@ class Framework {
 		if ( $s['utilities_layout'] ) {
 			$grid = Scale_Engine::grid_css();
 			if ( $grid['css'] ) {
-				$css[]   = null === $keep ? $grid['css'] : self::kept_rules( $grid['css'], $keep );
+				$css[]   = $grid['css'];
 				$classes = array_merge( $classes, $grid['classes'] );
 			}
 		}
@@ -318,16 +383,92 @@ class Framework {
 			}
 			$u = call_user_func( array( $family, 'build' ), $s );
 			if ( $u['css'] ) {
-				$css[]   = null === $keep ? $u['css'] : self::kept_rules( $u['css'], $keep );
+				$css[]   = $u['css'];
 				$classes = array_merge( $classes, $u['classes'] );
 			}
 		}
 
-		$header = "\n/* --- TokenForge utility framework --- */\n";
+		// Aliases first, then the unused rules out: a rule stays when its alias alone is used.
+		$aliases = self::aliases( $classes );
+		$text    = self::add_aliases( implode( "\n", $css ), $aliases );
+		$header  = "\n/* --- TokenForge utility framework --- */\n";
 		return array(
-			'css'     => $header . implode( "\n", $css ) . "\n",
-			'classes' => array_values( array_unique( $classes ) ),
+			'css'     => $header . ( null === $keep ? $text : self::kept_rules( $text, $keep ) ) . "\n",
+			'classes' => array_values( array_unique( $full ? array_merge( $classes, array_values( $aliases ) ) : $classes ) ),
 		);
+	}
+
+	/**
+	 * The other spelling of each class that has one (ALIASES), never a name TokenForge makes.
+	 *
+	 * @param string[] $classes Class names the framework makes.
+	 * @return array TokenForge name => alias.
+	 */
+	private static function aliases( $classes ) {
+		$bps = array(); // TokenForge breakpoint => the other framework's one at the same width.
+		foreach ( Scss::breakpoints() as $bp => $px ) {
+			foreach ( self::ALIAS_BREAKPOINTS as $theirs => $at ) {
+				if ( abs( $px - $at ) <= 2 ) {
+					$bps[ $bp ] = $theirs;
+				}
+			}
+		}
+		$table = self::ALIASES + ( empty( self::settings()['utilities_color_aliases'] ) ? array() : self::ALIAS_COLORS );
+		$taken = array_fill_keys( array_merge( $classes, self::ALIAS_RESERVED ), true );
+		$out   = array();
+		foreach ( $classes as $name ) {
+			$base = $name;
+			$bp   = '';
+			if ( preg_match( '/^(.+)-at-([a-z]+)$/', $name, $m ) ) {
+				if ( ! isset( $bps[ $m[2] ] ) ) {
+					continue;
+				}
+				$base = $m[1];
+				$bp   = $bps[ $m[2] ];
+			}
+			foreach ( $table as $re => $to ) {
+				if ( ! preg_match( $re, $base ) ) {
+					continue;
+				}
+				if ( '' === $bp || false !== strpos( $to, '{' ) ) {
+					$alias = str_replace( array( '{bp-}', '{-bp}' ), '' === $bp ? '' : array( "$bp-", "-$bp" ), preg_replace( $re, $to, $base ) );
+					if ( ! isset( $taken[ $alias ] ) ) {
+						$out[ $name ]    = $alias;
+						$taken[ $alias ] = true;
+					}
+				}
+				break;
+			}
+		}
+		return $out;
+	}
+
+	/**
+	 * Add each alias to the rules of its class, in the same line: every selector that starts
+	 * with the class gets a copy that starts with the alias (same specificity and order).
+	 *
+	 * @param string $text    One-rule-per-line CSS.
+	 * @param array  $aliases aliases().
+	 * @return string
+	 */
+	private static function add_aliases( $text, $aliases ) {
+		if ( ! $aliases ) {
+			return $text;
+		}
+		$out = array();
+		foreach ( explode( "\n", $text ) as $line ) {
+			if ( preg_match( '/^(@media[^{]*\{)?([^{@]+)(\{.*)$/', $line, $m ) ) {
+				$sels = preg_split( '/,(?![^()]*\))/', $m[2] ); // not the commas inside :where(a,b).
+				foreach ( $sels as $sel ) {
+					if ( preg_match( '/^\.([A-Za-z0-9_-]+)(.*)$/', $sel, $c ) && isset( $aliases[ $c[1] ] ) ) {
+						$sels[] = '.' . $aliases[ $c[1] ] . $c[2];
+					}
+				}
+				$line = $m[1] . implode( ',', $sels ) . $m[3];
+			}
+			$out[] = $line;
+		}
+		return implode( "\n", $out );
 	}
 
 	/**

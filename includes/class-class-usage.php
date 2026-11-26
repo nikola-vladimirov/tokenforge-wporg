@@ -46,6 +46,13 @@ class Class_Usage {
 	private static $queue = array();
 
 	/**
+	 * A settings save asked for recheck() at shutdown.
+	 *
+	 * @var bool
+	 */
+	private static $recheck = false;
+
+	/**
 	 * Hooks: new classes in saved content are added to the list.
 	 *
 	 * @return void
@@ -54,6 +61,13 @@ class Class_Usage {
 		add_action( 'added_post_meta', array( __CLASS__, 'on_meta' ), 10, 4 );
 		add_action( 'updated_post_meta', array( __CLASS__, 'on_meta' ), 10, 4 );
 		add_action( 'save_post', array( __CLASS__, 'on_post' ), 10, 2 );
+		// Settings that change which utility classes exist: classes already on the site but not made
+		// at the last scan (breakpoint variants switched on, say) were never counted, so check again.
+		// Breakpoints name the aliases; tokens and colour families add classes.
+		foreach ( array( Framework::OPTION, Scale_Engine::OPTION, Modules::OPTION, Scss::OPTION, Settings::OPTION_TOKENS, Palette::OPTION ) as $option ) {
+			add_action( 'update_option_' . $option, array( __CLASS__, 'on_settings' ) );
+			add_action( 'add_option_' . $option, array( __CLASS__, 'on_settings' ) );
+		}
 		foreach ( self::OPTIONS as $option ) {
 			add_action( 'update_option_' . $option, array( __CLASS__, 'on_option' ), 10, 2 );
 			add_action( 'add_option_' . $option, array( __CLASS__, 'on_option' ), 10, 2 );
@@ -244,6 +258,7 @@ class Class_Usage {
 			'capped'  => $capped,
 			'classes' => $classes,
 			'total'   => count( $names ),
+			'names'   => self::signature( $names ),
 		);
 		update_option( self::OPTION, $out, false );
 		self::measure();
@@ -265,6 +280,66 @@ class Class_Usage {
 		$last['full_kb'] = round( strlen( $full['css'] ) / 1024, 1 );
 		$last['kept_kb'] = round( strlen( $kept['css'] ) / 1024, 1 );
 		update_option( self::OPTION, $last, false );
+	}
+
+	/**
+	 * A short fingerprint of the class names the framework can make.
+	 *
+	 * @param array $names name => true (lookup() names).
+	 * @return string
+	 */
+	private static function signature( $names ) {
+		return md5( implode( ',', array_keys( $names ) ) );
+	}
+
+	/**
+	 * Framework, scale or module settings were saved: check at the end of the request.
+	 *
+	 * @return void
+	 */
+	public static function on_settings() {
+		if ( ! self::$recheck && self::active() ) {
+			self::$recheck = true;
+			add_action( 'shutdown', array( __CLASS__, 'recheck' ) );
+		}
+	}
+
+	/**
+	 * A dashboard save: the queued check goes to the dashboard instead (it scans through
+	 * /class-uses), so the save request itself never scans up to 5000 posts.
+	 *
+	 * @return bool Whether a scan is needed (the classes the framework can make changed).
+	 */
+	public static function take_recheck() {
+		if ( ! self::$recheck ) {
+			return false;
+		}
+		self::$recheck = false;
+		remove_action( 'shutdown', array( __CLASS__, 'recheck' ) );
+		$last          = self::last();
+		list( $names ) = self::lookup();
+		return ! isset( $last['names'] ) || self::signature( $names ) !== $last['names'];
+	}
+
+	/**
+	 * When the classes the framework can make changed since the last scan, scan again and
+	 * rebuild the stylesheet, so classes the site already uses are not left out.
+	 *
+	 * @return bool Whether it scanned.
+	 */
+	public static function recheck() {
+		self::$recheck = false;
+		if ( ! self::active() ) {
+			return false;
+		}
+		$last          = self::last();
+		list( $names ) = self::lookup();
+		if ( isset( $last['names'] ) && self::signature( $names ) === $last['names'] ) {
+			return false;
+		}
+		self::scan();
+		Css_Generator::get_instance()->generate();
+		return true;
 	}
 
 	/**

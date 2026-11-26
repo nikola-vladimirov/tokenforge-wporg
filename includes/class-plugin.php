@@ -199,6 +199,10 @@ class Plugin {
 				update_option( Settings::OPTION_SETTINGS, $stored );
 			}
 		}
+		// 0.58.2 adds class-name aliases: a scan from before never counted them, so check again once.
+		if ( $previous && version_compare( (string) $previous, '0.58.2', '<' ) ) {
+			Class_Usage::on_settings();
+		}
 		Css_Generator::get_instance()->rebuild();
 		update_option( 'tokenforge_version', TOKENFORGE_VERSION );
 		delete_transient( 'tokenforge_upgrading' );

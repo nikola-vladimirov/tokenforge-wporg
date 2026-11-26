@@ -35,7 +35,8 @@ class Frontend {
 		// Motion effects: hide visible-effect elements before first paint, then
 		// reveal/stagger them from the footer.
 		add_action( 'wp_head', array( $this, 'motion_head' ), 2 );
-		add_action( 'wp_footer', array( $this, 'motion_footer' ), 20 );
+		// Before the footer scripts (priority 20): held entrance elements must not wait for them.
+		add_action( 'wp_footer', array( $this, 'motion_footer' ), 5 );
 		add_shortcode( 'tokenforge_scheme_toggle', array( $this, 'scheme_shortcode' ) );
 
 		// Quick link to the dashboard in the admin bar (front end + wp-admin).

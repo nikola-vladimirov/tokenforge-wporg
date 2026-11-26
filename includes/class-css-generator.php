@@ -151,8 +151,8 @@ class Css_Generator {
 	 * @return string
 	 */
 	public function editor_css() {
-		// The shop pages part too: Cart, Checkout and product blocks can be edited there.
-		return $this->build_css( false, true ) . Woo::build_shop();
+		// The shop pages part too: Cart, Checkout and product blocks can be edited there. Before the SCSS, which stays last.
+		return $this->build_css( false, true, false, Woo::build_shop() );
 	}
 
 	/**
@@ -176,14 +176,15 @@ class Css_Generator {
 	/**
 	 * Build the CSS text from enabled tokens.
 	 *
-	 * @param bool $allow_layers Wrap the opted-in low-priority parts in @layer
-	 *                           (false for the block editor, whose style
-	 *                           scoping doesn't reliably handle @layer).
-	 * @param bool $for_editor   For the block editor (every utility class, no root font size).
-	 * @param bool $full         Every utility class, even ones the site does not use.
+	 * @param bool   $allow_layers Wrap the opted-in low-priority parts in @layer
+	 *                             (false for the block editor, whose style
+	 *                             scoping doesn't reliably handle @layer).
+	 * @param bool   $for_editor   For the block editor (every utility class, no root font size).
+	 * @param bool   $full         Every utility class, even ones the site does not use.
+	 * @param string $before_scss  CSS that goes right before the developer SCSS (the block editor's shop part).
 	 * @return string
 	 */
-	public function build_css( $allow_layers = true, $for_editor = false, $full = false ) {
+	public function build_css( $allow_layers = true, $for_editor = false, $full = false, $before_scss = '' ) {
 		$tokens = Settings::get_instance()->all_variables();
 		$lines  = array();
 		foreach ( $tokens as $t ) {
@@ -245,13 +246,11 @@ class Css_Generator {
 		$root = $for_editor ? '' : Defaults::root_css();
 
 		// Developer SCSS (tokenforge_global_scss filter) last and unlayered, so it wins over everything generated.
+		// The add-on's live SCSS preview finds this exact marker in the canvas copy and swaps what follows it.
 		$scss = Scss::css();
-		$scss = '' !== $scss ? '
-/* --- Developer SCSS --- */
-' . $scss . '
-' : '';
+		$scss = '' !== $scss ? "\n/* --- Global SCSS --- */\n" . $scss . "\n" : '';
 
-		return $header . $order . Fonts::css() . ( isset( $defaults['reset'] ) ? $defaults['reset'] : '' ) . $parts['defaults'] . $body . $root . $parts['base'] . $parts['buttons'] . $parts['cards'] . $woo . $scheme['css'] . $extras['css'] . $parts['icons'] . Attributes::build( ! $full && ! $for_editor ) . $overlays['css'] . $motion['css'] . $width['css'] . $parts['content'] . $fw['css'] . $scss;
+		return $header . $order . Fonts::css() . ( isset( $defaults['reset'] ) ? $defaults['reset'] : '' ) . $parts['defaults'] . $body . $root . $parts['base'] . $parts['buttons'] . $parts['cards'] . $woo . $scheme['css'] . $extras['css'] . $parts['icons'] . Attributes::build( ! $full && ! $for_editor ) . $overlays['css'] . $motion['css'] . $width['css'] . $parts['content'] . $fw['css'] . $before_scss . $scss;
 	}
 
 	/**

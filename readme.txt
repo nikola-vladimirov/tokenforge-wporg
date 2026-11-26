@@ -4,7 +4,7 @@ Tags: design tokens, css variables, accessibility, woocommerce
 Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.58.1
+Stable tag: 0.58.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,195 +12,90 @@ Design tokens, fluid scales, utility classes, contrast and accessibility checks 
 
 == Description ==
 
-TokenForge is a design system you set up once and use everywhere. Colours, type and spacing scales, layout, buttons, cards, icons, effects and more are all CSS variables and classes, built into one static stylesheet that loads on your front end, in the block editor and, with Bricks, in the builder.
+TokenForge is a design system you set up once and use everywhere. Colours, type and spacing scales, layout, buttons, cards, icons and effects become CSS variables and classes in one static stylesheet, loaded on the front end, in the block editor and in your page builder.
 
-**Why TokenForge**
-
-* One place to set your whole design: colours, type, spacing, layout and components.
-* Works with the block editor, Bricks, Etch, Oxygen, Breakdance, Divi and Elementor. Bricks has the deepest support today.
-* Etch, Oxygen, Breakdance, Elementor and Divi: the TokenForge window inside the editor, TokenForge variables by right-click in style fields, TokenForge classes by right-click in the class field (Divi: its Attributes list), the input helper (space-m becomes var(--space-m)), variable, class and recipe suggestions in the custom CSS box, placeholder text recipes in text fields and the TokenForge stylesheet in the canvas. The builder's own Save keeps every change.
-* Block editor: your colours, font sizes, spacing, font families and shadows are the presets the editor offers. It also gets ready patterns, a Button style for each button family, a class field with suggestions on top of the block sidebar, and optional editor tools (a compact, builder-style block sidebar, swapped and resizable sidebars, a dark interface, outlines in the canvas, the TokenForge window). Placeholder text recipes (?ipsum-short, ?ipsum, ?ipsum-long) work in the editor canvas too. All of it is set on the Block editor screen.
-* Bricks: your tokens stay in step with Bricks variables, colours, global classes and the theme style. The dashboard and a design check also open inside the builder.
-* Moving from another utility framework? Press Import from Automatic.css under Import, export & reset. You confirm before it runs, and the settings history can undo it. Custom CSS does not come across, so move it into your builder's own CSS box.
-* One stylesheet, built when you save, not on every page load. Unused classes can be left out after a site scan.
-* Accessibility checks: contrast in light and dark mode, with a suggested fix you can apply in one click.
-* Export your tokens as W3C design token files, for Figma, Tokens Studio and Style Dictionary.
-* Settings history: the last 20 saves are kept, and a restore can be undone.
-* Free under GPLv2 or later. No account needed. The only outside service is Google Fonts, and only when you ask for it.
-
-A new site starts ready: a complete starter design system (every token, colour family and setting), so there is nothing to import. Reset to defaults any time, for everything or one section.
+A new site starts ready with a complete starter design system. Reset to defaults any time, for everything or one section. The built-in Manual (TokenForge, Manual) explains every screen.
 
 **Design system**
 
-* Colour families: shades generated from one colour in light and dark mode, with a live preview. Add, remove or edit your own families.
-* Fluid type and spacing scales from one setting each, plus a width scale, a root font size, grids and automatic gaps.
-* Layout, gutters, boxed or full width, borders, radius, shadows, icons, header height and prose styles.
-* Utility classes for spacing, grids and grid placement, flex grids (equal-width items with a centred or stretched last row), flex and alignment, text styles, corners and more, with optional breakpoint variants ({class}-at-{bp}). Unused classes can be left out of the stylesheet after a site scan, to keep it small.
-* A Tokens screen that lists every variable, the setting that makes it and where it is used. Add your own tokens in a built-in or your own category.
-* Dark mode: assign it by section and add a light or dark switch anywhere, with a shortcode or a block.
+* Colour families with light and dark shades from one colour, live preview, and dark mode by section with a light or dark switch (shortcode or block).
+* Fluid type and spacing scales from one setting each, a width scale, grids and automatic gaps.
+* Layout, borders, radius, shadows, icons, buttons, cards, overlays and prose styles.
+* Utility classes for spacing, grids, flex grids, flex and alignment, text and more, with optional breakpoint variants. Unused classes can be left out after a site scan.
+* Effects: entrance, exit, hover, border and scroll effects, and optional default effects for your buttons.
+* A Tokens screen that lists every variable, where it comes from and where it is used.
+
+**Builders and the block editor**
+
+* Works with the block editor, Bricks, Etch, Oxygen, Breakdance, Divi and Elementor. Bricks has the deepest support.
+* In every supported builder: the TokenForge window, variables and classes by right-click, the input helper, suggestions and recipes in the custom CSS box, text recipes, a light and dark preview of the canvas, and the TokenForge stylesheet in the canvas.
+* Block editor: your tokens become the editor presets, plus patterns, button styles, a class field and optional editor tools.
+* Bricks: two-way sync with Bricks variables, colours, global classes and the theme style, a design check, a BEM class generator, form element extensions and a setup wizard.
 
 **Accessibility**
 
-* Contrast check of text, links, focus rings and buttons against their backgrounds, in light and dark mode (WCAG 2 AA, with the APCA value shown). Each problem gets a suggested colour token, applied with one click.
-* Automatic attributes for the front end, every one off by default: hidden decorative icons, alt text from the media library, menu labels, the current page mark, a new tab notice and two labelled guesses. TokenForge adds only what is missing and stores nothing.
-* Data attributes for layout and behaviour without custom code, listed under Data attributes below, with a screen that shows where each one is used.
-* A page check in the builder, based on the open-source axe-core engine. It runs only when an administrator presses Run check, and nothing is saved unless you choose a fix.
+* Contrast check of text, links, focus rings and buttons in light and dark mode (WCAG 2 AA, APCA shown), with a suggested token applied in one click.
+* Optional automatic attributes: hidden decorative icons, alt text, menu labels, the current page mark and a new tab notice.
+* A page check in the builder (axe-core), only when an administrator presses Run check.
+* Data attributes for layout and behaviour without code (data-tf-stack, data-tf-space, data-tf-surface, data-tf-reveal, data-tf-tooltip, data-tf-filter and more).
 
-**Fonts**
+**Fonts, WooCommerce and tools**
 
-* Self-hosted fonts: upload TTF or OTF files and TokenForge turns them into WOFF2 (or WOFF), preloads them and lists them in the builder's font list.
-* Or download a Google font once to your server. Your visitors never contact Google.
-
-**WooCommerce**
-
-* While WooCommerce is active: shop, product, cart, checkout and account pages, product cards and filters, header carts, and the Cart and Checkout blocks, styled with your tokens.
-* Every part has its own switch. The shop styles load only on pages that show the shop, or on every page if you choose.
-
-**Data and tools**
-
-* Export and import your settings, and export your tokens as W3C design token files (light and dark) for Figma, Tokens Studio and Style Dictionary. Each import shows a preview of every change first.
-* Settings history: before every save, import, reset or setup, TokenForge keeps a copy (the last 20). You can see what changed and put any copy back, and a restore can be undone.
-* WP-CLI commands: regenerate, export, import (with --dry-run), snapshot, history, restore, status and contrast.
-* Guidance and abilities for AI agents (MCP and Bricks AI).
-* The dashboard and its settings are translatable (translate.wordpress.org).
-
-**With Bricks**
-
-When Bricks is active, TokenForge also:
-
-* Syncs your tokens into Bricks global variables, the colour palette and global classes, so they appear in the builder's pickers and autocomplete. The sync runs both ways.
-* Keeps a Bricks theme style for the whole website in step with your settings, both ways.
-* Adds the full dashboard inside the builder, right-click menus for variables and classes, a BEM class generator, a design check (typed colours and font sizes that should be tokens, contrast in light and dark mode, sizes off the type scale) and the page check.
-* Extends the Bricks form element with steps (back, next and a progress bar), conditional fields, required-if rules, calculated fields, sliders, star ratings, ranges, input masks, character counters, date rules, choices filled from your content, live values on the page, send limits, an Update meta action, an Add to cart action, and form presets. Each has its own switch.
-* Keeps the form submissions in the builder: search, read and unread marks, statuses, notes, editable entries, CSV or JSON export, and optional auto-delete after a set number of days (only after a dry run you confirm).
-* Has a setup wizard that sets Bricks' own settings for working with TokenForge in one go. You choose which, and Undo puts them back.
-
-**Data attributes**
-
-These attributes work on any element in Bricks, the block editor or your own markup. Each one is listed on the Data attributes screen with where it is used.
-
-* data-tf-stack: switches a row to a column below a breakpoint.
-* data-tf-space: section spacing or stack gap.
-* data-tf-surface: a raised panel from your colour tokens.
-* data-tf-reveal: shows an element on scroll, using the visible effects.
-* data-tf-clamp and data-tf-ratio: limit lines of text and keep a fixed shape.
-* data-tf-copy: a copy button for a value on the page.
-* data-tf-tooltip: a tooltip that stays on screen, also on a phone.
-* data-tf-filter-group, data-tf-filter and data-tf-term: a list filter with no code.
-* data-tf-decorative: marks an image as decorative (Mark as decorative in the builder).
-* data-tf-state: marks an element as open, active or disabled, so your CSS can style that state. Disabled also dims the element and blocks mouse clicks.
-
-TokenForge is original software released under the GPLv2 or later.
+* Self-hosted fonts: upload TTF or OTF and get WOFF2, or download a Google font once to your server.
+* WooCommerce shop, product, cart, checkout and account pages and blocks styled with your tokens, each part with its own switch.
+* Export and import settings (with a preview), W3C design token files for Figma, Tokens Studio and Style Dictionary, the settings history (last 20 saves, undoable), WP-CLI commands and tools for AI agents.
+* Moving from another utility framework? The settings import under Import, export & reset brings your settings across, and its class names work too.
 
 **Developers**
 
-A developer can add SCSS from code. The filter `tokenforge_global_scss` receives an empty string and returns SCSS. TokenForge compiles it with its own library (mixins and functions) and adds it last to the stylesheet. A compile error never breaks the site.
+The filter `tokenforge_global_scss` returns SCSS that TokenForge compiles and adds last to the stylesheet (put it in a child theme or a mu-plugin). The action `tokenforge_builder_enqueue` loads an add-on's assets in every supported builder, and `tokenforge_block_editor_enqueue` in the block editor. Details and examples are in the Manual.
 
-This is code, not a setting. Put it in a child theme's functions.php or in a mu-plugin, never in TokenForge's own files, so an update does not remove it.
-
-An add-on can load its scripts and styles in the editor of every supported page builder. The action `tokenforge_builder_enqueue` passes the builder (bricks, etch, oxygen, breakdance, elementor or divi). It fires in the editor page for users who can edit posts, after TokenForge's own assets (the window, handle tokenforge-panel, for administrators; the tools, handle tokenforge-builder, outside Bricks). Call wp_enqueue_script and wp_enqueue_style as usual; where the builder's editor skips the WordPress queue (Oxygen, Breakdance), TokenForge prints them. In Divi it fires in the top window, where the settings panels are; the canvas is the same-origin frame #et-vb-app-frame. The block editor has its own action, `tokenforge_block_editor_enqueue`, which passes the editor switches.
-
-**Roadmap**
-
-Planned, with no dates yet:
-
-* Block editor: panels for block styles and the global styles.
-* More accessibility checks, with clearer fixes.
-
-Example: add `add_filter( 'tokenforge_global_scss', 'my_pricing_scss' );` to your functions.php, then define `my_pricing_scss( $scss )` so it appends `.pricing { padding: var(--space-m); }` to `$scss` and returns it.
-
-TokenForge is developed by Prista Digital. Website: https://pristadigital.com
+TokenForge is original software released under the GPLv2 or later, developed by Prista Digital (https://pristadigital.com).
 
 == Installation ==
 
-1. Upload the `tokenforge` folder to `/wp-content/plugins/`, or install the zip from Plugins, Add New, Upload.
-2. Activate. A new site starts with the starter design system. On a Bricks site, TokenForge links or creates a theme style for the whole website on the next page load.
-3. Open **TokenForge** in the admin menu, change what you like and save.
+1. Install the zip from Plugins, Add New, Upload, or upload the `tokenforge` folder to `/wp-content/plugins/`.
+2. Activate. A new site starts with the starter design system.
+3. Open **TokenForge** in the admin menu, change what you like and save. TokenForge, Manual explains each screen.
 
 == Frequently Asked Questions ==
 
 = Do I need a page builder? =
 
-No. TokenForge works on any WordPress site: the stylesheet loads on the front end and in the block editor. The builder tools switch on only when a supported builder is active: Bricks, Etch, Oxygen, Breakdance, Elementor or Divi 5.
-
-= What does TokenForge add to the block editor? =
-
-Your tokens become the editor's presets: colours, font sizes, spacing, font families and shadows. By default they replace the theme's presets, and the theme's old preset names are pointed at the nearest token, so existing posts and the theme's own styles keep their look. On the Block editor screen you can show them beside the theme's presets instead, or switch them off.
-
-The same screen has the rest, each with its own switch: a class field with suggestions on top of the block sidebar, TokenForge patterns (hero, cards, pricing, questions and answers, contact), a Button style for each button family, a list of blocks to hide from the inserter, a compact editor interface with the block settings laid out like the builder (one setting per row, the Styles tab in the builder order), the sidebars swapped and drag handles to make them wider or narrower, a dark editor interface, a dark canvas, outlines in the canvas, and a TokenForge button in the editor header that opens the dashboard as a window.
-
-Presets, patterns and button styles work with any theme. The Site Editor parts need a block theme. TokenForge never changes the styles you saved in the Site Editor: a preset list you saved there still shows first in its picker.
+No. The stylesheet loads on the front end and in the block editor. The builder tools switch on only with Bricks, Etch, Oxygen, Breakdance, Elementor or Divi 5.
 
 = Will it slow my site down? =
 
-TokenForge writes one static stylesheet, so no CSS is built while a page loads. You can print it inline (no extra request) under Options, Performance, and switch off any section you do not use. Under Options, Utility framework, you can leave out the utility classes your site does not use. With WooCommerce, the shop styles are in a second file that loads only on pages that show the shop.
-
-= Does it work with WooCommerce? =
-
-Yes. While WooCommerce is active, TokenForge styles the shop, product, cart, checkout and account pages, the builder's shop elements and the WooCommerce blocks with your tokens. Every part has its own switch under WooCommerce. With a block theme, the product price, sale badge and rating blocks can take their look from global styles.
-
-= How do I load the shop styles on every page? =
-
-Set WooCommerce, Shop pages, Load shop page styles to On every page. Developers can also decide per page with the `tokenforge_woo_shop_styles` filter.
-
-= Where do the tokens come from? =
-
-Most come from your settings: Colors makes the colour families, and Typography, Spacing, Layout, Borders, Icons and Effects make their own variables, all when the stylesheet is built. The Tokens screen lists every variable with the part that makes it. Add your own tokens with + Add token, in a built-in category or one you name yourself. A token with the same name as a variable a setting makes replaces it; Use settings removes copies that only repeat a setting.
-
-= Can I bring in settings from another framework? =
-
-Yes. See the switching guide below.
+No CSS is built while a page loads: TokenForge writes one static stylesheet when you save. You can print it inline, switch off sections you do not use and leave out unused utility classes. Shop styles are a second file loaded only where the shop shows.
 
 = How do I switch from another utility framework? =
 
-1. Open TokenForge, then Import, export & reset.
-2. Press Import from Automatic.css and confirm. The import merges into your settings: colours, scales, layout, typography, buttons, cards, components, overlays and fonts come across. If a token has the same name as one you already have, the imported value replaces it.
-3. Read the message that follows. It gives the number of variables and settings imported.
-4. Check Colors, Typography and Accessibility, then look at a few pages on the front end and in the builder.
-5. Move any custom CSS into your builder's own CSS box. Custom CSS is not imported.
-
-If something is wrong, open Import, export & reset and use the settings history to put back the copy from before the import.
+Open Import, export & reset, press the settings import button and confirm. Colours, scales, layout, typography, buttons, cards, components, overlays and fonts come across; custom CSS does not. The settings history can undo it.
 
 = Can I add my own CSS? =
 
-Yes, in two places. Add CSS to the builder's own custom CSS box (in Bricks, the theme style's Custom CSS), or to your theme's Additional CSS in the Customizer. Developers can also add SCSS from code with the `tokenforge_global_scss` filter, shown under Developers in the description.
+Yes: in your builder's custom CSS box or the Customizer's Additional CSS. Developers can add SCSS with the `tokenforge_global_scss` filter.
 
 = What happens when I deactivate or delete TokenForge? =
 
-Deactivating stops the stylesheet from loading; your settings stay. Deleting the plugin removes its settings, the generated stylesheets and the variables, colours and classes it added to Bricks. Font files you uploaded stay in `uploads/tokenforge/fonts/`, because other CSS may still use them. On a multisite network, uninstall cleans every site.
-
-Two Bricks settings are not put back. A Bricks theme style kept in step with TokenForge keeps its var(--...) values, which no longer resolve once the variables are gone: set those fields again or pick another theme style. Bricks settings the setup wizard changed stay as the wizard left them.
+Deactivating stops the stylesheet; settings stay. Deleting removes the settings, the generated stylesheets and what TokenForge added to Bricks. Uploaded font files stay in `uploads/tokenforge/fonts/`.
 
 = Does TokenForge keep anything about visitors? =
 
-Only what your forms ask for. On your server, a form with a send limit keeps a count of its sends, and a form limited per user keeps the time of each signed-in user's last send in their user data. A form with the Update meta action writes the answers you map to the post or user meta you choose, and the Add to cart action puts the answers you allow on the cart item and the order. Two things stay in the visitor's own browser (local storage): their light or dark choice when you show the dark mode switch, and, only for forms where you turn on Remember answers on this device, what they typed until the form is sent. Passwords, files and hidden fields are never kept, and the saved answers are removed after a successful send. Deleting TokenForge removes its counts and the per-user send times.
+Only what your forms ask for: send counts for forms with a send limit, and the last send time per signed-in user for per-user limits. In the visitor's browser: their light or dark choice, and, where you turn it on, unsent form answers. Deleting TokenForge removes the counts and send times.
 
-= Does TokenForge contact other servers? =
+= Where is the full documentation? =
 
-Only when an administrator asks it to, and there is one such service: Google Fonts, when you press Download from Google Fonts (Typography, Self-hosted fonts). Your server asks fonts.googleapis.com for the family's CSS, then downloads the font files from fonts.gstatic.com, once. It sends the family name, the weights and styles you picked, and your server's IP address, like any web request. The files are stored in `uploads/tokenforge/fonts/`, so your visitors never contact Google.
+In the plugin: TokenForge, Manual in the admin menu.
 
-Terms: https://developers.google.com/terms
-Privacy: https://policies.google.com/privacy
+== External services ==
 
-The accessibility checker (axe-core, MPL 2.0) is bundled with the plugin and runs only in the builder when an administrator presses Run check. Nothing else is contacted.
+TokenForge contacts one outside service, Google Fonts, and only when an administrator presses Download from Google Fonts (Typography, Self-hosted fonts). Your server then asks fonts.googleapis.com for the family's CSS and downloads the font files from fonts.gstatic.com, once. It sends the family name, the weights and styles you picked, and your server's IP address, like any web request. The files are stored in `uploads/tokenforge/fonts/`, so your visitors never contact Google.
 
-= How do I connect an AI agent (Claude, ChatGPT, Cursor) to TokenForge? =
+Google terms: https://developers.google.com/terms
+Google privacy policy: https://policies.google.com/privacy
 
-TokenForge's tools for AI agents are on by default (Options, AI agents). They reach your AI client through the WordPress MCP Adapter, the same connection the builder's own AI tools use:
-
-1. Install and activate the MCP Adapter plugin (https://github.com/WordPress/mcp-adapter). With Bricks 2.4 or later, Bricks > AI installs it for you and walks you through every step.
-2. Create an application password for your user (Users > Profile > Application Passwords).
-3. Add the site to your AI client as an MCP server that runs `npx -y @automattic/mcp-wordpress-remote@latest`, with three environment values: WP_API_URL (your site's `/wp-json/mcp/mcp-adapter-default-server`), WP_API_USERNAME (your user name) and WP_API_PASSWORD (the application password). Bricks > AI shows this setup ready to copy for each client.
-
-The agent then sees `tokenforge-get-framework`, `tokenforge-search`, `tokenforge-check-css` and `tokenforge-get-recipe`. The server instructions and, on Bricks, the builder's own start-here guide tell it to call `tokenforge-get-framework` first. That guide covers the tokens, the classes, BEM naming for its own classes (block__element--modifier, no site prefix) and, on Bricks, how classes are added: as global classes, never typed into an element's CSS classes field.
-
-= Can I translate TokenForge? =
-
-Yes. The dashboard and the builder settings use the `tokenforge` text domain, so translations from translate.wordpress.org are loaded automatically.
-
-= Does "Close after this many sends" stop one visitor from taking every place? =
-
-No. The limit counts sends, not people, so one visitor or a script can send the form until it closes, and two sends at the same moment can both get the last place. For places that matter, such as event seats, also turn on the form's CAPTCHA (reCAPTCHA, hCaptcha or Turnstile) or "Only signed-in visitors can send" with "Sends per user".
+The accessibility checker (axe-core, MPL 2.0) is bundled and runs in the builder only. Nothing else is contacted.
 
 == Screenshots ==
 
@@ -212,120 +107,18 @@ No. The limit counts sends, not people, so one visitor or a script can send the 
 
 == Changelog ==
 
-The full history is in CHANGELOG.md, also shown from the Changelog link next to TokenForge on the Plugins screen.
+Older versions are in changelog.txt.
+
+= 0.58.2 =
+* New: TokenForge, Manual, an English user manual in the admin.
+* Class names from another utility framework (grid--3, grid--m-2, flex-grid--3, text--center and more) now work too; colour names such as bg--primary have their own switch.
+* New: default button effects (hover, entrance and hover border) on the Effects screen.
+* New recipes: gradients, ?before, ?after, ?hover, ?focus-visible, ?color-mix, ?tooltip, ?footer-reveal and more.
+* Builder: a moon button previews the canvas in dark mode while you build.
+* Fixed: a window opened before a newer save (another builder tab or the dashboard) no longer puts older settings back.
+* Fixed: switching on a setting that adds classes rechecks the site, so used classes are not left out. Entrance effects on screen at load no longer flash before they play.
+* Settings import: more switches, button effects and older breakpoint values come across.
 
 = 0.58.1 =
 * Effects: entrance effects on elements already on screen when the page opens (a hero, for example) now play as the page loads. Before, they waited for a scroll that never came.
 * Importing another framework's settings now brings over its site colour scheme and card inner radius from its newer version.
-
-= 0.58.0 =
-* Page builders: Etch, Oxygen 6, Breakdance, Elementor (classic widgets and containers) and Divi 5 now get the TokenForge window, variables and classes by right-click, the input helper, suggestions and recipes in custom CSS, and the TokenForge stylesheet in the canvas while editing.
-* Recipes: placeholder text recipes (?ipsum-short, ?ipsum, ?ipsum-long and your own Text recipes) work in every supported builder and in the block editor sidebar.
-* Block editor: a new setting picks the default unit for empty size fields (rem by default, px keeps WordPress as it is).
-* Developers: the new action tokenforge_builder_enqueue loads an add-on's scripts and styles in every supported builder.
-* Fixed: dark text on the dark Appearance list in the dark editor interface, and Divi's settings panels getting the front-end styles.
-
-= 0.57.0 =
-* Block editor: a new Block editor screen holds every block editor setting. Your colours, font sizes, spacing, font families and shadows become the editor presets (replace the theme's presets, sit beside them, or off), and the theme's old preset names point at the nearest token so existing posts keep their look.
-* Block editor tools, each with its own switch: a class field with suggestions, TokenForge patterns, a Button style for each button family, blocks hidden from the inserter, a compact sidebar laid out like the builder, swapped sidebars, drag handles to resize the sidebars, a dark interface and canvas, canvas outlines and the TokenForge window.
-* Recipes: ?ipsum (a medium paragraph) and ?ipsum-long join ?ipsum-short, and all three also work in the block editor canvas (type the name, then a space or a semicolon).
-* Fixed: dashboard fields lost their name for screen readers when changed from the default, and two suggestion lists could open on top of each other in the builder's CSS box.
-
-= 0.56.0 =
-* Bricks Style Manager: the text, heading and space sizes show as typography and spacing scales, and the HTML font size, screen widths and default mode fill its Settings. Changes made there come back into TokenForge.
-* AI agents: the guide now covers BEM naming for an agent's own classes and, on Bricks, adding classes as global classes. The FAQ explains how to connect an AI client through the MCP Adapter.
-* Fixed: the BEM class generator gave empty names in a builder shown in another alphabet (such as Bulgarian); labels are transliterated and unnamed elements are named by type.
-* Deleting TokenForge also removes its short upgrade lock. The admin bar menu shows the TokenForge icon.
-
-= 0.55.0 =
-* Flex grids: flex-grid-1 to flex-grid-12 with equal-width items and a centred last row, flex-grid--start, flex-grid--end and flex-grid--stretch, and per-breakpoint counts such as flex-grid-2-at-m.
-* Breakpoint variants (off by default): {class}-at-{bp} copies of the layout and text classes, such as col-span-1-at-m.
-* Grid classes: column and row placement, per-breakpoint and stacking grids, grid-alternate, ratio auto grids, masonry and order.
-* Layout classes: more flex and alignment, centring, height, container queries, opacity, z-index, display, flip, sticky offsets, aspect ratio, object position, line clamp and column classes.
-* Text classes: weights, italics, case, underline styles, balanced text, list reset, edge fades, border sides, dividers, and optional link, focus and bullet colours per colour.
-* Optional live header height: --header-height follows the real header, plus --admin-bar-height.
-* Builder: input helper (variable names to var(), maths to calc()), hide switched-off classes in the class list, checkerboard behind transparent swatches, TokenForge classes reused on template import (all optional except the checkerboard).
-* Fixed: oklch() and light-dark() palette colours get their colour classes again; columns-2 to 4 leave WooCommerce product lists alone; Bricks buttons without a btn class keep their border.
-* Hardening: a value with an unclosed bracket, quote or comment is no longer saved, so it cannot blank the rest of the stylesheet; on multisite, saving, importing and restoring settings needs the Additional CSS right (edit_css); damaged font files and oversized AI checks are refused.
-* Security: stricter checks on form cart prices, products, open meta writes and date rules; presets listed to editors only; safer font and AI CSS checks; on multisite, settings need edit_css.
-* Fixed: flex grids lay out in a row on builder blocks; columns breakpoint variants override columns-N; sticky-top with a 0 offset; focus-parent keeps field focus rings.
-
-= 0.54.2 =
-* Developers can extend Export / Import and the Starter reset: the hooks tokenforge_transfer_parts, tokenforge_transfer_export_data, tokenforge_transfer_imported, tokenforge_starter_parts and tokenforge_starter_reset.
-* Undo now restores add-on parts too, and an import passes only the parts you selected to the import hook.
-* Export leaves out keys that look like secrets (licence, token, password), except the core and registered parts.
-* Nothing changes for sites that do not use these hooks.
-
-= 0.54.1 =
-* Developers can add to the dashboard from a plugin or theme: sections, navigation entries, icons and panels through the wp.hooks filters tokenforge.sections, tokenforge.nav, tokenforge.icons, tokenforge.render and tokenforge.section_html.
-* Developers can add recipes with the tokenforge_recipes filter.
-* Nothing changes for sites that do not use these filters.
-* Developer and website details updated: Prista Digital, https://pristadigital.com.
-
-= 0.54.0 =
-* The Global SCSS editor is removed from the WordPress.org version. Developers can still add SCSS with the tokenforge_global_scss filter.
-* Custom recipes (your own CSS snippets) are removed from the WordPress.org version; built-in recipes stay. Export them first if you need them.
-
-= 0.53.7 =
-* WordPress.org review: the WP-CLI export no longer writes to a chosen file; use the shell redirect instead.
-* WordPress.org review: removed links to outside documentation from the admin screens.
-
-= 0.53.6 =
-* The attribute suggestion menu is easier to read and use with a screen reader or in high contrast; unused builder code removed.
-
-= 0.53.5 =
-* Form entries: the auto-delete confirmation, the delete dry run, titles, notes, search and the menu entry are tidied.
-
-= 0.53.4 =
-* The page check treats an image role written as Presentation or "none " the same way as everywhere else, so it no longer lists that image as having empty alt text.
-
-= 0.53.3 =
-* Saving from the dashboard no longer drops a colour family made with Generate in the builder or another window; the stored ones are kept and you are told.
-* The Saved message stays visible next to the site scan result, and Save no longer says "CSS updated" when the stylesheet could not be written.
-* "Leave out unused utility classes" also leaves out the styles of data attributes the site does not use (after a scan).
-* The tooltip bubble stays on screen inside a scaled or zoomed container.
-* Nested filter groups work: each group changes only its own buttons and items.
-
-= 0.53.2 =
-* A tooltip near the edge of a phone screen stays in view, and a hidden one no longer makes the page scroll sideways.
-* Switching on "Leave out unused utility classes" no longer scans the whole site during Save.
-* Uninstall cleans every site of a multisite network.
-
-= 0.53.0 =
-* New data attributes: data-tf-stack, data-tf-space, data-tf-surface, data-tf-reveal, data-tf-copy, data-tf-tooltip, and a no-code list filter (data-tf-filter-group, data-tf-filter, data-tf-term).
-* Data attributes screen under Foundations: lists every TokenForge data attribute with where it is used, unused ones and misspelt names.
-* Mark as decorative in the builder's page check; the Attributes control suggests data-scheme and the form attributes.
-
-= 0.52.0 =
-* One Accessibility hub in the TokenForge window: the page check, palette contrast, automatic attributes, focus, reduced motion, the external-link indicator and the canvas badge.
-* Fix a failing contrast pair with any token or colour you pick, with the ratio shown as you choose.
-* Design check in the builder: typed colours and font sizes that should be tokens, contrast in light and dark mode, and sizes off the type scale.
-* Global SCSS outline: section comments, a Jump to list with search (Ctrl+Shift+O).
-
-= 0.51.0 =
-* Page check in the builder: lists accessibility problems on the page you are editing, with Show and, where it is safe, Fix. Nothing is saved; Undo works.
-* Automatic accessibility attributes for the front end, every switch off. Needs WordPress 6.2 or newer.
-* Data attributes for clamped text, ratios, states and decorative images, with suggestions in the builder.
-
-= 0.50.0 =
-* Forms: submissions in the builder get search, read and unread marks, statuses and notes, editable entries, column choice, CSV or JSON export, and auto-delete after a set number of days (only after a confirmed dry run).
-* Dashboard: a Light look beside Builder panels and Flat.
-
-= 0.49.0 =
-* Forms: sliders, star ratings, two-handle ranges, input masks, character counters, date rules, choices filled from posts, terms, users or custom field choices.
-* Forms: live answers on the page, send counts and places left, close after a number of sends, signed-in only, and once per user. All checked again on the server.
-* Forms: Update meta and Add to cart actions, and whole-form, field and style presets.
-
-= 0.48.0 =
-* Design token files: export and import W3C design token files (light and dark) with a preview of every change. History keeps a copy, so an import can be undone.
-* WP-CLI commands: regenerate, export, import, snapshot, history, restore, status and contrast.
-
-= 0.47.0 =
-* Contrast check: text, links, focus rings and buttons against their backgrounds, in light and dark mode, with a suggested colour token for each problem.
-
-= 0.46.0 =
-* Settings history: before every save, import, reset and setup, TokenForge keeps a copy of its settings, tokens, colour families, fonts and Global SCSS (the last 20).
-* WooCommerce: product, cart and checkout styles load only where the shop appears.
-
-= 0.45.1 =
-* On a site without a supported page builder, the builder screen lists the builders TokenForge knows instead of switches that do nothing.

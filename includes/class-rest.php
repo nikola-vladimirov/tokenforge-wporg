@@ -17,6 +17,31 @@ class Rest {
 	const NS = 'tokenforge/v1';
 
 	/**
+	 * The setting groups /save writes whole (body key => getter; 'settings' is the Settings instance).
+	 * /state sends a rev of each ('revs'), so a window loaded before another save can't undo it.
+	 */
+	const STORED = array(
+		'settings'      => null,
+		'framework'     => array( Framework::class, 'settings' ),
+		'scales'        => array( Scale_Engine::class, 'settings' ),
+		'components'    => array( Components::class, 'settings' ),
+		'scheme'        => array( Scheme::class, 'settings' ),
+		'extras'        => array( Extras::class, 'settings' ),
+		'defaults'      => array( Defaults::class, 'settings' ),
+		'width'         => array( Width::class, 'settings' ),
+		'content'       => array( Content::class, 'settings' ),
+		'motion'        => array( Motion::class, 'settings' ),
+		'overlays'      => array( Overlays::class, 'settings' ),
+		'woo'           => array( Woo::class, 'settings' ),
+		'fonts'         => array( Fonts::class, 'settings' ),
+		'modules'       => array( Modules::class, 'settings' ),
+		'enhancements'  => array( Features\Builder_Enhancements::class, 'settings' ),
+		'scss'          => array( Scss::class, 'settings' ),
+		'recipes'       => array( Recipes::class, 'settings' ),
+		'bricks_native' => array( Features\Builder_Enhancements::class, 'native_settings' ),
+	);
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -808,6 +833,7 @@ class Rest {
 		return array(
 			'tokens'               => $tokens,
 			'tokens_rev'           => self::tokens_rev( $tokens ), // Save sends it back: a window opened before a builder edit can't drop the new tokens.
+			'revs'                 => array_map( array( __CLASS__, 'settings_rev' ), self::stored_settings() ), // the same for each setting group.
 			'settings'             => $settings->get_settings(),
 			'framework'            => Framework::settings(),
 			'scales'               => Scale_Engine::settings(),
@@ -888,6 +914,41 @@ class Rest {
 	}
 
 	/**
+	 * The setting groups as stored (module switches not applied), by /save body key.
+	 *
+	 * @return array
+	 */
+	private static function stored_settings() {
+		return Modules::raw(
+			function () {
+				$out = array();
+				foreach ( self::STORED as $key => $get ) {
+					$out[ $key ] = null === $get ? Settings::get_instance()->get_settings() : call_user_func( $get );
+				}
+				return $out;
+			}
+		);
+	}
+
+	/**
+	 * A fingerprint of a setting group that survives the trip through the browser
+	 * (numbers as strings, keys sorted: 16.0, 16 and "16" are the same).
+	 *
+	 * @param mixed $value Setting group.
+	 * @return string
+	 */
+	private static function settings_rev( $value ) {
+		$norm = function ( $v ) use ( &$norm ) {
+			if ( is_array( $v ) ) {
+				ksort( $v );
+				return array_map( $norm, $v );
+			}
+			return is_int( $v ) || is_float( $v ) ? (string) ( 0 + $v ) : $v;
+		};
+		return md5( (string) wp_json_encode( $norm( $value ) ) );
+	}
+
+	/**
 	 * The linked Bricks theme style (for the dashboard).
 	 *
 	 * @return array
@@ -935,6 +996,20 @@ class Rest {
 		History::snapshot( 'save' );
 		$old_w = Width::settings();
 		$old_m = Motion::settings();
+
+		// A setting group changed (builder, another window) since this window loaded it, and this window
+		// would change it again: keep the stored one, as with tokens_rev. Without 'revs' (older clients) as before.
+		$settings_conflict = array();
+		if ( isset( $body['revs'] ) && is_array( $body['revs'] ) ) {
+			foreach ( self::stored_settings() as $key => $have ) {
+				$rev  = self::settings_rev( $have );
+				$base = isset( $body['revs'][ $key ] ) && is_string( $body['revs'][ $key ] ) ? $body['revs'][ $key ] : '';
+				if ( '' !== $base && $rev !== $base && isset( $body[ $key ] ) && is_array( $body[ $key ] ) && self::settings_rev( array_intersect_key( $body[ $key ], $have ) ) !== $rev ) {
+					$settings_conflict[] = $key;
+					unset( $body[ $key ] ); // skipped by the saves below.
+				}
+			}
+		}
 
 		if ( isset( $body['settings'] ) && is_array( $body['settings'] ) ) {
 			$settings->save_settings( $body['settings'] );
@@ -1037,15 +1112,18 @@ class Rest {
 
 		return rest_ensure_response(
 			array(
-				'ok'               => true,
-				'count'            => count( $stored ),
-				'css_url'          => Css_Generator::get_instance()->css_url(),
-				'css_ver'          => Css_Generator::get_instance()->version(),
-				'tokens_conflict'  => $tokens_conflict,
-				'palette_conflict' => $palette_conflict,
-				'css_ok'           => (bool) $css_ok,
-				'palette'          => $palette,
-				'theme_style'      => self::theme_style(),
+				'ok'                => true,
+				'count'             => count( $stored ),
+				'css_url'           => Css_Generator::get_instance()->css_url(),
+				'css_ver'           => Css_Generator::get_instance()->version(),
+				'tokens_conflict'   => $tokens_conflict,
+				'palette_conflict'  => $palette_conflict,
+				'settings_conflict' => $settings_conflict, // the setting groups kept as stored (body keys).
+				'css_ok'            => (bool) $css_ok,
+				// The dashboard scans next (/class-uses); it skips the scan after a conflict or a failed write, so the check stays queued then.
+				'rescan'            => ( $tokens_conflict || $palette_conflict || $settings_conflict || ! $css_ok ) ? false : Class_Usage::take_recheck(),
+				'palette'           => $palette,
+				'theme_style'       => self::theme_style(),
 			)
 		);
 	}

@@ -549,7 +549,19 @@ class Acss_Import {
 				$n += count( $props );
 			}
 		}
-		$bp = $this->num( 'option-btn-full-width-mobile-breakpoint' );
+		$bp     = $this->num( 'option-btn-full-width-mobile-breakpoint' );
+		$letter = strtolower( $this->raw( 'option-btn-full-width-mobile-breakpoint' ) );
+		$named  = array(
+			'xs' => 360,
+			's'  => 480,
+			'm'  => 768,
+			'l'  => 992,
+			'xl' => 1280,
+		);
+		if ( null === $bp && isset( $named[ $letter ] ) ) {
+			// Before 4.0.2 a breakpoint letter: resolve it the way the framework's own migration does.
+			$bp = null !== $this->num( "breakpoint-$letter" ) ? $this->num( "breakpoint-$letter" ) : $named[ $letter ];
+		}
 		$this->apply(
 			'Buttons',
 			$s,
@@ -587,8 +599,9 @@ class Acss_Import {
 		if ( 'reverse' === $v ) {
 			return true;
 		}
-		if ( 'standard' === $v ) {
-			$this->report['Cards'][] = 'option-card-concentric-radius = standard: no TokenForge equivalent, skipped';
+		// Older files store "on", which the framework's own 4.x migration turns into "standard".
+		if ( 'standard' === $v || 'on' === $v ) {
+			$this->report['Cards'][] = 'option-card-concentric-radius = ' . $v . ': no TokenForge equivalent (the outer radius grows by the padding), skipped';
 			return null;
 		}
 		return $this->on( 'option-card-concentric-radius' );
@@ -905,6 +918,34 @@ class Acss_Import {
 				$map[ $fx_name . '_' . $p ] = array( "border-$fx_name-$p", $c( "border-$fx_name-$p" ) );
 			}
 		}
+		// Default button effects: comma lists there, one effect each here (the first known one; the rest are reported).
+		// The names its help text uses for effects that are called differently here.
+		$alias                = array(
+			'scale'      => 'grow',
+			'lift'       => 'float',
+			'slide-up'   => 'float',
+			'slide-down' => 'sink',
+		);
+		$btn                  = function ( $key, $fx ) use ( $alias ) {
+			$pick = null;
+			$rest = array();
+			foreach ( preg_split( '/[\s,]+/', strtolower( $this->raw( $key ) ), -1, PREG_SPLIT_NO_EMPTY ) as $given ) {
+				$given = preg_replace( '/[^a-z0-9-]/', '', $given );
+				$name  = isset( $alias[ $given ] ) ? $alias[ $given ] : $given;
+				if ( null === $pick && in_array( $name, $fx, true ) ) {
+					$pick = $name;
+				} elseif ( '' !== $given ) {
+					$rest[] = $given;
+				}
+			}
+			if ( $rest ) {
+				$this->report['Motion'][] = $key . ': one effect per button, skipped ' . implode( ', ', $rest );
+			}
+			return $pick;
+		};
+		$map['btn_hover_fx']  = array( 'btn-hover-effects', $btn( 'btn-hover-effects', Motion::HOVER_FX ) );
+		$map['btn_enter_fx']  = array( 'btn-enter-effects', $btn( 'btn-enter-effects', Motion::SCROLL_FX ) );
+		$map['btn_border_fx'] = array( 'btn-border-effects', $btn( 'btn-border-effects', Motion::BORDER_FX ) );
 		$this->apply( 'Motion', $s, $map );
 		Motion::save_settings( $s );
 		if ( Motion::sync_stored_tokens( $old ) ) {
@@ -1002,7 +1043,7 @@ class Acss_Import {
 		Overlays::save_settings( $s );
 	}
 
-	/** Cascade layers, inline CSS, admin bar, Gutenberg palette. */
+	/** Cascade layers, inline CSS, admin bar, Gutenberg palette, block class field, front-end launcher. */
 	private function plugin_settings() {
 		$settings = Settings::get_instance();
 		$s        = $settings->get_settings();
@@ -1023,6 +1064,8 @@ class Acss_Import {
 				'inline_css'        => array( 'option-inline-tokens', $this->on( 'option-inline-tokens' ) ),
 				'admin_bar_link'    => array( 'admin-bar-enabled', $this->on( 'admin-bar-enabled' ) ),
 				'gutenberg_palette' => array( 'option-gutenberg-color-palette-generate/replace', null === $gen ? null : ( $gen ? ( $rep ? 'replace' : 'add' ) : 'off' ) ),
+				'block_class_field' => array( 'option-move-gutenberg-css-input', $this->on( 'option-move-gutenberg-css-input' ) ),
+				'frontend_launcher' => array( 'option-acss-dashboard-icon-display', $this->on( 'option-acss-dashboard-icon-display' ) ),
 			)
 		);
 		$settings->save_settings( $s );
@@ -1049,6 +1092,7 @@ class Acss_Import {
 				'bigger_code_editor'        => array( 'option-bricks-css-improved', $css ),
 				'ctx_vars_menu'             => array( 'option-contextual-menus-enable', $ctx ),
 				'ctx_class_menu'            => array( 'option-contextual-menus-enable', $ctx ),
+				'hide_stale_classes'        => array( 'option-hide-deactivated-classes', $this->on( 'option-hide-deactivated-classes' ) ),
 			)
 		);
 		Features\Builder_Enhancements::save_settings( $s );

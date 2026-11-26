@@ -12,6 +12,8 @@
  *   run, so content is never stuck invisible without JavaScript.
  * - Hover effects (.on-hover--*) and hover border effects (ripple, outline,
  *   underline).
+ * - Default button effects: one hover, entrance and border effect for every
+ *   button, by adding the buttons to that effect's own rules.
  *
  * Effects compose (".on-enter--fade on-enter--float"), respect
  * prefers-reduced-motion, and can be switched off inside page builders.
@@ -139,6 +141,10 @@ class Motion {
 			'underline_color'     => 'currentColor',
 			'underline_width'     => '3px',
 			'underline_duration'  => '.3s',
+			// ---- Default button effects: one effect name from the lists above, '' = none ----
+			'btn_hover_fx'        => '',
+			'btn_enter_fx'        => '',
+			'btn_border_fx'       => '',
 			// ---- Builders ----
 			'disable_in_builder'  => true, // no scroll/visible effects in the Bricks canvas or block editor.
 		);
@@ -346,6 +352,33 @@ class Motion {
 	}
 
 	/**
+	 * The buttons the default button effects apply to: the set Components::build() styles, at zero
+	 * specificity, so an effect class on the element (or the site's own CSS) still wins.
+	 *
+	 * @return string
+	 */
+	private static function btn_sel() {
+		$c   = Components::settings();
+		$sel = '.btn,[class*="btn--"]:not(.btn--none,.wp-block-button),[class*="btn--"].wp-block-button>.wp-block-button__link';
+		if ( ! empty( $c['control_bricks_buttons'] ) ) {
+			$sel .= ',.brxe-button.bricks-button,.wp-block-button__link,button:not([class]),input[type="submit"]';
+		}
+		return ':where(' . $sel . ')';
+	}
+
+	/**
+	 * The default button effect a setting names, or '' (none or not one of the effects).
+	 *
+	 * @param array  $s   Settings.
+	 * @param string $key btn_hover_fx|btn_enter_fx|btn_border_fx.
+	 * @param array  $fx  The effects it may name.
+	 * @return string
+	 */
+	private static function btn_fx( $s, $key, $fx ) {
+		return isset( $s[ $key ] ) && in_array( $s[ $key ], $fx, true ) ? $s[ $key ] : '';
+	}
+
+	/**
 	 * Per-effect custom properties for the shared keyframes.
 	 *
 	 * @param string $family enter|exit|visible.
@@ -492,10 +525,14 @@ class Motion {
 			$e_range = 'var(--animate-range-start, entry 20%) var(--animate-range-end, entry 100%)';
 			$x_range = 'var(--exit-range-start, cover 50%) var(--exit-range-end, cover 100%)';
 			if ( $s['enter'] ) {
+				// Default button entrance: buttons join the scroll rules only (no timed play on load, no
+				// fallback), so a button never waits on the script and simply shows where scroll timelines are missing.
+				$b_fx     = self::btn_fx( $s, 'btn_enter_fx', self::SCROLL_FX );
+				$b_sel    = $b_fx ? ',' . self::btn_sel() : '';
 				$scroll[] = '@keyframes tf-enter{from{' . $frame( '--tf-e' ) . '}}';
-				$scroll[] = $enter . '{' . $ident( '--tf-e' ) . ';animation-name:tf-enter;animation-duration:auto;animation-timing-function:linear;animation-fill-mode:both;animation-timeline:view();animation-range:' . $e_range . '}';
+				$scroll[] = $enter . $b_sel . '{' . $ident( '--tf-e' ) . ';animation-name:tf-enter;animation-duration:auto;animation-timing-function:linear;animation-fill-mode:both;animation-timeline:view();animation-range:' . $e_range . '}';
 				foreach ( self::fx_props( 'enter', '--tf-e' ) as $f => $d ) {
-					$scroll[] = ".on-enter--$f,.on-enter-all--$f>*{" . $d . '}';
+					$scroll[] = ".on-enter--$f,.on-enter-all--$f>*" . ( $f === $b_fx ? $b_sel : '' ) . '{' . $d . '}';
 				}
 				// Stagger: each child's range starts a little later.
 				$r = self::split_range( $s['enter_range_start'] );
@@ -543,6 +580,9 @@ class Motion {
 				$wait     = 'calc(var(--scroll-animation-delay, 0s) + var(--tf-i, 0) * var(--visible-stagger-interval, .1s))';
 				$scroll[] = '@keyframes tf-enter-now{from{' . $frame( '--tf-e' ) . '}}';
 				$scroll[] = $now . "{animation-name:tf-enter-now;animation-fill-mode:both;animation-timeline:auto;animation-range:normal;animation-duration:$timed;animation-timing-function:$ease;animation-delay:$wait}";
+				// Until the footer script has marked them (.tf-enter-wait from the head script), every entrance
+				// element holds its start frame, so a hero painted early does not show and then jump back.
+				$scroll[] = ':is(.tf-enter-wait ' . str_replace( ',', ',.tf-enter-wait ', $enter ) . "){animation-name:tf-enter-now;animation-fill-mode:both;animation-timeline:auto;animation-range:normal;animation-duration:$timed;animation-play-state:paused}";
 				if ( $s['exit'] ) {
 					$scroll[] = $now . ':is(' . $exit . "){animation-name:tf-enter-now,tf-exit;animation-fill-mode:both,forwards;animation-timeline:auto,view();animation-range:normal,$x_range;animation-duration:$timed,auto;animation-timing-function:$ease,linear;animation-delay:$wait,0s}";
 				}
@@ -627,6 +667,8 @@ class Motion {
 			$classes[] = 'on-visible--stagger';
 		}
 
+		$btn_tr = array(); // Transitions the default button effects need on buttons.
+
 		// ---- Hover ----
 		if ( $s['hover'] ) {
 			$all = array();
@@ -648,6 +690,15 @@ class Motion {
 			$css[] = '.on-hover--glow:hover{box-shadow:0 0 var(--hover-glow-spread, 20px) color-mix(in srgb, var(--hover-glow-color, currentColor) calc(var(--hover-glow-opacity, .3) * 100%), transparent)}';
 			$css[] = '.on-hover--fade:hover{opacity:var(--hover-fade-opacity, .8)}';
 			$css[] = '.on-hover--brighten:hover{filter:brightness(var(--hover-brighten-amount, 1.1))}';
+			// Default button hover: buttons join that effect's :hover rule (they keep their own transition).
+			$f = self::btn_fx( $s, 'btn_hover_fx', self::HOVER_FX );
+			if ( $f ) {
+				$css = str_replace( ".on-hover--$f:hover{", ".on-hover--$f:hover," . self::btn_sel() . ':hover{', $css );
+				$t   = ' var(--hover-duration, .3s) var(--hover-timing, ease-in-out)';
+				foreach ( array( 'scale', 'translate', 'box-shadow', 'opacity', 'filter' ) as $p ) {
+					$btn_tr[] = $p . $t;
+				}
+			}
 		}
 
 		// ---- Hover border effects ----
@@ -662,19 +713,39 @@ class Motion {
 			// Outline slides out from the edge (out) or in towards it (in).
 			$ow    = 'var(--border-outline-width, 4px)';
 			$ot    = 'var(--border-outline-duration, .3s) var(--hover-timing, ease-in-out)';
-			$css[] = '.on-hover--outline-out,.on-hover--outline-in{outline:' . $ow . ' solid transparent;transition:outline-color ' . $ot . ',outline-offset ' . $ot . '}';
+			$css[] = '.on-hover--outline-out,.on-hover--outline-in{outline:' . $ow . ' solid transparent}';
+			// Written as attribute selectors so a default button effect never joins it (buttons get it through --btn-transition).
+			$css[] = '[class~="on-hover--outline-out"],[class~="on-hover--outline-in"]{transition:outline-color ' . $ot . ',outline-offset ' . $ot . '}';
 			$css[] = '.on-hover--outline-out{outline-offset:0}.on-hover--outline-in{outline-offset:calc(' . $ow . ' * 2)}';
 			$css[] = '.on-hover--outline-out:hover{outline-color:var(--border-outline-color, currentColor);outline-offset:' . $ow . '}';
 			$css[] = '.on-hover--outline-in:hover{outline-color:var(--border-outline-color, currentColor);outline-offset:0}';
 			// Underline drawn by a pseudo-element, growing from the chosen side.
 			$u     = '.on-hover--underline-left,.on-hover--underline-center,.on-hover--underline-right';
-			$css[] = ':where(' . $u . '){position:relative}';
+			$css[] = ':where([class~="on-hover--underline-left"],[class~="on-hover--underline-center"],[class~="on-hover--underline-right"]){position:relative}'; // Buttons: below, without the focus exception.
 			$css[] = ':is(' . $u . ')::after{content:"";position:absolute;inset-inline:0;inset-block-end:0;block-size:var(--border-underline-width, 3px);background:var(--border-underline-color, currentColor);scale:0 1;pointer-events:none;transition:scale var(--border-underline-duration, .3s) var(--hover-timing, ease-in-out)}';
 			$css[] = '.on-hover--underline-left::after{transform-origin:left}.on-hover--underline-center::after{transform-origin:center}.on-hover--underline-right::after{transform-origin:right}';
 			$css[] = ':is(' . $u . '):hover::after{scale:1 1}';
 			foreach ( self::BORDER_FX as $f ) {
 				$classes[] = "on-hover--$f";
 			}
+			// Default button border effect: buttons join every selector list of that effect's class.
+			$f = self::btn_fx( $s, 'btn_border_fx', self::BORDER_FX );
+			if ( $f ) {
+				// The pseudo part (:hover, ::after) is repeated for the button; a keyboard focus ring wins over the effect.
+				$btn = ':where(' . self::btn_sel() . ':not(:focus-visible))';
+				$css = preg_replace( '/\.on-hover--' . $f . '((?:::?[a-z-]+)*)(?=[,{)])/', '$0,' . $btn . '$1', $css );
+				if ( 0 === strpos( $f, 'underline-' ) ) {
+					$css[] = self::btn_sel() . '{position:relative}';
+				} elseif ( 0 === strpos( $f, 'outline-' ) ) {
+					$btn_tr[] = 'outline-color ' . $ot;
+					$btn_tr[] = 'outline-offset ' . $ot;
+				}
+			}
+		}
+		// Buttons animate the default effects: their transition comes from --btn-transition (Components).
+		// shortcut: a custom button transition (Buttons screen) is left as set, so the effect may jump; add the properties there.
+		if ( $btn_tr && '' === (string) ( Components::settings()['btn_transition'] ?? '' ) ) {
+			$css[] = self::btn_sel() . '{--btn-transition:var(--transition, background-color .15s, color .15s, border-color .15s),' . implode( ',', $btn_tr ) . '}';
 		}
 
 		// Reduced motion: scroll effects off (visible never hides, see script).
@@ -701,7 +772,7 @@ class Motion {
 		$s   = self::settings();
 		$sel = array();
 		if ( $s['enter'] ) {
-			$sel[] = self::sel( 'enter', self::SCROLL_FX ) . ',.on-enter--parallax';
+			$sel[] = self::sel( 'enter', self::SCROLL_FX ) . ',.on-enter--parallax' . ( self::btn_fx( $s, 'btn_enter_fx', self::SCROLL_FX ) ? ',' . self::btn_sel() : '' );
 		}
 		if ( $s['exit'] ) {
 			$sel[] = self::sel( 'exit', self::SCROLL_FX );
@@ -735,7 +806,7 @@ class Motion {
 			$add[] = 'R.classList.add("tf-motion");';
 		}
 		if ( $s['enter'] ) {
-			$add[] = 'if(!(W.CSS&&CSS.supports&&CSS.supports("animation-timeline: view()"))){R.classList.add("tf-motion-fallback")}';
+			$add[] = 'if(W.CSS&&CSS.supports&&CSS.supports("animation-timeline: view()")){R.classList.add("tf-enter-wait")}else{R.classList.add("tf-motion-fallback")}';
 		}
 		if ( ! $add ) {
 			return '';
@@ -743,7 +814,7 @@ class Motion {
 		$js = <<<'JS'
 (function(){var R=document.documentElement,W=window;if(!("IntersectionObserver" in W)||(W.matchMedia&&W.matchMedia("(prefers-reduced-motion: reduce)").matches)){return}
 %ADD%
-setTimeout(function(){if(!W.tfMotionReady){R.classList.remove("tf-motion","tf-motion-fallback")}},4000)})();
+setTimeout(function(){if(!W.tfMotionReady){R.classList.remove("tf-motion","tf-motion-fallback","tf-enter-wait")}},4000)})();
 JS;
 		return str_replace( '%ADD%', implode( '', $add ), $js );
 	}
@@ -755,25 +826,24 @@ JS;
 	 * @return string
 	 */
 	public static function script() {
-		// shortcut: a hero painted before this footer script runs shows once, then plays from the start (.tf-now); hide entrance elements from the head script if that flash shows on real sites.
 		$s  = self::settings();
 		$t  = (float) $s['visible_threshold'];
 		$t  = ( $t > 0 && $t <= 1 ) ? $t : 0.2;
 		$js = <<<'JS'
 (function(){var d=document,R=d.documentElement,W=window;W.tfMotionReady=1;
-d.querySelectorAll(".on-enter--stagger,.on-exit--stagger,.on-visible--stagger").forEach(function(p){for(var i=0;i<p.children.length;i++){p.children[i].style.setProperty("--tf-i",i)}});
-if(W.CSS&&CSS.supports&&CSS.supports("animation-timeline: view()")){var tn=[];d.querySelectorAll('[class*="on-enter"]').forEach(function(e){var c=e.getAttribute("class")||"";if(!has(c,"enter","stagger|parallax")||/(^|\s)on-enter--parallax(\s|$)/.test(c)){return}[].forEach.call(/(^|\s)on-enter-all--/.test(c)?e.children:[e],function(x){var r=x.getBoundingClientRect();if(r.top<W.innerHeight&&r.bottom>0&&r.left<W.innerWidth&&r.right>0){tn.push(x)}})});tn.forEach(function(x){x.classList.add("tf-now")})}
+if(W.CSS&&CSS.supports&&CSS.supports("animation-timeline: view()")){var tn=[];d.querySelectorAll('[class*="on-enter"]').forEach(function(e){var c=e.getAttribute("class")||"";if(!has(c,"enter","stagger|parallax")||/(^|\s)on-enter--parallax(\s|$)/.test(c)){return}[].forEach.call(/(^|\s)on-enter-all--/.test(c)?e.children:[e],function(x){var r=x.getBoundingClientRect();if(r.top<W.innerHeight&&r.bottom>0&&r.left<W.innerWidth&&r.right>0){tn.push(x)}})});tn.forEach(function(x){x.classList.add("tf-now")});R.classList.remove("tf-enter-wait")}
 var RV='[data-tf-reveal="fade"],[data-tf-reveal="up"]',V=R.classList.contains("tf-motion"),F=R.classList.contains("tf-motion-fallback"),io;
 var T=%T%,th=[0];for(var x=.05;x<T;x+=.05){th.push(x)}th.push(T);
 function secs(v){return Math.max.apply(null,String(v).split(",").map(function(p){p=p.trim();return p.slice(-2)==="ms"?parseFloat(p)/1000:(parseFloat(p)||0)}))}
 function done(el){var c=/(^|\s)on-visible-all--/.test(el.getAttribute("class")||"")?(el.lastElementChild||el):el,cs=getComputedStyle(c);setTimeout(function(){el.classList.add("tf-done")},(secs(cs.transitionDuration)+secs(cs.transitionDelay))*1000+60)}
 function has(c,fam,skip){return new RegExp("(^|\\s)on-"+fam+"(-all)?--(?!("+skip+")(\\s|$))").test(c)}
 function obs(e){io=io||new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting&&(e.intersectionRatio>=T||e.intersectionRect.height>=W.innerHeight*T)){e.target.classList.add("tf-in");if(e.target.tfV){done(e.target)}io.unobserve(e.target)}})},{threshold:th});io.observe(e)}
-function scan(r){var l=[].slice.call(r.querySelectorAll('[class*="on-visible"],[class*="on-enter"],[data-tf-reveal]')),a=0,b=0;if(r.nodeType===1){l.unshift(r)}l.forEach(function(e){var c=e.getAttribute("class")||"";if(V&&!e.tfV&&(e.matches(RV)||has(c,"visible","stagger"))){e.tfV=1;a++;obs(e)}if(F&&!e.tfE&&has(c,"enter","stagger|parallax")){e.tfE=1;b++;obs(e)}});return[a,b]}
-var n=scan(d);
-if(!n[0]){V=0;R.classList.remove("tf-motion")}if(!n[1]){F=0;R.classList.remove("tf-motion-fallback")}
+function scan(r){var l=[].slice.call(r.querySelectorAll('[class*="on-visible"],[class*="on-enter"],[class*="on-exit"],[data-tf-reveal]')),a=0,b=0;if(r.nodeType===1){l.unshift(r)}l.forEach(function(e){var c=e.getAttribute("class")||"";if(/(^|s)on-(enter|exit|visible)--stagger(s|$)/.test(c)){for(var i=0;i<e.children.length;i++){e.children[i].style.setProperty("--tf-i",i)}}if(V&&!e.tfV&&(e.matches(RV)||has(c,"visible","stagger"))){e.tfV=1;a++;obs(e)}if(F&&!e.tfE&&has(c,"enter","stagger|parallax")){e.tfE=1;b++;obs(e)}});return[a,b]}
+var n=scan(d),mo;
+function cut(){if(!n[0]){V=0;R.classList.remove("tf-motion")}if(!n[1]){F=0;R.classList.remove("tf-motion-fallback")}if(!(V||F)&&mo){mo.disconnect()}}
 if(!(V||F)){return}
-new MutationObserver(function(ms){ms.forEach(function(m){[].forEach.call(m.addedNodes,function(x){if(1===x.nodeType){scan(x)}})})}).observe(d.body,{childList:true,subtree:true})})();
+mo=new MutationObserver(function(ms){ms.forEach(function(m){[].forEach.call(m.addedNodes,function(x){if(1===x.nodeType){var k=scan(x);n[0]+=k[0];n[1]+=k[1]}})})});mo.observe(d.body,{childList:true,subtree:true});
+if(d.readyState==="loading"){d.addEventListener("DOMContentLoaded",cut)}else{cut()}})();
 JS;
 		return str_replace( '%T%', (string) $t, $js );
 	}

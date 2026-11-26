@@ -17,6 +17,13 @@ class Admin {
 	const SLUG = 'tokenforge';
 
 	/**
+	 * Hook suffix of the Manual page.
+	 *
+	 * @var string
+	 */
+	private $manual_hook = '';
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -39,6 +46,14 @@ class Admin {
 			TOKENFORGE_URL . 'assets/admin/tokenforge-icon.svg',
 			59
 		);
+		$this->manual_hook = (string) add_submenu_page(
+			self::SLUG,
+			__( 'TokenForge manual', 'tokenforge' ),
+			__( 'Manual', 'tokenforge' ),
+			'manage_options',
+			self::SLUG . '-manual',
+			array( $this, 'render_manual' )
+		);
 	}
 
 	/**
@@ -48,6 +63,10 @@ class Admin {
 	 * @return void
 	 */
 	public function assets( $hook ) {
+		if ( $this->manual_hook && $this->manual_hook === $hook ) {
+			wp_enqueue_style( 'tokenforge-manual', TOKENFORGE_URL . 'assets/manual/manual.css', array(), TOKENFORGE_VERSION );
+			return;
+		}
 		if ( 'toplevel_page_' . self::SLUG !== $hook ) {
 			return;
 		}
@@ -89,5 +108,16 @@ class Admin {
 		echo '<div class="wrap"><h1>' . esc_html__( 'TokenForge', 'tokenforge' ) . '</h1>';
 		echo '<p class="description">' . esc_html__( 'Design tokens, scales and utility classes. Change what you like, then Save to rebuild the stylesheet.', 'tokenforge' ) . '</p>';
 		echo '<div id="tokenforge-app"></div></div>';
+	}
+
+	/**
+	 * Render the Manual page (English, from a plugin file).
+	 *
+	 * @return void
+	 */
+	public function render_manual() {
+		$file = TOKENFORGE_DIR . 'assets/manual/manual.html';
+		$html = is_readable( $file ) ? (string) file_get_contents( $file ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local file
+		echo '<div class="wrap tf-manual"><h1>' . esc_html__( 'TokenForge manual', 'tokenforge' ) . '</h1><div class="tf-manual-body">' . wp_kses_post( $html ) . '</div></div>';
 	}
 }

@@ -44,12 +44,16 @@ class Block_Editor {
 		if ( is_array( $hit ) && isset( $hit['sig'], $hit['rows'] ) && $sig === $hit['sig'] && is_array( $hit['rows'] ) ) {
 			return $hit['rows'];
 		}
-		if ( ! is_readable( $file ) || ! preg_match_all( '/(?<![\w\-\\\\)\]:.>+~* ])\.(-?[_a-zA-Z][\w\-]*)\{([^{}]+)\}/', (string) file_get_contents( $file ), $m, PREG_SET_ORDER ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- a local file.
+		if ( ! is_readable( $file ) || ! preg_match_all( '/(?<![\w\-\\\\)\]:.>+~* ])((?:\.-?[_a-zA-Z][\w\-]*,)*\.-?[_a-zA-Z][\w\-]*)\{([^{}]+)\}/', (string) file_get_contents( $file ), $m, PREG_SET_ORDER ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- a local file.
 			return $out;
 		}
 		foreach ( $m as $x ) {
-			if ( ! isset( $out[ $x[1] ] ) ) {
-				$out[ $x[1] ] = strlen( $x[2] ) > 80 ? substr( $x[2], 0, 77 ) . '...' : $x[2];
+			// A list of plain classes shares one rule (.grid-3,.grid--3): each name gets the preview.
+			foreach ( explode( ',', $x[1] ) as $name ) {
+				$name = substr( $name, 1 );
+				if ( ! isset( $out[ $name ] ) ) {
+					$out[ $name ] = strlen( $x[2] ) > 80 ? substr( $x[2], 0, 77 ) . '...' : $x[2];
+				}
 			}
 		}
 		set_transient(

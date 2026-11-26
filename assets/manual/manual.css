@@ -1,0 +1,167 @@
+/* TokenForge > Manual (admin page only). */
+.tf-manual {
+	--tf-man-accent: var(--wp-admin-theme-color, #2271b1);
+	--tf-man-border: #dcdcde;
+	--tf-man-muted: #50575e;
+	--tf-man-code: #f0f0f1;
+	color: #1d2327;
+}
+
+.tf-manual-body {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 0 2.5rem;
+	margin-top: 1rem;
+}
+
+.tf-manual-body > nav {
+	background: #fff;
+	border: 1px solid var(--tf-man-border);
+	border-radius: 4px;
+	padding: 0.75rem 1rem;
+	margin-bottom: 1.5rem;
+}
+
+.tf-manual-body > nav ol,
+.tf-manual-body > nav ul {
+	margin: 0 0 0 1.25rem;
+}
+
+.tf-manual-body > nav li {
+	margin: 0.3rem 0;
+}
+
+.tf-manual-body > nav a {
+	text-decoration: none;
+}
+
+.tf-manual-body > nav a:hover,
+.tf-manual-body > nav a:focus {
+	text-decoration: underline;
+}
+
+.tf-manual-body > section {
+	max-width: 46rem;
+	font-size: 14px;
+	line-height: 1.65;
+}
+
+.tf-manual-body > section + section {
+	border-top: 1px solid var(--tf-man-border);
+	margin-top: 2rem;
+	padding-top: 0.5rem;
+}
+
+.tf-manual h2 {
+	font-size: 1.5em;
+	margin: 1.25em 0 0.5em;
+}
+
+.tf-manual h3 {
+	font-size: 1.15em;
+	margin: 1.5em 0 0.4em;
+}
+
+.tf-manual h4 {
+	font-size: 1em;
+	margin: 1.25em 0 0.3em;
+}
+
+.tf-manual [id] {
+	scroll-margin-top: 48px;
+}
+
+.tf-manual p,
+.tf-manual li {
+	font-size: inherit;
+	line-height: inherit;
+}
+
+.tf-manual section ul,
+.tf-manual section ol {
+	margin-left: 1.5em;
+}
+
+.tf-manual section ul {
+	list-style: disc;
+}
+
+.tf-manual a {
+	color: var(--tf-man-accent);
+}
+
+.tf-manual code,
+.tf-manual kbd {
+	background: var(--tf-man-code);
+	border-radius: 3px;
+	padding: 0.1em 0.35em;
+	font-size: 0.9em;
+}
+
+.tf-manual kbd {
+	border: 1px solid var(--tf-man-border);
+	box-shadow: 0 1px 0 var(--tf-man-border);
+}
+
+.tf-manual pre {
+	background: var(--tf-man-code);
+	border-radius: 4px;
+	padding: 0.75rem 1rem;
+	overflow-x: auto;
+}
+
+.tf-manual pre code {
+	background: none;
+	padding: 0;
+}
+
+.tf-manual section > div:has(> table) {
+	overflow-x: auto;
+}
+
+.tf-manual table {
+	border-collapse: collapse;
+	width: 100%;
+	background: #fff;
+	margin: 0.75rem 0;
+}
+
+.tf-manual th,
+.tf-manual td {
+	border: 1px solid var(--tf-man-border);
+	padding: 0.4rem 0.6rem;
+	text-align: left;
+	vertical-align: top;
+}
+
+.tf-manual thead th {
+	background: var(--tf-man-code);
+}
+
+/* Wide screens: the contents list stays in view beside the text. */
+@media (min-width: 960px) {
+	.tf-manual-body {
+		grid-template-columns: 15rem minmax(0, 1fr);
+	}
+
+	.tf-manual-body > nav {
+		grid-column: 1;
+		grid-row: 1 / span 99;
+		align-self: start;
+		position: sticky;
+		top: calc(32px + 1rem);
+		max-height: calc(100vh - 32px - 2rem);
+		overflow-y: auto;
+		margin-bottom: 0;
+	}
+
+	.tf-manual-body > :not(nav) {
+		grid-column: 2;
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	html:has(.tf-manual) {
+		scroll-behavior: smooth;
+	}
+}

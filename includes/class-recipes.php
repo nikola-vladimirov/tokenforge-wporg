@@ -173,6 +173,49 @@ class Recipes {
 		$r['query-children'] = array( 'Code', "return [\n\t'post_type'           => 'page', /* the post type */\n\t'post_parent__not_in' => [ 0 ],  /* only child posts */\n\t'posts_per_page'      => -1,\n\t'post_status'         => 'publish',\n];{{cursor}}", null, false );
 		$r['property']       = array( 'Code', "@property --{{cursor}}name {\n\tsyntax: \"<length>\";\n\tinherits: false;\n\tinitial-value: 0px;\n}", null, false );
 
+		// ---- Gradients: values for a background (or any image) property; text and border are declarations.
+		$r['linear-gradient']   = array( 'Gradients', 'linear-gradient(180deg, var(--primary), var(--primary-dark))', null, true );
+		$r['gradient-radial']   = array( 'Gradients', 'radial-gradient(circle, var(--primary-light), var(--primary-dark))', null, true );
+		$r['gradient-conic']    = array( 'Gradients', 'conic-gradient(from 0deg, var(--primary), var(--primary-dark), var(--primary))', null, true );
+		$r['gradient-sharp']    = array( 'Gradients', 'linear-gradient(180deg, var(--primary) 50%, var(--primary-dark) 50%)', null, true );
+		$r['gradient-fade']     = array( 'Gradients', 'linear-gradient(180deg, var(--primary), transparent)', null, true );
+		$r['gradient-vignette'] = array( 'Gradients', 'radial-gradient(circle, transparent 50%, var(--black-trans-60))', null, true );
+		$r['gradient-text']     = array( 'Gradients', "/* Gradient text: the letters show the gradient */\nbackground-image: linear-gradient(90deg, var(--primary), var(--primary-dark));\n-webkit-background-clip: text;\nbackground-clip: text;\ncolor: transparent;{{cursor}}", null, false );
+		$r['gradient-border']   = array( 'Gradients', "/* Gradient border: the inside keeps the surface colour, the border shows the gradient */\nborder: 2px solid transparent;\nbackground: linear-gradient(var(--bg), var(--bg)) padding-box, linear-gradient(90deg, var(--primary), var(--primary-dark)) border-box;{{cursor}}", null, false );
+
+		// ---- Pseudo-classes and pseudo-elements on the element itself.
+		$r['before']              = array( 'Pseudo', "%root%::before {\n\tcontent: \"\";\n\t{{cursor}}\n}", null, false );
+		$r['after']               = array( 'Pseudo', "%root%::after {\n\tcontent: \"\";\n\t{{cursor}}\n}", null, false );
+		$r['before-after']        = array( 'Pseudo', "%root%::before,\n%root%::after {\n\tcontent: \"\";\n\t{{cursor}}\n}", null, false );
+		$r['hover']               = array( 'Pseudo', "%root%:hover {\n\t{{cursor}}\n}", null, false );
+		$r['focus-visible']       = array( 'Pseudo', "%root%:focus-visible {\n\t{{cursor}}\n}", null, false );
+		$r['hover-focus']         = array( 'Pseudo', "%root%:hover,\n%root%:focus-visible {\n\t{{cursor}}\n}", null, false );
+		$r['hover-exclude-touch'] = array( 'Pseudo', "/* Hover only with a mouse or trackpad: touch screens skip it, so a tap never leaves it stuck on */\n@media (hover: hover) and (pointer: fine) {\n\t%root%:hover {\n\t\t{{cursor}}\n\t}\n}", null, false );
+
+		// ---- Colour mixing (values).
+		$r['color-mix']    = array( 'Color', 'color-mix(in oklch, var(--primary) 50%, var(--bg))', null, true );
+		$r['transparency'] = array( 'Color', 'color-mix(in oklch, var(--primary) 10%, transparent)', null, true );
+
+		// ---- More helpers.
+		$r['tooltip']                   = array( 'Interaction', "/* Tooltip: the text of data-tooltip=\"Your text\" shows above on hover and keyboard focus (make the element focusable, e.g. a button) */\n%root% {\n\t--tooltip-background: var(--text-dark);\n\t--tooltip-color: var(--bg-ultra-light);\n\t--tooltip-gap: 0.5em;\n\tposition: relative;\n\ttext-decoration: underline dashed 1px;\n\ttext-underline-offset: 0.25em;\n}\n%root%::after {\n\tcontent: attr(data-tooltip);\n\tposition: absolute;\n\tinset-block-end: calc(100% + var(--tooltip-gap));\n\tinset-inline-start: 50%;\n\ttranslate: -50% 0;\n\tinline-size: max-content;\n\tmax-inline-size: 30ch;\n\tpadding: 0.25em 0.5em;\n\tborder-radius: var(--radius);\n\tbackground: var(--tooltip-background);\n\tcolor: var(--tooltip-color);\n\tfont-size: var(--text-s);\n\tline-height: 1.3;\n\ttext-align: center;\n\tpointer-events: none;\n\topacity: 0;\n\tvisibility: hidden;\n\ttransition: opacity 0.15s, visibility 0.15s;\n\tz-index: 10;\n}\n%root%:is(:hover, :focus-visible)::after {\n\topacity: 1;\n\tvisibility: visible;\n}{{cursor}}", null, false );
+		$r['skip-link']                 = array( 'Interaction', "/* Skip link: waits above the page and slides in on keyboard focus */\n%root% {\n\tposition: absolute !important;\n\tinset-block-start: 1rem;\n\tinset-inline-start: 1rem;\n\tz-index: 100;\n\ttransform: translateY(-250%);\n}\n%root%:focus-visible {\n\ttransform: translateY(0);\n}{{cursor}}", null, false );
+		$r['footer-reveal']             = array( 'Layout', "/* Footer reveal: the page slides up and uncovers this footer (the footer comes right after main) */\n%root% {\n\tposition: sticky;\n\tinset-block-end: 0;\n\tz-index: 0;\n}\nmain:has(+ %root%) {\n\tposition: relative;\n\tz-index: 1;\n\tbackground: var(--body-bg-color, var(--bg-ultra-light, #fff));\n\tbox-shadow: 0 1em 1em -0.5em var(--black-trans-10);\n}{{cursor}}", null, false );
+		$r['concentric-radius-reverse'] = array( 'Layout', "/* Concentric corners, the other way round: the inner radius = outer radius minus the padding */\n%root% {\n\t--padding: var(--space-m);\n\tpadding: var(--padding);\n\tborder-radius: var(--radius);\n}\n/* the child that gets the inner radius (never below 4px) */\n%root% > * {\n\tborder-radius: max(4px, var(--radius) - var(--padding));\n\toverflow: hidden;\n}{{cursor}}", null, false );
+		$r['is-bg']                     = array( 'Layout', "/* Background element: fills its parent behind the content (an image, a video, a shape) */\n:has(> %root%) {\n\tposition: relative;\n\tisolation: isolate;\n}\n%root% {\n\tposition: absolute !important;\n\tinset: 0;\n\tinline-size: 100%;\n\tblock-size: 100%;\n\tobject-fit: cover;\n\tz-index: -2; /* overlays sit at -1 */\n\tpointer-events: none;\n}\n%root% > img {\n\tinline-size: 100%;\n\tblock-size: 100%;\n\tobject-fit: cover;\n}{{cursor}}", null, false );
+		$r['border-check']              = array( 'Layout', "/* Debug: a red outline shows this element's box (remove it when done) */\noutline: 2px solid red !important;\noutline-offset: -2px;{{cursor}}", null, false );
+		foreach ( array(
+			'all'    => array( 'center', 'center' ),
+			'top'    => array( 'start', 'center' ),
+			'bottom' => array( 'end', 'center' ),
+			'left'   => array( 'center', 'start' ),
+			'right'  => array( 'center', 'end' ),
+		) as $at => $v ) {
+			$r[ "center-$at" ] = array( 'Layout', "display: grid;\nalign-content: {$v[0]};\njustify-items: {$v[1]};{{cursor}}", null, false );
+		}
+		// Both fades at once: the two masks intersect (added together, each would hide the other's fade).
+		$all           = 'linear-gradient(' . $fades['block'] . '), linear-gradient(' . $fades['inline'] . ')';
+		$r['fade-all'] = array( 'Fades', "/* Fade out: all four edges */\n%root% {\n\t--fade-amount: 15%;\n\t-webkit-mask-image: $all;\n\t-webkit-mask-composite: source-in;\n\tmask-image: $all;\n\tmask-composite: intersect;\n}{{cursor}}", null, false );
+
 		return $r;
 	}
 

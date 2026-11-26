@@ -2,6 +2,21 @@
 
 All the changes to TokenForge, newest first.
 
+## 0.58.2
+
+- New: TokenForge, Manual. An English user manual in the admin, with a contents list, from setup to the developer hooks.
+- Class names from another utility framework now work too: `grid--3`, `grid--m-2`, `flex-grid--3`, `text--center` and others that do exactly the same as a TokenForge class. Colour names such as `bg--primary` have their own switch (Options, Utility framework), off by default.
+- New: default button effects. Pick one hover, one entrance and one hover border effect for every TokenForge button (`.btn`, `btn--*`, and every button when Buttons, Restyle every button is on) on the Effects screen (Button effects). All are off by default.
+- New recipes: eight gradients (linear, radial, conic, sharp, fade, vignette, gradient text and gradient border), `?before`, `?after`, `?before-after`, `?hover`, `?focus-visible`, `?hover-focus`, `?hover-exclude-touch`, `?color-mix`, `?transparency`, `?tooltip`, `?footer-reveal`, `?fade-all`, `?concentric-radius-reverse`, `?is-bg`, `?skip-link`, `?border-check` and `?center-all`, `-top`, `-bottom`, `-left` and `-right`.
+- Builder: a small moon button beside the TokenForge button previews the canvas in dark mode while you build. Only you see it, nothing is saved into the page and visitors are not affected. It shows while dark mode is on; Builder, Dark mode preview switches it off.
+- Fixed: a TokenForge window opened before a newer save (another builder tab, the dashboard, or a change in the builder's Style Manager) no longer puts the older settings back. TokenForge keeps the newer ones, says so, and shows the current settings. Two builder tabs editing the Style Manager scales each keep only their own changes.
+- The builder canvas copy of the stylesheet keeps the Global SCSS marker, so an add-on's SCSS preview replaces the saved SCSS instead of sitting on top of it.
+- Settings import: brings over the button effects, the switches for hiding deactivated classes, the class field on top in the block editor and the front-end launcher, and the older letter values of the full-width button breakpoint.
+- Effects: an entrance element already on screen at load now stays at its start frame until the page is ready, so it no longer shows for a moment and then jumps back to play.
+- Settings import: a 3.x card radius value "on" is now skipped like "standard" and named in the report.
+- Readme: shorter, with an External services section; the full version history moved to changelog.txt. The bundled SCSS library now ships its composer.json.
+- Leave out unused utility classes: switching on a setting that adds classes (breakpoint variants such as `flex-grid-2-at-m`, or a utility family) now checks the site again, so classes your pages already use are kept. Before, they stayed left out until you ran the scan by hand.
+
 ## 0.58.1
 
 - Effects: entrance effects (`on-enter--*`, `on-enter-all--*`) on elements that are already on screen when the page opens, such as a hero, now play once as the page loads. Before, they only followed the scroll, and since a hero is already past that point, nothing moved. Elements further down still play as you scroll to them.

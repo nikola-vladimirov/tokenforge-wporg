@@ -17,6 +17,10 @@
  * and the state keeps what each stamp held. A saved copy is compared with what
  * its own stamp held when the builder loaded it: only what differs from that is
  * an edit, so an old builder tab never undoes a newer TokenForge save.
+ * Two tabs can hold the same stamp: each builder load also marks our scales and
+ * settings with its own tab id (tokenforgeTab, never stored), and a tab that saved
+ * before is compared with what it saved last. So a second tab only changes what it
+ * changed itself, and one tab can still set its own change back.
  *
  * Only runs when Bricks is the active theme and variables are synced.
  *
@@ -47,6 +51,13 @@ class Bricks_Style_Manager {
 	const KEEP   = 20; // Stamps remembered per part.
 
 	/**
+	 * The builder tab ids each option's latest write sent (option => part => tab id), taken off before it is stored.
+	 *
+	 * @var array
+	 */
+	private static $sent = array();
+
+	/**
 	 * The settings keys TokenForge looks after.
 	 */
 	const SM_KEYS = array( 'htmlFontSize', 'minScreenWidth', 'maxScreenWidth', 'defaultMode' );
@@ -66,8 +77,67 @@ class Bricks_Style_Manager {
 		foreach ( array( self::OPTION, self::CATS ) as $opt ) {
 			add_action( 'update_option_' . $opt, array( __CLASS__, 'on_saved' ), 20, 0 );
 			add_action( 'add_option_' . $opt, array( __CLASS__, 'on_saved' ), 20, 0 );
+			add_filter( 'option_' . $opt, array( __CLASS__, 'tag_tab' ) );
+			add_filter( 'pre_update_option_' . $opt, array( __CLASS__, 'strip_tab' ), 10, 3 );
 		}
 		add_action( 'update_option_' . self::VARS, array( __CLASS__, 'on_vars_saved' ), 20, 2 );
+	}
+
+	/**
+	 * The builder page: our scales and the settings get one id per load (the builder sends it back
+	 * on save), so on_saved() tells two tabs on the same stamp apart. push() drops it again.
+	 *
+	 * @param mixed $value Categories or Style Manager settings, as stored.
+	 * @return mixed
+	 */
+	public static function tag_tab( $value ) {
+		static $tab = '';
+		if ( ! is_array( $value ) || ! function_exists( 'bricks_is_builder_main' ) || ! bricks_is_builder_main() || ! self::enabled() ) {
+			return $value;
+		}
+		$tab = '' !== $tab ? $tab : wp_generate_password( 12, false );
+		if ( 'option_' . self::OPTION === current_filter() ) {
+			$value['tokenforgeTab'] = $tab;
+			return $value;
+		}
+		$ours = self::scales();
+		foreach ( $value as $i => $c ) {
+			if ( isset( $c['id'] ) && isset( $ours[ $c['id'] ] ) ) {
+				$value[ $i ]['tokenforgeTab'] = $tab;
+			}
+		}
+		return $value;
+	}
+
+	/**
+	 * A builder save sends the tab ids back: keep them for on_saved() and store the value without them
+	 * (no second write to take them off).
+	 *
+	 * @param mixed  $value  Categories or Style Manager settings, as sent.
+	 * @param mixed  $old    The stored value.
+	 * @param string $option The option name.
+	 * @return mixed
+	 */
+	public static function strip_tab( $value, $old = null, $option = '' ) {
+		self::$sent[ $option ] = array(); // What this write sends replaces what the last one sent, as the stored copy did.
+		if ( ! is_array( $value ) ) {
+			return $value;
+		}
+		if ( array_key_exists( 'tokenforgeTab', $value ) ) {
+			if ( is_string( $value['tokenforgeTab'] ) ) {
+				self::$sent[ $option ]['sm'] = $value['tokenforgeTab'];
+			}
+			unset( $value['tokenforgeTab'] );
+		}
+		foreach ( $value as $i => $c ) {
+			if ( is_array( $c ) && array_key_exists( 'tokenforgeTab', $c ) ) {
+				if ( isset( $c['id'] ) && is_string( $c['id'] ) && is_string( $c['tokenforgeTab'] ) ) {
+					self::$sent[ $option ][ $c['id'] ] = $c['tokenforgeTab'];
+				}
+				unset( $value[ $i ]['tokenforgeTab'] );
+			}
+		}
+		return $value;
 	}
 
 	/**
@@ -380,13 +450,14 @@ class Bricks_Style_Manager {
 	/**
 	 * Sync state.
 	 *
-	 * @return array [ 'held' => [ part => [ stamp => snapshot part ] ], 'backup' => settings before TokenForge|null ]
+	 * @return array [ 'held' => [ part => [ stamp => snapshot part ] ], 'tabs' => [ tab id => [ part => snapshot part ] ], 'backup' => settings before TokenForge|null ]
 	 */
 	public static function state() {
 		$s = get_option( self::STATE, array() );
 		$s = is_array( $s ) ? $s : array();
 		return array(
 			'held'   => isset( $s['held'] ) && is_array( $s['held'] ) ? $s['held'] : array(),
+			'tabs'   => isset( $s['tabs'] ) && is_array( $s['tabs'] ) ? $s['tabs'] : array(), // What each builder tab saved last (KEEP tabs).
 			'backup' => isset( $s['backup'] ) && is_array( $s['backup'] ) ? $s['backup'] : null,
 			'off'    => isset( $s['off'] ) ? (int) $s['off'] : 0, // The stamp of the settings restored when the sync went off.
 		);
@@ -450,6 +521,7 @@ class Bricks_Style_Manager {
 			if ( ! isset( self::scales()[ $id ] ) ) {
 				$new[] = $c;
 			} elseif ( isset( $want['cats'][ $id ] ) ) {
+				unset( $c['tokenforgeTab'] ); // A builder tab's id (tag_tab()) is not stored.
 				$new[] = array_merge( $c, $want['cats'][ $id ] );
 				unset( $want['cats'][ $id ] );
 			}
@@ -491,6 +563,7 @@ class Bricks_Style_Manager {
 			}
 			$vars = is_array( $all ) && array_values( $all ) !== $vars ? $vars : null;
 		}
+		unset( $sm2['tokenforgeTab'] );
 
 		// A part gets a new stamp when what it holds is not what its current stamp held
 		// (a builder tab with the old stamp then counts as an older copy).
@@ -599,16 +672,24 @@ class Bricks_Style_Manager {
 		$snap   = self::snapshot( $cats, $sm );
 		$stamps = self::stamps( $cats, $sm );
 		$edits  = array();
+		$tabs   = ( isset( self::$sent[ self::OPTION ] ) ? self::$sent[ self::OPTION ] : array() ) + ( isset( self::$sent[ self::CATS ] ) ? self::$sent[ self::CATS ] : array() ) + array( 'sm' => is_array( $sm ) && isset( $sm['tokenforgeTab'] ) && is_string( $sm['tokenforgeTab'] ) ? $sm['tokenforgeTab'] : '' );
+		foreach ( (array) $cats as $c ) {
+			if ( isset( $c['id'], $c['tokenforgeTab'] ) && is_string( $c['id'] ) && is_string( $c['tokenforgeTab'] ) && ! isset( $tabs[ $c['id'] ] ) ) {
+				$tabs[ $c['id'] ] = $c['tokenforgeTab']; // Stored with the id (first add_option, no pre_update filter).
+			}
+		}
 		foreach ( $state['held'] as $part => $held ) {
 			if ( ! isset( $snap[ $part ] ) || ! $held ) {
 				continue; // A deleted scale: the push below puts it back.
 			}
-			$s = isset( $stamps[ $part ] ) ? $stamps[ $part ] : 0;
-			if ( $s > 0 && ! isset( $held[ $s ] ) ) {
+			$s    = isset( $stamps[ $part ] ) ? $stamps[ $part ] : 0;
+			$tab  = isset( $tabs[ $part ] ) ? $tabs[ $part ] : '';
+			$mine = '' !== $tab && isset( $state['tabs'][ $tab ][ $part ] ); // This builder tab saved this part before.
+			if ( ! $mine && $s > 0 && ! isset( $held[ $s ] ) ) {
 				continue; // A stamp too old to remember: an old copy, nothing in it counts.
 			}
-			// What this copy held when the builder loaded it; without a stamp, the newest version.
-			$base = $s > 0 ? $held[ $s ] : end( $held );
+			// What this tab saved last; else what this copy held when the builder loaded it; without a stamp, the newest version.
+			$base = $mine ? $state['tabs'][ $tab ][ $part ] : ( $s > 0 ? $held[ $s ] : end( $held ) );
 			foreach ( $snap[ $part ] as $k => $v ) {
 				if ( 'steps' === $k ) {
 					foreach ( $v as $name => $pair ) {
@@ -624,7 +705,14 @@ class Bricks_Style_Manager {
 					$edits[ $part ][ $k ] = $v;
 				}
 			}
-			if ( $pull ) {
+			if ( $pull && '' !== $tab ) {
+				// This tab now holds this copy. The stamp keeps what it held, for another tab that loaded it.
+				$t = isset( $state['tabs'][ $tab ] ) ? $state['tabs'][ $tab ] : array();
+				unset( $state['tabs'][ $tab ] );
+				$t[ $part ]            = $snap[ $part ];
+				$state['tabs'][ $tab ] = $t;
+				$state['tabs']         = array_slice( $state['tabs'], -self::KEEP, null, true );
+			} elseif ( $pull ) {
 				self::hold( $state, $part, $s, $snap[ $part ] ); // The builder now holds this copy under this stamp.
 			}
 		}
