@@ -421,7 +421,7 @@ class Rest {
 			'/import-acss',
 			array(
 				'methods'             => 'POST',
-				'permission_callback' => $perm,
+				'permission_callback' => $css_perm,
 				'callback'            => array( $this, 'import_acss' ),
 			)
 		);

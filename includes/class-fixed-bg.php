@@ -85,13 +85,13 @@ class Fixed_Bg {
 
 	/**
 	 * May this request read the whole site? Only once every post type is
-	 * registered (after init) and never for a visitor: in the admin, REST or
-	 * the command line.
+	 * registered (after init) and never for a visitor: a signed-in editor in the
+	 * admin or REST (admin-ajax.php and admin-post.php count as admin for anyone), or the command line.
 	 *
 	 * @return bool
 	 */
 	private static function may_scan() {
-		return did_action( 'init' ) && ( is_admin() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || 'cli' === PHP_SAPI );
+		return did_action( 'init' ) && ( 'cli' === PHP_SAPI || ( ( is_admin() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) && current_user_can( 'edit_posts' ) ) );
 	}
 
 	/**
@@ -262,6 +262,8 @@ class Fixed_Bg {
 	 */
 	private static function css( $css, $root, &$out ) {
 		$css = (string) preg_replace( '#/\*.*?\*/#s', '', $css );
+		// Print rules (a white page on paper) say nothing about the screen.
+		$css = (string) preg_replace( '/@media\s+print[^{]*\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}/i', '', $css );
 		if ( ! preg_match_all( '/([^{}]+)\{([^{}]*)\}/', $css, $rules, PREG_SET_ORDER ) ) {
 			return;
 		}
@@ -354,10 +356,13 @@ class Fixed_Bg {
 			}
 			return;
 		}
-		if ( ! self::$pending ) {
+		$first                    = ! self::$pending;
+		self::$pending[ $source ] = $pairs;
+		if ( did_action( 'shutdown' ) ) {
+			self::flush(); // A save from another shutdown handler: too late to queue.
+		} elseif ( $first ) {
 			add_action( 'shutdown', array( __CLASS__, 'flush' ) );
 		}
-		self::$pending[ $source ] = $pairs;
 	}
 
 	/**

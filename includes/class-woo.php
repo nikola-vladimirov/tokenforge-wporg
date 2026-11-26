@@ -837,7 +837,7 @@ class Woo {
 			$tail[] = 'html .wc-block-components-order-summary .wc-block-components-order-summary-item__quantity{background-color:var(--woo-text);border-color:var(--woo-text);box-shadow:0 0 0 2px var(--woo-surface);color:var(--white, #fff);font-weight:700}';
 			$tail[] = 'html .wc-block-components-order-summary .wc-block-components-order-summary-item__quantity span{color:var(--white, #fff)}';
 		}
-		if ( '' !== self::white_dark() && Scheme::switches( $s['text_color'], Scheme::dark_context() ) ) {
+		if ( '' !== self::white_dark() && Scheme::switches( self::val( $s, 'text_color' ), Scheme::dark_context() ) ) {
 			// The cart counts painted var(--white) on the text colour: the builder's cart, the order summary.
 			$tail[] = ':where(' . strtr( '{LINES} {ROW} > :first-child > .brxe-text-basic', self::placeholders() ) . ( $blocks ? ',.wc-block-components-order-summary .wc-block-components-order-summary-item__quantity' : '' ) . '){' . self::white_dark() . '}';
 		}

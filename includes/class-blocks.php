@@ -80,6 +80,33 @@ class Blocks {
 	 * @return array color, font-size, font-family, spacing, shadow => presets
 	 */
 	public static function presets( $mode ) {
+		// Kept between requests (no expiry, so autoloaded): the theme.json filter runs on every page view.
+		$sig = Frontend::cache_sig( $mode );
+		if ( '' === $sig ) {
+			return self::build_presets( $mode );
+		}
+		$hit = get_transient( 'tokenforge_block_presets' );
+		if ( is_array( $hit ) && isset( $hit['sig'], $hit['presets'] ) && $sig === $hit['sig'] ) {
+			return (array) $hit['presets'];
+		}
+		$out = self::build_presets( $mode );
+		set_transient(
+			'tokenforge_block_presets',
+			array(
+				'sig'     => $sig,
+				'presets' => $out,
+			)
+		);
+		return $out;
+	}
+
+	/**
+	 * Builds presets().
+	 *
+	 * @param string $mode 'replace' or 'add'.
+	 * @return array
+	 */
+	private static function build_presets( $mode ) {
 		$pre  = 'add' === $mode ? 'tf-' : '';
 		$out  = array_fill_keys( array( 'color', 'font-size', 'font-family', 'spacing', 'shadow' ), array() );
 		$size = '(xs|s|m|l|xl|xxl)';

@@ -34,6 +34,7 @@ function tokenforge_uninstall_site() {
 	}
 	delete_transient( 'tokenforge_upgrading' ); // The upgrade lock (Plugin::maybe_upgrade), two minutes at most.
 	delete_transient( 'tokenforge_block_legacy' ); // Cached block editor preset mapping CSS (Frontend::legacy_css).
+	delete_transient( 'tokenforge_block_presets' ); // Cached block editor presets (Blocks::presets).
 	delete_transient( 'tokenforge_block_previews' ); // Cached class previews for the block editor class field (Block_Editor::previews).
 	// Form submissions (Features\Form_Submissions): our status/notes table and auto-delete.
 	// The builder's own submissions table stays.
@@ -135,7 +136,11 @@ function tokenforge_uninstall_site() {
 	}
 	// The builder's style manager CSS file still holds our scale variables until it is rebuilt.
 	if ( is_callable( array( '\Bricks\Ajax', 'generate_style_manager_css_file' ) ) ) {
-		\Bricks\Ajax::generate_style_manager_css_file();
+		try {
+			\Bricks\Ajax::generate_style_manager_css_file();
+		} catch ( \Throwable $e ) {
+			unset( $e ); // A builder error must not stop the clean-up halfway.
+		}
 	}
 }
 

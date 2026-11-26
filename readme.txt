@@ -115,6 +115,7 @@ Older versions are in changelog.txt.
 * Dark mode: a fixed page, card or boxed-page background turns dark only when that makes its text more readable.
 * Shop: the New badge and the cart item counts keep readable text in dark mode.
 * With dark mode off nothing changes.
+* Faster pages: the block editor colour and size lists are built once and kept, not on every page view.
 
 = 0.58.2 =
 * New: TokenForge, Manual, an English user manual in the admin.

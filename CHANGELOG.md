@@ -9,6 +9,9 @@ All the changes to TokenForge, newest first.
 - Dark mode: elements whose background you set in the builder to a colour that does not change (a header with a white background, say) keep their light colours in dark mode, so their text never turns light on light. TokenForge finds them in the builder's classes, elements and custom CSS, and follows your saves.
 - Dark mode: the shop's New badge and the cart item counts (the builder's cart and the order summary) keep readable text when their background turns light in dark mode.
 - With dark mode off nothing changes: the stylesheet is the same as before.
+- Faster pages: the block editor's colour, size and spacing lists and the old preset names are built once and kept until your tokens or the theme change, instead of on every page view. Sites that do not replace the block editor palette skip that work entirely.
+- Multisite: importing the other framework's settings now needs the same right to edit CSS as every other save that writes into the stylesheet.
+- Uninstall finishes its clean-up even if the builder reports an error while rebuilding its style file.
 
 ## 0.58.2
 

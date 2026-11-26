@@ -126,6 +126,7 @@ register_deactivation_hook(
 	__FILE__,
 	function () {
 		wp_clear_scheduled_hook( 'tokenforge_subs_cleanup' ); // form submissions auto-delete.
+		delete_option( 'tokenforge_fixed_bg' ); // Saves made while off are not followed: read the site again after activation.
 	}
 );
 
