@@ -4,7 +4,7 @@ Tags: design tokens, css variables, accessibility, woocommerce
 Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.58.2
+Stable tag: 0.58.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -109,6 +109,13 @@ The accessibility checker (axe-core, MPL 2.0) is bundled and runs in the builder
 
 Older versions are in changelog.txt.
 
+= 0.58.3 =
+* Dark mode: text set to a fixed colour (black from an imported setup, say) now switches to its light pair, so sections that turn dark stay readable.
+* Dark mode: elements you gave a fixed background in the builder (a white header, say) keep their light colours, so their text never turns light on light.
+* Dark mode: a fixed page, card or boxed-page background turns dark only when that makes its text more readable.
+* Shop: the New badge and the cart item counts keep readable text in dark mode.
+* With dark mode off nothing changes.
+
 = 0.58.2 =
 * New: TokenForge, Manual, an English user manual in the admin.
 * Class names from another utility framework (grid--3, grid--m-2, flex-grid--3, text--center and more) now work too; colour names such as bg--primary have their own switch.
@@ -118,7 +125,3 @@ Older versions are in changelog.txt.
 * Fixed: a window opened before a newer save (another builder tab or the dashboard) no longer puts older settings back.
 * Fixed: switching on a setting that adds classes rechecks the site, so used classes are not left out. Entrance effects on screen at load no longer flash before they play.
 * Settings import: more switches, button effects and older breakpoint values come across.
-
-= 0.58.1 =
-* Effects: entrance effects on elements already on screen when the page opens (a hero, for example) now play as the page loads. Before, they waited for a scroll that never came.
-* Importing another framework's settings now brings over its site colour scheme and card inner radius from its newer version.

@@ -2,6 +2,13 @@
 
 Every release, newest first. The readme lists only the latest versions.
 
+= 0.58.3 =
+* Dark mode: text set to a fixed colour (black from an imported setup, say) now switches to its light pair, so sections that turn dark stay readable.
+* Dark mode: elements you gave a fixed background in the builder (a white header, say) keep their light colours, so their text never turns light on light.
+* Dark mode: a fixed page, card or boxed-page background turns dark only when that makes its text more readable.
+* Shop: the New badge and the cart item counts keep readable text in dark mode.
+* With dark mode off nothing changes.
+
 = 0.58.2 =
 * New: TokenForge, Manual, an English user manual in the admin.
 * Class names from another utility framework (grid--3, grid--m-2, flex-grid--3, text--center and more) now work too; colour names such as bg--primary have their own switch.

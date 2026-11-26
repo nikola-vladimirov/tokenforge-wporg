@@ -2,7 +2,7 @@
 
 All the changes to TokenForge, newest first.
 
-## Unreleased
+## 0.58.3
 
 - Dark mode: a text colour set to a fixed colour (such as black from an imported setup) now switches to its light pair in dark mode, also when the colour palette switches on its own, so text in sections that turn dark stays readable.
 - Dark mode: a fixed page, card or boxed-page background now turns dark with the page when that makes the text, headings and links on it more readable. In light mode it stays exactly as set.
